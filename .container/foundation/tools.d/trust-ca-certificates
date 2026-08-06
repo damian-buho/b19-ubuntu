@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  # Trust the BUILD HOST's CA bundle for the length of one build stage.
+  #
+  # A build that routes downloads through a TLS near-cache fronted by a private
+  # root (M6E_NEAR_CACHE_HOST) has to trust that root. The bundle arrives on the
+  # /fetch bind mount, which every b19 Dockerfile already declares — m6e's build
+  # backends stage it there from M6E_CA_CERTIFICATES. No bundle => the image
+  # trust store is used untouched, which is the CI and published-image case.
+  #
+  # The anchor is installed in pre/ and removed again in post/, both inside the
+  # SAME `build-stage` RUN, so the operator's private roots never reach a layer.
+  # update-ca-certificates appends whole files to the bundle, so a multi-cert
+  # PEM registers every certificate in it (only the hashed symlink it also makes
+  # is named after the first one — irrelevant to bundle readers).
+
+  B19_BUILD_CA_FILE="${B19_BUILD_CA_FILE:-${B19_FETCH_LOCAL_PATH:-/fetch}/.m6e-ca-certificates.crt}"
+  B19_BUILD_CA_ANCHOR="${B19_BUILD_CA_ANCHOR:-/usr/local/share/ca-certificates/m6e-build-ca.crt}"
+
+  ACTION="${1:-install}"
+
+  # The trust store is root-owned, and this runs from a stage-independent hook,
+  # so non-root stages reach it too. There the store is simply left alone: uid
+  # 1000 fetches hand the bundle to aria2c directly (see b19-fetch).
+  if [ "$(id --user)" -ne 0 ]
+  then
+    b19-log info "SECURITY" "$(_p "Not root (uid %s), trust store left untouched" "$(id --user)")"
+    exit 0
+  fi
+
+  case "${ACTION}" in
+    install)
+      if [ -s "${B19_BUILD_CA_FILE}" ]
+      then
+        # The stock ubuntu image ships neither the anchor dir nor the refresher;
+        # the copy still lands, and foundation's post/100 hook folds it in once
+        # ca-certificates is installed.
+        mkdir -p "$(dirname "${B19_BUILD_CA_ANCHOR}")"
+        cp "${B19_BUILD_CA_FILE}" "${B19_BUILD_CA_ANCHOR}"
+        b19-log warn "SECURITY" "$(_p "Build CA bundle trusted from %s" "${B19_BUILD_CA_FILE}")"
+
+        if command -v update-ca-certificates > /dev/null 2>&1
+        then
+          b19-run "SECURITY" "$(_p "Refresh trust store for %s" "${B19_BUILD_CA_ANCHOR}")" --  \
+            update-ca-certificates
+        else
+          b19-log info "SECURITY" "$(_p "No refresher yet, %s applied later" "${B19_BUILD_CA_ANCHOR}")"
+        fi
+      else
+        b19-log info "SECURITY" "$(_p "No build CA bundle at %s, using image trust store" "${B19_BUILD_CA_FILE}")"
+      fi
+      ;;
+
+    remove)
+      if [ -f "${B19_BUILD_CA_ANCHOR}" ]
+      then
+        rm --force "${B19_BUILD_CA_ANCHOR}"
+        b19-log warn "SECURITY" "$(_p "Build CA anchor %s dropped before the layer commits" "${B19_BUILD_CA_ANCHOR}")"
+
+        # --fresh rebuilds /etc/ssl/certs from scratch, so the dropped anchor
+        # leaves no symlink and no bundle entry behind.
+        b19-run "SECURITY" "$(_p "Rebuild trust store without %s" "${B19_BUILD_CA_ANCHOR}")" --  \
+          update-ca-certificates --fresh
+      else
+        b19-log info "SECURITY" "$(_p "No build CA anchor at %s to drop" "${B19_BUILD_CA_ANCHOR}")"
+      fi
+      ;;
+
+    *)
+      b19-log error "SECURITY" "$(_p "Unknown action %s, expected install or remove" "${ACTION}")"
+      exit 64
+      ;;
+  esac

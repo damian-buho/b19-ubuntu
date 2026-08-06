@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  _b19_on_hook_error() {
+      HOOK_EXIT_CODE=$?
+      trap - ERR
+      b19-log bad "HOOK" "$(_p "%s failed to execute (code %s)" "${HOOK_NAME}" "${HOOK_EXIT_CODE}")"
+      exit "${HOOK_EXIT_CODE}"
+  }
+
+  # SCOPE is the hook directory to run: the stage name for stage hooks, `always`
+  # for the stage-independent ones. STAGE stays the real stage either way, so
+  # hooks, install-apt deps lookup and log badges keep naming the actual stage.
+  SCOPE="${SCOPE:-${STAGE}}"
+  HOOKS_PATH="/build.d/${SCOPE}/${ON}"
+
+  if [ -d "${HOOKS_PATH}" ]; then
+    b19-log info "HOOK" "$(_p "Directories found for stage: %s" "${SCOPE}/${ON}")"
+
+    while IFS= read -r -d '' HOOK; do
+      HOOK_NAME="$(basename "${HOOK}")"
+      b19-log info "HOOK" "$(_p "Executing: %s" "${HOOK_NAME}")"
+
+      set -E
+      trap '_b19_on_hook_error' ERR
+      # shellcheck disable=SC1090,SC1091
+      . "${HOOK}"
+      trap - ERR
+      set +E
+
+      b19-log good "HOOK" "$(_p "%s executed successfully" "${HOOK_NAME}")"
+    done < <(fd --print0 --hidden --extension sh . "${HOOKS_PATH}" | sort --zero-terminated --numeric-sort)
+
+    # Remove one-shot hooks (*.sh), keep inheritable ones (*.i.sh). fd prunes
+    # excluded entries, so --exclude '*.i.sh' shields them from deletion.
+    fd --hidden --type file --extension sh --exclude '*.i.sh' . "${HOOKS_PATH}" --exec-batch rm --force
+    # fd has no -delete; rmdir deepest-first (reverse sort ⇒ children precede
+    # parents) so a single pass collapses empty-dir chains like find -delete did.
+    fd --print0 --hidden --type directory . /build.d | sort --zero-terminated --reverse | xargs --null --no-run-if-empty rmdir --ignore-fail-on-non-empty
+  else
+    b19-log info "HOOK" "$(_p "Not found for stage: %s" "${SCOPE}/${ON}")"
+  fi

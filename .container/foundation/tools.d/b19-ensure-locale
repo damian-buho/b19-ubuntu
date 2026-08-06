@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+    set -uo pipefail
+
+    # shellcheck source=.container/foundation/tools.d/b19-i18n
+    . b19-i18n
+
+    # Guard every container startup against an invalid LANG and provide a
+    # language-level fallback so regional variants work from a curated set.
+    #
+    # LANG may be set to a locale that isn't generated in THIS image — either an
+    # unsupported language (no locale at all) or a regional variant whose base
+    # language IS generated (es_CL.UTF-8 when only es_ES.UTF-8 exists).
+    # setlocale() then fails and breaks locale-sensitive tooling.
+    #
+    # Resolution order:
+    #   1. LANG is valid as-is           → keep it (es_ES.UTF-8 → es_ES.UTF-8)
+    #   2. Same language, any region     → fall back (es_CL.UTF-8 → es_ES.UTF-8)
+    #   3. No match                      → C.UTF-8 (always present in glibc)
+    #
+    # LANGUAGE is left untouched: it controls translation catalogs and uses the
+    # language prefix (es), so it works regardless of the resolved region.
+
+    _locale_exists() {
+        # locale -a lists normalized names (es_ES.utf8). Match case-insensitive
+        # across UTF-8 / utf8 spellings.
+        locale -a 2>/dev/null | grep -qix "${1%.UTF-8}\.\(UTF-8\|utf8\)" || \
+            locale -a 2>/dev/null | grep -qix "${1}"
+    }
+
+    _requested="${LANG:-}"
+
+    # Already valid — nothing to do.
+    if _locale_exists "${_requested}"; then
+        return 0
+    fi
+
+    # Try a language-level fallback: es_CL.UTF-8 → any es_*.UTF-8 in locale -a.
+    _lang_prefix="${_requested%%_*}"
+    if [ -n "${_lang_prefix}" ] && [ "${_lang_prefix}" != "${_requested}" ]; then
+        while IFS= read -r _candidate; do
+            if _locale_exists "${_candidate}"; then
+                b19-log warn "LOCALE" "$(_p "LANG %s not generated — using %s (same language)" "${_requested}" "${_candidate}")"
+                export LANG="${_candidate}"
+                return 0
+            fi
+        done < <(locale -a 2>/dev/null | grep -ix "${_lang_prefix}_.*utf.*8" | sort)
+    fi
+
+    # No match at all — fall back to the always-safe C locale.
+    b19-log warn "LOCALE" "$(_p "LANG %s not generated — falling back to C.UTF-8" "${_requested:-}")"
+    export LANG=C.UTF-8

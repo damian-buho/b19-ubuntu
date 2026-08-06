@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+    # shellcheck source=.container/foundation/tools.d/b19-i18n
+    . b19-i18n
+    [ "${NO_COLOR:-0}" = "1" ] && B19_COLOR=0
+    [ "${M6E_AI:-N}" = "Y" ] && B19_COLOR=0
+    case "${B19_COLOR:-1}" in
+        auto)  [ -t 2 ] && _USE_COLOR=1 || _USE_COLOR=0 ;;
+        1)     _USE_COLOR=1 ;;
+        0|'')  _USE_COLOR=0 ;;
+        *)     _USE_COLOR=0 ;;
+    esac
+
+    # Reveal the captured output on SUCCESS too, not only on failure. Folded into
+    # the verbosity level: `info` dumps the buffer on success (the verbose view);
+    # `debug` already streams live so reveal is a no-op there; `error`/`warn` keep
+    # the classic quiet-success view. (Under m6e-run the container is forced to
+    # `debug`, so b19-run streams and never reaches this path — this is for the
+    # standalone / build-hook case where b19-run is the sole runner.)
+    case "${B19_VERBOSITY:-warn}" in
+        info) _REVEAL=1 ;;
+        *)    _REVEAL=0 ;;
+    esac
+
+    # Progress/success messages are info-level: only show at info or debug (never in AI mode)
+    show_progress() {
+        [ "${M6E_AI:-N}" = "Y" ] && return 1
+        case "${B19_VERBOSITY:-warn}" in
+            info|debug) return 0 ;;
+            *)          return 1 ;;
+        esac
+    }
+
+    # Elapsed seconds since START with configurable decimal precision
+    elapsed_seconds() {
+        LC_ALL=C awk "BEGIN { printf \"%.${B19_RUN_TIMING_PRECISION:-3}f\", ($(date +%s%N) - ${START}) / 1000000000 }"
+    }
+
+    # Generate a unique temporary file for output (if needed)
+    TEMP_FILE=$(mktemp)
+
+    # Optional wall-clock guard. Default off: build/compile callers (Erlang, LLVM,
+    # Scala, …) run legitimately long, so a bound there would be wrong. Lint and
+    # validation runners set B19_RUN_TIMEOUT=<seconds> so a wedged tool dies
+    # loudly instead of hanging the whole tool-execution chain (command.d →
+    # entrypoint → m6e-run → make), which has no timeout of its own.
+    # timeout(1) sends TERM then (after --kill-after) SIGKILL; it exits 124 on
+    # expiry, which b19-run reports as a normal failure (exit code 124).
+    TIMEOUT_ARGS=()
+    if [ -n "${B19_RUN_TIMEOUT:-}" ]; then
+        TIMEOUT_ARGS=(timeout --signal=TERM --kill-after=5s "${B19_RUN_TIMEOUT}")
+    fi
+
+    # Input variables
+    TAG=$1
+    shift
+    LOG=$1
+    shift
+
+    # Consume -- separator (convention for readability)
+    [ "$1" = "--" ] && shift
+
+    COMMAND="$*"
+
+    # Validate inputs
+    if [ -z "${TAG}" ] || [ -z "${LOG}" ] || [ -z "${COMMAND}" ]; then
+        # shellcheck disable=SC2005
+        echo "$(_ "Usage: b19-run <tag> <message> [--] <command> [args...]")" >&2
+        exit 1
+    fi
+
+    # Optional: Display the stage if defined (info/debug only)
+    if show_progress; then
+        if [ "${_USE_COLOR}" = "1" ]; then
+            if [ -n "${STAGE:-}" ]; then
+                ansi -n --black --bg-white " ${STAGE^^} " >&2
+            fi
+            ansi -n --black --bg-black-intense " $(printf "%-12s" "${TAG^^}") " >&2
+            ansi -n " ${LOG}… " >&2
+        else
+            if [ -n "${STAGE:-}" ]; then
+                printf " %s " "${STAGE^^}" >&2
+            fi
+            printf " %-12s  %s… " "${TAG^^}" "${LOG}" >&2
+        fi
+    fi
+
+    # Capture start time for elapsed timing (ns integer — locale-safe)
+    START=$(date +%s%N)
+
+    # Execute the command
+    if [ "${B19_VERBOSITY:-warn}" = "debug" ]; then
+        "${TIMEOUT_ARGS[@]}" "$@" 2>&1 >&2
+        CODE=${PIPESTATUS[0]}
+    else
+        "${TIMEOUT_ARGS[@]}" "$@" > "${TEMP_FILE}" 2>&1
+        CODE=$?
+    fi
+
+    # Handle success or failure
+    if [ "${CODE}" -eq 0 ]; then
+        if show_progress; then
+            if [ "${_USE_COLOR}" = "1" ]; then
+                ansi --green "$(_p "success [%s]" "$(elapsed_seconds)s")" >&2
+            else
+                printf " %s\n" "$(_p "success [%s]" "$(elapsed_seconds)s")" >&2
+            fi
+        fi
+        # In debug mode, output was already streamed directly
+        # Reveal the captured output on success when configured (CI Web UI). Print a
+        # TAG/LOG header first when no progress line was shown, so the dump stays
+        # attributable; skip in debug mode where output already streamed live.
+        if [ "${_REVEAL}" = "1" ] && [ "${B19_VERBOSITY:-warn}" != "debug" ]; then
+            if ! show_progress; then
+                if [ "${_USE_COLOR}" = "1" ]; then
+                    ansi -n --black --bg-black-intense " $(printf "%-12s" "${TAG^^}") " >&2
+                    ansi " ${LOG}" >&2
+                else
+                    printf " %-12s  %s\n" "${TAG^^}" "${LOG}" >&2
+                fi
+            fi
+            cat < "${TEMP_FILE}" >&2
+        fi
+    else
+        if [ "${_USE_COLOR}" = "0" ]; then
+            # No color: plain output with TAG context
+            printf " %-12s  %s\n" "${TAG^^}" "$(_p "failure (exit code %s), [%s]" "${CODE}" "$(elapsed_seconds)s")" >&2
+            echo "${COMMAND}" >&2
+        else
+            # Colored output; prefix with TAG if progress line was suppressed
+            if ! show_progress; then
+                if [ -n "${STAGE:-}" ]; then
+                    ansi -n --black --bg-white " ${STAGE^^} " >&2
+                fi
+                ansi -n --black --bg-black-intense " $(printf "%-12s" "${TAG^^}") " >&2
+                ansi -n " ${LOG}… " >&2
+            fi
+            ansi --red "$(_p "failure (exit code %s) [%s]" "${CODE}" "$(elapsed_seconds)s")" >&2
+            ansi --black-intense --italic "${COMMAND}" >&2
+        fi
+
+        # Only read from temp file if not in debug mode (debug mode streams directly)
+        if [ "${B19_VERBOSITY:-warn}" != "debug" ]; then
+            cat < "${TEMP_FILE}" >&2
+        fi
+    fi
+
+    if [ -f "${TEMP_FILE}" ]; then
+        rm -f "${TEMP_FILE}"
+    fi
+
+    exit "${CODE}"

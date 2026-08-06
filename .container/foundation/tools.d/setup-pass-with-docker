@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  b19-run "DOCKER" "$(_ "Generate GPG Key")" --   \
+    gpg2 --batch --pinentry-mode loopback --command-fd 0 --passphrase '' --gen-key \
+<<EOF
+Key-Type: 1
+Key-Length: 2048
+Subkey-Type: 1
+Subkey-Length: 2048
+Name-Real: pass@example.com
+Name-Email: pass@example.com
+Expire-Date: 0
+%commit
+EOF
+
+  b19-run "DOCKER" "$(_ "Initialize Pass")" --  \
+    pass init pass@example.com
+
+  if [ ! -d ~/.docker ]
+  then
+    b19-run "DOCKER" "$(_ "Make .docker directory")" --   \
+      mkdir ~/.docker
+  fi
+
+  printf '{"credsStore": "pass"}\n' > ~/.docker/config.json

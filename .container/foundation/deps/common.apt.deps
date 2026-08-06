@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+apt-transport-https            # transitional package for https support | deps: apt
+apt-utils                      # package management related utility programs | deps: apt, libapt-pkg7.0, libc6, libdb5.3t64, libgcc-s1, libstdc++6
+aria2                          # High speed download utility | deps: libaria2-0, libc6, libgcc-s1, libstdc++6
+bind9-dnsutils                 # Clients provided with BIND 9 | deps: bind9-host | host, bind9-libs, libc6, libedit2, libidn2-0, libjemalloc2, libkrb5-3
+ca-certificates                # Common CA certificates | deps: openssl, debconf | debconf-2.0
+curl                           # command line tool for transferring data with URL syntax | deps: libcurl4t64, libc6, zlib1g
+gettext                        # GNU Internationalization utilities | deps: gettext-base, libacl1, libattr1, libc6, libgomp1, libtinfo6, libunistring5, libxml2-16
+gnupg2                         # GNU privacy guard - a free PGP replacement (dummy transitional package) | deps: gnupg
+iputils-ping                   # Tools to test the reachability of network hosts | deps: libc6, libcap2, libidn2-0
+libatomic1                     # support library providing __atomic built-in functions | deps: gcc-16-base, libc6
+locales                        # GNU C Library | deps: libc-bin, debconf | debconf-2.0
+lsb-release                    # Linux Standard Base version reporting utility (minimal implementation)
+pbzip2                         # parallel bzip2 implementation | deps: libbz2-1.0, libc6, libgcc-s1, libstdc++6
+pigz                           # Parallel Implementation of GZip | deps: libc6, zlib1g
+pixz                           # parallel, indexing XZ compressor/decompressor | deps: libarchive13t64, libc6, liblzma5
+psmisc                         # utilities that use the proc file system | deps: libc6, libtinfo6
+time                           # GNU time program for measuring CPU resource usage | deps: libc6
+tini                           # tiny but valid init for containers | deps: libc6
+tree                           # displays an indented directory tree, in color | deps: libc6
+tzdata                         # time zone and daylight-saving time data | deps: debconf | debconf-2.0

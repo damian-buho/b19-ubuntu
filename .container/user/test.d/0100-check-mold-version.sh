@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+set -eou pipefail
+
+ACTUAL=$(mold --version | grep -oP -m1 '\d+\.\d+\.\d+')
+EXPECTED=$(decomment < /deps/mold/version.deps)
+
+if [ "${ACTUAL}" != "${EXPECTED}" ]
+then
+  echo "FATAL: expected ${EXPECTED}, got ${ACTUAL}" >&2
+  exit 1
+fi

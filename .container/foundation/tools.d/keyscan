@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  B19_OFFGRID_MODE="${B19_OFFGRID_MODE:-N}"
+  DEFAULT_PORT=22
+  KNOWN_HOSTS="${HOME}/.ssh/known_hosts"
+
+  if [ ! -d "${HOME}/.ssh/" ]
+  then
+    b19-run "SSH" "$(_p "Make %s directory" "${HOME}/.ssh")" --  \
+      mkdir -p "${HOME}/.ssh/"
+
+    b19-run "SSH" "$(_p "Touch %s" "${KNOWN_HOSTS}")" --  \
+      touch "${KNOWN_HOSTS}"
+
+    if [ -n "${B19_SSH_SCAN_HOSTS:-}" ]
+    then
+      if [ "${B19_OFFGRID_MODE}" = "Y" ]
+      then
+        b19-log good "SSH" "$(_ "Offgrid mode, skipping keyscan")"
+      else
+        for SERVER in ${B19_SSH_SCAN_HOSTS}; do
+          if [[ "${SERVER}" == *:* ]]; then
+            # shellcheck disable=SC2086
+            IFS=: read -r SSH_HOST SSH_PORT <<< ${SERVER//\"/}
+            SSH_STRING="[${SSH_HOST}]:${SSH_PORT}"
+          else
+            SSH_HOST=${SERVER//\"/}
+            SSH_PORT=${DEFAULT_PORT}
+            SSH_STRING=${SSH_HOST}
+          fi
+
+          if ssh-keygen -F "${SSH_STRING}" -f "${KNOWN_HOSTS}" >/dev/null; then
+              b19-log good "SSH" "$(_p "%s is already known host" "${SSH_HOST}")"
+          else
+            echo "# ${SSH_STRING}" >> "${KNOWN_HOSTS}"
+            ssh-keyscan -H -p "${SSH_PORT}" "${SSH_HOST}" >> "${KNOWN_HOSTS}"
+          fi
+        done
+      fi
+    else
+      b19-log good "SSH" "$(_ 'B19_SSH_SCAN_HOSTS is not set, skipping')"
+    fi
+  fi

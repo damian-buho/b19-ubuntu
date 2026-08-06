@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  if [ "${B19_IMMUTABLE:-}" != "Y" ]
+  then
+    B19_J2_FINAL="N"
+    if [ "${1}" = "--final" ]; then
+      B19_J2_FINAL="Y"
+      shift
+    fi
+
+    DIRECTORY="${1}"
+    J2_LIST="${DIRECTORY}/.j2.list"
+
+    if [ ! -f "${J2_LIST}" ] || [ ! -s "${J2_LIST}" ]; then
+      b19-log info "J2" "$(_ 'Not found')"
+      exit 0
+    fi
+
+    if command -v minijinja-cli > /dev/null 2>&1; then
+        FILE_COUNT=$(wc -l < "${J2_LIST}")
+        b19-log info "J2" "$(_p "Loaded %s files from %s" "${FILE_COUNT}" "${J2_LIST}")"
+        xargs -P "${NUMPROCS:-4}" -I{} j2-render {} < "${J2_LIST}"
+
+        if [ "${B19_J2_FINAL}" = "Y" ]; then
+          b19-log info "J2" "$(_p "Final mode: deleting %s source templates" "${FILE_COUNT}")"
+          while IFS= read -r _j2_file; do
+            rm -f "${_j2_file}"
+            rm -f "${_j2_file%.j2}.data.json"
+          done < "${J2_LIST}"
+          rm -f "${J2_LIST}"
+        fi
+      else
+        b19-log warn "J2" "$(_ "minijinja-cli not installed, skipping")"
+      fi
+  else
+    b19-log warn "J2" "$(_ 'B19_IMMUTABLE=Y, skipping j2 templates')"
+  fi

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  STAGE="${1}"
+  export STAGE
+
+  # Stage-independent hooks bracket EVERY build-stage call, whatever the stage is
+  # called (base, root, user, compile-go, fetch, …): `always/pre` runs before the
+  # stage's own pre, `always/post` after its post. Setup that must hold for all
+  # stages — build-host CA trust, for one — is written once here instead of being
+  # copied into each stage name a downstream image invents. `always` is therefore
+  # a reserved stage name.
+  ALWAYS_ENABLED="${B19_BUILD_ALWAYS_ENABLED:-true}"
+
+  b19-log debug "HOOK" "$(_p "Stage-independent hooks for %s: %s" "${STAGE}" "${ALWAYS_ENABLED}")"
+
+  if [ "${ALWAYS_ENABLED}" != "false" ]; then
+    # shellcheck source=.container/foundation/tools.d/process-hooks
+    SCOPE=always ON=pre . process-hooks
+  fi
+
+  # shellcheck source=.container/foundation/tools.d/process-hooks
+  SCOPE="${STAGE}" ON=pre  . process-hooks
+  # shellcheck source=.container/foundation/tools.d/process-hooks
+  SCOPE="${STAGE}" ON=on   . process-hooks
+  # shellcheck source=.container/foundation/tools.d/process-hooks
+  SCOPE="${STAGE}" ON=post . process-hooks
+
+  if [ "${ALWAYS_ENABLED}" != "false" ]; then
+    # shellcheck source=.container/foundation/tools.d/process-hooks
+    SCOPE=always ON=post . process-hooks
+  fi

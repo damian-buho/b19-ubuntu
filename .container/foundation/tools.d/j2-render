@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+# Render a single j2 template, loading an optional companion data file.
+# Supported extensions: json, yaml, yml, toml, cbor (minijinja-cli --format auto).
+# Called by parallel-j2 via xargs -P.
+# Usage: j2-render <template.j2>
+
+set -euo pipefail
+
+TEMPLATE="$1"
+OUTPUT="$(dirname "${TEMPLATE}")/$(basename --suffix .j2 "${TEMPLATE}")"
+
+# Find the first matching companion data file in supported formats.
+DATA_FILE=""
+for ext in yaml yml json toml cbor; do
+  candidate="${TEMPLATE%.j2}.data.${ext}"
+  if [ -f "${candidate}" ]; then
+    DATA_FILE="${candidate}"
+    break
+  fi
+done
+
+if [ -n "${DATA_FILE}" ]; then
+  minijinja-cli --autoescape none --env "${TEMPLATE}" "${DATA_FILE}" -o "${OUTPUT}"
+else
+  minijinja-cli --autoescape none --env "${TEMPLATE}" -o "${OUTPUT}"
+fi

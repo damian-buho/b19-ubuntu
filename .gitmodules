@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+[submodule ".makefile/core"]
+	path = .makefile/core
+	url = ../../m6e/core.git
+[submodule ".makefile/container"]
+	path = .makefile/container
+	url = ../../m6e/container.git
+[submodule ".makefile/b19"]
+	path = .makefile/b19
+	url = ../../m6e/b19.git

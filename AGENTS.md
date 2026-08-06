@@ -1,0 +1,153 @@
+<!--
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+
+SPDX-License-Identifier: MIT
+-->
+
+# b19/Ubuntu
+
+Root of the entire b19 image tier. This is **two things in one repository**:
+
+1. A concrete Ubuntu base image (digest-pinned, non-root, multi-series).
+1. The shared **tool + hook library** that every downstream b19 image runs at build time and at container startup. Most of what lives here never executes for *this* image — it is baked in so children inherit it.
+
+Read this file before editing; it states facts established from the source, not
+just what the docs claim. Root conventions live in [../../AGENTS.md](../../AGENTS.md)
+(B19\_\* series defaults, namespace layout, make orchestration) — not repeated here.
+
+## What this image actually is
+
+- `Dockerfile` `final` stage = `ubuntu@${B19_UBUNTU_HASH}` (pinned by **digest**, not tag → reproducible). The digest comes from
+    `.container/foundation/deps/ubuntu/{series}.sha256.deps`.
+- Binaries `fd`, `minijinja-cli` are **copied from sibling b19 images** (`b19/fd`, `b19/minijinja`) via multi-stage `FROM`, not apt. Those images must build first (tier ordering). `mold` comes via apt + a deps pin.
+- Runs as `ubuntu` UID/GID **1000**, home `/app`. Root is only used during the
+    `foundation` build stage.
+- PID 1 is `tini -g`; entrypoint is `entrypoint.d`; healthcheck is `healthcheck.d`. These three are **inherited** by every child — children must not redefine them.
+- `CMD` is intentionally **absent** (the Dockerfile comment warns against `sleep infinity`). Children set their own `CMD`.
+
+## Build model (the core mechanism)
+
+Two `RUN build-stage <name>` calls drive the whole build:
+
+| Dockerfile call          | User     | Hook dir consumed                           |
+| ------------------------ | -------- | ------------------------------------------- |
+| `build-stage foundation` | root     | `.container/foundation/build.d/foundation/` |
+| `build-stage user`       | uid 1000 | `.container/user/build.d/user/`             |
+
+`build-stage` (`tools.d/build-stage`) sources `process-hooks` once per phase, in
+order: **`always/pre` → `pre/` → `on/` → `post/` → `always/post`**. Within a
+phase, scripts run in numeric order (`fd … | sort -zn`).
+
+**`always` is a reserved stage name.** `build.d/always/{pre,post}` runs on
+*every* `build-stage` call whatever the stage is called — the fleet uses ~20
+names (`base`, `root`, `user`, `compile-go`, `fetch`, …), and a downstream image
+may invent more. Setup that must hold for all of them (build-host CA trust)
+lives there once instead of being copied per stage; `*.i.sh` makes it ride the
+whole lineage. `B19_BUILD_ALWAYS_ENABLED=false` opts a stage out. `${STAGE}` is
+the real stage inside these hooks, `${SCOPE}` the directory being run.
+
+**The inheritance rule (most important fact in this repository):** after running a
+phase, `process-hooks` *deletes* every `*.sh` **except** `*.i.sh`. So:
+
+- `*.sh` hooks = run once for the current image, then gone. Use for one-off setup (install apt, locales, create user, install mold/fd, cleanup).
+- `*.i.sh` hooks = **inheritable**; they survive into the image layer. Foundation seeds them into `build.d/base/`, `build.d/root/`, and `build.d/user/` so a downstream image that does `COPY .container/base/ /` + `RUN build-stage base` re-runs them automatically. See `scaffold/Dockerfile.template` for the downstream pattern (it consumes the `base` stage, not `foundation`).
+
+Consequence: `build.d/foundation/` is where *this* image is assembled;
+`build.d/{base,root,user}/` is the library *children* execute. Put reusable build
+logic in `*.i.sh` under base/root/user; put image-local logic in `*.sh` under
+foundation.
+
+## Runtime lifecycle
+
+`tini -g` → `entrypoint.d` runs numbered hooks from `.container/user/entrypoint.d/`:
+set-signals → load-secrets → set-cpu-count → check-ports → print-lineage →
+copy-overlay → parallel-j2 (render `.j2`) → run-command → validate-secrets →
+bootstrap → start → finalize. A bare `docker run img <cmd>` short-circuits to run
+the command directly. Every stage and hook is toggleable at runtime via `B19_*`
+env (no rebuild) — see [docs/features.d/feature-toggles.md](docs/features.d/feature-toggles.md).
+
+## The runner family (one pattern, eight runners)
+
+All lifecycle subsystems are the *same* numbered-script runner: drop a numbered
+`*.sh` into the dir, it is auto-discovered, sorted, and executed; layers merge via
+overlay. Runners: `entrypoint.d`, `healthcheck.d`, `test.d`, `bootstrap.d`,
+`build.d`, `benchmark.d`, `report.d`, `shell.d`. Overview:
+[docs/features.d/runner-family.md](docs/features.d/runner-family.md).
+
+## Directory map
+
+```text
+.container/
+  foundation/            # root-stage payload, COPYed to / then `build-stage foundation`
+    tools.d/             # the b19 CLI library (on PATH in every image) — see below
+    build.d/
+      foundation/        # *.sh: assemble THIS image (apt, locales, user, mold…)
+      base/ root/        # *.i.sh: inheritable build hooks for downstream stages
+    command.d/ etc/ locale/ overlays/ deps/
+  user/                  # uid-1000 payload, COPYed to / then `build-stage user`
+    entrypoint.d/ healthcheck.d/ bootstrap.d/ test.d/
+    benchmark.d/ report.d/ shell.d/
+    build.d/user/        # *.i.sh: inheritable user-stage build hooks
+    app/                 # .signals, .forbidden-ports.txt
+docs/                    # deep references (see index below)
+docs/features.d/         # one capability per file, user-facing framing
+scaffold/                # Dockerfile.template + deps skeleton for new downstream images
+reports/                 # lint/scan/bridge outputs (generated; do not hand-edit)
+.makefile/               # m6e submodules: core, b19, container (build framework)
+```
+
+## tools.d — the b19 CLI library
+
+These are on `PATH` (`/tools.d`) in this and every downstream image. Prefer them
+over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
+
+- `b19-log <level> <tag> [msg]` — leveled (error/warn/info/debug), color-aware, honors `NO_COLOR`. [docs](docs/b19-log.md)
+- `b19-run <tag> <msg> -- <cmd>` — timed wrapper; success output hidden unless verbose, failure always shown. [docs](docs/b19-run.md)
+- `b19-exec [opts] -- <cmd>` — long-running services; routes stdout/stderr through the logger, tracks PID for signal forwarding. [docs](docs/b19-exec.md)
+- `b19-fetch <tag> <url> <file> [sha512]` — three-tier cached download (`.fetch/` → BuildKit cache → aria2c), SHA-512 verified, offgrid-aware. [docs](docs/b19-fetch.md)
+- `b19-i18n` — sourced to get `_()` / `_p()` gettext helpers (TEXTDOMAIN `b19`).
+- `build-stage`, `process-hooks` — the build hook engine described above.
+- `trust-ca-certificates install|remove` — trusts the build host’s CA bundle for one build stage. [docs](docs/b19-fetch.md)
+- `b19-load-secrets` / `b19-exec-with-secrets`, `b19-resolve-dep`,
+    `read-lineage`/`write-lineage`, `detect-cpu-count`, `check-ports`,
+    `install-apt`, `j2-render`/`parallel-j2`/`save-j2`, `keyscan`, `setup-ssh`.
+
+## Non-obvious facts / gotchas
+
+- **CLAUDE.md → AGENTS.md.** `CLAUDE.md` is just `@AGENTS.md`; edit this file.
+- **Multi-series matrix.** Builds across `B19_UBUNTU_SERIES` ∈ {`resolute`, `noble`} (`projectfile.yaml` → `org.projectfile.ci.matrix`). Image name is series-qualified: `b19/ubuntu/<series>`. Anything series-specific belongs in
+    `deps/ubuntu/<series>.*` or `.j2` templates, never hardcoded.
+- **deps are declarative.** Add a `*.deps` file under the right `deps/` path and the m6e build auto-discovers it (URL/version/SHA-512, arch-aware) — no Makefile edit. [docs/dependencies.md](docs/dependencies.md).
+- **i18n is mandatory.** User-facing strings go through `_()`/`_p()`; update
+    `.container/{stage}/locale/*.pot|*.po` (es, uk). Don’t add English-only output.
+- **offgrid is real.** `B19_OFFGRID_MODE=Y` must stay honored: any new network access needs a guard + cache path. Audit: [docs/offgrid-apt.md](docs/offgrid-apt.md).
+- **No certificate lives in this repository.** Trust for a privately fronted near cache comes from the build host via `M6E_CA_CERTIFICATES`, rides the `fetch` build context, and is dropped again inside the same `RUN` — see [docs/b19-fetch.md](docs/b19-fetch.md). Never commit a `.crt` here or bake one into a layer: it is environment data, it reaches only one image lineage, and it silently expires with the issuing proxy.
+- **`setup-docker-sources` arms a test.** Adding the Docker apt repository also renames `/test.d/0900-docker-connect.sh.disabled` to `.sh`, so every downstream image that ships the Docker CLI asserts `docker system info` at `make container-test` time. In CI there is no host socket: such a project MUST give `.compose/pipeline.yaml` a `d9t/dind` sidecar, or that test fails.
+- **Defaults live in the Dockerfile** `ENV`/`ARG` block — not in templates (root rule: no duplicate defaults). The Dockerfile `ENV` is the source of truth for every `B19_*` runtime default; [docs/environment.md](docs/environment.md) documents them.
+- **`reports/` is generated.** Treat as build output.
+- Defaults you’ll rely on: home `/app`, prefix `/usr/local`, temp `/tmp` (tmpfs during build), parallelism via `NUMPROCS`, XDG paths under `/app`.
+- **Never `chown -R` / `chmod -R` `${B19_HOME}` from a build hook.** buildah `--layers` ≤1.42 ([#6747](https://github.com/containers/buildah/issues/6747), fix PR [#6981](https://github.com/containers/buildah/pull/6981) unmerged) drops the home’s tar entry when a RUN mounts a cache under it AND copy-ups a **pre-existing** file there; the orphaned children then materialize it as `root:root 755` and the next stage cannot write its own home. Every stage mounts `${B19_DOWNLOAD_PATH}` under the home, so a recursive chown supplies the missing half of the trigger everywhere. Creating a new file does not trigger it.
+- **A posture heal inside that RUN is a no-op** (measured, 1.42.1): the values already match, buildah restores the directory mtime on mount cleanup, and its tar filter drops the pulled-up parent regardless. Only a commit outside the build re-asserts it — which is what the post-build `M6E_BUILDAH_HEAL` in the buildah backends does, so shipped images and `test.d` stay correct.
+
+## Docs index
+
+Deep references (read the matching one before touching a subsystem):
+
+- [docs/environment.md](docs/environment.md) — every `B19_*` var: default, scope, effect. Start here.
+- [docs/build.d.md](docs/build.d.md) — build hook runner, phases, `.i.sh` inheritance in depth.
+- [docs/entrypoint.d.md](docs/entrypoint.d.md) — startup chain, command bypass, hook skipping.
+- [docs/bootstrap.d.md](docs/bootstrap.d.md) — run-once-per-volume setup with lockfiles.
+- [docs/healthcheck.d.md](docs/healthcheck.d.md) — the seven built-in checks, fault-tolerant network logic.
+- [docs/test.d.md](docs/test.d.md) — in-container shell test runner (`make test`).
+- [docs/dependencies.md](docs/dependencies.md) — declarative deps + auto-discovery.
+- [docs/templating.md](docs/templating.md) — minijinja-cli, build- vs startup-time rendering.
+- [docs/i18n.md](docs/i18n.md) — gettext setup, merged `b19.mo`, per-project `.po` layering.
+- [docs/offgrid.md](docs/offgrid.md) — air-gap switches; [docs/offgrid-apt.md](docs/offgrid-apt.md) — network-op audit.
+- [docs/MAKEFILE.md](docs/MAKEFILE.md) — available make targets (or run `make help`).
+- CLI: [b19-log](docs/b19-log.md) · [b19-run](docs/b19-run.md) · [b19-exec](docs/b19-exec.md) · [b19-fetch](docs/b19-fetch.md)
+
+Per-capability summaries (the "what does this give me" view) live in
+[docs/features.d/](docs/features.d/): apt-cache, cpu-detection, feature-toggles,
+lineage, logging, non-root, overlays, pinned-base, port-validation, secrets,
+shell-hooks, signals, tools, xdg-paths, runner-family, and a mirror of each
+subsystem above.

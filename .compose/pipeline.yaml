@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+---
+name: ${M6E_COMPOSE_PROJECT_NAME}
+services:
+  b19-ubuntu:
+    container_name: ${M6E_CONTAINER_INSTANCE}
+    image: ${M6E_IMAGE_FULLNAME}
+    # Preset: large (2.0c, 4g) — CI build/test container. Bounded so it can't starve the shared host.
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 4g
+    command:
+      - sleep
+      - infinity
+    environment:
+      - LANG
+      - TZ
+    secrets:
+      - b19.test.secret
+# CI runs the image in isolation — no shared host services to reach — so the
+# network is compose-OWNED (created on up, removed on down): short-lived, no pool
+# to exhaust, and no "network wasn't created for this project" warning. The dev
+# scenario keeps the external shared dev-network (dev.yaml). Name stays uniformly
+# dash-separated (ci-<name>-network), never the auto `<project>_default`.
+networks:
+  default:
+    name: ${M6E_COMPOSE_PROJECT_NAME}-network
+secrets:
+  b19.test.secret:
+    # Provisioned (NOT tracked): the CI `secrets-provision` step renders this
+    # file from org.projectfile.ci.secrets (the single source of truth) before
+    # dc-up-d. No secret value — fake test fixture or real — is ever committed;
+    # .secrets/ is wholesale gitignored. dev.yaml points at the same path.
+    file: ../.secrets/b19/test/secret

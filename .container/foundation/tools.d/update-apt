@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  B19_OFFGRID_MODE="${B19_OFFGRID_MODE:-N}"
+  B19_FETCH_LOCAL_PATH="${B19_FETCH_LOCAL_PATH:-/fetch}"
+  APT_LISTS_LOCAL="${B19_FETCH_LOCAL_PATH}/apt-lists"
+  APT_LISTS_TARGET="/var/lib/apt/lists"
+
+  if [ -d "${APT_LISTS_LOCAL}" ] && [ -n "$(ls -A "${APT_LISTS_LOCAL}" 2>/dev/null)" ]
+  then
+    b19-run "PACKAGES" "$(_p "Copy APT lists from %s" "${APT_LISTS_LOCAL}")" --  \
+      cp -rp "${APT_LISTS_LOCAL}/." "${APT_LISTS_TARGET}/"
+    b19-log good "PACKAGES" "$(_ "Local APT lists applied, skipping apt-get update")"
+  elif [ "${B19_OFFGRID_MODE}" = "Y" ]
+  then
+    b19-log good "PACKAGES" "$(_ "Offgrid mode, no local lists, skipping apt-get update")"
+  else
+    # Serialize concurrent buildkit jobs sharing the apt-lists cache mount.
+    # Lock file lives inside the shared mount so all builds see the same inode.
+    b19-log info "PACKAGES" "$(_p "Acquire flock on shared APT lists cache (wait %s s)" "600")"
+    b19-run "PACKAGES" "$(_ "Update APT lists")" --  \
+      flock -w 600 /var/lib/apt/.buildkit-lock   \
+      apt-get update --allow-releaseinfo-change --error-on=any
+  fi

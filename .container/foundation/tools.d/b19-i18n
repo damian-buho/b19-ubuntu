@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+# b19-i18n - GNU gettext helper for b19 shell scripts
+#
+# Usage: . b19-i18n (must be sourced, not executed)
+#
+# Provides:
+#   _  "string"       - Translate static string
+#   _e "string"       - Translate string with variable interpolation (eval_gettext)
+#
+# Environment:
+#   B19_I18N_ENABLED  - Set to "false" to disable translation (passthrough)
+#   TEXTDOMAIN        - Set to "b19" (automatic)
+#   TEXTDOMAINDIR     - Set to /usr/share/locale (automatic)
+
+  # Guard: skip only if _() function is actually defined in this shell.
+  # Cannot rely on exported _B19_I18N_MODE because env vars survive across
+  # exec boundaries but shell functions do not (entrypoint -> command).
+  # Re-source is also needed when in passthrough mode (gettext.sh was missing
+  # earlier but may have been installed since, e.g. after install-apt).
+  if type _ >/dev/null 2>&1 && [ "${_B19_I18N_MODE:-}" != "passthrough" ]; then
+    # shellcheck disable=SC2317
+    return 0 2>/dev/null || true
+  fi
+
+  # NOTE: b19-i18n must NEVER call b19-log (b19-log sources b19-i18n -> infinite recursion)
+
+  if [ "${B19_I18N_ENABLED:-true}" = "false" ]; then
+    _()  { printf '%s' "$1"; }
+    _e() { eval "printf '%s' \"$1\""; }
+    # shellcheck disable=SC2059
+    _p() { printf "$1" "${@:2}"; }
+    _B19_I18N_MODE=disabled
+    # shellcheck disable=SC2317
+    return 0 2>/dev/null || true
+  fi
+
+  # Configure gettext
+  export TEXTDOMAIN="b19"
+  export TEXTDOMAINDIR=/usr/share/locale
+
+  # LANGUAGE is the operator's translation choice (e.g. "es", "uk"); leave it
+  # untouched so gettext's own fallback (LANGUAGE > LC_MESSAGES > LANG) resolves
+  # the catalog. Deriving it from LANG was wrong: LANG is a glibc locale like
+  # "es_ES.UTF-8" or "C.UTF-8", which never matches a .mo catalog name ("es").
+
+  # Source gettext shell library if available
+  if [ -f /usr/bin/gettext.sh ]; then
+    # shellcheck source=/dev/null
+    . /usr/bin/gettext.sh
+
+    _()  { gettext "$1"; }
+    _e() { eval_gettext "$1"; }
+    # shellcheck disable=SC2059
+    _p() { printf "$(gettext "$1")" "${@:2}"; }
+    _B19_I18N_MODE=gettext
+  else
+    # Fallback: passthrough when gettext.sh is missing (e.g. during early build)
+    _()  { printf '%s' "$1"; }
+    _e() { eval "printf '%s' \"$1\""; }
+    # shellcheck disable=SC2059
+    _p() { printf "$1" "${@:2}"; }
+    _B19_I18N_MODE=passthrough
+  fi

@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+# b19-compile-i18n - Compile locale PO files into shared b19 domain
+#
+# Usage: b19-compile-i18n [locale-dir]
+# Default locale-dir: /locale
+#
+# Each image stores its .po files under /usr/share/locale/b19/${TEXTDOMAIN:-b19}/,
+# then all slots are merged (current image wins conflicts) and compiled into b19.mo.
+#
+# Reads: <locale-dir>/*.po
+# Writes: /usr/share/locale/<lang>/LC_MESSAGES/b19.mo
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  I18N_SOURCE="${1:-/locale}"
+  I18N_CATALOG_DIR="/usr/share/locale/b19"
+  I18N_DEST="/usr/share/locale"
+  I18N_DOMAIN="b19"
+  I18N_SLOT="${M6E_PROJECT}"
+
+  if [ ! -d "${I18N_SOURCE}" ]; then
+    b19-log warn "I18N" "$(_p "%s does not exist" "${I18N_SOURCE}")"
+    exit 0
+  fi
+
+  # Store this image's .po files in its catalog slot
+  I18N_SLOT_DIR="${I18N_CATALOG_DIR}/${I18N_SLOT}"
+  mkdir -p "${I18N_SLOT_DIR}"
+
+  for PO_FILE in "${I18N_SOURCE}"/*.po; do
+    [ -e "${PO_FILE}" ] || continue
+    cp "${PO_FILE}" "${I18N_SLOT_DIR}/"
+  done
+
+  # Merge all catalog slots and compile for each discovered language.
+  # Current slot first so its translations win on conflicts; others sorted.
+  while IFS= read -r LANG; do
+    MO_DIR="${I18N_DEST}/${LANG}/LC_MESSAGES"
+    mkdir -p "${MO_DIR}"
+    MO_FILE="${MO_DIR}/${I18N_DOMAIN}.mo"
+
+    PO_LIST=()
+    SLOT_PO="${I18N_SLOT_DIR}/${LANG}.po"
+    [ -f "${SLOT_PO}" ] && PO_LIST+=("${SLOT_PO}")
+
+    while IFS= read -r OTHER_PO; do
+      [ "${OTHER_PO}" = "${SLOT_PO}" ] && continue
+      PO_LIST+=("${OTHER_PO}")
+    done < <(fd --hidden --glob "${LANG}.po" "${I18N_CATALOG_DIR}" | sort)
+
+    if msgcat --use-first "${PO_LIST[@]}" | msgfmt --check --output-file="${MO_FILE}" -; then
+      b19-log good "I18N" "$(_p "Compiled %s -> %s" "${LANG}" "${MO_FILE}")"
+    else
+      b19-log bad  "I18N" "$(_p "Failed to compile %s" "${LANG}")"
+      exit 1
+    fi
+
+  done < <(fd --hidden --extension po . "${I18N_CATALOG_DIR}" --exec basename {} .po | sort --unique)

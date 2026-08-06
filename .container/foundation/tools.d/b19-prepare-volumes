@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+    set -euo pipefail
+
+    # shellcheck source=.container/foundation/tools.d/b19-i18n
+    . b19-i18n
+
+    VOLUMES_FILE="${1:-/deps/volumes.deps}"
+
+    [ -f "${VOLUMES_FILE}" ] || exit 0
+
+    IS_ROOT=false
+    [ "$(id -u)" -eq 0 ] && IS_ROOT=true
+
+    while IFS= read -r LINE || [ -n "${LINE}" ]; do
+        case "${LINE}" in ''|\#*) continue ;; esac
+        DIR=$(printf '%s' "${LINE}" | envsubst)
+        b19-run "VOLUMES" "$(_p "Make %s directory" "${DIR}")" --  \
+            mkdir -p "${DIR}"
+        if "${IS_ROOT}"; then
+            b19-run "VOLUMES" "$(_p "Chown %s to %s:%s" "${DIR}" "${B19_UID}" "${B19_GID}")" --  \
+                chown -R "${B19_UID}:${B19_GID}" "${DIR}"
+        fi
+    done < "${VOLUMES_FILE}"

@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+ARG B19_UBUNTU_SERIES=resolute
+ARG B19_UBUNTU_VERSION=1
+ARG SOURCE_DOCKER_REGISTRY=registry.invalid
+# .invalid zone used to force you to set the real registry
+
+FROM ${SOURCE_DOCKER_REGISTRY}/b19/ubuntu/${B19_UBUNTU_SERIES}:${B19_UBUNTU_VERSION} AS NAMESPACE-PROJECT
+
+ARG B19_VERBOSITY
+ARG LANG
+ARG M6E_AI=N
+ARG M6E_APT_CACHE_HOST
+ARG M6E_APT_CACHE_PORT
+ARG M6E_NAMESPACE
+ARG M6E_NEAR_CACHE_HOST
+ARG M6E_PROJECT
+ARG M6E_VERSION
+ARG TARGETARCH
+
+COPY --chown=${B19_UID}:${B19_GID} .container/base/ /
+
+USER root
+
+WORKDIR ${B19_HOME}
+
+RUN --mount=type=bind,from=fetch,source=.,target=/fetch                                             \
+    --mount=type=cache,target=${B19_DOWNLOAD_PATH},sharing=shared,uid=${B19_UID},gid=${B19_GID}     \
+    --mount=type=cache,id=apt-cache-${B19_UBUNTU_SERIES},target=/var/cache/apt,sharing=shared       \
+    --mount=type=cache,id=apt-lists-${B19_UBUNTU_SERIES},target=/var/lib/apt,sharing=shared         \
+    --mount=type=tmpfs,target=${B19_TEMP_PATH}                                                      \
+    build-stage base
+
+USER ${B19_UID}
+
+COPY --chown=${B19_UID}:${B19_GID} .container/user/ /
+
+RUN --mount=type=bind,from=fetch,source=.,target=/fetch                                             \
+    --mount=type=cache,target=${B19_DOWNLOAD_PATH},sharing=shared,uid=${B19_UID},gid=${B19_GID}     \
+    --mount=type=tmpfs,target=${B19_TEMP_PATH}                                                      \
+    build-stage user
+
+# ENTRYPOINT ["entrypoint.d"] is inherited
+# HEALTHCHECK CMD ["healthcheck.d"] is inherited
+# CMD ["sleep", "infinity"]

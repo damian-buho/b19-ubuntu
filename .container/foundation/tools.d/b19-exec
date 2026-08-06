@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+# b19-exec - Execute long-running processes with stdout/stderr routed through b19-log
+#
+# Usage:
+#   b19-exec [OPTIONS] -- COMMAND [ARGS...]
+#
+# Options:
+#   --stdout-level LEVEL    Log level for stdout (default: info)
+#   --stderr-level LEVEL    Log level for stderr (default: warn)
+#   --stdout-tag TAG        Tag for stdout (default: STDOUT)
+#   --stderr-tag TAG        Tag for stderr (default: STDERR)
+#   --foreground            Run in foreground (no backgrounding)
+#
+# Environment Variables:
+#   B19_EXEC_STDOUT_LEVEL   Override default stdout level
+#   B19_EXEC_STDERR_LEVEL   Override default stderr level
+#   B19_VERBOSITY           Verbosity level (error/warn/info/debug)
+#
+# Output:
+#   PAYLOAD_PID             Process ID of executed command (for tini signal handling)
+#   RETURN_CODE             Exit code of executed command
+#
+# Examples:
+#   b19-exec -- php-fpm --fpm-config /etc/php-fpm.conf
+#   b19-exec --stdout-level warn -- nginx -g "daemon off;"
+#   b19-exec --foreground -- /app/worker.sh
+#
+# Process substitution routing:
+#   stdin:  /proc/1/fd/0
+#   stdout: >(b19-log $LEVEL $TAG > /proc/1/fd/1)
+#   stderr: >(b19-log $LEVEL $TAG > /proc/1/fd/2)
+
+set -euo pipefail
+
+# shellcheck source=.container/foundation/tools.d/b19-i18n
+. b19-i18n
+
+# Default values
+STDOUT_LEVEL="${B19_EXEC_STDOUT_LEVEL:-info}"
+STDERR_LEVEL="${B19_EXEC_STDERR_LEVEL:-warn}"
+STDOUT_TAG="STDOUT"
+STDERR_TAG="STDERR"
+FOREGROUND=0
+
+# Parse options
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --stdout-level)
+      STDOUT_LEVEL="$2"
+      shift 2
+      ;;
+    --stderr-level)
+      STDERR_LEVEL="$2"
+      shift 2
+      ;;
+    --stdout-tag)
+      STDOUT_TAG="$2"
+      shift 2
+      ;;
+    --stderr-tag)
+      STDERR_TAG="$2"
+      shift 2
+      ;;
+    --foreground)
+      FOREGROUND=1
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      b19-log error "b19-exec" "$(_ "Unknown option:") $1"
+      exit 1
+      ;;
+  esac
+done
+
+# Validate command is provided
+if [ $# -eq 0 ]; then
+  b19-log error "b19-exec" "$(_ "No command provided. Usage: b19-exec [OPTIONS] -- COMMAND [ARGS...]")"
+  exit 1
+fi
+
+# Validate log levels
+for level in "${STDOUT_LEVEL}" "${STDERR_LEVEL}"; do
+  case "${level}" in
+    error|bad|warn|good|info|note)
+      # Valid level
+      ;;
+    *)
+      b19-log error "b19-exec" "$(_ "Invalid log level:") ${level}. $(_ "Must be one of: error, bad, warn, good, info, note")"
+      exit 1
+      ;;
+  esac
+done
+
+# Open explicit FDs for the log coprocesses so we can close them after the
+# command exits, signaling EOF and letting the coprocesses drain before exit.
+# Capture each coprocess PID so we can wait on them by name — bare `wait` does
+# not reliably reap process-substitution subshells, causing lost output on fast
+# failures (e.g. dockerd exiting with code 1 before b19-log flushes).
+exec {STDOUT_LOG_FD}> >(b19-log "${STDOUT_LEVEL}" "${STDOUT_TAG}" > /proc/1/fd/1)
+STDOUT_LOG_PID=$!
+exec {STDERR_LOG_FD}> >(b19-log "${STDERR_LEVEL}" "${STDERR_TAG}" > /proc/1/fd/2)
+STDERR_LOG_PID=$!
+
+# Execute command with process substitution
+if [ "${FOREGROUND}" -eq 1 ]; then
+  # Foreground mode: run command, then drain loggers before exiting.
+  # (exec would orphan the coprocesses and lose failure output.)
+  "$@" < /proc/1/fd/0 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" \
+    && RETURN_CODE=0 || RETURN_CODE=$?
+  else
+    # Background mode: standard entrypoint pattern
+    "$@" < /proc/1/fd/0 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" &
+
+    PAYLOAD_PID=$!
+    # Publish the payload PID to a file so the entrypoint shell's signal trap
+    # (0000-set-signals.sh) can forward to it. b19-exec runs as a subprocess, so
+    # the `export PAYLOAD_PID` below never reaches the caller — this file bridges
+    # that boundary. Removed after wait so no stale PID is left behind; a stale
+    # file (e.g. SIGKILL) is harmless: the handler verifies the PID with kill -0.
+    B19_PAYLOAD_PID_FILE="${B19_PAYLOAD_PID_FILE:-${B19_HOME}/.payload.pid}"
+    printf '%s\n' "${PAYLOAD_PID}" > "${B19_PAYLOAD_PID_FILE}"
+    # && / || keeps set -e from exiting before we can drain the loggers
+    wait "${PAYLOAD_PID}" && RETURN_CODE=0 || RETURN_CODE=$?
+    rm -f "${B19_PAYLOAD_PID_FILE}"
+    export PAYLOAD_PID RETURN_CODE
+  fi
+
+# Close our ends of the pipes → coprocesses receive EOF → drain fully
+exec {STDOUT_LOG_FD}>&-
+exec {STDERR_LOG_FD}>&-
+# Wait for each b19-log coprocess by PID. `|| true` because the subshell may
+# have already been reaped (exit status 127) — we only care that it finished.
+wait "${STDOUT_LOG_PID}" 2>/dev/null || true
+wait "${STDERR_LOG_PID}" 2>/dev/null || true
+
+exit "${RETURN_CODE}"

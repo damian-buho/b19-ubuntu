@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  # we don't use auto-apt-proxy, because it's not available at the very beginning
+  if [ -n "${M6E_APT_CACHE_HOST:-}" ]
+  then
+    echo "Acquire::http { Proxy \"http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}\"; }" > /etc/apt/apt.conf.d/99proxy
+    # shellcheck disable=SC2016
+    b19-log warn "APTCACHE" "$(_e 'APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}')"
+  else
+    b19-log warn "APTCACHE" "$(_ 'APT Cache not enabled')"
+
+    if [ -f /etc/apt/apt.conf.d/99proxy ]
+    then
+      rm /etc/apt/apt.conf.d/99proxy
+    fi
+  fi

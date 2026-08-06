@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  b19-run "SSH" "$(_ "Make") ${HOME}/.ssh/ $(_ "directory")" --  \
+    mkdir -p "${HOME}/.ssh/"
+
+  KEYS=0
+  for SECRET in id_ecdsa id_ed25519 id_rsa
+  do
+    if [ -f "/run/secrets/ssh_${SECRET}" ]; then
+      b19-run "SSH" "$(_ "Copy") /run/secrets/ssh_${SECRET} $(_ "to") ${HOME}/.ssh/${SECRET}" --  \
+        cp "/run/secrets/ssh_${SECRET}" "${HOME}/.ssh/${SECRET}"
+      KEYS=$((KEYS+1))
+    else
+      b19-log info "SSH" "$(_ "not found:") /run/secrets/ssh_${SECRET}"
+    fi
+
+    if [ -f "/run/secrets/ssh_${SECRET}_pub" ]; then
+      b19-run "SSH" "$(_ "Copy") /run/secrets/ssh_${SECRET}_pub $(_ "to") ${HOME}/.ssh/${SECRET}.pub" --  \
+        cp "/run/secrets/ssh_${SECRET}_pub" "${HOME}/.ssh/${SECRET}.pub"
+    else
+      b19-log info "SSH" "$(_ "not found:") /run/secrets/ssh_${SECRET}.pub"
+    fi
+  done
+
+  if [ "${KEYS}" -gt 0 ]
+  then
+    b19-log good "SSH" "$(_ "Found") ${KEYS} $(_ "keys")"
+  else
+    b19-log bad  "SSH" "$(_ "No keys found at all")"
+  fi

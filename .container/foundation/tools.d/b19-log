@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+    # shellcheck source=.container/foundation/tools.d/b19-i18n
+    . b19-i18n
+    [ "${NO_COLOR:-0}" = "1" ] && B19_COLOR=0
+    [ "${M6E_AI:-N}" = "Y" ] && B19_COLOR=0
+    case "${B19_COLOR:-1}" in
+        auto)  [ -t 2 ] && _USE_COLOR=1 || _USE_COLOR=0 ;;
+        1)     _USE_COLOR=1 ;;
+        0|'')  _USE_COLOR=0 ;;
+        *)     _USE_COLOR=0 ;;
+    esac
+
+    LEVEL=$1
+    shift
+    TAG=$1
+    shift
+
+    # Set up input: fd 3 streams from stdin or from arguments
+    PIPE_MODE=0
+    if [ $# -eq 0 ]; then
+        exec 3<&0
+        PIPE_MODE=1
+    else
+        exec 3< <(printf "%b" "$*")
+    fi
+
+    # Map B19_VERBOSITY to numeric threshold (default: warn = 30)
+    case "${B19_VERBOSITY:-warn}" in
+      "error")
+        LEVEL_THRESHOLD=40
+        ;;
+      "warn")
+        LEVEL_THRESHOLD=30
+        ;;
+      "info")
+        LEVEL_THRESHOLD=20
+        ;;
+      "debug")
+        LEVEL_THRESHOLD=10
+        ;;
+      *)
+        # Invalid level: default to warn, no error message to avoid recursion
+        LEVEL_THRESHOLD=30
+        ;;
+    esac
+
+    # Map current message level to priority
+    case "${LEVEL}" in
+      "error")
+        LEVEL_PRIORITY=40
+        ;;
+      "warn")
+        LEVEL_PRIORITY=30
+        ;;
+      "bad"|"good"|"info")
+        LEVEL_PRIORITY=20
+        ;;
+      "debug"|"note")
+        LEVEL_PRIORITY=10
+        ;;
+      *)
+        # Unknown level: preserve existing error behavior
+        # shellcheck disable=SC2005
+        echo "$(_p "Unknown log level: %s. Valid: error, warn, info, debug" "${LEVEL}")" >&2
+        exit 1
+        ;;
+    esac
+
+    # Early exit if message priority is below threshold
+    # Skip filtering in pipe mode to avoid SIGPIPE / silent output loss
+    if [ "${PIPE_MODE}" -eq 0 ] && [ "${LEVEL_PRIORITY}" -lt "${LEVEL_THRESHOLD}" ]; then
+      exit 0
+    fi
+
+    # Suppress ANSI colors when color is disabled
+    if [ "${_USE_COLOR}" = "0" ]; then
+        COLOR=""
+    else
+        # Original color mapping (now only runs for messages that pass filter)
+        case "${LEVEL}" in
+          "good")
+            COLOR="--green"
+            ;;
+          "bad")
+            COLOR="--yellow"
+            ;;
+          "error")
+            COLOR="--red"
+            ;;
+          "warn")
+            COLOR="--yellow"
+            ;;
+          "note")
+            COLOR="--blue"
+            ;;
+          "debug")
+            COLOR="--black-intense"
+            ;;
+          "info")
+            COLOR="--black-intense"
+            ;;
+          *)
+            # shellcheck disable=SC2005
+            echo "$(_p "Unknown log level: %s. Valid: error, warn, info, debug" "${LEVEL}")"
+            exit 1
+            ;;
+        esac
+    fi
+
+    # Split LOG by newlines and process each line
+    # The printf "%b" expands literal \n to real newlines
+    if [ "${_USE_COLOR}" = "0" ]; then
+        # No color: plain text output
+        while IFS= read -r line || [ -n "$line" ]; do
+          if [ -n "${STAGE:-}" ]; then
+            printf " %s " "${STAGE^^}" >&2
+          fi
+          printf " %-12s " "${TAG^^}" >&2
+          printf " %s\n" "${line}" >&2
+        done <&3
+    else
+        # warn/info/debug: colored output
+        while IFS= read -r line || [ -n "$line" ]; do
+          if [ -n "${STAGE:-}" ]; then
+            ansi -n --black --bg-white " ${STAGE^^} " >&2
+          fi
+          ansi -n --black --bg-black-intense " $(printf "%-12s" "${TAG^^}") " >&2
+          ansi "${COLOR}" " ${line}" >&2
+        done <&3
+    fi

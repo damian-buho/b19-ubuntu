@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+---
+name: ${M6E_COMPOSE_PROJECT_NAME}
+services:
+  b19-ubuntu:
+    container_name: ${M6E_CONTAINER_INSTANCE}
+    image: ${M6E_IMAGE_FULLNAME}
+    # Preset: xlarge (4.0c, 8g) — interactive dev shell. Bounded so it can't starve the shared host.
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 8g
+    labels:
+      com.docker.compose.watch: "true"
+    command:
+      - sleep
+      - infinity
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - dev-network
+    environment:
+      - LANG
+      - TZ
+      - B19_VERBOSITY=debug
+    secrets:
+      - b19.test.secret
+    tmpfs:
+      - /tmp:size=64m
+networks:
+  dev-network:
+    name: ${M6E_NETWORK}
+    external: true
+secrets:
+  b19.test.secret:
+    # Provisioned (NOT tracked) fake fixture: `make dc-up` order-only-depends on
+    # secrets-provision, which materialises this file from
+    # org.projectfile.ci.secrets before compose reads it. Same source of truth
+    # CI uses, so dev/CI stay consistent. Real secrets share the same
+    # gitignored .secrets/ tree.
+    file: ../.secrets/b19/test/secret

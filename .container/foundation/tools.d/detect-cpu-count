@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+    # Detect CPU count with K8S awareness
+      # Priority: K8S downward API > cgroups v2 > nproc
+      if [[ -f /etc/podinfo/cpu_limit ]]; then
+        # K8S downward API (requires pod spec with resourceFieldRef)
+        NUMPROCS=$(cat /etc/podinfo/cpu_limit)
+        b19-log debug "ENTRY.D" "$(_p "NUMPROCS %s from K8S downward API" "${NUMPROCS}")"
+      elif [[ -f /sys/fs/cgroup/cpu.max ]]; then
+        # cgroups v2 (K8S or constrained Docker)
+        CPU_MAX=$(cut -d' ' -f1 /sys/fs/cgroup/cpu.max)
+        CPU_PERIOD=$(cut -d' ' -f2 /sys/fs/cgroup/cpu.max)
+        if [[ "${CPU_MAX}" != "max" ]]; then
+          NUMPROCS=$(( CPU_MAX / CPU_PERIOD ))
+          [[ ${NUMPROCS} -lt 1 ]] && NUMPROCS=1
+          b19-log debug "ENTRY.D" "$(_p "NUMPROCS %s from cgroups v2" "${NUMPROCS}")"
+        else
+          NUMPROCS=$(nproc)
+          b19-log debug "ENTRY.D" "$(_p "NUMPROCS %s from nproc (cgroups unlimited)" "${NUMPROCS}")"
+        fi
+      else
+        NUMPROCS=$(nproc)
+        b19-log debug "ENTRY.D" "$(_p "NUMPROCS %s from nproc" "${NUMPROCS}")"
+      fi
+
+      export NUMPROCS

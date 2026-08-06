@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  DOCKER_GROUP_NAME=docker
+
+  b19-run "DOCKER" "$(_p "Create group %s with ID %s" "${DOCKER_GROUP_NAME}" "${B19_DOCKER_GID}")" --  \
+    groupadd --gid "${B19_DOCKER_GID}" ${DOCKER_GROUP_NAME}
+
+  b19-run "DOCKER" "$(_p "Add user %s to group %s" "${B19_USER}" "${DOCKER_GROUP_NAME}")" --   \
+    adduser "${B19_USER}" ${DOCKER_GROUP_NAME}

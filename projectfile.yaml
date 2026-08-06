@@ -1,0 +1,76 @@
+---
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+$schema: https://projectfile.org/schema/v1.json
+identity:
+  created: "2026-06-01"
+  name: ubuntu
+  summary: Ubuntu base image with some useful conventions
+  title: B19/Ubuntu
+includes:
+  - .makefile/b19/ci.yaml
+  - https://kiota.ch/b19/metadata/raw/branch/main/include.yaml
+  - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
+kind: SoftwareSourceCode
+links:
+  - label: B19/Ubuntu on Codeberg
+    type: source-code
+    url: https://codeberg.org/b19/ubuntu
+  - label: B19/Ubuntu on GitHub
+    type: source-code
+    url: https://github.com/damian-buho/b19-ubuntu
+  - label: B19/Ubuntu on kiota.ch
+    type: source-code
+    url: https://kiota.ch/b19/ubuntu
+  - label: Issues on Codeberg
+    type: bugs
+    url: https://codeberg.org/b19/ubuntu/issues
+  - label: Issues on GitHub
+    type: bugs
+    url: https://github.com/damian-buho/b19-ubuntu/issues
+org:
+  b19:
+    scaffold:
+      root-stage: base
+  projectfile:
+    architecture:
+      - amd64
+      - arm64
+    build:
+      args:
+        B19_FD_IMAGE: ${B19_DOCKER_REGISTRY}/b19/fd:${M6E_BASE_IMAGE_DEFAULT_VERSION}
+        B19_LOCALES: ""
+        B19_MINIJINJA_IMAGE: ${B19_DOCKER_REGISTRY}/b19/minijinja:${M6E_BASE_IMAGE_DEFAULT_VERSION}
+        B19_UBUNTU_HASH:
+          file: .container/foundation/deps/ubuntu/{B19_UBUNTU_SERIES}.sha256.deps
+        B19_UBUNTU_MIRROR_AMD64: ""
+        B19_UBUNTU_MIRROR_ARM64: ""
+        B19_UBUNTU_MIRROR_RISCV64: ""
+        B19_UBUNTU_SERIES: resolute
+    ci:
+      image: b19/ubuntu/{B19_UBUNTU_SERIES}
+      matrix:
+        axes:
+          B19_UBUNTU_SERIES:
+            - resolute
+            - noble
+      secrets:
+        b19.test.secret:
+          value: hello-from-shell-d
+    operating-system:
+      - linux
+    conventions:
+      fragments: {}
+    status: maintained
+repositories:
+  - issues: true
+    role: mirror
+    type: git
+    url: ssh://git@codeberg.org/b19/ubuntu.git
+  - role: mirror
+    type: git
+    url: git@github.com:damian-buho/b19-ubuntu.git
+  - role: origin
+    type: git
+    url: ssh://git@kiota.ch/b19/ubuntu.git

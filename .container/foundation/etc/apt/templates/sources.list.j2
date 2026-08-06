@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+{#
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+
+SPDX-License-Identifier: MIT
+#}
+
+deb [arch={{ ENV.TARGETARCH }}] {{ ENV["ENV.B19_UBUNTU_MIRROR_" ~ (ENV.TARGETARCH | upper)] }} {{ ENV.DISTRIB_CODENAME }} main restricted universe multiverse
+deb [arch={{ ENV.TARGETARCH }}] {{ ENV["ENV.B19_UBUNTU_MIRROR_" ~ (ENV.TARGETARCH | upper)] }} {{ ENV.DISTRIB_CODENAME }}-backports main restricted universe multiverse
+deb [arch={{ ENV.TARGETARCH }}] {{ ENV["ENV.B19_UBUNTU_MIRROR_" ~ (ENV.TARGETARCH | upper)] }} {{ ENV.DISTRIB_CODENAME }}-security main restricted universe multiverse
+deb [arch={{ ENV.TARGETARCH }}] {{ ENV["ENV.B19_UBUNTU_MIRROR_" ~ (ENV.TARGETARCH | upper)] }} {{ ENV.DISTRIB_CODENAME }}-updates main restricted universe multiverse

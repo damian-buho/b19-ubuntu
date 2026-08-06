@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  NAME=$1
+  UPSTREAM=$2
+
+  DATE=$(date +%y%m%d.%H%M)
+
+  if [ -n "${UPSTREAM}" ]; then
+    _LINEAGE_ENTRY=$(printf "[%s] %-36s %-12s %-8s\t[Upstream: %s]\n" "${TARGETARCH}" "${NAME}" "${DATE}" "${M6E_VERSION}" "${UPSTREAM}")
+  else
+    _LINEAGE_ENTRY=$(printf "[%s] %-36s %-12s %-8s\n" "${TARGETARCH}" "${NAME}" "${DATE}" "${M6E_VERSION}")
+  fi
+
+  b19-log debug "LINEAGE" "${_LINEAGE_ENTRY}"
+  printf '%s\n' "${_LINEAGE_ENTRY}" >> "${B19_LINEAGE_FILE}"
+  unset _LINEAGE_ENTRY
+
+  read-lineage

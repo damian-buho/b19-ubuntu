@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+
+    if [ -f "${B19_LINEAGE_FILE}" ]
+    then
+      b19-log debug "LINEAGE" "$(cat < "${B19_LINEAGE_FILE}")"
+    fi

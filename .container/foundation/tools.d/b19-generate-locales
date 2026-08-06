@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+    set -euo pipefail
+
+    # shellcheck source=.container/foundation/tools.d/b19-i18n
+    . b19-i18n
+
+    # Generate per-project locales on-demand via localedef.
+    # The base image ships the locale SOURCE data (/usr/share/i18n/locales/, from
+    # the `locales` apt package) but generates NOTHING — only C/C.UTF-8/POSIX are
+    # available by default. A downstream image opts into specific locales by
+    # setting B19_LOCALES (space-separated, e.g. "es_ES.UTF-8 uk_UA.UTF-8").
+    #
+    # localedef compiles each locale's source definition into a standalone
+    # /usr/lib/locale/<locale>/ directory (--no-archive: avoids the shared
+    # locale-archive so locales don't collide or bloat). Runtime stays rootless:
+    # generation is build-time only.
+    # Sourced by the build hook (0600-generate-locales.i.sh), so we MUST use
+    # return, not exit — exit here would abort the entire build-stage chain,
+    # skipping every subsequent post/* toolchain install (go, gcc, java, …).
+    if [ -z "${B19_LOCALES:-}" ]; then
+        b19-log info "LOCALE" "$(_ 'B19_LOCALES is not set or empty — skipping locale generation')"
+        return 0
+    fi
+
+    b19-log info "LOCALE" "$(_p "Generating locales: %s" "${B19_LOCALES}")"
+
+    for LOC in ${B19_LOCALES}; do
+        # Strip the codeset suffix for the source name: es_ES.UTF-8 → es_ES
+        SOURCE_NAME="${LOC%.UTF-8}"
+        SOURCE_NAME="${SOURCE_NAME%.utf8}"
+        b19-run "LOCALE" "$(_p "localedef %s" "${LOC}")" --  \
+            localedef --no-archive -i "${SOURCE_NAME}" -f UTF-8 "${LOC}"
+    done

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  DIRECTORY=$1
+  J2_LIST="${DIRECTORY}/.j2.list"
+
+  # Build exclude options from B19_J2_EXCLUDE_PATTERNS (space-separated directory names)
+  FD_EXCLUDE_ARRAY=()
+  if [ -n "${B19_J2_EXCLUDE_PATTERNS:-}" ]; then
+    for pattern in ${B19_J2_EXCLUDE_PATTERNS}; do
+      FD_EXCLUDE_ARRAY+=(--exclude "${pattern}")
+    done
+  fi
+
+  fd . --hidden --extension j2 "${FD_EXCLUDE_ARRAY[@]}" "${DIRECTORY}" > "${J2_LIST}"
+
+  if [ "$(id -u)" = "0" ]; then
+    b19-run "J2" "$(_p "Chown %s" "${J2_LIST}")" \
+      -- chown -R "${B19_UID}:${B19_GID}" "${J2_LIST}"
+  fi
+
+  b19-run "J2" "$(_p "Optimize %s" "${J2_LIST}")" \
+    -- sort -u -o "${J2_LIST}" "${J2_LIST}"
+
+  FILE_COUNT=$(wc -l < "${J2_LIST}")
+  b19-log info "J2" "$(_p "Saved %s files in %s" "${FILE_COUNT}" "${J2_LIST}")"
+
+  # Pre-processing
+  parallel-j2 "${DIRECTORY}"

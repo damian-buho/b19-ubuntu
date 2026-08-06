@@ -1,0 +1,5 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+https://github.com/rui314/mold/releases/download/v${M6E_UPSTREAM_VERSION}/mold-${M6E_UPSTREAM_VERSION}-riscv64-linux.tar.gz

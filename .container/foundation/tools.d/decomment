@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+# decomment - Strip comments from text (stdin to stdout filter)
+#
+# Usage: cat file.txt | decomment
+#        command | decomment
+#        decomment < file.txt
+#
+# Features:
+#   - Removes full-line comments (lines starting with # followed by space/tab)
+#   - Removes inline comments (everything after # not in quotes)
+#   - Preserves preprocessor directives (#define, #include, etc.)
+#   - Trims trailing whitespace from output lines
+#   - Strips carriage returns
+#   - Optimized for pipe usage in build systems
+
+set -euo pipefail
+
+# Process line by line from stdin
+while IFS= read -r line || [ -n "$line" ]; do
+    # Skip full-line comments (lines starting with # followed by space/tab/end)
+    if [[ "$line" =~ ^[[:space:]]*#[[:space:]] ]]; then
+        continue
+    fi
+
+    # Preserve preprocessor directives (lines starting with # followed by directive)
+    if [[ "$line" =~ ^[[:space:]]*#[a-zA-Z_]+ ]]; then
+        echo "$line"
+        continue
+    fi
+
+    # Remove inline comments using a simpler approach
+    # shellcheck disable=SC2001
+    line=$(echo "$line" | sed 's/\\#/ESCAPED_HASH/g')
+    # shellcheck disable=SC2001
+    line=$(echo "$line" | sed 's/[[:space:]]*#.*$//')
+    # shellcheck disable=SC2001
+    line=$(echo "$line" | sed 's/ESCAPED_HASH/#/g')
+
+    # Trim trailing whitespace and carriage return
+    # shellcheck disable=SC2001
+    line=$(echo "$line" | sed 's/[[:space:]]*$//' | tr -d '\r')
+
+    # Skip blank lines after processing
+    [[ -z "${line}" ]] && continue
+
+    # Output the processed line
+    echo "$line"
+done

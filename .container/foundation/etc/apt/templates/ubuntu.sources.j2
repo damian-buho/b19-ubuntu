@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+{#
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+
+SPDX-License-Identifier: MIT
+#}
+
+Types: deb
+URIs: {{ ENV["B19_UBUNTU_MIRROR_" ~ ENV.TARGETARCH | upper] }}
+Suites: {{ ENV.DISTRIB_CODENAME }} {{ ENV.DISTRIB_CODENAME }}-updates {{ ENV.DISTRIB_CODENAME }}-security {{ ENV.DISTRIB_CODENAME }}-backports {{ ENV.DISTRIB_CODENAME }}-proposed
+Components: main restricted universe multiverse
+Architectures: {{ ENV.TARGETARCH }}
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg

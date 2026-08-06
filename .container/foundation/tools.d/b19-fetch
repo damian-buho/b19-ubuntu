@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=/dev/null
+  . b19-i18n
+
+  NUMPROCS=$(nproc)
+  export NUMPROCS
+
+  TAG=${1}
+  # Parse $2: may be multi-line (mirrors); filter blank lines
+  _raw_urls=()
+  while IFS= read -r _line; do
+    [ -n "${_line}" ] && _raw_urls+=( "${_line}" )
+  done <<< "${2}"
+  ARIA_URLS=( "${_raw_urls[@]}" )
+  unset _raw_urls _line
+  ARIA_URL_PRIMARY="${ARIA_URLS[0]}"
+  ARIA_FILE=${3}
+  ARIA_HASH=${4}
+  DOWNLOAD=Y
+
+  B19_FETCH_LOCAL_PATH="${B19_FETCH_LOCAL_PATH:-/fetch}"
+  B19_FETCH_LOCAL_CACHE="${B19_FETCH_LOCAL_CACHE:-Y}"
+  B19_FETCH_DOCKER_CACHE="${B19_FETCH_DOCKER_CACHE:-Y}"
+  B19_OFFGRID_MODE="${B19_OFFGRID_MODE:-N}"
+  B19_BUILD_CA_FILE="${B19_BUILD_CA_FILE:-${B19_FETCH_LOCAL_PATH}/.m6e-ca-certificates.crt}"
+
+  if [ "${B19_OFFGRID_MODE}" = 'Y' ]
+  then
+    b19-log warn "FETCH" "Off-grid mode is active"
+  fi
+
+  b19-run "${TAG}" "$(_p "Make %s directory" "${B19_DOWNLOAD_PATH}")" --   \
+    mkdir -p "${B19_DOWNLOAD_PATH}"
+
+  # Step 2: Local Cache
+  if [ "${B19_FETCH_LOCAL_CACHE}" = "Y" ]
+  then
+    if [ -f "${B19_FETCH_LOCAL_PATH}/${ARIA_FILE}" ]
+    then
+      if [ -n "${ARIA_HASH}" ]
+      then
+        if [ "${ARIA_HASH}" = "$(sha512sum "${B19_FETCH_LOCAL_PATH}/${ARIA_FILE}" | cut -d' ' -f1)" ]
+        then
+          b19-log good "${TAG}" "$(_p "Local Cache HIT: %s" "${ARIA_FILE}")"
+          b19-log good "${TAG}" "$(_p "Hashes match: %s" "${ARIA_FILE}")"
+          b19-run "${TAG}" "$(_p "Copy from %s to %s" "${B19_FETCH_LOCAL_PATH}/${ARIA_FILE}" "${B19_TEMP_PATH}/${ARIA_FILE}")" --   \
+            cp "${B19_FETCH_LOCAL_PATH}/${ARIA_FILE}" "${B19_TEMP_PATH}/${ARIA_FILE}"
+          exit 0
+        else
+          b19-log bad "${TAG}" "$(_p "Hashes don't match: %s" "${ARIA_FILE}")"
+        fi
+      else
+        b19-log good "${TAG}" "$(_p "No hash for: %s, ASSUMED HIT" "${ARIA_FILE}")"
+        b19-run "${TAG}" "$(_p "Copy from %s to %s" "${B19_FETCH_LOCAL_PATH}/${ARIA_FILE}" "${B19_TEMP_PATH}/${ARIA_FILE}")" --   \
+          cp "${B19_FETCH_LOCAL_PATH}/${ARIA_FILE}" "${B19_TEMP_PATH}/${ARIA_FILE}"
+        exit 0
+      fi
+    else
+      b19-log warn "${TAG}" "$(_p "Local Cache MISS: %s" "${ARIA_FILE}")"
+    fi
+  else
+    b19-log bad "${TAG}" "$(_p "Local Cache disabled: %s" "${B19_FETCH_LOCAL_CACHE}")"
+  fi
+
+  # Step 3: Docker Cache
+  if [ "${B19_FETCH_DOCKER_CACHE}" = "Y" ]
+  then
+    if [ -f "${B19_DOWNLOAD_PATH}/${ARIA_FILE}" ]
+    then
+      b19-log good "${TAG}" "$(_p "Docker Cache HIT: %s" "${ARIA_FILE}")"
+      if [ -n "${ARIA_HASH}" ]
+      then
+        if [ "${ARIA_HASH}" = "$(sha512sum "${B19_DOWNLOAD_PATH}/${ARIA_FILE}" | cut -d' ' -f1)" ]
+        then
+          b19-log good "${TAG}" "$(_p "Hashes match: %s" "${ARIA_FILE}")"
+          DOWNLOAD=N
+        else
+          b19-log bad  "${TAG}" "$(_p "Hashes don't match: %s" "${ARIA_FILE}")"
+        fi
+      else
+        b19-log good "${TAG}" "$(_p "No hash for: %s, ASSUMED HIT" "${ARIA_FILE}")"
+        DOWNLOAD=N
+      fi
+    else
+      b19-log bad "${TAG}" "$(_p "Docker Cache MISS: %s" "${ARIA_FILE}")"
+    fi
+  else
+    b19-log bad "${TAG}" "$(_p "Docker Cache disabled: %s" "${B19_FETCH_DOCKER_CACHE}")"
+  fi
+
+  # Step 4: Offgrid guard
+  if [ "${B19_OFFGRID_MODE}" = "Y" ] && [ "${DOWNLOAD}" = "Y" ]
+  then
+    b19-log error "${TAG}" "$(_p "Offgrid mode: cannot download %s" "${ARIA_FILE}")"
+    exit 1
+  fi
+
+  # Step 5: Checksum build
+  if [ -n "${ARIA_HASH}" ]
+  then
+    b19-log info "${TAG}" "$(_ "Hash specified, will checksum")"
+    CHECKSUM="--check-integrity=true --checksum=sha-512=${ARIA_HASH}"
+  else
+    b19-log warn "${TAG}" "$(_ "No hash, no checks")"
+    CHECKSUM=""
+  fi
+
+  # Step 6: Download
+  if [ "${DOWNLOAD}" = "Y" ]
+  then
+    if [ -n "${M6E_NEAR_CACHE_HOST:-}" ]
+    then
+      _rewritten=()
+      for _url in "${ARIA_URLS[@]}"; do
+        # shellcheck disable=SC2016
+        _stripped="${_url#*://}"
+        _rewritten+=( "https://${M6E_NEAR_CACHE_HOST}/${_stripped}" )
+      done
+      ARIA_URLS=( "${_rewritten[@]}" )
+      unset _rewritten _url _stripped
+  ARIA_URL_PRIMARY="${ARIA_URLS[0]:-}"
+      b19-log info "DOWNLOAD" "$(_p "Near cache %s: rewrote %s URL(s)" "${M6E_NEAR_CACHE_HOST}" "${#ARIA_URLS[@]}")"
+    fi
+    # The user stage runs as uid 1000 and cannot write the image trust store, so
+    # trust-ca-certificates cannot help there. aria2c takes the staged build-host
+    # bundle directly instead — it REPLACES the default store, which is why
+    # M6E_CA_CERTIFICATES must name a complete bundle, not a lone extra root.
+    if [ -s "${B19_BUILD_CA_FILE}" ]
+    then
+      CA_OPTION="--ca-certificate=${B19_BUILD_CA_FILE}"
+      b19-log info "DOWNLOAD" "$(_p "Build CA bundle %s in use" "${B19_BUILD_CA_FILE}")"
+    else
+      CA_OPTION=""
+      b19-log info "DOWNLOAD" "$(_p "No build CA bundle at %s, using image trust store" "${B19_BUILD_CA_FILE}")"
+    fi
+    # shellcheck disable=SC2086
+    b19-run "${TAG}" "$(_p "Get %s" "${ARIA_URL_PRIMARY}")" --     \
+      aria2c  ${CHECKSUM}                                     \
+              ${CA_OPTION}                                    \
+              --conditional-get=true                          \
+              --continue=true                                 \
+              --dir=${B19_DOWNLOAD_PATH}                      \
+              --disk-cache=${B19_DOWNLOAD_DISK_CACHE}         \
+              --file-allocation=falloc                        \
+              --http-accept-gzip=true                         \
+              --max-concurrent-downloads="${NUMPROCS}"        \
+              --max-connection-per-server=16                  \
+              --max-tries=${B19_DOWNLOAD_MAX_TRIES}           \
+              --out "${ARIA_FILE}"                            \
+              --retry-wait=${B19_DOWNLOAD_RETRY_WAIT}         \
+              "${ARIA_URLS[@]}"
+              # 16 is not hardcode, but aria2c's limit
+              # --file-allocation=falloc may not work on overlayfs;
+              # aria2c falls back to prealloc internally when falloc fails
+
+  else
+    b19-log good "${TAG}" "$(_p "No need to download %s" "${ARIA_URL_PRIMARY}")"
+  fi
+
+  b19-run "${TAG}" "$(_p "Copy from %s to %s" "${B19_DOWNLOAD_PATH}/${ARIA_FILE}" "${B19_TEMP_PATH}/${ARIA_FILE}")" --   \
+    cp "${B19_DOWNLOAD_PATH}/${ARIA_FILE}" "${B19_TEMP_PATH}/${ARIA_FILE}"

@@ -1,0 +1,1313 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the ubuntu package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: ubuntu 1.0.0-5-g202a27a\n"
+"Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
+"POT-Creation-Date: 2026-07-28 21:39+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .container/foundation/tools.d/add-user-to-docker:14
+msgid "Create group %s with ID %s"
+msgstr ""
+
+#: .container/foundation/tools.d/add-user-to-docker:17
+msgid "Add user %s to group %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-compile-i18n:28
+msgid "%s does not exist"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-compile-i18n:58
+msgid "Compiled %s -> %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-compile-i18n:60
+msgid "Failed to compile %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ensure-locale:47
+msgid "LANG %s not generated — using %s (same language)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ensure-locale:55
+msgid "LANG %s not generated — falling back to C.UTF-8"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:78
+msgid "Unknown option:"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:86
+msgid "No command provided. Usage: b19-exec [OPTIONS] -- COMMAND [ARGS...]"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:97
+msgid "Invalid log level:"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:97
+msgid "Must be one of: error, bad, warn, good, info, note"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec-with-secrets:33
+msgid "No command provided. Usage: b19-exec-with-secrets COMMAND [ARGS...]"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:39
+#: .container/foundation/tools.d/b19-prepare-volumes:22
+#: .container/foundation/tools.d/keyscan:18
+msgid "Make %s directory"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:51
+msgid "Local Cache HIT: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:52
+#: .container/foundation/tools.d/b19-fetch:82
+msgid "Hashes match: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:53
+#: .container/foundation/tools.d/b19-fetch:61
+#: .container/foundation/tools.d/b19-fetch:167
+msgid "Copy from %s to %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:57
+#: .container/foundation/tools.d/b19-fetch:85
+msgid "Hashes don't match: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:60
+#: .container/foundation/tools.d/b19-fetch:88
+msgid "No hash for: %s, ASSUMED HIT"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:66
+msgid "Local Cache MISS: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:69
+msgid "Local Cache disabled: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:77
+msgid "Docker Cache HIT: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:92
+msgid "Docker Cache MISS: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:95
+msgid "Docker Cache disabled: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:101
+msgid "Offgrid mode: cannot download %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:108
+msgid "Hash specified, will checksum"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:111
+msgid "No hash, no checks"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:129
+msgid "Near cache %s: rewrote %s URL(s)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:138
+msgid "Build CA bundle %s in use"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:141
+#: .container/foundation/tools.d/trust-ca-certificates:57
+msgid "No build CA bundle at %s, using image trust store"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:144
+msgid "Get %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:164
+msgid "No need to download %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-generate-locales:26
+msgid "B19_LOCALES is not set or empty — skipping locale generation"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-generate-locales:30
+msgid "Generating locales: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-generate-locales:36
+msgid "localedef %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-load-secrets:22
+msgid "Secrets loading disabled"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-load-secrets:33
+msgid "No secrets directory found"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-load-secrets:47
+msgid "Skipping"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-load-secrets:47
+msgid "already set"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-load-secrets:57
+msgid "Skipping binary secret %s (non-UTF-8; read it from %s instead of the env var)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-load-secrets:64
+msgid "Loaded"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-load-secrets:70
+msgid "Summary:"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-load-secrets:70
+msgid "loaded,"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-load-secrets:70
+msgid "skipped"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-log:71
+#: .container/foundation/tools.d/b19-log:111
+msgid "Unknown log level: %s. Valid: error, warn, info, debug"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-prepare-volumes:25
+msgid "Chown %s to %s:%s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-resolve-dep:68
+msgid "component not found: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-resolve-dep:118
+msgid "no url file for %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-resolve-dep:136
+msgid "no hash file for %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-resolve-dep:165
+msgid "Version:   %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-resolve-dep:166
+msgid "Build:     %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-resolve-dep:167
+msgid "URL:       %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-resolve-dep:168
+msgid "Hash:      %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-resolve-dep:169
+msgid "Filename:  %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-run:60
+msgid "Usage: b19-run <tag> <message> [--] <command> [args...]"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-run:96
+#: .container/foundation/tools.d/b19-run:98
+msgid "success [%s]"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-run:119
+msgid "failure (exit code %s), [%s]"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-run:130
+msgid "failure (exit code %s) [%s]"
+msgstr ""
+
+#: .container/foundation/tools.d/build-stage:23
+msgid "Stage-independent hooks for %s: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/check-ports:13
+msgid "Port checking disabled (B19_PORT_CHECK_ENABLED=false)"
+msgstr ""
+
+#: .container/foundation/tools.d/check-ports:20
+msgid "Forbidden ports list not found, skipping check"
+msgstr ""
+
+#: .container/foundation/tools.d/check-ports:42
+msgid "%s=%s is browser-blocked (WHATWG bad port)"
+msgstr ""
+
+#: .container/foundation/tools.d/check-ports:48
+msgid "%s=%s requires root privileges (port < 1024)"
+msgstr ""
+
+#: .container/foundation/tools.d/check-ports:55
+msgid "Port check failed: %s unsafe port(s) found"
+msgstr ""
+
+#: .container/foundation/tools.d/check-ports:59
+msgid "All PORT variables are safe"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-apt-cacher:15
+msgid "APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-apt-cacher:17
+msgid "APT Cache not enabled"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-cpu-count:12
+msgid "NUMPROCS %s from K8S downward API"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-cpu-count:20
+msgid "NUMPROCS %s from cgroups v2"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-cpu-count:23
+msgid "NUMPROCS %s from nproc (cgroups unlimited)"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-cpu-count:27
+msgid "NUMPROCS %s from nproc"
+msgstr ""
+
+#: .container/foundation/tools.d/install-apt:41
+msgid "Appending deps file (%s)"
+msgstr ""
+
+#: .container/foundation/tools.d/install-apt:48
+msgid "Dependencies list is detected"
+msgstr ""
+
+#: .container/foundation/tools.d/install-apt:59
+msgid "Acquire flock on shared APT archives cache (wait %s s)"
+msgstr ""
+
+#: .container/foundation/tools.d/install-apt:68
+msgid "Install dependencies (%s packages)"
+msgstr ""
+
+#: .container/foundation/tools.d/install-apt:85
+msgid "Dependencies list (%s) is not detected"
+msgstr ""
+
+#: .container/foundation/tools.d/keyscan:21
+msgid "Touch %s"
+msgstr ""
+
+#: .container/foundation/tools.d/keyscan:28
+msgid "Offgrid mode, skipping keyscan"
+msgstr ""
+
+#: .container/foundation/tools.d/keyscan:42
+msgid "%s is already known host"
+msgstr ""
+
+#: .container/foundation/tools.d/keyscan:50
+msgid "B19_SSH_SCAN_HOSTS is not set, skipping"
+msgstr ""
+
+#: .container/foundation/tools.d/parallel-j2:22
+msgid "Not found"
+msgstr ""
+
+#: .container/foundation/tools.d/parallel-j2:28
+msgid "Loaded %s files from %s"
+msgstr ""
+
+#: .container/foundation/tools.d/parallel-j2:32
+msgid "Final mode: deleting %s source templates"
+msgstr ""
+
+#: .container/foundation/tools.d/parallel-j2:40
+msgid "minijinja-cli not installed, skipping"
+msgstr ""
+
+#: .container/foundation/tools.d/parallel-j2:43
+msgid "B19_IMMUTABLE=Y, skipping j2 templates"
+msgstr ""
+
+#: .container/foundation/tools.d/process-hooks:13
+msgid "%s failed to execute (code %s)"
+msgstr ""
+
+#: .container/foundation/tools.d/process-hooks:24
+msgid "Directories found for stage: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/process-hooks:28
+msgid "Executing: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/process-hooks:37
+msgid "%s executed successfully"
+msgstr ""
+
+#: .container/foundation/tools.d/process-hooks:47
+msgid "Not found for stage: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/save-j2:26
+msgid "Chown %s"
+msgstr ""
+
+#: .container/foundation/tools.d/save-j2:30
+msgid "Optimize %s"
+msgstr ""
+
+#: .container/foundation/tools.d/save-j2:34
+msgid "Saved %s files in %s"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-docker-sources:21
+msgid "Dearmor %s"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-docker-sources:27
+msgid "Repository configured for %s"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-docker-sources:29
+msgid "Enabling docker connect test"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-pass-with-docker:12
+msgid "Generate GPG Key"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-pass-with-docker:25
+msgid "Initialize Pass"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-pass-with-docker:30
+msgid "Make .docker directory"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-ssh:12
+msgid "Make"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-ssh:12
+msgid "directory"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-ssh:19
+#: .container/foundation/tools.d/setup-ssh:27
+msgid "Copy"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-ssh:19
+#: .container/foundation/tools.d/setup-ssh:27
+msgid "to"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-ssh:23
+#: .container/foundation/tools.d/setup-ssh:30
+msgid "not found:"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-ssh:36
+msgid "Found"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-ssh:36
+msgid "keys"
+msgstr ""
+
+#: .container/foundation/tools.d/setup-ssh:38
+msgid "No keys found at all"
+msgstr ""
+
+#: .container/foundation/tools.d/trust-ca-certificates:34
+msgid "Not root (uid %s), trust store left untouched"
+msgstr ""
+
+#: .container/foundation/tools.d/trust-ca-certificates:47
+msgid "Build CA bundle trusted from %s"
+msgstr ""
+
+#: .container/foundation/tools.d/trust-ca-certificates:51
+msgid "Refresh trust store for %s"
+msgstr ""
+
+#: .container/foundation/tools.d/trust-ca-certificates:54
+msgid "No refresher yet, %s applied later"
+msgstr ""
+
+#: .container/foundation/tools.d/trust-ca-certificates:65
+msgid "Build CA anchor %s dropped before the layer commits"
+msgstr ""
+
+#: .container/foundation/tools.d/trust-ca-certificates:69
+msgid "Rebuild trust store without %s"
+msgstr ""
+
+#: .container/foundation/tools.d/trust-ca-certificates:72
+msgid "No build CA anchor at %s to drop"
+msgstr ""
+
+#: .container/foundation/tools.d/trust-ca-certificates:77
+msgid "Unknown action %s, expected install or remove"
+msgstr ""
+
+#: .container/foundation/tools.d/update-apt:19
+msgid "Copy APT lists from %s"
+msgstr ""
+
+#: .container/foundation/tools.d/update-apt:21
+msgid "Local APT lists applied, skipping apt-get update"
+msgstr ""
+
+#: .container/foundation/tools.d/update-apt:24
+msgid "Offgrid mode, no local lists, skipping apt-get update"
+msgstr ""
+
+#: .container/foundation/tools.d/update-apt:28
+msgid "Acquire flock on shared APT lists cache (wait %s s)"
+msgstr ""
+
+#: .container/foundation/tools.d/update-apt:29
+msgid "Update APT lists"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:14
+msgid "Benchmarks disabled"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:22
+msgid "Make results directory"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:34
+msgid "Benchmark suite not found: %s"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:40
+msgid "Setup: %s"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:43
+msgid "Setup failed for %s — skipping"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:50
+msgid "Benchmarking: %s"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:57
+msgid "Teardown: %s"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:78
+msgid "Reading from: %s"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:79 .container/user/tools.d/report.d:18
+msgid "Writing to:"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:94
+msgid "No benchmark suites found in %s"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:97
+msgid "Benchmark directory not found: %s"
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:102
+msgid "%d of %d benchmark suites failed."
+msgstr ""
+
+#: .container/user/tools.d/benchmark.d:104
+msgid "All %d benchmark suites completed."
+msgstr ""
+
+#: .container/user/tools.d/bootstrap.d:22
+msgid "Directory not found: %s"
+msgstr ""
+
+#: .container/user/tools.d/bootstrap.d:27
+msgid "Create lock directory %s"
+msgstr ""
+
+#: .container/user/tools.d/bootstrap.d:37
+#: .container/user/tools.d/entrypoint.d:39
+msgid "Skipped: %s (via %s)"
+msgstr ""
+
+#: .container/user/tools.d/bootstrap.d:44
+msgid "Already done: %s"
+msgstr ""
+
+#: .container/user/tools.d/bootstrap.d:48
+msgid "Running: %s"
+msgstr ""
+
+#: .container/user/tools.d/bootstrap.d:49
+msgid "Execute: %s"
+msgstr ""
+
+#: .container/user/tools.d/bootstrap.d:50
+msgid "Lock: %s"
+msgstr ""
+
+#: .container/user/tools.d/bootstrap.d:51
+msgid "Completed: %s"
+msgstr ""
+
+#: .container/user/tools.d/bootstrap.d:55
+msgid "No scripts found in %s"
+msgstr ""
+
+#: .container/user/tools.d/entrypoint.d:26 .container/user/tools.d/report.d:25
+#: .container/user/tools.d/test.d:47
+msgid "Directory found:"
+msgstr ""
+
+#: .container/user/tools.d/entrypoint.d:27
+msgid "Found:"
+msgstr ""
+
+#: .container/user/tools.d/entrypoint.d:43
+msgid "Will run"
+msgstr ""
+
+#: .container/user/tools.d/entrypoint.d:52
+msgid "No entrypoint scripts found in"
+msgstr ""
+
+#: .container/user/tools.d/entrypoint.d:55 .container/user/tools.d/report.d:51
+#: .container/user/tools.d/test.d:69
+msgid "Directory not found:"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:39
+msgid "Checks directory found"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:45
+msgid "Executing check:"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:54
+msgid "Check passed:"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:58
+msgid "Check failed:"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:58
+msgid "with exit code"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:66
+msgid "No health checks found in"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:69
+msgid "Checks directory not found at"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:74
+msgid "%d of %d checks failed: %s"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:76
+msgid "All %d checks passed."
+msgstr ""
+
+#: .container/user/tools.d/report.d:17 .container/user/tools.d/test.d:23
+msgid "Reading from:"
+msgstr ""
+
+#: .container/user/tools.d/report.d:32
+msgid "Processing report:"
+msgstr ""
+
+#: .container/user/tools.d/report.d:45
+msgid "No report scripts found in"
+msgstr ""
+
+#: .container/user/tools.d/test.d:15
+msgid "Tests disabled"
+msgstr ""
+
+#: .container/user/tools.d/test.d:35
+msgid "Healthcheck did not pass within %s seconds"
+msgstr ""
+
+#: .container/user/tools.d/test.d:36
+msgid "Unhealthy checks: %s"
+msgstr ""
+
+#: .container/user/tools.d/test.d:39
+msgid "Waiting for healthcheck... %ss elapsed"
+msgstr ""
+
+#: .container/user/tools.d/test.d:43
+msgid "Healthcheck passed. Starting tests."
+msgstr ""
+
+#: .container/user/tools.d/test.d:54
+msgid "Executing:"
+msgstr ""
+
+#: .container/user/tools.d/test.d:66
+msgid "No test scripts found in"
+msgstr ""
+
+#: .container/user/tools.d/test.d:74
+msgid "%d of %d tests failed. Final exit code: %d"
+msgstr ""
+
+#: .container/user/tools.d/test.d:76
+msgid "All %d tests passed."
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/100-update-certificates.sh:8
+msgid "Updating CA certificates"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:31
+msgid "Ensure exists %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:33
+msgid "Set owner %s:0 %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:37
+msgid "Set permissions of %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/300-install-fd.sh:13
+#: .container/foundation/build.d/foundation/post/300-install-minijinja.sh:13
+msgid "Already present at %s, skipping upstream install"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/300-install-fd.sh:19
+msgid "No binary for %s, skipping"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/300-install-fd.sh:26
+msgid "Install from %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/300-install-minijinja.sh:18
+msgid "Not found at %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/300-install-mold.sh:14
+msgid "Extract %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/350-switch-to-mold.sh:14
+msgid "Mold not installed, skipping link"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/350-switch-to-mold.sh:18
+#: .container/foundation/build.d/foundation/post/350-switch-to-mold.sh:21
+msgid "Link mold as %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/350-switch-to-mold.sh:25
+msgid "LD says: %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/400-upgrade.sh:10
+msgid "Offgrid mode, skipping dist-upgrade"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/400-upgrade.sh:12
+msgid "Upgrade all packages"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/600-create-user-group.sh:10
+msgid "User %s does not exist"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/600-create-user-group.sh:12
+msgid "User %s already exists, removing for recreation"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/600-create-user-group.sh:13
+msgid "Remove user %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/600-create-user-group.sh:17
+msgid "Create user %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/650-setup-shell-hooks.sh:11
+msgid "Shell hooks disabled"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/650-setup-shell-hooks.sh:15
+msgid "Setting up shell hooks at %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/650-setup-shell-hooks.sh:30
+msgid "Shell hooks configured in /etc/bash.bashrc"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/900-cleanup.sh:9
+msgid "Remove /home"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/900-cleanup.sh:10
+msgid "Remove /var/log files"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/pre/050-restore-translations.sh:20
+msgid "Remove Ubuntu .mo-stripping excludes: %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/pre/100-enable-buildkit-cache-for-apt.sh:16
+msgid "%s is detected"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/pre/100-enable-buildkit-cache-for-apt.sh:17
+msgid "Remove %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/pre/100-enable-buildkit-cache-for-apt.sh:19
+msgid "%s is not detected"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/pre/200-setup-sources.sh:22
+msgid "Format: %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/pre/200-setup-sources.sh:29
+msgid "Render %s"
+msgstr ""
+
+#: .container/user/entrypoint.d/0000-set-signals.sh:17
+msgid "Caught %s, transferring to %s"
+msgstr ""
+
+#: .container/user/entrypoint.d/0000-set-signals.sh:20
+msgid "Caught %s, no active payload process to signal"
+msgstr ""
+
+#: .container/user/entrypoint.d/0000-set-signals.sh:35
+msgid "%s trapped"
+msgstr ""
+
+#: .container/user/entrypoint.d/0500-copy-overlay.sh:11
+msgid "%s is active"
+msgstr ""
+
+#: .container/user/entrypoint.d/0500-copy-overlay.sh:20
+msgid "Remove overlays directory"
+msgstr ""
+
+#: .container/user/entrypoint.d/0500-copy-overlay.sh:27
+msgid "B19_IMMUTABLE=Y, skipping overlays"
+msgstr ""
+
+#: .container/user/entrypoint.d/2000-run-command.sh:9
+msgid "Treating %s as command"
+msgstr ""
+
+#: .container/user/entrypoint.d/2000-run-command.sh:15
+msgid "Empty command, continue"
+msgstr ""
+
+#: .container/user/entrypoint.d/2000-run-command.sh:17
+msgid "%s is not a command, continue"
+msgstr ""
+
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:18
+msgid "Secrets validation disabled (B19_SECRETS_ENABLED=false)"
+msgstr ""
+
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:33
+msgid "No required secrets defined, skipping validation"
+msgstr ""
+
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:37
+msgid "Validating required secrets..."
+msgstr ""
+
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:65
+msgid "Loaded:%s"
+msgstr ""
+
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:70
+msgid "Missing required secrets:%s"
+msgstr ""
+
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:71
+msgid "Provide secrets via:"
+msgstr ""
+
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:72
+msgid "  - Environment variables (%s format)"
+msgstr ""
+
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:73
+msgid "  - Docker secrets files (%s/b19.* format)"
+msgstr ""
+
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:77
+msgid "All %d required secrets validated"
+msgstr ""
+
+#: .container/user/entrypoint.d/5000-start.sh:11
+msgid "No command provided, will sleep"
+msgstr ""
+
+#: .container/user/entrypoint.d/9000-finalize.sh:7
+msgid "Done: %s"
+msgstr ""
+
+#: .container/user/healthcheck.d/0100-check-home-directory-space.sh:18
+msgid "Low space in %s (B19_HOME): %s < %s"
+msgstr ""
+
+#: .container/user/healthcheck.d/0100-check-home-directory-space.sh:22
+msgid "%s (B19_HOME) has sufficient space: %s > %s"
+msgstr ""
+
+#: .container/user/healthcheck.d/0200-check-cache-directory-space.sh:18
+msgid "Low space in %s (XDG_CACHE_HOME): %s < %s"
+msgstr ""
+
+#: .container/user/healthcheck.d/0200-check-cache-directory-space.sh:22
+msgid "%s (XDG_CACHE_HOME) has sufficient space: %s > %s"
+msgstr ""
+
+#: .container/user/healthcheck.d/0300-check-temp-directory-space.sh:18
+msgid "Low space in %s (B19_TEMP_PATH): %s < %s"
+msgstr ""
+
+#: .container/user/healthcheck.d/0300-check-temp-directory-space.sh:22
+msgid "%s (B19_TEMP_PATH) has sufficient space: %s > %s"
+msgstr ""
+
+#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:17
+msgid "HTTPS connectivity check skipped (no B19_HEALTH_NETWORK_URL configured)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:22
+msgid "HTTPS connectivity check skipped (offgrid mode)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:37
+msgid "HTTPS connectivity failed (B19_HEALTH_NETWORK_URL: %s)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:41
+msgid "HTTPS connectivity working (B19_HEALTH_NETWORK_URL: %s)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:20
+msgid "DNS resolution check skipped (no B19_HEALTH_NETWORK_URL configured)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:25
+msgid "DNS resolution check skipped (offgrid mode)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:41
+msgid "DNS resolution failed - could not extract hostname from URL: %s"
+msgstr ""
+
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:53
+msgid "DNS resolution failed for all URLs (B19_HEALTH_NETWORK_URL: %s)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:57
+msgid "DNS resolution working (B19_HEALTH_NETWORK_URL: %s)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0600-check-reachability.sh:28
+msgid "Reachability check skipped (no B19_HEALTH_PING_TARGETS configured)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0600-check-reachability.sh:33
+msgid "Reachability check skipped (offgrid mode)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0600-check-reachability.sh:50
+msgid ""
+"Reachability failed for all targets on port %s (B19_HEALTH_PING_TARGETS: %s)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0600-check-reachability.sh:54
+msgid "Reachability working on port %s (B19_HEALTH_PING_TARGETS: %s)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0700-check-dummy.sh:13
+msgid "Healthcheck directory operations failed (B19_HEALTH_PATH: %s)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0700-check-dummy.sh:17
+msgid "Healthcheck directory operations working (B19_HEALTH_PATH: %s)"
+msgstr ""
+
+#: .container/user/bootstrap.d/100-smoke-test.sh:11
+msgid "Create smoke-test marker"
+msgstr ""
+
+#: .container/user/benchmark.d/0400-disk-rand-io/setup.sh:10
+#: .container/user/benchmark.d/0800-process-fork/setup.sh:10
+msgid "Installing: %s"
+msgstr ""
+
+#: .container/user/benchmark.d/0400-disk-rand-io/teardown.sh:10
+#: .container/user/benchmark.d/0800-process-fork/teardown.sh:10
+msgid "Removing: %s"
+msgstr ""
+
+#: .container/user/report.d/0500-fat-files.sh:19
+msgid "B19_REPORTD_FAT_FILES_AMOUNT environment variable is not set"
+msgstr ""
+
+#: .container/user/report.d/0500-fat-files.sh:23
+msgid "Generating file list from root filesystem"
+msgstr ""
+
+#: .container/user/report.d/0500-fat-files.sh:28
+msgid "Sorting file list by size..."
+msgstr ""
+
+#: .container/user/report.d/0500-fat-files.sh:31
+msgid "The top %s largest files have been saved to: %s"
+msgstr ""
+
+#: .container/user/test.d/0100-check-lsb-release-sourced.sh:16
+msgid "%s is required but not available"
+msgstr ""
+
+#: .container/user/test.d/0100-check-lsb-release-sourced.sh:30
+msgid "%s uses DISTRIB_CODENAME without sourcing /etc/lsb-release"
+msgstr ""
+
+#: .container/user/test.d/0100-get-apt-versions.sh:12
+msgid "--version"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:14
+msgid "Starting b19-exec tests"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:17
+msgid "Test 1: Successful command execution"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:21
+msgid "Test 1 passed: Successful exit code"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:23
+msgid "Test 1 failed: Wrong exit code"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:28
+msgid "Test 2: Failed command exit code propagation"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:32
+msgid "Test 2 passed: Exit code 42 propagated"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:34
+msgid "Test 2 failed: Exit code %s (expected 42)"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:39
+msgid "Test 3: Command execution with side effects"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:43
+msgid "Test 3 passed: Command executed with side effects"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:46
+msgid "Test 3 failed: File not created"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:51
+msgid "Test 4: Missing command error"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:55
+msgid "Test 4 passed: Missing command detected"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:57
+msgid "Test 4 failed: Missing command not detected"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:62
+msgid "Test 5: Invalid log level error"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:66
+msgid "Test 5 passed: Invalid level detected"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:68
+msgid "Test 5 failed: Invalid level not rejected"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:73
+msgid "Test 6: Command with multiple arguments"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:77
+msgid "Test 6 passed: Arguments passed correctly"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:80
+msgid "Test 6 failed: Arguments not passed correctly"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:85
+msgid "Test 7: Foreground mode"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:89
+msgid "Test 7 passed: Foreground mode works"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:91
+msgid "Test 7 failed: Foreground mode error (code %s)"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:96
+msgid "Test 8: Output routing through b19-log"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:100
+msgid "Test 8 passed: Output routed through b19-log"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:103
+msgid "Test 8 skipped: Output routing cannot be fully tested in test context"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:108
+msgid "Test 9: Custom log levels"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:112
+msgid "Test 9 passed: Custom levels accepted"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:114
+msgid "Test 9 failed: Custom levels rejected"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:119
+msgid "Test 10: Custom tags"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:123
+msgid "Test 10 passed: Custom tags accepted"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:125
+msgid "Test 10 failed: Custom tags rejected"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:130
+msgid "Test 11: Stderr drain on failed command"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:134
+msgid "Test 11 passed: Exit code propagated and stderr drained"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:136
+msgid "Test 11 failed: Exit code %s (expected 5)"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:141
+msgid "Test 12: Foreground mode exit code propagation"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:145
+msgid "Test 12 passed: Foreground mode exit code propagated"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:147
+msgid "Test 12 failed: Exit code %s (expected 7)"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:156
+msgid "Test 13: Payload PID file published and cleaned up"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:173
+msgid "Test 13 failed: no live PID observed in the file during run"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:176
+msgid "Test 13 failed: PID file not removed after run"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:179
+msgid "Test 13 passed: PID file published then cleaned up (pid=%s)"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:182
+msgid "All b19-exec tests passed"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-run.sh:13
+msgid "Touch /tmp/test"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:18
+msgid "Captured output was:"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:23
+msgid "Starting verbosity tests"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:26
+msgid "Test 1: error level filtering"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:42
+msgid "Test 1 passed: error level shows only error"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:44
+msgid "Test 1 failed: error level filtering incorrect"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:48
+msgid "Test 2: warn level filtering"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:64
+msgid "Test 2 passed: warn level shows error/warn only"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:66
+msgid "Test 2 failed: warn level filtering incorrect"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:70
+msgid "Test 3: info level filtering"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:86
+msgid "Test 3 passed: info level shows all except note"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:88
+msgid "Test 3 failed: info level filtering incorrect"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:92
+msgid "Test 4: debug level filtering"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:108
+msgid "Test 4 passed: debug level shows all messages"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:110
+msgid "Test 4 failed: debug level filtering incorrect"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:114
+msgid "Test 5: Invalid level defaults to warn"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:122
+msgid "Test 5 passed: Invalid level defaults to warn"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:124
+msgid "Test 5 failed: Invalid level did not default to warn"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:128
+msgid "Test 6: Default behavior"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:133
+msgid "Test 6 passed: Default level is warn"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:135
+msgid "Test 6 failed: Default level incorrect"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:138
+msgid "All verbosity tests passed"
+msgstr ""
+
+#: .container/user/test.d/0200-test-b19-run.sh:14
+msgid "Try to call non-existent-command"
+msgstr ""
+
+#: .container/user/test.d/0300-nslookup.sh:13
+msgid "nslookup google.com 8.8.8.8 failed (network may be isolated)"
+msgstr ""
+
+#: .container/user/test.d/0300-nslookup.sh:16
+msgid "nslookup google.com 1.1.1.1 failed (network may be isolated)"
+msgstr ""
+
+#: .container/user/test.d/0900-memory-consumption.sh:17
+msgid ""
+"memory.current unavailable (memory controller not delegated); skipping "
+"memory check"
+msgstr ""
+
+#: .container/user/test.d/0900-memory-consumption.sh:25
+msgid "Total memory used by the container: %s MB"
+msgstr ""
+
+#: .container/user/test.d/0900-memory-consumption.sh:28
+msgid "Total memory usage (%s MB) exceeds the threshold (%s MB)"
+msgstr ""
+
+#: .container/user/test.d/0900-memory-consumption.sh:31
+msgid "Total memory usage is within the threshold (%s MB)"
+msgstr ""

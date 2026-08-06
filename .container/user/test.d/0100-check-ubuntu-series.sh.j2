@@ -1,0 +1,16 @@
+{#
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+
+SPDX-License-Identifier: MIT
+#}
+
+#!/usr/bin/env bash
+
+  set -e
+
+  if [ "{{ ENV.B19_UBUNTU_SERIES }}" != "$(lsb_release -cs 2> /dev/null)" ]
+  then
+    exit 1
+  fi
+
+  exit 0

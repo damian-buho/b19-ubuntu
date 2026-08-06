@@ -1,0 +1,180 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+set -euo pipefail
+
+# =============================================================================
+# b19-resolve-dep - Resolve dependency metadata from /deps/{component}/
+# =============================================================================
+#
+# Usage: eval "$(b19-resolve-dep COMPONENT [ARCH])"
+#
+# Examples:
+#   eval "$(b19-resolve-dep traefik "${TARGETARCH}")"   # arch-dependent
+#   eval "$(b19-resolve-dep ruby)"                       # arch-independent
+#
+# Reads from /deps/{component}/ and outputs shell variable assignments to
+# stdout. Use with eval to set variables in the calling context.
+#
+# Arguments:
+#   COMPONENT - directory under /deps/ (e.g., traefik, ruby, extensions/redis)
+#   ARCH      - architecture (e.g., amd64, arm64); omit for arch-independent
+#
+# Environment:
+#   M6E_SERIES  - Series selector (optional, e.g., 3.4, 22)
+#
+# Output variables:
+#   M6E_UPSTREAM_VERSION  - resolved version
+#   M6E_UPSTREAM__URL     - resolved URL (envsubst-expanded)
+#   M6E_UPSTREAM__HASH    - resolved SHA-512 hash
+#   M6E_UPSTREAM__FILE    - fetch filename ({leaf}.{version}[.{arch}].{ext})
+#
+# envsubst vars available in url.deps: ${M6E_UPSTREAM_VERSION},
+# ${M6E_UPSTREAM_BUILD} (from optional build.deps), ${M6E_SERIES},
+# ${TARGETARCH}.
+#
+# Resolution order (most specific wins):
+#   1. {component}/{series}/{arch}.file.deps
+#   2. {component}/{series}/file.deps
+#   3. {component}/{arch}.file.deps
+#   4. {component}/file.deps
+#
+# =============================================================================
+
+# shellcheck source=/dev/null
+. b19-i18n
+
+# ---------------------------------------------------------------------------
+# decomment_read - Read a .deps file, stripping REUSE v3 SPDX comment headers
+# Returns the first non-comment, non-blank line with whitespace trimmed.
+# decomment_filter - Same but returns all non-comment, non-blank lines.
+# ---------------------------------------------------------------------------
+decomment_read() {
+  grep -v '^[[:space:]]*#' "$1" | sed '/^[[:space:]]*$/d' | head -1 | tr -d '\r' \
+    | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+}
+decomment_filter() {
+  grep -v '^[[:space:]]*#' "$1" | sed '/^[[:space:]]*$/d' | tr -d '\r'
+}
+
+COMPONENT=${1:?Usage: b19-resolve-dep COMPONENT [ARCH]}
+ARCH=${2:-}
+DEPS_DIR="${B19_DEPS_PATH:-/deps}/${COMPONENT}"
+
+if [ ! -d "${DEPS_DIR}" ]; then
+  b19-log error "RESOLVE" "$(_p "component not found: %s" "${DEPS_DIR}")"
+  exit 1
+fi
+
+# ---------------------------------------------------------------------------
+# resolve_file - 4-level fallback
+# ---------------------------------------------------------------------------
+resolve_file() {
+  local filename="$1"
+
+  if [ -n "${M6E_SERIES:-}" ] && [ -n "${ARCH}" ] \
+     && [ -f "${DEPS_DIR}/${M6E_SERIES}/${ARCH}.${filename}" ]; then
+    echo "${DEPS_DIR}/${M6E_SERIES}/${ARCH}.${filename}"
+  elif [ -n "${M6E_SERIES:-}" ] \
+     && [ -f "${DEPS_DIR}/${M6E_SERIES}/${filename}" ]; then
+    echo "${DEPS_DIR}/${M6E_SERIES}/${filename}"
+  elif [ -n "${ARCH}" ] \
+     && [ -f "${DEPS_DIR}/${ARCH}.${filename}" ]; then
+    echo "${DEPS_DIR}/${ARCH}.${filename}"
+  elif [ -f "${DEPS_DIR}/${filename}" ]; then
+    echo "${DEPS_DIR}/${filename}"
+  else
+    return 1
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# Resolve version (no arch dimension)
+# ---------------------------------------------------------------------------
+if [ -n "${M6E_SERIES:-}" ] && [ -f "${DEPS_DIR}/${M6E_SERIES}/version.deps" ]; then
+  VERSION=$(decomment_read "${DEPS_DIR}/${M6E_SERIES}/version.deps")
+else
+  VERSION=$(decomment_read "${DEPS_DIR}/version.deps")
+fi
+
+# ---------------------------------------------------------------------------
+# Resolve build id (optional, no arch dimension) — components whose URL embeds
+# a second per-release identifier (e.g. grafana's CI build number).
+# ---------------------------------------------------------------------------
+BUILD=""
+if [ -n "${M6E_SERIES:-}" ] && [ -f "${DEPS_DIR}/${M6E_SERIES}/build.deps" ]; then
+  BUILD=$(decomment_read "${DEPS_DIR}/${M6E_SERIES}/build.deps")
+elif [ -f "${DEPS_DIR}/build.deps" ]; then
+  BUILD=$(decomment_read "${DEPS_DIR}/build.deps")
+fi
+
+# ---------------------------------------------------------------------------
+# Resolve URL
+# ---------------------------------------------------------------------------
+URL_FILE=$(resolve_file "url.deps") || {
+  b19-log error "RESOLVE" "$(_p "no url file for %s" "${COMPONENT}")"
+  exit 1
+}
+
+# Export vars needed by envsubst before expanding
+export M6E_UPSTREAM_VERSION="${VERSION}"
+export M6E_UPSTREAM_BUILD="${BUILD}"
+export M6E_SERIES="${M6E_SERIES:-}"
+export TARGETARCH="${ARCH}"
+
+echo "${VERSION}" > "${DEPS_DIR}/version.deps"
+
+URL=$(decomment_filter "${URL_FILE}" | envsubst)
+
+# ---------------------------------------------------------------------------
+# Resolve hash
+# ---------------------------------------------------------------------------
+HASH_FILE=$(resolve_file "hash.deps") || {
+  b19-log error "RESOLVE" "$(_p "no hash file for %s" "${COMPONENT}")"
+  exit 1
+}
+HASH=$(decomment_read "${HASH_FILE}")
+
+# ---------------------------------------------------------------------------
+# Build filename
+# ---------------------------------------------------------------------------
+COMPONENT_LEAF=$(basename "${COMPONENT}")
+URL_BASENAME=$(basename "${URL}")
+
+case "${URL_BASENAME}" in
+  *.tar.gz)  FETCH_EXT="tar.gz"  ;;
+  *.tar.xz)  FETCH_EXT="tar.xz"  ;;
+  *.tar.bz2) FETCH_EXT="tar.bz2" ;;
+  *.tar.zst) FETCH_EXT="tar.zst" ;;
+  *.*)       FETCH_EXT="${URL_BASENAME##*.}" ;;
+  *)         FETCH_EXT=""         ;;
+esac
+
+FETCH_NAME="${COMPONENT_LEAF}.${VERSION}"
+if [ -n "${ARCH}" ]; then
+  FETCH_NAME="${FETCH_NAME}.${ARCH}"
+fi
+if [ -n "${FETCH_EXT}" ]; then
+  FETCH_NAME="${FETCH_NAME}.${FETCH_EXT}"
+fi
+
+b19-log info "RESOLVE" "${COMPONENT}"
+b19-log info "RESOLVE" "$(_p "Version:   %s" "${VERSION}")"
+[ -n "${BUILD}" ] && b19-log info "RESOLVE" "$(_p "Build:     %s" "${BUILD}")"
+b19-log info "RESOLVE" "$(_p "URL:       %s" "${URL}")"
+b19-log info "RESOLVE" "$(_p "Hash:      %s" "…${HASH: -8}")"
+b19-log info "RESOLVE" "$(_p "Filename:  %s" "${FETCH_NAME}")"
+
+# ---------------------------------------------------------------------------
+# Output shell assignments
+# ---------------------------------------------------------------------------
+cat <<EOF
+M6E_UPSTREAM_VERSION='${VERSION}'
+M6E_UPSTREAM__URL='${URL}'
+M6E_UPSTREAM__HASH='${HASH}'
+M6E_UPSTREAM__FILE='${FETCH_NAME}'
+export M6E_UPSTREAM_VERSION
+EOF

@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+    set -euo pipefail
+
+    # shellcheck source=/dev/null
+    . b19-i18n
+
+    if [ "${B19_PORT_CHECK_ENABLED:-true}" = "false" ]; then
+        b19-log info "PORT-CHECK" "$(_ "Port checking disabled (B19_PORT_CHECK_ENABLED=false)")"
+        exit 0
+    fi
+
+    FORBIDDEN_PORTS_FILE="${B19_HOME}/.forbidden-ports.txt"
+
+    if [ ! -f "${FORBIDDEN_PORTS_FILE}" ]; then
+        b19-log warn "PORT-CHECK" "$(_ "Forbidden ports list not found, skipping check")"
+        exit 0
+    fi
+
+    # Read forbidden ports, stripping REUSE comment lines
+    mapfile -t FORBIDDEN_PORTS < <(decomment < "${FORBIDDEN_PORTS_FILE}")
+
+    ERRORS=0
+
+    while IFS= read -r ENV_LINE; do
+        VAR_NAME="${ENV_LINE%%=*}"
+        VAR_VALUE="${ENV_LINE#*=}"
+
+        # Skip non-numeric values
+        if ! [[ "${VAR_VALUE}" =~ ^[0-9]+$ ]]; then
+            continue
+        fi
+
+        PORT="${VAR_VALUE}"
+
+        # Check against WHATWG bad ports list
+        if printf '%s\n' "${FORBIDDEN_PORTS[@]}" | grep -qxF "${PORT}"; then
+            b19-log error "PORT-CHECK" "$(_p "%s=%s is browser-blocked (WHATWG bad port)" "${VAR_NAME}" "${PORT}")"
+            ERRORS=$((ERRORS + 1))
+        fi
+
+        # Check privileged ports — only warn when not root
+        if [[ "$(id -u)" != "0" && "${PORT}" -lt 1024 && "${PORT}" != 0 ]]; then
+            b19-log error "PORT-CHECK" "$(_p "%s=%s requires root privileges (port < 1024)" "${VAR_NAME}" "${PORT}")"
+            ERRORS=$((ERRORS + 1))
+        fi
+
+    done < <(env | grep -E '^[A-Z_][A-Z0-9_]*PORT=')
+
+    if [ "${ERRORS}" -gt 0 ]; then
+        b19-log error "PORT-CHECK" "$(_p "Port check failed: %s unsafe port(s) found" "${ERRORS}")"
+        exit 1
+    fi
+
+    b19-log debug "PORT-CHECK" "$(_ "All PORT variables are safe")"

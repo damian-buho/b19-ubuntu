@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+  # shellcheck source=/dev/null
+  . /etc/lsb-release
+
+  FULL_DEPS="/deps/apt.deps"
+  declare -a sources=()
+
+  # Collect source files for each family (regular and inheritable) by priority:
+  # stage-prefixed full > stage-prefixed common+release > unprefixed full > unprefixed common+release
+  for infix in "" "i."; do
+    sfx="${infix}deps"
+    for stage_prefix in "${STAGE}." ""; do
+      full="/deps/${stage_prefix}apt.${sfx}"
+      common="/deps/${stage_prefix}common.${infix}apt.deps"
+      release="/deps/${stage_prefix}${DISTRIB_CODENAME}.${infix}apt.deps"
+
+      if [ -f "${full}" ];
+      then
+        # For infix="" stage_prefix="": full IS FULL_DEPS — already the output, skip append
+        [ "${full}" != "${FULL_DEPS}" ] && sources+=("${full}")
+        break
+      elif [ -f "${common}" ];
+      then
+        sources+=("${common}")
+        [ -f "${release}" ] && sources+=("${release}")
+        break
+      fi
+    done
+  done
+
+  for src in "${sources[@]}"; do
+    b19-log note "PACKAGES" "$(_p "Appending deps file (%s)" "${src}")"
+    echo "" >> "${FULL_DEPS}"
+    cat "${src}" >> "${FULL_DEPS}"
+  done
+
+  if [ -f "${FULL_DEPS}" ];
+  then
+    b19-log note "PACKAGES" "$(_ 'Dependencies list is detected')"
+
+    # Ensure newline in the end
+    [[ $(tail -n 1 "${FULL_DEPS}") != "" ]] && echo "" >> "${FULL_DEPS}"
+
+    update-apt
+
+    b19-log info "PACKAGES" "$(cat "${FULL_DEPS}")"
+
+    # Serialize concurrent buildkit jobs sharing the apt-cache (archives) mount.
+    # Lock file lives inside the shared mount so all builds see the same inode.
+    b19-log info "PACKAGES" "$(_p "Acquire flock on shared APT archives cache (wait %s s)" "600")"
+
+    # Pre-compute package list to avoid shell features inside b19-run.
+    # The first token is the package, optionally pinned as name=version — apt
+    # accepts that verbatim, so pins in any .deps file just flow through.
+    # shellcheck disable=SC2207
+    PKGS=($(decomment < "${FULL_DEPS}" | awk '{print $1}'))
+
+    # shellcheck disable=SC2086
+    b19-run "PACKAGES" "$(_p "Install dependencies (%s packages)" "${#PKGS[@]}")" --  \
+      flock -w 600 /var/cache/apt/.buildkit-lock    \
+      apt-get install                               \
+        --assume-yes                                \
+        --no-install-recommends                     \
+        --quiet                                     \
+        -o Dpkg::Options::="--force-confold"        \
+        "${PKGS[@]}" || exit 9
+
+    # Delete regular source files only; .i.deps files are preserved for downstream stages to inherit
+    rm -f "/deps/${STAGE}.apt.deps"                          \
+          "/deps/${STAGE}.common.apt.deps"                   \
+          "/deps/${STAGE}.${DISTRIB_CODENAME}.apt.deps"
+    rm -f "${FULL_DEPS}"                                     \
+          "/deps/common.apt.deps"                            \
+          "/deps/${DISTRIB_CODENAME}.apt.deps"
+  else
+    b19-log info "PACKAGES" "$(_p "Dependencies list (%s) is not detected" "${FULL_DEPS}")"
+  fi

@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+{#
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+
+SPDX-License-Identifier: MIT
+#}
+
+Types: deb
+Components: stable
+Suites: {{ ENV.B19_UBUNTU_SERIES }}
+URIs: https://download.docker.com/linux/ubuntu
+Architectures: {{ ENV.TARGETARCH }}
+Signed-By: /usr/share/keyrings/docker-archive-keyring.gpg

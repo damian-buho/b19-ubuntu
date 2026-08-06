@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  # shellcheck source=/dev/null
+  . /etc/lsb-release
+
+  DOCKER_KEYRING_FILE="/usr/share/keyrings/docker-archive-keyring.gpg"
+  DOCKER_KEYRING_URL="https://download.docker.com/linux/ubuntu/gpg"
+
+# Get Keyring for Docker Repository
+  b19-fetch "DOCKER" "${DOCKER_KEYRING_URL}" "docker-archive-keyring.asc" ""
+
+  b19-run "DOCKER" "$(_p "Dearmor %s" "${B19_TEMP_PATH}/docker-archive-keyring.asc}")" --   \
+    gpg --dearmor --output "${DOCKER_KEYRING_FILE}" "${B19_TEMP_PATH}/docker-archive-keyring.asc"
+
+# Add Docker Repository to apt sources
+  minijinja-cli --env /etc/apt/templates/docker.sources.j2 \
+    -o /etc/apt/sources.list.d/docker.sources
+  b19-log good "DOCKER" "$(_p "Repository configured for %s" "${DISTRIB_CODENAME}")"
+
+  b19-run "DOCKER" "$(_ "Enabling docker connect test")" --   \
+    mv /test.d/0900-docker-connect.sh.disabled /test.d/0900-docker-connect.sh
