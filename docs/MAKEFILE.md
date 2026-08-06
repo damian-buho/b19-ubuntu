@@ -2,7 +2,6 @@
 SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
 -->
-
 # Makefile Targets
 
 ## Bootstrap
@@ -81,7 +80,7 @@ Preflight: Docker Engine version
 
 ### `preflight-registries`
 
-Verify referenced tool-image registry vars are configured (not a \*.invalid sentinel)
+Verify referenced tool-image registry vars are configured (not a *.invalid sentinel)
 
 > Source: core/base/115-registries.mk
 
@@ -1070,7 +1069,7 @@ Generate .claudeignore from the projectfile
 
 ### `pf-bridge-fragments-check`
 
-Verify FEATURES.md/ROADMAP.md still match the docs/\*.d fragments
+Verify FEATURES.md/ROADMAP.md still match the docs/*.d fragments
 
 `pf-bridge fragments --check`
 
@@ -1078,7 +1077,7 @@ Verify FEATURES.md/ROADMAP.md still match the docs/\*.d fragments
 
 ### `pf-bridge-fragments-generate`
 
-Assemble FEATURES.md/ROADMAP.md from docs/\*.d fragments
+Assemble FEATURES.md/ROADMAP.md from docs/*.d fragments
 
 `pf-bridge fragments`
 
