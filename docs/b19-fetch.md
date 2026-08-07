@@ -108,16 +108,16 @@ trust store is used untouched.
 
 ## Environment
 
-| Variable                  | Default          | Description                                    |
-| ------------------------- | ---------------- | ---------------------------------------------- |
-| `B19_FETCH_LOCAL_CACHE`   | `Y`              | Enable local cache tier (`.fetch` context)     |
-| `B19_FETCH_DOCKER_CACHE`  | `Y`              | Enable Docker Cache tier (`B19_DOWNLOAD_PATH`) |
-| `B19_FETCH_LOCAL_PATH`    | `/fetch`         | Mount path for the local cache context         |
-| `B19_OFFGRID_MODE`        | `N`              | Block downloads; fail if download required     |
-| `B19_DOWNLOAD_PATH`       | `/app/.download` | Docker Cache directory                         |
-| `B19_DOWNLOAD_DISK_CACHE` | `64m`            | aria2c disk cache size                         |
-| `B19_DOWNLOAD_MAX_TRIES`  | `4`              | Maximum retry attempts                         |
-| `B19_DOWNLOAD_RETRY_WAIT` | `16`             | Seconds between retries                        |
+| Variable                  | Default                    | Description                                    |
+| ------------------------- | ---------------- ----------| ---------------------------------------------- |
+| `B19_FETCH_LOCAL_CACHE`   | `Y`                        | Enable local cache tier (`.fetch` context)     |
+| `B19_FETCH_DOCKER_CACHE`  | `Y`                        | Enable Docker Cache tier (`B19_DOWNLOAD_PATH`) |
+| `B19_FETCH_LOCAL_PATH`    | `/fetch`                   | Mount path for the local cache context         |
+| `B19_OFFGRID_MODE`        | `N`                        | Block downloads; fail if download required     |
+| `B19_DOWNLOAD_PATH`       | `/var/cache/b19/download`  | Docker Cache directory                         |
+| `B19_DOWNLOAD_DISK_CACHE` | `64m`                      | aria2c disk cache size                         |
+| `B19_DOWNLOAD_MAX_TRIES`  | `4`                        | Maximum retry attempts                         |
+| `B19_DOWNLOAD_RETRY_WAIT` | `16`                       | Seconds between retries                        |
 | `M6E_NEAR_CACHE_HOST`     | (unset)          | Near-cache proxy hostname                      |
 | `B19_BUILD_CA_FILE`       | (staged)         | Build-host CA bundle in the fetch context      |
 | `B19_TEMP_PATH`           | `/tmp`           | Destination for the final file copy            |

@@ -105,17 +105,18 @@ checks test connectivity. Network checks respect `B19_OFFGRID_MODE`.
 
 Three-tier fetch model: local cache → Docker BuildKit cache → aria2c download.
 
-| Variable                  | Default                 | Accepted values    | Controls                                                       |
-| ------------------------- | ----------------------- | ------------------ | -------------------------------------------------------------- |
-| `B19_FETCH_LOCAL_CACHE`   | `Y`                     | `Y`, `N`           | Enable Tier 1: check `.fetch` build context before network     |
-| `B19_FETCH_DOCKER_CACHE`  | `Y`                     | `Y`, `N`           | Enable Tier 2: check BuildKit persistent cache before download |
-| `B19_FETCH_LOCAL_PATH`    | `/fetch`                | absolute path      | Mount point for `.fetch` context (set by Dockerfile `--mount`) |
-| `B19_DOWNLOAD_PATH`       | `${B19_HOME}/.download` | absolute path      | BuildKit cache mount target for aria2c downloads               |
-| `B19_DOWNLOAD_DISK_CACHE` | `64m`                   | aria2c size string | aria2c in-memory disk cache size                               |
-| `B19_DOWNLOAD_MAX_TRIES`  | `4`                     | positive integer   | Max aria2c retry attempts per download                         |
-| `B19_DOWNLOAD_RETRY_WAIT` | `16`                    | positive integer   | Seconds between aria2c retries                                 |
-| `B19_BUILD_CA_FILE`       | (staged)                | absolute path      | Build-host CA bundle staged from `M6E_CA_CERTIFICATES`         |
-| `B19_BUILD_CA_ANCHOR`     | (transient)             | absolute path      | Where a root stage installs it, then drops it pre-commit       |
+| Variable                  | Default                      | Accepted values    | Controls                                                       |
+| ------------------------- | ----------------------- -----| ------------------ | -------------------------------------------------------------- |
+| `B19_FETCH_LOCAL_CACHE`   | `Y`                          | `Y`, `N`           | Enable Tier 1: check `.fetch` build context before network     |
+| `B19_FETCH_DOCKER_CACHE`  | `Y`                          | `Y`, `N`           | Enable Tier 2: check BuildKit persistent cache before download |
+| `B19_FETCH_LOCAL_PATH`    | `/fetch`                     | absolute path      | Mount point for `.fetch` context (set by Dockerfile `--mount`) |
+| `B19_CACHE_PATH`          | `/var/cache/b19`             | absolute path      | Parent of the download cache mount, writable by `B19_UID`      |
+| `B19_DOWNLOAD_PATH`       | `${B19_CACHE_PATH}/download` | absolute path      | BuildKit cache mount target for aria2c downloads               |
+| `B19_DOWNLOAD_DISK_CACHE` | `64m`                        | aria2c size string | aria2c in-memory disk cache size                               |
+| `B19_DOWNLOAD_MAX_TRIES`  | `4`                          | positive integer   | Max aria2c retry attempts per download                         |
+| `B19_DOWNLOAD_RETRY_WAIT` | `16`                         | positive integer   | Seconds between aria2c retries                                 |
+| `B19_BUILD_CA_FILE`       | (staged)                     | absolute path      | Build-host CA bundle staged from `M6E_CA_CERTIFICATES`         |
+| `B19_BUILD_CA_ANCHOR`     | (transient)                  | absolute path      | Where a root stage installs it, then drops it pre-commit       |
 
 Both CA variables are inert unless the build host sets `M6E_CA_CERTIFICATES` —
 see [b19-fetch.md](b19-fetch.md) for why a privately fronted near cache needs
@@ -243,6 +244,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_DEPS_PATH`                 | runtime         | Hook Directories |
 | `B19_BUILD_CA_ANCHOR`           | build           | Download         |
 | `B19_BUILD_CA_FILE`             | build           | Download         |
+| `B19_CACHE_PATH`                | build + runtime | Download         |
 | `B19_DOCKER_GID`                | build + runtime | System Paths     |
 | `B19_DOWNLOAD_DISK_CACHE`       | build           | Download         |
 | `B19_DOWNLOAD_MAX_TRIES`        | build           | Download         |

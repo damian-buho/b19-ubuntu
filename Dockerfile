@@ -12,6 +12,7 @@ FROM --platform=${BASE_ARCH} ${B19_MINIJINJA_IMAGE} AS b19-minijinja
 
 FROM ubuntu@${B19_UBUNTU_HASH} AS final
 
+ARG B19_CACHE_PATH=/var/cache/b19
 ARG B19_COLOR
 ARG B19_FETCH_DOCKER_CACHE=Y
 ARG B19_FETCH_LOCAL_CACHE=Y
@@ -55,12 +56,13 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_BOOTSTRAP_PATH=/bootstrap.d                                               \
     B19_BUILD_ALWAYS_ENABLED=true                                                 \
     B19_BUILD_PATH=/build.d                                                       \
+    B19_CACHE_PATH="${B19_CACHE_PATH}"                                            \
     B19_COMMAND_PATH=/command.d                                                   \
     B19_DEPS_PATH=/deps                                                           \
     B19_DOCKER_GID=995                                                            \
     B19_DOWNLOAD_DISK_CACHE=64m                                                   \
     B19_DOWNLOAD_MAX_TRIES=4                                                      \
-    B19_DOWNLOAD_PATH=${B19_HOME}/.download                                       \
+    B19_DOWNLOAD_PATH=${B19_CACHE_PATH}/download                                  \
     B19_DOWNLOAD_RETRY_WAIT=16                                                    \
     B19_ENTRYPOINT_PATH=/entrypoint.d                                             \
     B19_FETCH_DOCKER_CACHE=${B19_FETCH_DOCKER_CACHE}                              \
