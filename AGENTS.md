@@ -118,6 +118,7 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 - **Multi-series matrix.** Builds across `B19_UBUNTU_SERIES` ∈ {`resolute`, `noble`} (`projectfile.yaml` → `org.projectfile.ci.matrix`). Image name is series-qualified: `b19/ubuntu/<series>`. Anything series-specific belongs in
     `deps/ubuntu/<series>.*` or `.j2` templates, never hardcoded.
 - **deps are declarative.** Add a `*.deps` file under the right `deps/` path and the m6e build auto-discovers it (URL/version/SHA-512, arch-aware) — no Makefile edit. [docs/dependencies.md](docs/dependencies.md).
+- **`b19-resolve-dep` clobbers.** It always writes the same `M6E_UPSTREAM_VERSION` / `M6E_UPSTREAM__*` names, and hooks are SOURCED in one shell, so the last `eval` in the stage wins. A hook that reads those values MUST `eval "$(b19-resolve-dep <name>)"` itself — an earlier hook’s resolve is not yours. Silent when the value only feeds a `-X` ldflag: the linker drops an unknown target and the binary keeps its default.
 - **i18n is mandatory.** User-facing strings go through `_()`/`_p()`; update
     `.container/{stage}/locale/*.pot|*.po` (es, uk). Don’t add English-only output.
 - **offgrid is real.** `B19_OFFGRID_MODE=Y` must stay honored: any new network access needs a guard + cache path. Audit: [docs/offgrid-apt.md](docs/offgrid-apt.md).
