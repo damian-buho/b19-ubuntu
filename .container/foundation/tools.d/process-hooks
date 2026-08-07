@@ -10,7 +10,7 @@
   _b19_on_hook_error() {
       HOOK_EXIT_CODE=$?
       trap - ERR
-      b19-log bad "HOOK" "$(_p "%s failed to execute (code %s)" "${HOOK_NAME}" "${HOOK_EXIT_CODE}")"
+      b19-log error "HOOK" "$(_p "%s failed to execute (code %s)" "${HOOK_NAME}" "${HOOK_EXIT_CODE}")"
       exit "${HOOK_EXIT_CODE}"
   }
 
