@@ -103,6 +103,7 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_UID="${B19_UID}"                                                          \
     B19_USER="${B19_USER}"                                                        \
     DEBIAN_FRONTEND=noninteractive                                                \
+    DO_NOT_TRACK=1                                                                \
     ENVIRONMENT=production                                                        \
     LANG=C.UTF-8                                                                  \
     PARALLEL_HOME="${B19_TEMP_PATH}"                                              \

@@ -211,6 +211,14 @@ configuration, but useful in downstream scripts.
 | `STAGE`                       | `build-stage`           | Current build stage name (foundation, user, etc.)                                                                                                          |
 | `_B19_I18N_MODE`              | `b19-i18n`              | Current i18n mode: `gettext`, `passthrough`, `disabled`                                                                                                    |
 
+## Telemetry opt-out
+
+Base-image default. Inherited by every downstream image; honored by tools that respect the standard.
+
+| Variable       | Default | Controls                                                                                                                                                                   |
+| -------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DO_NOT_TRACK` | `1`     | The [donottrack.sh](https://donottrack.sh/) standard opt-out. Set in the Dockerfile `ENV` block; downstream tools (e.g. grype, syft) honor it to skip anonymous analytics. |
+
 ## XDG Paths
 
 Set in the Dockerfile for consistency with XDG Base Directory Specification.
