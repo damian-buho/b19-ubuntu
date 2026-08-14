@@ -139,7 +139,7 @@ SPDX-License-Identifier: MIT
 
 - Eight numbered-hook runners cover the full container lifecycle: startup, healthchecks, tests, bootstrap, build hooks, benchmarks, reports, and shell sessions.
 - All runners share the same pattern: drop a numbered script into a directory, it is auto-discovered and executed.
-- Scripts from different image layers merge seamlessly — upstream and downstream hooks coexist without conflict.
+- Scripts from different image layers merge — upstream and downstream hooks coexist without conflict.
 - Each runner has tailored failure semantics: abort on error (entrypoint, bootstrap), continue and count failures (healthchecks, tests), always succeed (reports).
 
 ### Docker secrets auto-loading (secrets)
@@ -179,8 +179,8 @@ SPDX-License-Identifier: MIT
 
 ### Pre-installed utility tools
 
-- `mold` as default linker for faster linking (opt-out available).
-- `fd` for fast file finding, `minijinja-cli` for template rendering.
+- `mold` as default linker (opt-out available).
+- `fd` for file finding, `minijinja-cli` for template rendering.
 - `aria2c` for multi-connection downloads, `tini` as PID 1 for zombie reaping.
 - Parallel compression tools: `pbzip2`, `pigz`, `pixz`.
 - gettext tools for i18n compilation, `cURL` for network operations.

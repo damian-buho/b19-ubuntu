@@ -4,13 +4,13 @@ SPDX-License-Identifier: MIT
 pf-cli-managed: yes
 -->
 
-<!-- textlint-disable terminology -->
+<!-- textlint-disable terminology,common-misspellings -->
 
 [English](../../README.md) · [Español](../es/README.md)
 
 # B19/Ubuntu
 
-Ubuntu base image with some useful conventions
+Community-maintained Ubuntu base image for the B19 fleet
 
 [![Stand with Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://damian-buho.github.io/support-ukraine/) [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=4c1&style=flat-square)](LICENSE) ![Commit style](https://img.shields.io/static/v1?label=commits&message=conventional&color=blue&style=flat-square) ![Workflow](https://img.shields.io/static/v1?label=workflow&message=git-flow&color=blue&style=flat-square) ![Versioning](https://img.shields.io/static/v1?label=versioning&message=semantic&color=blue&style=flat-square) [![PRs welcome](https://img.shields.io/static/v1?label=PRs&message=welcome&color=4c1&style=flat-square)](CONTRIBUTING.md) [![Citation](https://img.shields.io/static/v1?label=citation&message=cff&color=blue&style=flat-square)](CITATION.cff) [![REUSE compliance](https://api.reuse.software/badge/codeberg.org/b19/ubuntu)](https://api.reuse.software/info/codeberg.org/b19/ubuntu)
 
@@ -59,7 +59,7 @@ Ubuntu base image with some useful conventions
 
 ## Підтримувані платформи
 
-`linux/amd64`, `linux/arm64`
+`linux/amd64`, `linux/arm64`, `linux/riscv64`
 
 ## Встановлення
 
@@ -149,12 +149,18 @@ FROM docker.io/damianbuho/b19-ubuntu-noble:latest
 
 ## Посилання
 
+### Проєкт
+
 - [Специфікація Projectfile](https://projectfile.org)
-- [B19/Ubuntu on Codeberg](https://codeberg.org/b19/ubuntu)
-- [B19/Ubuntu on GitHub](https://github.com/damian-buho/b19-ubuntu)
-- [B19/Ubuntu on kiota.ch](https://kiota.ch/b19/ubuntu)
-- [Issues on Codeberg](https://codeberg.org/b19/ubuntu/issues)
-- [Issues on GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
+- [B19/Ubuntu на Codeberg](https://codeberg.org/b19/ubuntu)
+- [B19/Ubuntu на GitHub](https://github.com/damian-buho/b19-ubuntu)
+- [B19/Ubuntu на kiota.ch](https://kiota.ch/b19/ubuntu)
+- [Issues на Codeberg](https://codeberg.org/b19/ubuntu/issues)
+- [Issues на GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
+
+### Інше
+
+- [Від автора](https://dbuho.me)
 
 ## Ліцензія
 

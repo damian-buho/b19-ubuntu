@@ -10,7 +10,7 @@ cff-version: 1.2.0
 message: Please cite this software using the metadata from this file.
 type: software
 title: B19/Ubuntu
-abstract: Ubuntu base image with some useful conventions
+abstract: Community-maintained Ubuntu base image for the B19 fleet
 authors:
   - family-names: Búho
     given-names: Damián
@@ -25,3 +25,9 @@ contact:
     website: https://dbuho.me
 license: MIT
 repository-code: https://kiota.ch/b19/ubuntu
+keywords:
+  - ubuntu
+  - base-image
+  - linux
+  - os
+  - docker

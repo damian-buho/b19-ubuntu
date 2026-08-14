@@ -6,29 +6,14 @@ $schema: https://projectfile.org/schema/v1.json
 identity:
   created: "2026-06-01"
   name: ubuntu
-  summary: Ubuntu base image with some useful conventions
+  summary: Community-maintained Ubuntu base image for the B19 fleet
   title: B19/Ubuntu
+  description: Community-maintained Ubuntu base image for the B19 fleet. This repository holds only the packaging — Dockerfile, bootstrap scripts, and configuration, all MIT-licensed; the upstream Ubuntu rootfs is fetched at build time and retains its own licensing.
 includes:
   - .makefile/b19/ci.yaml
   - https://kiota.ch/b19/metadata/raw/branch/main/include.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
 kind: SoftwareSourceCode
-links:
-  - label: B19/Ubuntu on Codeberg
-    type: source-code
-    url: https://codeberg.org/b19/ubuntu
-  - label: B19/Ubuntu on GitHub
-    type: source-code
-    url: https://github.com/damian-buho/b19-ubuntu
-  - label: B19/Ubuntu on kiota.ch
-    type: source-code
-    url: https://kiota.ch/b19/ubuntu
-  - label: Issues on Codeberg
-    type: bugs
-    url: https://codeberg.org/b19/ubuntu/issues
-  - label: Issues on GitHub
-    type: bugs
-    url: https://github.com/damian-buho/b19-ubuntu/issues
 org:
   b19:
     scaffold:
@@ -37,6 +22,7 @@ org:
     architecture:
       - amd64
       - arm64
+      - riscv64
     build:
       args:
         B19_FD_IMAGE: ${B19_DOCKER_REGISTRY}/b19/fd:${M6E_BASE_IMAGE_DEFAULT_VERSION}
@@ -48,6 +34,10 @@ org:
         B19_UBUNTU_MIRROR_ARM64: ""
         B19_UBUNTU_MIRROR_RISCV64: ""
         B19_UBUNTU_SERIES: resolute
+    image:
+      series: "{B19_UBUNTU_SERIES}"
+      path: ${org}/${name}/${series}
+      flatpath: ${org}-${name}-${series}
     ci:
       image: b19/ubuntu/{B19_UBUNTU_SERIES}
       matrix:
@@ -58,10 +48,10 @@ org:
       secrets:
         b19.test.secret:
           value: hello-from-shell-d
-    operating-system:
-      - linux
     conventions:
       fragments: {}
+    operating-system:
+      - linux
     status: maintained
 repositories:
   - issues: true
@@ -71,6 +61,59 @@ repositories:
   - role: mirror
     type: git
     url: git@github.com:damian-buho/b19-ubuntu.git
-  - role: origin
+  - branch: main
+    role: origin
     type: git
     url: ssh://git@kiota.ch/b19/ubuntu.git
+links:
+  - label:
+      en: B19/Ubuntu on Codeberg
+      es: B19/Ubuntu en Codeberg
+      uk: B19/Ubuntu на Codeberg
+    tags:
+      - public
+      - badges
+      - badges-gitea
+    type: source-code
+    url: https://codeberg.org/b19/ubuntu
+  - label:
+      en: B19/Ubuntu on GitHub
+      es: B19/Ubuntu en GitHub
+      uk: B19/Ubuntu на GitHub
+    tags:
+      - public
+      - badges
+      - badges-github
+    type: source-code
+    url: https://github.com/damian-buho/b19-ubuntu
+  - label:
+      en: B19/Ubuntu on kiota.ch
+      es: B19/Ubuntu en kiota.ch
+      uk: B19/Ubuntu на kiota.ch
+    preferred: true
+    type: source-code
+    url: https://kiota.ch/b19/ubuntu
+  - label:
+      en: Issues on Codeberg
+      es: Incidencias en Codeberg
+      uk: Issues на Codeberg
+    tags:
+      - support
+    type: bugs
+    url: https://codeberg.org/b19/ubuntu/issues
+  - label:
+      en: Issues on GitHub
+      es: Incidencias en GitHub
+      uk: Issues на GitHub
+    tags:
+      - support
+    type: bugs
+    url: https://github.com/damian-buho/b19-ubuntu/issues
+keywords:
+  - ubuntu
+  - base-image
+  - linux
+  - os
+  - docker
+technologies:
+  - docker

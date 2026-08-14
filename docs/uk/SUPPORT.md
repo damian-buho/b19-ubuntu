@@ -4,7 +4,7 @@ SPDX-License-Identifier: MIT
 pf-cli-managed: yes
 -->
 
-<!-- textlint-disable terminology -->
+<!-- textlint-disable terminology,common-misspellings -->
 [English](../../SUPPORT.md) · [Español](../es/SUPPORT.md)
 
 # Як отримати підтримку
@@ -12,10 +12,15 @@ pf-cli-managed: yes
 Дякуємо, що користуєтеся **B19/Ubuntu**!
 Цей документ пояснює, де шукати допомогу та як ставити зрозумілі запитання.
 
+## Перш ніж питати
+
+Перегляньте це спершу — можливо, відповідь уже є:
+
+- [Issues на Codeberg](https://codeberg.org/b19/ubuntu/issues)
+- [Issues на GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
+
 ## Куди звертатися
 
-- **Повідомити про відтворювану ваду** — [Issues on Codeberg](https://codeberg.org/b19/ubuntu/issues)
-- **Повідомити про відтворювану ваду** — [Issues on GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
 - **Повідомити про вразливість безпеки** — [SECURITY.md](SECURITY.md)
 - **Зробити внесок у проєкт** — [CONTRIBUTING.md](CONTRIBUTING.md)
 
@@ -29,12 +34,17 @@ pf-cli-managed: yes
 4. **Середовище** — операційна система, версія B19/Ubuntu, версія середовища виконання.
 5. **Мінімальний відтворюваний приклад**, якщо це можливо.
 
-Див. [посібник MCVE на Stack Overflow](https://stackoverflow.com/help/minimal-reproducible-example)
-для порад.
+Див. посібник MCVE для порад.
 
 ## Час відповіді
 
 Це проєкт, який підтримує спільнота. Супровідники відповідають, коли мають змогу — зазвичай протягом кількох днів, але без гарантій. Просимо про терпіння та повагу.
+
+## Платна підтримка
+
+Платна підтримка для B19/Ubuntu доступна:
+
+- [Від автора](https://dbuho.me)
 
 *Згенеровано з projectfile ([дізнатися як](https://projectfile.org/how-to/support))*
 <!-- textlint-enable -->

@@ -4,7 +4,7 @@ SPDX-License-Identifier: MIT
 pf-cli-managed: yes
 -->
 
-<!-- textlint-disable terminology -->
+<!-- textlint-disable terminology,common-misspellings -->
 [English](../../SUPPORT.md) · [Українська](../uk/SUPPORT.md)
 
 # Cómo obtener ayuda
@@ -12,10 +12,15 @@ pf-cli-managed: yes
 ¡Gracias por usar **B19/Ubuntu**!
 Este documento explica dónde conseguir ayuda y cómo formular buenas preguntas.
 
+## Antes de preguntar
+
+Revisa esto primero — puede que tu pregunta ya tenga respuesta:
+
+- [Incidencias en Codeberg](https://codeberg.org/b19/ubuntu/issues)
+- [Incidencias en GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
+
 ## Dónde preguntar
 
-- **Informar de un fallo reproducible** — [Issues on Codeberg](https://codeberg.org/b19/ubuntu/issues)
-- **Informar de un fallo reproducible** — [Issues on GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
 - **Informar de una vulnerabilidad de seguridad** — [SECURITY.md](SECURITY.md)
 - **Contribuir al proyecto** — [CONTRIBUTING.md](CONTRIBUTING.md)
 
@@ -29,12 +34,17 @@ Para que podamos ayudarte, incluye:
 4. **Entorno** — sistema operativo, versión de B19/Ubuntu, versión del entorno de ejecución.
 5. **Un ejemplo mínimo reproducible**, si es posible.
 
-Consulta la [guía MCVE de Stack Overflow](https://stackoverflow.com/help/minimal-reproducible-example)
-para más consejos.
+Consulta una guía MCVE para más consejos.
 
 ## Tiempos de respuesta
 
 Este es un proyecto mantenido por la comunidad. Quienes lo mantienen responden cuando pueden — normalmente en unos pocos días, pero sin garantías. Te pedimos paciencia y respeto.
+
+## Soporte de pago
+
+Hay soporte de pago disponible para B19/Ubuntu:
+
+- [Del autor](https://dbuho.me)
 
 *Generado desde projectfile ([saber cómo](https://projectfile.org/how-to/support))*
 <!-- textlint-enable -->

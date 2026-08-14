@@ -1,16 +1,18 @@
 <!--
 SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
+pf-cli-managed: yes
 -->
 
-<!-- pf-cli-managed: yes -->
+[Español](docs/es/README.md) · [Українська](docs/uk/README.md)
+
 # B19/Ubuntu
 
-Ubuntu base image with some useful conventions
+Community-maintained Ubuntu base image for the B19 fleet
 
-[![License](https://img.shields.io/badge/license-MIT-4c1?style=flat-square)](LICENSE) [![PRs welcome](https://img.shields.io/badge/PRs-welcome-4c1?style=flat-square)](CONTRIBUTING.md) [![REUSE compliance](https://api.reuse.software/badge/codeberg.org/b19/ubuntu)](https://api.reuse.software/info/codeberg.org/b19/ubuntu)
+[![Stand with Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://damian-buho.github.io/support-ukraine/) [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=4c1&style=flat-square)](LICENSE) ![Commit style](https://img.shields.io/static/v1?label=commits&message=conventional&color=blue&style=flat-square) ![Workflow](https://img.shields.io/static/v1?label=workflow&message=git-flow&color=blue&style=flat-square) ![Versioning](https://img.shields.io/static/v1?label=versioning&message=semantic&color=blue&style=flat-square) [![PRs welcome](https://img.shields.io/static/v1?label=PRs&message=welcome&color=4c1&style=flat-square)](CONTRIBUTING.md) [![Citation](https://img.shields.io/static/v1?label=citation&message=cff&color=blue&style=flat-square)](CITATION.cff) [![REUSE compliance](https://api.reuse.software/badge/codeberg.org/b19/ubuntu)](https://api.reuse.software/info/codeberg.org/b19/ubuntu)
 
-![Project status](https://img.shields.io/badge/status-maintained-1d63ed?style=flat-square) [![Last commit](https://img.shields.io/gitea/last-commit/b19/ubuntu?gitea_url=https://codeberg.org&style=flat-square)](https://codeberg.org/b19/ubuntu)
+![Project status](https://img.shields.io/static/v1?label=status&message=maintained&color=1d63ed&style=flat-square) [![Last commit](https://img.shields.io/gitea/last-commit/b19/ubuntu?gitea_url=https://codeberg.org&style=flat-square)](https://codeberg.org/b19/ubuntu)
 
 [![Build status on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/published.yaml/badge.svg)](https://kiota.ch/b19/ubuntu/actions)
 
@@ -44,19 +46,44 @@ Ubuntu base image with some useful conventions
 - Pre-installed utility tools
 - XDG Base Directory paths
 
-See [Features](FEATURES.md) for the full list.
+See [FEATURES.md](FEATURES.md) for the full list.
 
 ## What this provides
 
-- **Container image** `kiota.ch/b19/ubuntu/resolute:latest`
-- **Container image** `kiota.ch/b19/ubuntu/noble:latest`
+- **Container image** `ghcr.io/damian-buho/b19/ubuntu/resolute:latest`
+- **Container image** `ghcr.io/damian-buho/b19/ubuntu/noble:latest`
+- **Container image** `docker.io/damianbuho/b19-ubuntu-resolute:latest`
+- **Container image** `docker.io/damianbuho/b19-ubuntu-noble:latest`
+
+## Supported platforms
+
+`linux/amd64`, `linux/arm64`, `linux/riscv64`
 
 ## Installation
 
 Pull the published container image:
 
 ```sh
+docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+```
+
+Available variants: B19_UBUNTU_SERIES: resolute, noble
+
+```sh
+docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
+docker pull docker.io/damianbuho/b19-ubuntu-resolute:latest
+docker pull docker.io/damianbuho/b19-ubuntu-noble:latest
+```
+
+If the registries above are unreachable, pull from the origin instead:
+
+```sh
 docker pull kiota.ch/b19/ubuntu/resolute:latest
+```
+
+Available variants: B19_UBUNTU_SERIES: resolute, noble
+
+```sh
 docker pull kiota.ch/b19/ubuntu/noble:latest
 ```
 
@@ -65,9 +92,18 @@ docker pull kiota.ch/b19/ubuntu/noble:latest
 Build on top of this image:
 
 ```dockerfile
-FROM kiota.ch/b19/ubuntu/resolute:latest
-FROM kiota.ch/b19/ubuntu/noble:latest
+FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
 ```
+
+Available variants: B19_UBUNTU_SERIES: resolute, noble
+
+```dockerfile
+FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
+FROM docker.io/damianbuho/b19-ubuntu-resolute:latest
+FROM docker.io/damianbuho/b19-ubuntu-noble:latest
+```
+
+For the recommended multi-stage pattern and the build-hook system (build.d), scaffold a derivative with `b19/scripts/scaffold.sh` from [m6e/b19](https://kiota.ch/m6e/b19).
 
 ## Building
 
@@ -78,7 +114,11 @@ Pipeline entry points:
 - `make analyze` — Run the heavy analysis sweep (mutation testing, benchmarks)
 - `make audited` — Re-scan the pinned dependencies and published artifacts for new vulnerabilities
 - `make check-outdated` — Report every pinned dependency that lags upstream
-- `make published` — Build, test, scan and publish the release artifacts
+- `make ready-to-publish` — Run the pseudo-CI pipeline locally — build, test and scan, without publishing
+
+Run `make` with no arguments for the default target; run `make help` to list every target.
+
+For the local dev loop, `make dev-container` brings up the dev-container.
 
 ## Documentation
 
@@ -109,12 +149,19 @@ Pipeline entry points:
 
 ### Project
 
+- [Projectfile Specification](https://projectfile.org)
 - [B19/Ubuntu on Codeberg](https://codeberg.org/b19/ubuntu)
 - [B19/Ubuntu on GitHub](https://github.com/damian-buho/b19-ubuntu)
 - [B19/Ubuntu on kiota.ch](https://kiota.ch/b19/ubuntu)
 - [Issues on Codeberg](https://codeberg.org/b19/ubuntu/issues)
 - [Issues on GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
 
+### Other
+
+- [From author](https://dbuho.me)
+
 ## License
 
 This project is licensed under MIT — see the [LICENSE](LICENSE) file for details.
+
+*Generated from projectfile ([learn how](https://projectfile.org/how-to/readme))*

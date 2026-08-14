@@ -1,9 +1,10 @@
 <!--
 SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
+pf-cli-managed: yes
 -->
 
-<!-- pf-cli-managed: yes -->
+[Español](docs/es/SUPPORT.md) · [Українська](docs/uk/SUPPORT.md)
 
 # Getting Support
 
@@ -19,8 +20,6 @@ Please check these first — your question may already be answered:
 
 ## Where to Ask
 
-- **Report a reproducible bug** — [Issues on Codeberg](https://codeberg.org/b19/ubuntu/issues)
-- **Report a reproducible bug** — [Issues on GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
 - **Report a security vulnerability** — [SECURITY.md](SECURITY.md)
 - **Contribute to the project** — [CONTRIBUTING.md](CONTRIBUTING.md)
 
@@ -34,9 +33,16 @@ To help us help you, please include:
 4. **Environment** — OS, version of B19/Ubuntu, runtime version.
 5. **A minimal reproducible example**, if possible.
 
-See [Stack Overflow’s MCVE guide](https://stackoverflow.com/help/minimal-reproducible-example)
-for tips.
+See an MCVE guide for tips.
 
 ## Response Times
 
 This is a community-maintained project. Maintainers respond when they can — typically within a few days, but there are no guarantees. Please be patient and respectful.
+
+## Paid Support
+
+Paid support for B19/Ubuntu is available:
+
+- [From author](https://dbuho.me)
+
+*Generated from projectfile ([learn how](https://projectfile.org/how-to/support))*
