@@ -1,0 +1,40 @@
+<!--
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+SPDX-License-Identifier: MIT
+pf-cli-managed: yes
+-->
+
+<!-- textlint-disable terminology -->
+[English](../../SUPPORT.md) · [Українська](../uk/SUPPORT.md)
+
+# Cómo obtener ayuda
+
+¡Gracias por usar **B19/Ubuntu**!
+Este documento explica dónde conseguir ayuda y cómo formular buenas preguntas.
+
+## Dónde preguntar
+
+- **Informar de un fallo reproducible** — [Issues on Codeberg](https://codeberg.org/b19/ubuntu/issues)
+- **Informar de un fallo reproducible** — [Issues on GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
+- **Informar de una vulnerabilidad de seguridad** — [SECURITY.md](SECURITY.md)
+- **Contribuir al proyecto** — [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Cómo formular una buena pregunta
+
+Para que podamos ayudarte, incluye:
+
+1. **Qué intentas hacer** — el objetivo, no solo el error.
+2. **Qué has probado** — código, órdenes, configuración.
+3. **Qué ha ocurrido** frente a lo que esperabas.
+4. **Entorno** — sistema operativo, versión de B19/Ubuntu, versión del entorno de ejecución.
+5. **Un ejemplo mínimo reproducible**, si es posible.
+
+Consulta la [guía MCVE de Stack Overflow](https://stackoverflow.com/help/minimal-reproducible-example)
+para más consejos.
+
+## Tiempos de respuesta
+
+Este es un proyecto mantenido por la comunidad. Quienes lo mantienen responden cuando pueden — normalmente en unos pocos días, pero sin garantías. Te pedimos paciencia y respeto.
+
+*Generado desde projectfile ([saber cómo](https://projectfile.org/how-to/support))*
+<!-- textlint-enable -->

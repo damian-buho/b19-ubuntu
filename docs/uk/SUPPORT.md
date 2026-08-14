@@ -1,0 +1,40 @@
+<!--
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+SPDX-License-Identifier: MIT
+pf-cli-managed: yes
+-->
+
+<!-- textlint-disable terminology -->
+[English](../../SUPPORT.md) · [Español](../es/SUPPORT.md)
+
+# Як отримати підтримку
+
+Дякуємо, що користуєтеся **B19/Ubuntu**!
+Цей документ пояснює, де шукати допомогу та як ставити зрозумілі запитання.
+
+## Куди звертатися
+
+- **Повідомити про відтворювану ваду** — [Issues on Codeberg](https://codeberg.org/b19/ubuntu/issues)
+- **Повідомити про відтворювану ваду** — [Issues on GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
+- **Повідомити про вразливість безпеки** — [SECURITY.md](SECURITY.md)
+- **Зробити внесок у проєкт** — [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Як поставити гарне запитання
+
+Щоб ми могли допомогти, вкажіть:
+
+1. **Що ви намагаєтеся зробити** — саму мету, а не лише помилку.
+2. **Що ви вже спробували** — код, команди, конфігурацію.
+3. **Що сталося** порівняно з тим, чого ви очікували.
+4. **Середовище** — операційна система, версія B19/Ubuntu, версія середовища виконання.
+5. **Мінімальний відтворюваний приклад**, якщо це можливо.
+
+Див. [посібник MCVE на Stack Overflow](https://stackoverflow.com/help/minimal-reproducible-example)
+для порад.
+
+## Час відповіді
+
+Це проєкт, який підтримує спільнота. Супровідники відповідають, коли мають змогу — зазвичай протягом кількох днів, але без гарантій. Просимо про терпіння та повагу.
+
+*Згенеровано з projectfile ([дізнатися як](https://projectfile.org/how-to/support))*
+<!-- textlint-enable -->
