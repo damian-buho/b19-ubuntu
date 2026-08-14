@@ -76,26 +76,27 @@ jobs:
     strategy:
       matrix:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
+        M6E_ARCH: ["amd64"]
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
-      M6E_IMAGE_FULLNAME: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ vars.BASE_IMAGE_DEFAULT_VERSION || 'latest' }}-${{ github.run_id }}
-      M6E_COMPOSE_PROJECT_NAME: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}-${{ github.run_attempt }}
-      M6E_CONTAINER_INSTANCE: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}-${{ github.run_attempt }}
+      M6E_ARCH: ${{ matrix.M6E_ARCH }}
+      M6E_IMAGE_FULLNAME: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ vars.BASE_IMAGE_DEFAULT_VERSION || 'latest' }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
+      M6E_COMPOSE_PROJECT_NAME: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}-${{ github.run_attempt }}
+      M6E_CONTAINER_INSTANCE: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v7
         with:
           submodules: true
       - uses: actions/download-artifact@v3
         with:
-          name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}
-      - run: docker load --input image-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}.tar
+          name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}
+      - run: docker load --input image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}.tar
       - name: secrets-provision
         uses: projectfile/ci-actions/secrets-provision@v1
         with:
           declarations: "{\"b19.test.secret\":{\"value\":\"hello-from-shell-d\"}}"
           dir: .secrets
-          default-image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/misc-tools:${{ env.M6E_TAG }}
-          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}
+          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
       - name: dc-pull
         run: M6E_COMPOSE_FILE=.compose/pipeline.yaml .makefile/container/scripts/compose-pull.sh
       - name: dc-up-d
@@ -118,8 +119,8 @@ jobs:
       - if: ${{ always() }}
         uses: projectfile/ci-actions/docker-cleanup@v1
         with:
-          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}
-          network: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ env.M6E_RUN_SCOPE }}-network
+          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
+          network: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ env.M6E_RUN_SCOPE }}-network
   container-ready-to-test:
     runs-on: docker
     needs: ["container-is-ready"]
@@ -139,13 +140,13 @@ jobs:
       - name: markdownlint
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/js-tools
+          image: ${{ vars.D9T_JS_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-markdownlint
       - name: textlint
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/js-tools
+          image: ${{ vars.D9T_JS_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-textlint
   fetched:
@@ -159,12 +160,15 @@ jobs:
       group: build-${{ github.repository }}-${{ toJSON(matrix) }}
       cancel-in-progress: false
     strategy:
+      max-parallel: 2
       matrix:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
+        M6E_ARCH: ["amd64", "arm64", "riscv64"]
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
-      M6E_NAMESPACE: b19/ubuntu
-      M6E_PROJECT: ${{ matrix.B19_UBUNTU_SERIES }}
+      M6E_ARCH: ${{ matrix.M6E_ARCH }}
+      M6E_NAMESPACE: b19
+      M6E_PROJECT: ubuntu
       B19_COLOR: ${{ inputs.B19_COLOR || vars.B19_COLOR || '1' }}
       B19_FD_IMAGE: ${{ vars.B19_DOCKER_REGISTRY }}/b19/fd:${{ vars.BASE_IMAGE_DEFAULT_VERSION || 'latest' }}
       B19_FETCH_DOCKER_CACHE: ${{ inputs.B19_FETCH_DOCKER_CACHE || vars.B19_FETCH_DOCKER_CACHE || 'Y' }}
@@ -189,8 +193,8 @@ jobs:
       - name: container-build
         uses: projectfile/ci-actions/container-build/buildah@v1
         with:
-          artifact-name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}
-          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}
+          artifact-name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}
+          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
           build-args: |-
             B19_COLOR=${{ inputs.B19_COLOR || vars.B19_COLOR || '1' }}
             B19_FD_IMAGE=${{ vars.B19_DOCKER_REGISTRY }}/b19/fd:${{ env.M6E_TAG }}
@@ -207,14 +211,17 @@ jobs:
             DESTINATION_DOCKER_REGISTRY=${{ inputs.DESTINATION_DOCKER_REGISTRY || vars.DESTINATION_DOCKER_REGISTRY }}
             M6E_APT_CACHE_HOST=${{ inputs.M6E_APT_CACHE_HOST || vars.M6E_APT_CACHE_HOST }}
             M6E_APT_CACHE_PORT=${{ inputs.M6E_APT_CACHE_PORT || vars.M6E_APT_CACHE_PORT }}
-            M6E_NAMESPACE=b19/ubuntu
+            M6E_ARCH=${{ matrix.M6E_ARCH }}
+            M6E_NAMESPACE=b19
             M6E_NEAR_CACHE_HOST=${{ inputs.M6E_NEAR_CACHE_HOST || vars.M6E_NEAR_CACHE_HOST }}
             M6E_NEAR_CACHE_PORT=${{ inputs.M6E_NEAR_CACHE_PORT || vars.M6E_NEAR_CACHE_PORT }}
-            M6E_PROJECT=${{ matrix.B19_UBUNTU_SERIES }}
+            M6E_PROJECT=ubuntu
             SOURCE_DOCKER_REGISTRY=${{ inputs.SOURCE_DOCKER_REGISTRY || vars.SOURCE_DOCKER_REGISTRY }}
           file-args: B19_UBUNTU_HASH=.container/foundation/deps/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}.sha256.deps
           mounts: fetch=/fetch
-          pf-cli-image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/cli:${{ env.M6E_TAG }}
+          # This CELL's architecture, off the arch axis derived from the declared set.
+          # One arch per call: the single-image archive is what every consumer reads.
+          platform: ${{ matrix.M6E_ARCH }}
   image-is-ready:
     runs-on: docker
     needs: ["container-is-verified", "image-is-secure", "image-is-valid"]
@@ -226,41 +233,45 @@ jobs:
     strategy:
       matrix:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
+        M6E_ARCH: ["amd64", "arm64", "riscv64"]
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
-      M6E_IMAGE_ARCHIVE: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}.tar
+      M6E_ARCH: ${{ matrix.M6E_ARCH }}
+      M6E_IMAGE_ARCHIVE: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}.tar
     steps:
       - uses: actions/checkout@v7
         with:
           submodules: true
       - uses: actions/download-artifact@v3
         with:
-          name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}
+          name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}
       - name: grype-scan-tar
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
+          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-grype image
           env: |-
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
-            M6E_IMAGE_ARCHIVE=image-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}.tar
+            M6E_ARCH=${{ matrix.M6E_ARCH }}
+            M6E_IMAGE_ARCHIVE=image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}.tar
           mounts: /app/data/ci-cache/grype-db:/app/.cache/grype:ro
       - name: trivy-scan-tar
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
+          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-trivy image
           env: |-
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
-            M6E_IMAGE_ARCHIVE=image-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}.tar
+            M6E_ARCH=${{ matrix.M6E_ARCH }}
+            M6E_IMAGE_ARCHIVE=image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}.tar
             TRIVY_CACHE_BACKEND
           mounts: /app/data/ci-cache/trivy-db:/app/.cache/trivy:ro
       - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
-          name: reports-image-is-secure-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}
+          name: reports-image-is-secure-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}
           path: reports/
           if-no-files-found: warn
   image-is-valid:
@@ -283,97 +294,97 @@ jobs:
       - name: pf-bridge-citation-cff-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge cff CITATION.cff --check
       - name: pf-bridge-claudeignore-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge ignore .claudeignore --check
       - name: pf-bridge-code-of-conduct-md-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge coc --check
       - name: pf-bridge-codeowners-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge codeowners --check
       - name: pf-bridge-contributing-md-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge contributing --check
       - name: pf-bridge-dockerignore-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge ignore .dockerignore --check
       - name: pf-bridge-fragments-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge fragments --check
       - name: pf-bridge-gitattributes-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge gitattributes --check
       - name: pf-bridge-gitignore-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge ignore .gitignore --check
       - name: pf-bridge-grype-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge vulnerabilities .grype.yaml --check
       - name: pf-bridge-license-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge license --check
       - name: pf-bridge-osv-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge vulnerabilities osv-scanner.toml --check
       - name: pf-bridge-readme-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge readme --check
       - name: pf-bridge-security-md-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge security --check
       - name: pf-bridge-support-md-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge support --check
       - name: pf-bridge-trivyignore-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
+          image: ${{ vars.PF_BRIDGE_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-bridge vulnerabilities .trivyignore --check
   projectfile-is-valid:
@@ -385,7 +396,7 @@ jobs:
       - name: pf-validate
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/cli
+          image: ${{ vars.PF_CLI_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: pf-cli validate
   publish-image:
@@ -398,11 +409,16 @@ jobs:
     strategy:
       matrix:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
+        M6E_ARCH: ["amd64", "arm64", "riscv64"]
+        M6E_PUBLISH_SINK: ["kiota", "dockerhub"]
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
-      M6E_IMAGE_FULLNAME: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ vars.BASE_IMAGE_DEFAULT_VERSION || 'latest' }}-${{ github.run_id }}
-      M6E_COMPOSE_PROJECT_NAME: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}-${{ github.run_attempt }}
-      M6E_CONTAINER_INSTANCE: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}-${{ github.run_attempt }}
+      M6E_ARCH: ${{ matrix.M6E_ARCH }}
+      M6E_IMAGE_FULLNAME: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ vars.BASE_IMAGE_DEFAULT_VERSION || 'latest' }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
+      M6E_COMPOSE_PROJECT_NAME: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}-${{ github.run_attempt }}
+      M6E_CONTAINER_INSTANCE: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}-${{ github.run_attempt }}
+      DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
+      DOCKERHUB_REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_REGISTRY_USERNAME }}
       REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
       REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
     steps:
@@ -411,27 +427,38 @@ jobs:
           submodules: true
       - uses: actions/download-artifact@v3
         with:
-          name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}
-      - run: docker load --input image-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}.tar
+          name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}
+      - run: docker load --input image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}.tar
       - name: secrets-provision
         uses: projectfile/ci-actions/secrets-provision@v1
         with:
           declarations: "{\"b19.test.secret\":{\"value\":\"hello-from-shell-d\"}}"
           dir: .secrets
-          default-image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/misc-tools:${{ env.M6E_TAG }}
-          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}
+          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
       - name: oci-push
         uses: projectfile/ci-actions/oci-push@v1
         with:
-          artifact-name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}
-          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}
+          artifact-name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}
+          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
           version: ${{ github.ref_name }}
           # OUTPUT_REGISTRY: the forge-dependent PUSH target (kiota.ch / ghcr.io / …),
           # always threaded — empty => Docker Hub. NOT the per-namespace INPUT registries
           # (B19_DOCKER_REGISTRY & friends answer "where base images come FROM"); this
           # answers "where THIS project publishes TO". Set per forge (org var = default,
-          # repo var = project-wise override).
+          # repo var = project-wise override). Ignored when `refs` below is present.
           registry: ${{ vars.OUTPUT_REGISTRY }}
+          # Every destination this forge's route declares, each reference composed by
+          # the sink that declared it — so one archive lands under whatever path grammar
+          # each registry wants. Credentials key on the SINK name.
+          refs: |
+            kiota kiota.ch/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
+            dockerhub docker.io/damianbuho/b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}:latest
+          # This CELL's destination, off the publish axis: the job runs one cell per
+          # place the archive goes, so a registry refusing a push fails only its own.
+          sink: ${{ matrix.M6E_PUBLISH_SINK }}
+          # This CELL's architecture: every cascade tag takes a -<arch> suffix, so the
+          # arch cells publish separate refs instead of overwriting one another.
+          arch: ${{ matrix.M6E_ARCH }}
       # Reap the run-scoped image tag AND the live stack's network. Both are unique per
       # run (the tag carries M6E_RUN_SCOPE, the network the run-scoped project name), so
       # without this the runner's docker store gains one image per run forever AND a
@@ -442,11 +469,46 @@ jobs:
       - if: ${{ always() }}
         uses: projectfile/ci-actions/docker-cleanup@v1
         with:
+          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
+          network: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ env.M6E_RUN_SCOPE }}-network
+  publish-manifest:
+    runs-on: docker
+    needs: ["publish-image"]
+    if: startsWith(github.ref, 'refs/tags/')
+    concurrency:
+      group: publish-manifest-${{ github.repository }}-${{ toJSON(matrix) }}
+      cancel-in-progress: false
+    strategy:
+      matrix:
+        B19_UBUNTU_SERIES: ["resolute", "noble"]
+        M6E_PUBLISH_SINK: ["kiota", "dockerhub"]
+    env:
+      B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
+      DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
+      DOCKERHUB_REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - name: oci-manifest
+        uses: projectfile/ci-actions/oci-manifest@v1
+        with:
           image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}
-          network: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ env.M6E_RUN_SCOPE }}-network
+          version: ${{ github.ref_name }}
+          registry: ${{ vars.OUTPUT_REGISTRY }}
+          refs: |
+            kiota kiota.ch/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
+            dockerhub docker.io/damianbuho/b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}:latest
+          sink: ${{ matrix.M6E_PUBLISH_SINK }}
+          # Every architecture the build cells fanned over, so the index names them all.
+          # Absent on a project declaring none: no per-arch tags exist and the action
+          # no-ops rather than wrapping one image in a pointless index.
+          arches: amd64 arm64 riscv64
   published:
     runs-on: docker
-    needs: ["publish-image", "ready-to-publish"]
+    needs: ["publish-image", "publish-manifest", "ready-to-publish"]
     steps:
       - run: echo published
   ready-to-publish:
@@ -468,13 +530,13 @@ jobs:
       - name: i18n-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/misc-tools
+          image: ${{ vars.D9T_MISC_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-i18n check
       - name: reuse-lint
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/python-tools
+          image: ${{ vars.D9T_PYTHON_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: reuse lint
   source-is-ready:
@@ -491,14 +553,14 @@ jobs:
       - name: grype-scan-source
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
+          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-grype
           mounts: /app/data/ci-cache/grype-db:/app/.cache/grype:ro
       - name: trivy-scan-source
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
+          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-trivy fs
           env: |-
@@ -523,7 +585,7 @@ jobs:
       - name: cffr-validate
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/r-tools
+          image: ${{ vars.D9T_R_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-cffr-validate
       - name: hadolint
@@ -536,24 +598,24 @@ jobs:
       - name: ignorelint-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/ignorelint
+          image: ${{ vars.D9T_IGNORELINT_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: ignorelint
       - name: jsonlint
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/js-tools
+          image: ${{ vars.D9T_JS_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-jsonlint
       - name: shellcheck
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/misc-tools
+          image: ${{ vars.D9T_MISC_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-shellcheck
       - name: yamllint
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/python-tools
+          image: ${{ vars.D9T_PYTHON_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-yamllint

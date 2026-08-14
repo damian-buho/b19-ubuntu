@@ -23,14 +23,23 @@ jobs:
     steps:
       - run: echo audited
   image-is-audited:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.M6E_RUNNER }}
     if: (github.event_name == 'workflow_dispatch') || (github.event_name == 'schedule')
     strategy:
       matrix:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
+        M6E_ARCH: ["amd64", "arm64", "riscv64"]
+        include:
+          - M6E_ARCH: "amd64"
+            M6E_RUNNER: "ubuntu-latest"
+          - M6E_ARCH: "arm64"
+            M6E_RUNNER: "ubuntu-24.04-arm"
+          - M6E_ARCH: "riscv64"
+            M6E_RUNNER: "ubuntu-26.04-riscv"
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
-      M6E_IMAGE_PUBLISHED: ${{ vars.OUTPUT_REGISTRY }}/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
+      M6E_ARCH: ${{ matrix.M6E_ARCH }}
+      M6E_IMAGE_PUBLISHED: ghcr.io/damian-buho/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
     steps:
       - uses: actions/checkout@v7
         with:
@@ -45,12 +54,13 @@ jobs:
       - name: grype-scan-registry
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
+          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-grype image
           env: |-
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
-            M6E_IMAGE_PUBLISHED=${{ vars.OUTPUT_REGISTRY }}/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
+            M6E_ARCH=${{ matrix.M6E_ARCH }}
+            M6E_IMAGE_PUBLISHED=ghcr.io/damian-buho/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
           mounts: ${{ runner.temp }}/ci-cache/grype-db:/app/.cache/grype:ro
       - name: restore trivy-db
         uses: actions/cache/restore@v4
@@ -62,24 +72,30 @@ jobs:
       - name: trivy-scan-registry
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
+          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-trivy image
           env: |-
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
-            M6E_IMAGE_PUBLISHED=${{ vars.OUTPUT_REGISTRY }}/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
+            M6E_ARCH=${{ matrix.M6E_ARCH }}
+            M6E_IMAGE_PUBLISHED=ghcr.io/damian-buho/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
             TRIVY_CACHE_BACKEND
           mounts: ${{ runner.temp }}/ci-cache/trivy-db:/app/.cache/trivy:ro
       - uses: actions/upload-artifact@v7
         if: ${{ always() }}
         with:
-          name: reports-image-is-audited-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}
+          name: reports-image-is-audited-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}
           path: reports/
           if-no-files-found: warn
           overwrite: true
   source-is-audited:
     runs-on: ubuntu-latest
+    needs: ["source-is-secure"]
     if: (github.event_name == 'workflow_dispatch') || (github.event_name == 'schedule')
+    steps:
+      - run: echo source-is-audited
+  source-is-secure:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
@@ -94,7 +110,7 @@ jobs:
       - name: grype-scan-source
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
+          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-grype
           mounts: ${{ runner.temp }}/ci-cache/grype-db:/app/.cache/grype:ro
@@ -108,7 +124,7 @@ jobs:
       - name: trivy-scan-source
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
+          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
           version: ${{ env.M6E_TAG }}
           run: auto-trivy fs
           env: |-
@@ -117,7 +133,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: ${{ always() }}
         with:
-          name: reports-source-is-audited-${{ github.run_id }}
+          name: reports-source-is-secure-${{ github.run_id }}
           path: reports/
           if-no-files-found: warn
           overwrite: true
