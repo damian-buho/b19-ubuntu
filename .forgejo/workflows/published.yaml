@@ -411,14 +411,12 @@ jobs:
     strategy:
       matrix:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
-        M6E_ARCH: ["amd64", "arm64", "riscv64"]
         M6E_PUBLISH_SINK: ["kiota", "dockerhub"]
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
-      M6E_ARCH: ${{ matrix.M6E_ARCH }}
-      M6E_IMAGE_FULLNAME: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ vars.BASE_IMAGE_DEFAULT_VERSION || 'latest' }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
-      M6E_COMPOSE_PROJECT_NAME: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}-${{ github.run_attempt }}
-      M6E_CONTAINER_INSTANCE: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}-${{ github.run_attempt }}
+      M6E_IMAGE_FULLNAME: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ vars.BASE_IMAGE_DEFAULT_VERSION || 'latest' }}-${{ github.run_id }}-amd64
+      M6E_COMPOSE_PROJECT_NAME: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-amd64-${{ github.run_id }}-${{ github.run_attempt }}
+      M6E_CONTAINER_INSTANCE: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-amd64-${{ github.run_id }}-${{ github.run_attempt }}
       DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
       DOCKERHUB_REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_REGISTRY_USERNAME }}
       REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
@@ -429,20 +427,32 @@ jobs:
           submodules: true
       - uses: actions/download-artifact@v3
         with:
-          name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}
-      - run: docker load --input image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}.tar
+          name: image-${{ matrix.B19_UBUNTU_SERIES }}-amd64-${{ github.run_id }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: image-${{ matrix.B19_UBUNTU_SERIES }}-arm64-${{ github.run_id }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: image-${{ matrix.B19_UBUNTU_SERIES }}-riscv64-${{ github.run_id }}
+      - run: docker load --input image-${{ matrix.B19_UBUNTU_SERIES }}-amd64-${{ github.run_id }}.tar
       - name: secrets-provision
         uses: projectfile/ci-actions/secrets-provision@v1
         with:
           declarations: "{\"b19.test.secret\":{\"value\":\"hello-from-shell-d\"}}"
           dir: .secrets
           default-image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/misc-tools:${{ env.M6E_TAG }}
-          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
+          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-amd64
       - name: oci-push
         uses: projectfile/ci-actions/oci-push@v1
         with:
-          artifact-name: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}
-          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
+          # One tar per DECLARED architecture, published together as a manifest list at
+          # each cascade tag. Per-arch TAGS are deliberately not published: they are
+          # scaffolding, and a registry that cannot delete a tag keeps them forever.
+          archives: |
+            amd64 image-${{ matrix.B19_UBUNTU_SERIES }}-amd64-${{ github.run_id }}
+            arm64 image-${{ matrix.B19_UBUNTU_SERIES }}-arm64-${{ github.run_id }}
+            riscv64 image-${{ matrix.B19_UBUNTU_SERIES }}-riscv64-${{ github.run_id }}
+          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}
           version: ${{ github.ref_name }}
           # OUTPUT_REGISTRY: the forge-dependent PUSH target (kiota.ch / ghcr.io / …),
           # always threaded — empty => Docker Hub. NOT the per-namespace INPUT registries
@@ -459,9 +469,6 @@ jobs:
           # This CELL's destination, off the publish axis: the job runs one cell per
           # place the archive goes, so a registry refusing a push fails only its own.
           sink: ${{ matrix.M6E_PUBLISH_SINK }}
-          # This CELL's architecture: every cascade tag takes a -<arch> suffix, so the
-          # arch cells publish separate refs instead of overwriting one another.
-          arch: ${{ matrix.M6E_ARCH }}
       # Reap the run-scoped image tag AND the live stack's network. Both are unique per
       # run (the tag carries M6E_RUN_SCOPE, the network the run-scoped project name), so
       # without this the runner's docker store gains one image per run forever AND a
@@ -472,46 +479,11 @@ jobs:
       - if: ${{ always() }}
         uses: projectfile/ci-actions/docker-cleanup@v1
         with:
-          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
-          network: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ env.M6E_RUN_SCOPE }}-network
-  publish-manifest:
-    runs-on: docker
-    needs: ["publish-image"]
-    if: startsWith(github.ref, 'refs/tags/')
-    concurrency:
-      group: publish-manifest-${{ github.repository }}-${{ toJSON(matrix) }}
-      cancel-in-progress: false
-    strategy:
-      matrix:
-        B19_UBUNTU_SERIES: ["resolute", "noble"]
-        M6E_PUBLISH_SINK: ["kiota", "dockerhub"]
-    env:
-      B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
-      DOCKERHUB_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
-      DOCKERHUB_REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_REGISTRY_USERNAME }}
-      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
-      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: true
-      - name: oci-manifest
-        uses: projectfile/ci-actions/oci-manifest@v1
-        with:
-          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}
-          version: ${{ github.ref_name }}
-          registry: ${{ vars.OUTPUT_REGISTRY }}
-          refs: |
-            kiota kiota.ch/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
-            dockerhub docker.io/damianbuho/b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}:latest
-          sink: ${{ matrix.M6E_PUBLISH_SINK }}
-          # Every architecture the build cells fanned over, so the index names them all.
-          # Absent on a project declaring none: no per-arch tags exist and the action
-          # no-ops rather than wrapping one image in a pointless index.
-          arches: amd64 arm64 riscv64
+          image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-amd64
+          network: ci-b19-ubuntu-${{ matrix.B19_UBUNTU_SERIES }}-amd64-${{ env.M6E_RUN_SCOPE }}-network
   published:
     runs-on: docker
-    needs: ["publish-image", "publish-manifest", "ready-to-publish"]
+    needs: ["publish-image", "ready-to-publish"]
     steps:
       - run: echo published
   ready-to-publish:
