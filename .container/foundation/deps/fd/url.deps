@@ -1,5 +1,0 @@
-# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
-#
-# SPDX-License-Identifier: MIT
-
-https://github.com/sharkdp/fd/releases/download/v${M6E_UPSTREAM_VERSION}/fd_${M6E_UPSTREAM_VERSION}_${TARGETARCH}.deb
