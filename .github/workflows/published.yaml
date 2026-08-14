@@ -99,6 +99,7 @@ jobs:
         with:
           declarations: "{\"b19.test.secret\":{\"value\":\"hello-from-shell-d\"}}"
           dir: .secrets
+          default-image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/misc-tools:${{ env.M6E_TAG }}
           image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
       - name: dc-pull
         run: M6E_COMPOSE_FILE=.compose/pipeline.yaml .makefile/container/scripts/compose-pull.sh
@@ -143,13 +144,13 @@ jobs:
       - name: markdownlint
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_JS_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/js-tools
           version: ${{ env.M6E_TAG }}
           run: auto-markdownlint
       - name: textlint
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_JS_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/js-tools
           version: ${{ env.M6E_TAG }}
           run: auto-textlint
   fetched:
@@ -229,6 +230,7 @@ jobs:
             SOURCE_DOCKER_REGISTRY=${{ inputs.SOURCE_DOCKER_REGISTRY || vars.SOURCE_DOCKER_REGISTRY }}
           file-args: B19_UBUNTU_HASH=.container/foundation/deps/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}.sha256.deps
           mounts: fetch=/fetch
+          pf-cli-image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/cli:${{ env.M6E_TAG }}
           # This CELL's architecture, off the arch axis derived from the declared set.
           # One arch per call: the single-image archive is what every consumer reads.
           platform: ${{ matrix.M6E_ARCH }}
@@ -272,7 +274,7 @@ jobs:
       - name: grype-scan-tar
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
           version: ${{ env.M6E_TAG }}
           run: auto-grype image
           env: |-
@@ -290,7 +292,7 @@ jobs:
       - name: trivy-scan-tar
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
           version: ${{ env.M6E_TAG }}
           run: auto-trivy image
           env: |-
@@ -326,97 +328,97 @@ jobs:
       - name: pf-bridge-citation-cff-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge cff CITATION.cff --check
       - name: pf-bridge-claudeignore-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge ignore .claudeignore --check
       - name: pf-bridge-code-of-conduct-md-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge coc --check
       - name: pf-bridge-codeowners-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge codeowners --check
       - name: pf-bridge-contributing-md-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge contributing --check
       - name: pf-bridge-dockerignore-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge ignore .dockerignore --check
       - name: pf-bridge-fragments-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge fragments --check
       - name: pf-bridge-gitattributes-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge gitattributes --check
       - name: pf-bridge-gitignore-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge ignore .gitignore --check
       - name: pf-bridge-grype-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge vulnerabilities .grype.yaml --check
       - name: pf-bridge-license-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge license --check
       - name: pf-bridge-osv-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge vulnerabilities osv-scanner.toml --check
       - name: pf-bridge-readme-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge readme --check
       - name: pf-bridge-security-md-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge security --check
       - name: pf-bridge-support-md-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge support --check
       - name: pf-bridge-trivyignore-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_BRIDGE_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/bridge
           version: ${{ env.M6E_TAG }}
           run: pf-bridge vulnerabilities .trivyignore --check
   projectfile-is-valid:
@@ -428,7 +430,7 @@ jobs:
       - name: pf-validate
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.PF_CLI_IMAGE }}
+          image: ${{ vars.PF_DOCKER_REGISTRY }}/projectfile/cli
           version: ${{ env.M6E_TAG }}
           run: pf-cli validate
   publish-image:
@@ -473,6 +475,7 @@ jobs:
         with:
           declarations: "{\"b19.test.secret\":{\"value\":\"hello-from-shell-d\"}}"
           dir: .secrets
+          default-image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/misc-tools:${{ env.M6E_TAG }}
           image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
       - name: oci-push
         uses: projectfile/ci-actions/oci-push@v1
@@ -567,13 +570,13 @@ jobs:
       - name: i18n-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_MISC_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/misc-tools
           version: ${{ env.M6E_TAG }}
           run: auto-i18n check
       - name: reuse-lint
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_PYTHON_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/python-tools
           version: ${{ env.M6E_TAG }}
           run: reuse lint
   source-is-ready:
@@ -597,7 +600,7 @@ jobs:
       - name: grype-scan-source
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
           version: ${{ env.M6E_TAG }}
           run: auto-grype
           mounts: ${{ runner.temp }}/ci-cache/grype-db:/app/.cache/grype:ro
@@ -611,7 +614,7 @@ jobs:
       - name: trivy-scan-source
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_GO_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/go-tools
           version: ${{ env.M6E_TAG }}
           run: auto-trivy fs
           env: |-
@@ -637,7 +640,7 @@ jobs:
       - name: cffr-validate
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_R_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/r-tools
           version: ${{ env.M6E_TAG }}
           run: auto-cffr-validate
       - name: hadolint
@@ -650,24 +653,24 @@ jobs:
       - name: ignorelint-check
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_IGNORELINT_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/ignorelint
           version: ${{ env.M6E_TAG }}
           run: ignorelint
       - name: jsonlint
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_JS_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/js-tools
           version: ${{ env.M6E_TAG }}
           run: auto-jsonlint
       - name: shellcheck
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_MISC_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/misc-tools
           version: ${{ env.M6E_TAG }}
           run: auto-shellcheck
       - name: yamllint
         uses: projectfile/ci-actions/run-tool@v1
         with:
-          image: ${{ vars.D9T_PYTHON_TOOLS_IMAGE }}
+          image: ${{ vars.D9T_DOCKER_REGISTRY }}/d9t/python-tools
           version: ${{ env.M6E_TAG }}
           run: auto-yamllint
