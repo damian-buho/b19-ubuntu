@@ -68,15 +68,15 @@ the next hook.
 
 ## Behavior
 
-| Variable                  | Default          | Accepted values            | Controls                                                                                                                                                                                                   |
-| ------------------------- | ---------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `B19_J2_EXCLUDE_PATTERNS` | (unset)          | space-separated names      | Directory names to exclude from j2 template discovery (e.g., `venv node_modules`). Used by `save-j2`.                                                                                                      |
-| `B19_IMMUTABLE`           | `N`              | `N`, `Y`                   | `Y` skips overlay copy and j2 template rendering at startup. Locks the filesystem to its build-time state.                                                                                                 |
-| `B19_OFFGRID_MODE`        | `N`              | `N`, `Y`                   | `Y` blocks all internet access. At build time: prevents downloads (cache miss = fail), skips SSH keyscan and APT upgrade. At runtime: network healthchecks skip with exit 0. See [OFFGRID.md](OFFGRID.md). |
-| `B19_RUNTIME_MODE`        | `docker-compose` | any string                 | Informational runtime environment identifier. Available for downstream images to adjust behavior.                                                                                                          |
-| `B19_TEST_TIMEOUT`        | `60`             | positive integer (seconds) | Seconds `test.d` waits for healthcheck to pass before running tests.                                                                                                                                       |
-| `B19_OVERLAY`             | (unset)          | directory name             | Name of an overlay directory under `B19_OVERLAYS_PATH/` to apply at startup. Contents are recursively copied to `/`.                                                                                       |
-| `B19_REQUIRED_SECRETS`    | (empty)          | space-separated names      | Dot-notation secret names that must exist (env var or file). Container exits 1 if any are missing. Skipped when `B19_SECRETS_ENABLED=false` or ad-hoc command mode.                                        |
+| Variable                  | Default          | Accepted values            | Controls                                                                                                                                                                                                       |
+| ------------------------- | ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `B19_J2_EXCLUDE_PATTERNS` | (unset)          | space-separated names      | Directory names to exclude from j2 template discovery (e.g., `venv node_modules`). Used by `save-j2`.                                                                                                          |
+| `B19_IMMUTABLE`           | `N`              | `N`, `Y`                   | `Y` skips overlay copy and j2 template rendering at startup. Locks the filesystem to its build-time state.                                                                                                     |
+| `B19_OFFGRID_MODE`        | `N`              | `N`, `Y`                   | `Y` blocks all internet access. At build time: prevents downloads (cache miss = fail), skips SSH keyscan and APT upgrade. At runtime: network healthchecks skip with exit 0. See [OFFGRID.md](use-offgrid.md). |
+| `B19_RUNTIME_MODE`        | `docker-compose` | any string                 | Informational runtime environment identifier. Available for downstream images to adjust behavior.                                                                                                              |
+| `B19_TEST_TIMEOUT`        | `60`             | positive integer (seconds) | Seconds `test.d` waits for healthcheck to pass before running tests.                                                                                                                                           |
+| `B19_OVERLAY`             | (unset)          | directory name             | Name of an overlay directory under `B19_OVERLAYS_PATH/` to apply at startup. Contents are recursively copied to `/`.                                                                                           |
+| `B19_REQUIRED_SECRETS`    | (empty)          | space-separated names      | Dot-notation secret names that must exist (env var or file). Container exits 1 if any are missing. Skipped when `B19_SECRETS_ENABLED=false` or ad-hoc command mode.                                            |
 
 ## Secrets
 
@@ -84,7 +84,7 @@ the next hook.
 | ------------------ | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `B19_SECRETS_PATH` | `/run/secrets` | Directory scanned for Docker secrets files. Files matching `*.*` are converted from dot-notation to env vars (e.g. `b19.npm.registry_host` becomes `B19_NPM_REGISTRY_HOST`). Existing env vars take precedence. |
 
-See [ENTRYPOINT.md](ENTRYPOINT.md) for secrets loading and validation flow.
+See [ENTRYPOINT.md](use-entrypoint.d.md) for secrets loading and validation flow.
 
 ## Health Thresholds
 
@@ -105,24 +105,24 @@ checks test connectivity. Network checks respect `B19_OFFGRID_MODE`.
 
 Three-tier fetch model: local cache → Docker BuildKit cache → aria2c download.
 
-| Variable                  | Default                      | Accepted values    | Controls                                                       |
-| ------------------------- | ----------------------- -----| ------------------ | -------------------------------------------------------------- |
-| `B19_FETCH_LOCAL_CACHE`   | `Y`                          | `Y`, `N`           | Enable Tier 1: check `.fetch` build context before network     |
-| `B19_FETCH_DOCKER_CACHE`  | `Y`                          | `Y`, `N`           | Enable Tier 2: check BuildKit persistent cache before download |
-| `B19_FETCH_LOCAL_PATH`    | `/fetch`                     | absolute path      | Mount point for `.fetch` context (set by Dockerfile `--mount`) |
-| `B19_CACHE_PATH`          | `/var/cache/b19`             | absolute path      | Parent of the download cache mount, writable by `B19_UID`      |
-| `B19_DOWNLOAD_PATH`       | `${B19_CACHE_PATH}/download` | absolute path      | BuildKit cache mount target for aria2c downloads               |
-| `B19_DOWNLOAD_DISK_CACHE` | `64m`                        | aria2c size string | aria2c in-memory disk cache size                               |
-| `B19_DOWNLOAD_MAX_TRIES`  | `4`                          | positive integer   | Max aria2c retry attempts per download                         |
-| `B19_DOWNLOAD_RETRY_WAIT` | `16`                         | positive integer   | Seconds between aria2c retries                                 |
-| `B19_BUILD_CA_FILE`       | (staged)                     | absolute path      | Build-host CA bundle staged from `M6E_CA_CERTIFICATES`         |
-| `B19_BUILD_CA_ANCHOR`     | (transient)                  | absolute path      | Where a root stage installs it, then drops it pre-commit       |
+| Variable | Default | Accepted values | Controls |
+| \------------------------- | ----------------------- -----| ------------------ | -------------------------------------------------------------- |
+| `B19_FETCH_LOCAL_CACHE` | `Y` | `Y`, `N` | Enable Tier 1: check `.fetch` build context before network |
+| `B19_FETCH_DOCKER_CACHE` | `Y` | `Y`, `N` | Enable Tier 2: check BuildKit persistent cache before download |
+| `B19_FETCH_LOCAL_PATH` | `/fetch` | absolute path | Mount point for `.fetch` context (set by Dockerfile `--mount`) |
+| `B19_CACHE_PATH` | `/var/cache/b19` | absolute path | Parent of the download cache mount, writable by `B19_UID` |
+| `B19_DOWNLOAD_PATH` | `${B19_CACHE_PATH}/download` | absolute path | BuildKit cache mount target for aria2c downloads |
+| `B19_DOWNLOAD_DISK_CACHE` | `64m` | aria2c size string | aria2c in-memory disk cache size |
+| `B19_DOWNLOAD_MAX_TRIES` | `4` | positive integer | Max aria2c retry attempts per download |
+| `B19_DOWNLOAD_RETRY_WAIT` | `16` | positive integer | Seconds between aria2c retries |
+| `B19_BUILD_CA_FILE` | (staged) | absolute path | Build-host CA bundle staged from `M6E_CA_CERTIFICATES` |
+| `B19_BUILD_CA_ANCHOR` | (transient) | absolute path | Where a root stage installs it, then drops it pre-commit |
 
 Both CA variables are inert unless the build host sets `M6E_CA_CERTIFICATES` —
-see [b19-fetch.md](b19-fetch.md) for why a privately fronted near cache needs
+see [b19-fetch.md](use-b19-fetch.md) for why a privately fronted near cache needs
 them and why the anchor never survives the `RUN` that creates it.
 
-See [OFFGRID.md](OFFGRID.md) for the full three-tier model and interaction with offgrid mode.
+See [OFFGRID.md](use-offgrid.md) for the full three-tier model and interaction with offgrid mode.
 
 ## Report
 

@@ -138,8 +138,6 @@ applies the same three-tier logic as `b19-fetch`:
 Populate the local snapshot with `make copy-apt-lists` before an air-gapped build.
 Remove with `make copy-apt-lists-clean`.
 
-See [OFFGRID-APT.md](OFFGRID-APT.md) for the full audit and interaction matrix.
-
 ## Interaction with Near-Cache
 
 `M6E_NEAR_CACHE_HOST` and `B19_OFFGRID_MODE` serve different purposes and can coexist:

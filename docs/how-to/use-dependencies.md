@@ -254,7 +254,7 @@ If hash is empty string, no integrity check is performed (logged as warning).
 The file lands in `${B19_TEMP_PATH}/${M6E_UPSTREAM__FILE}`. Move or install
 from there.
 
-See [b19-fetch.md](b19-fetch.md) for full reference.
+See [b19-fetch.md](use-b19-fetch.md) for full reference.
 
 ## Hook Script Patterns
 
@@ -424,13 +424,13 @@ Access via: `b19-resolve-dep extensions/redis`
 These live in `.container/{stage}/deps/` but are NOT processed by the
 auto-discovery pipeline. They are read directly by build hooks:
 
-| File              | Purpose                                                                            |
-| ----------------- | ---------------------------------------------------------------------------------- |
-| `common.apt.deps` | APT packages installed by `install-apt`. One per line, `name[=version] # comment`. |
-| `volumes.deps`    | Dirs pre-created + chowned by `b19-prepare-volumes` (see [build.d](build.d.md)).   |
-| `*.j2`            | Jinja2 templates for APT sources etc.                                              |
-| `install-*.sh`    | Extension-specific install hooks (PHP extensions).                                 |
-| `*.ini.j2`        | PHP extension config templates.                                                    |
+| File              | Purpose                                                                              |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| `common.apt.deps` | APT packages installed by `install-apt`. One per line, `name[=version] # comment`.   |
+| `volumes.deps`    | Dirs pre-created + chowned by `b19-prepare-volumes` (see [build.d](use-build.d.md)). |
+| `*.j2`            | Jinja2 templates for APT sources etc.                                                |
+| `install-*.sh`    | Extension-specific install hooks (PHP extensions).                                   |
+| `*.ini.j2`        | PHP extension config templates.                                                      |
 
 ## APT version pinning
 
@@ -462,8 +462,8 @@ The mechanism lives in m6e/container (`.makefile/container/workflow/apt-pin.mk` 
 
 ## See Also
 
-- [b19-fetch.md](b19-fetch.md) -- three-tier caching and SHA-512 verification
-- [OFFGRID.md](OFFGRID.md) -- offline build support
+- [b19-fetch.md](use-b19-fetch.md) -- three-tier caching and SHA-512 verification
+- [OFFGRID.md](use-offgrid.md) -- offline build support
 - `m6e/common/scripts/generate-deps.sh` -- auto-discovery logic
 - `m6e/common/scripts/fetch.sh` -- download logic
 - `m6e/common/scripts/update-hash.sh` -- hash computation

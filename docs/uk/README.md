@@ -110,7 +110,7 @@ FROM docker.io/damianbuho/b19-ubuntu-noble:latest
 
 ## Збирання
 
-- [Довідник із Makefile](../MAKEFILE.md)
+- [Довідник із Makefile](../how-to/MAKEFILE.md)
 
 Точки входу конвеєра:
 
@@ -125,20 +125,20 @@ FROM docker.io/damianbuho/b19-ubuntu-noble:latest
 
 ## Документація
 
-- [b19-exec](../b19-exec.md)
-- [b19-fetch](../b19-fetch.md)
-- [b19-log](../b19-log.md)
-- [b19-run](../b19-run.md)
-- [bootstrap.d — Run-Once Initialization System](../bootstrap.d.md)
-- [build.d — Build Hook System](../build.d.md)
-- [B19 Deps System](../dependencies.md)
-- [entrypoint.d — Container Startup System](../entrypoint.d.md)
-- [Environment Variables](../environment.md)
-- [healthcheck.d — Container Health Monitoring System](../healthcheck.d.md)
-- [b19-i18n — Internationalization](../i18n.md)
-- [Offgrid Mode and Cache Switches](../offgrid.md)
-- [Jinja2 Templating (minijinja)](../templating.md)
-- [test.d — Container Test Framework](../test.d.md)
+- [Environment Variables](../how-to/configure-environment.md)
+- [b19-exec](../how-to/use-b19-exec.md)
+- [b19-fetch](../how-to/use-b19-fetch.md)
+- [b19-log](../how-to/use-b19-log.md)
+- [b19-run](../how-to/use-b19-run.md)
+- [bootstrap.d — Run-Once Initialization System](../how-to/use-bootstrap.d.md)
+- [build.d — Build Hook System](../how-to/use-build.d.md)
+- [B19 Deps System](../how-to/use-dependencies.md)
+- [entrypoint.d — Container Startup System](../how-to/use-entrypoint.d.md)
+- [healthcheck.d — Container Health Monitoring System](../how-to/use-healthcheck.d.md)
+- [b19-i18n — Internationalization](../how-to/use-i18n.md)
+- [Offgrid Mode and Cache Switches](../how-to/use-offgrid.md)
+- [Jinja2 Templating (minijinja)](../how-to/use-templating.md)
+- [test.d — Container Test Framework](../how-to/use-test.d.md)
 
 ## Політики
 

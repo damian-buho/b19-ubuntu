@@ -86,7 +86,7 @@ stage that bundle into the `fetch` build context, where it arrives as
 `B19_BUILD_CA_FILE`, and from there:
 
 - the stage-independent hooks `always/pre/010` and `always/post/950` install it
-    through [`trust-ca-certificates`](build.d.md) and drop it again before the
+    through [`trust-ca-certificates`](use-build.d.md) and drop it again before the
     layer commits, so every root stage of every image is covered and none ships
     it;
 - non-root stages leave the trust store alone (uid 1000 cannot write it), so
@@ -122,7 +122,7 @@ trust store is used untouched.
 | `B19_BUILD_CA_FILE`       | (staged)         | Build-host CA bundle in the fetch context      |
 | `B19_TEMP_PATH`           | `/tmp`           | Destination for the final file copy            |
 
-See [OFFGRID.md](OFFGRID.md) for the full offgrid/cache-switch reference.
+See [OFFGRID.md](use-offgrid.md) for the full offgrid/cache-switch reference.
 
 ## Examples
 

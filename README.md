@@ -108,7 +108,7 @@ For the recommended multi-stage pattern and the build-hook system (build.d), sca
 
 ## Building
 
-- [Makefile reference](docs/MAKEFILE.md)
+- [Makefile reference](docs/how-to/MAKEFILE.md)
 
 Pipeline entry points:
 
@@ -123,20 +123,20 @@ For the local dev loop, `make dev-container` brings up the dev-container.
 
 ## Documentation
 
-- [b19-exec](docs/b19-exec.md)
-- [b19-fetch](docs/b19-fetch.md)
-- [b19-log](docs/b19-log.md)
-- [b19-run](docs/b19-run.md)
-- [bootstrap.d — Run-Once Initialization System](docs/bootstrap.d.md)
-- [build.d — Build Hook System](docs/build.d.md)
-- [B19 Deps System](docs/dependencies.md)
-- [entrypoint.d — Container Startup System](docs/entrypoint.d.md)
-- [Environment Variables](docs/environment.md)
-- [healthcheck.d — Container Health Monitoring System](docs/healthcheck.d.md)
-- [b19-i18n — Internationalization](docs/i18n.md)
-- [Offgrid Mode and Cache Switches](docs/offgrid.md)
-- [Jinja2 Templating (minijinja)](docs/templating.md)
-- [test.d — Container Test Framework](docs/test.d.md)
+- [Environment Variables](docs/how-to/configure-environment.md)
+- [b19-exec](docs/how-to/use-b19-exec.md)
+- [b19-fetch](docs/how-to/use-b19-fetch.md)
+- [b19-log](docs/how-to/use-b19-log.md)
+- [b19-run](docs/how-to/use-b19-run.md)
+- [bootstrap.d — Run-Once Initialization System](docs/how-to/use-bootstrap.d.md)
+- [build.d — Build Hook System](docs/how-to/use-build.d.md)
+- [B19 Deps System](docs/how-to/use-dependencies.md)
+- [entrypoint.d — Container Startup System](docs/how-to/use-entrypoint.d.md)
+- [healthcheck.d — Container Health Monitoring System](docs/how-to/use-healthcheck.d.md)
+- [b19-i18n — Internationalization](docs/how-to/use-i18n.md)
+- [Offgrid Mode and Cache Switches](docs/how-to/use-offgrid.md)
+- [Jinja2 Templating (minijinja)](docs/how-to/use-templating.md)
+- [test.d — Container Test Framework](docs/how-to/use-test.d.md)
 
 ## Policies
 

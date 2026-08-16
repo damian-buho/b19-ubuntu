@@ -101,13 +101,13 @@ reports/                 # lint/scan/bridge outputs (generated; do not hand-edit
 These are on `PATH` (`/tools.d`) in this and every downstream image. Prefer them
 over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 
-- `b19-log <level> <tag> [msg]` — leveled (error/warn/info/debug), color-aware, honors `NO_COLOR`. [docs](docs/b19-log.md)
-- `b19-run <tag> <msg> -- <cmd>` — timed wrapper; success output hidden unless verbose, failure always shown. [docs](docs/b19-run.md)
-- `b19-exec [opts] -- <cmd>` — long-running services; routes stdout/stderr through the logger, tracks PID for signal forwarding. [docs](docs/b19-exec.md)
-- `b19-fetch <tag> <url> <file> [sha512]` — three-tier cached download (`.fetch/` → BuildKit cache → aria2c), SHA-512 verified, offgrid-aware. [docs](docs/b19-fetch.md)
+- `b19-log <level> <tag> [msg]` — leveled (error/warn/info/debug), color-aware, honors `NO_COLOR`. [docs](docs/how-to/use-b19-log.md)
+- `b19-run <tag> <msg> -- <cmd>` — timed wrapper; success output hidden unless verbose, failure always shown. [docs](docs/how-to/use-b19-run.md)
+- `b19-exec [opts] -- <cmd>` — long-running services; routes stdout/stderr through the logger, tracks PID for signal forwarding. [docs](docs/how-to/use-b19-exec.md)
+- `b19-fetch <tag> <url> <file> [sha512]` — three-tier cached download (`.fetch/` → BuildKit cache → aria2c), SHA-512 verified, offgrid-aware. [docs](docs/how-to/use-b19-fetch.md)
 - `b19-i18n` — sourced to get `_()` / `_p()` gettext helpers (TEXTDOMAIN `b19`).
 - `build-stage`, `process-hooks` — the build hook engine described above.
-- `trust-ca-certificates install|remove` — trusts the build host’s CA bundle for one build stage. [docs](docs/b19-fetch.md)
+- `trust-ca-certificates install|remove` — trusts the build host’s CA bundle for one build stage. [docs](docs/how-to/use-b19-fetch.md)
 - `b19-load-secrets` / `b19-exec-with-secrets`, `b19-resolve-dep`,
     `read-lineage`/`write-lineage`, `detect-cpu-count`, `check-ports`,
     `install-apt`, `j2-render`/`parallel-j2`/`save-j2`, `keyscan`, `setup-ssh`.
@@ -117,14 +117,14 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 - **CLAUDE.md → AGENTS.md.** `CLAUDE.md` is just `@AGENTS.md`; edit this file.
 - **Multi-series matrix.** Builds across `B19_UBUNTU_SERIES` ∈ {`resolute`, `noble`} (`projectfile.yaml` → `org.projectfile.ci.matrix`). Image name is series-qualified: `b19/ubuntu/<series>`. Anything series-specific belongs in
     `deps/ubuntu/<series>.*` or `.j2` templates, never hardcoded.
-- **deps are declarative.** Add a `*.deps` file under the right `deps/` path and the m6e build auto-discovers it (URL/version/SHA-512, arch-aware) — no Makefile edit. [docs/dependencies.md](docs/dependencies.md).
+- **deps are declarative.** Add a `*.deps` file under the right `deps/` path and the m6e build auto-discovers it (URL/version/SHA-512, arch-aware) — no Makefile edit. [docs/how-to/use-dependencies.md](docs/how-to/use-dependencies.md).
 - **`b19-resolve-dep` clobbers.** It always writes the same `M6E_UPSTREAM_VERSION` / `M6E_UPSTREAM__*` names, and hooks are SOURCED in one shell, so the last `eval` in the stage wins. A hook that reads those values MUST `eval "$(b19-resolve-dep <name>)"` itself — an earlier hook’s resolve is not yours. Silent when the value only feeds a `-X` ldflag: the linker drops an unknown target and the binary keeps its default.
 - **i18n is mandatory.** User-facing strings go through `_()`/`_p()`; update
     `.container/{stage}/locale/*.pot|*.po` (es, uk). Don’t add English-only output.
-- **offgrid is real.** `B19_OFFGRID_MODE=Y` must stay honored: any new network access needs a guard + cache path. Audit: [docs/offgrid-apt.md](docs/offgrid-apt.md).
-- **No certificate lives in this repository.** Trust for a privately fronted near cache comes from the build host via `M6E_CA_CERTIFICATES`, rides the `fetch` build context, and is dropped again inside the same `RUN` — see [docs/b19-fetch.md](docs/b19-fetch.md). Never commit a `.crt` here or bake one into a layer: it is environment data, it reaches only one image lineage, and it silently expires with the issuing proxy.
+- **offgrid is real.** `B19_OFFGRID_MODE=Y` must stay honored: any new network access needs a guard + cache path. Reference: [use-offgrid](docs/how-to/use-offgrid.md).
+- **No certificate lives in this repository.** Trust for a privately fronted near cache comes from the build host via `M6E_CA_CERTIFICATES`, rides the `fetch` build context, and is dropped again inside the same `RUN` — see [docs/how-to/use-b19-fetch.md](docs/how-to/use-b19-fetch.md). Never commit a `.crt` here or bake one into a layer: it is environment data, it reaches only one image lineage, and it silently expires with the issuing proxy.
 - **`setup-docker-sources` arms a test.** Adding the Docker apt repository also renames `/test.d/0900-docker-connect.sh.disabled` to `.sh`, so every downstream image that ships the Docker CLI asserts `docker system info` at `make container-test` time. In CI there is no host socket: such a project MUST give `.compose/pipeline.yaml` a `d9t/dind` sidecar, or that test fails.
-- **Defaults live in the Dockerfile** `ENV`/`ARG` block — not in templates (root rule: no duplicate defaults). The Dockerfile `ENV` is the source of truth for every `B19_*` runtime default; [docs/environment.md](docs/environment.md) documents them.
+- **Defaults live in the Dockerfile** `ENV`/`ARG` block — not in templates (root rule: no duplicate defaults). The Dockerfile `ENV` is the source of truth for every `B19_*` runtime default; [docs/how-to/configure-environment.md](docs/how-to/configure-environment.md) documents them.
 - **`reports/` is generated.** Treat as build output.
 - Defaults you’ll rely on: home `/app`, prefix `/usr/local`, temp `/tmp` (tmpfs during build), parallelism via `NUMPROCS`, XDG paths under `/app`, build download cache under `/var/cache/b19`.
 - **Keep `--mount=type=cache` targets out of `${B19_HOME}`, and never `chown -R` / `chmod -R` the home from a build hook.** buildah `--layers` ≤1.42 ([#6747](https://github.com/containers/buildah/issues/6747), fix PR [#6981](https://github.com/containers/buildah/pull/6981) unmerged) restores the mtime of the directory that holds a cache mount when it removes that mount. The differ then reads the directory as unchanged and omits its tar entry, but it still writes the changed children. Extraction gives the orphaned parent `root:root 755`, and the next stage cannot write its own home. Measured on 1.42.1, with a cache mounted below the home: a new **file** directly in the home is safe; a change to a **pre-existing** file in the home triggers it; a new **directory** inside a pre-existing subdirectory triggers it as well. `b19-prepare-volumes` does the last one, so a plain `mkdir -p` is enough to trigger it — a recursive `chown` is not necessary. `${B19_DOWNLOAD_PATH}` sits under `${B19_CACHE_PATH}` to keep the home clear of cache mounts.
@@ -134,18 +134,18 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 
 Deep references (read the matching one before touching a subsystem):
 
-- [docs/environment.md](docs/environment.md) — every `B19_*` var: default, scope, effect. Start here.
-- [docs/build.d.md](docs/build.d.md) — build hook runner, phases, `.i.sh` inheritance in depth.
-- [docs/entrypoint.d.md](docs/entrypoint.d.md) — startup chain, command bypass, hook skipping.
-- [docs/bootstrap.d.md](docs/bootstrap.d.md) — run-once-per-volume setup with lockfiles.
-- [docs/healthcheck.d.md](docs/healthcheck.d.md) — the seven built-in checks, fault-tolerant network logic.
-- [docs/test.d.md](docs/test.d.md) — in-container shell test runner (`make test`).
-- [docs/dependencies.md](docs/dependencies.md) — declarative deps + auto-discovery.
-- [docs/templating.md](docs/templating.md) — minijinja-cli, build- vs startup-time rendering.
-- [docs/i18n.md](docs/i18n.md) — gettext setup, merged `b19.mo`, per-project `.po` layering.
-- [docs/offgrid.md](docs/offgrid.md) — air-gap switches; [docs/offgrid-apt.md](docs/offgrid-apt.md) — network-op audit.
-- [docs/MAKEFILE.md](docs/MAKEFILE.md) — available make targets (or run `make help`).
-- CLI: [b19-log](docs/b19-log.md) · [b19-run](docs/b19-run.md) · [b19-exec](docs/b19-exec.md) · [b19-fetch](docs/b19-fetch.md)
+- [docs/how-to/configure-environment.md](docs/how-to/configure-environment.md) — every `B19_*` var: default, scope, effect. Start here.
+- [docs/how-to/use-build.d.md](docs/how-to/use-build.d.md) — build hook runner, phases, `.i.sh` inheritance in depth.
+- [docs/how-to/use-entrypoint.d.md](docs/how-to/use-entrypoint.d.md) — startup chain, command bypass, hook skipping.
+- [docs/how-to/use-bootstrap.d.md](docs/how-to/use-bootstrap.d.md) — run-once-per-volume setup with lockfiles.
+- [docs/how-to/use-healthcheck.d.md](docs/how-to/use-healthcheck.d.md) — the seven built-in checks, fault-tolerant network logic.
+- [docs/how-to/use-test.d.md](docs/how-to/use-test.d.md) — in-container shell test runner (`make test`).
+- [docs/how-to/use-dependencies.md](docs/how-to/use-dependencies.md) — declarative deps + auto-discovery.
+- [docs/how-to/use-templating.md](docs/how-to/use-templating.md) — minijinja-cli, build- vs startup-time rendering.
+- [docs/how-to/use-i18n.md](docs/how-to/use-i18n.md) — gettext setup, merged `b19.mo`, per-project `.po` layering.
+- [docs/how-to/use-offgrid.md](docs/how-to/use-offgrid.md) — air-gap switches;
+- [docs/how-to/MAKEFILE.md](docs/how-to/MAKEFILE.md) — available make targets (or run `make help`).
+- CLI: [b19-log](docs/how-to/use-b19-log.md) · [b19-run](docs/how-to/use-b19-run.md) · [b19-exec](docs/how-to/use-b19-exec.md) · [b19-fetch](docs/how-to/use-b19-fetch.md)
 
 Per-capability summaries (the "what does this give me" view) live in
 [docs/features.d/](docs/features.d/): apt-cache, cpu-detection, feature-toggles,
