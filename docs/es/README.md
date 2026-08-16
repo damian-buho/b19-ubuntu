@@ -65,27 +65,26 @@ Consulta [FEATURES.md](FEATURES.md) para ver la lista completa.
 
 Descarga la imagen de contenedor publicada:
 
+### Descargar de GHCR
+
 ```sh
 docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
-Variantes disponibles: B19_UBUNTU_SERIES: `resolute`, `noble`
+### Descargar de DockerHub
 
 ```sh
-docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
 docker pull docker.io/damianbuho/b19-ubuntu-resolute:latest
 docker pull docker.io/damianbuho/b19-ubuntu-noble:latest
 ```
 
 Si los registros anteriores no están disponibles, descarga desde el origen:
 
+### Descargar de Kiota
+
 ```sh
 docker pull kiota.ch/b19/ubuntu/resolute:latest
-```
-
-Variantes disponibles: B19_UBUNTU_SERIES: `resolute`, `noble`
-
-```sh
 docker pull kiota.ch/b19/ubuntu/noble:latest
 ```
 
@@ -93,14 +92,16 @@ docker pull kiota.ch/b19/ubuntu/noble:latest
 
 Construye sobre esta imagen:
 
+### Desde GHCR
+
 ```dockerfile
 FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
-Variantes disponibles: B19_UBUNTU_SERIES: `resolute`, `noble`
+### Desde DockerHub
 
 ```dockerfile
-FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
 FROM docker.io/damianbuho/b19-ubuntu-resolute:latest
 FROM docker.io/damianbuho/b19-ubuntu-noble:latest
 ```
@@ -135,7 +136,6 @@ Para el bucle de desarrollo local, `make dev-container` levanta el dev-container
 - [Environment Variables](../environment.md)
 - [healthcheck.d — Container Health Monitoring System](../healthcheck.d.md)
 - [b19-i18n — Internationalization](../i18n.md)
-- [Offgrid APT Audit](../offgrid-apt.md)
 - [Offgrid Mode and Cache Switches](../offgrid.md)
 - [Jinja2 Templating (minijinja)](../templating.md)
 - [test.d — Container Test Framework](../test.d.md)

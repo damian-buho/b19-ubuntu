@@ -65,27 +65,26 @@ pf-cli-managed: yes
 
 Завантажте опублікований образ контейнера:
 
+### Завантажити з GHCR
+
 ```sh
 docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
-Доступні варіанти: B19_UBUNTU_SERIES: `resolute`, `noble`
+### Завантажити з DockerHub
 
 ```sh
-docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
 docker pull docker.io/damianbuho/b19-ubuntu-resolute:latest
 docker pull docker.io/damianbuho/b19-ubuntu-noble:latest
 ```
 
 Якщо наведені вище реєстри недоступні, завантажте з джерела:
 
+### Завантажити з Kiota
+
 ```sh
 docker pull kiota.ch/b19/ubuntu/resolute:latest
-```
-
-Доступні варіанти: B19_UBUNTU_SERIES: `resolute`, `noble`
-
-```sh
 docker pull kiota.ch/b19/ubuntu/noble:latest
 ```
 
@@ -93,14 +92,16 @@ docker pull kiota.ch/b19/ubuntu/noble:latest
 
 Побудуйте на основі цього образу:
 
+### З GHCR
+
 ```dockerfile
 FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
-Доступні варіанти: B19_UBUNTU_SERIES: `resolute`, `noble`
+### З DockerHub
 
 ```dockerfile
-FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
 FROM docker.io/damianbuho/b19-ubuntu-resolute:latest
 FROM docker.io/damianbuho/b19-ubuntu-noble:latest
 ```
@@ -135,7 +136,6 @@ FROM docker.io/damianbuho/b19-ubuntu-noble:latest
 - [Environment Variables](../environment.md)
 - [healthcheck.d — Container Health Monitoring System](../healthcheck.d.md)
 - [b19-i18n — Internationalization](../i18n.md)
-- [Offgrid APT Audit](../offgrid-apt.md)
 - [Offgrid Mode and Cache Switches](../offgrid.md)
 - [Jinja2 Templating (minijinja)](../templating.md)
 - [test.d — Container Test Framework](../test.d.md)

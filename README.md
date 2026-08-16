@@ -63,27 +63,26 @@ See [FEATURES.md](FEATURES.md) for the full list.
 
 Pull the published container image:
 
+### Pull from GHCR
+
 ```sh
 docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
-Available variants: B19_UBUNTU_SERIES: resolute, noble
+### Pull from DockerHub
 
 ```sh
-docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
 docker pull docker.io/damianbuho/b19-ubuntu-resolute:latest
 docker pull docker.io/damianbuho/b19-ubuntu-noble:latest
 ```
 
 If the registries above are unreachable, pull from the origin instead:
 
+### Pull from Kiota
+
 ```sh
 docker pull kiota.ch/b19/ubuntu/resolute:latest
-```
-
-Available variants: B19_UBUNTU_SERIES: resolute, noble
-
-```sh
 docker pull kiota.ch/b19/ubuntu/noble:latest
 ```
 
@@ -91,14 +90,16 @@ docker pull kiota.ch/b19/ubuntu/noble:latest
 
 Build on top of this image:
 
+### From GHCR
+
 ```dockerfile
 FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
-Available variants: B19_UBUNTU_SERIES: resolute, noble
+### From DockerHub
 
 ```dockerfile
-FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
 FROM docker.io/damianbuho/b19-ubuntu-resolute:latest
 FROM docker.io/damianbuho/b19-ubuntu-noble:latest
 ```
@@ -133,7 +134,6 @@ For the local dev loop, `make dev-container` brings up the dev-container.
 - [Environment Variables](docs/environment.md)
 - [healthcheck.d — Container Health Monitoring System](docs/healthcheck.d.md)
 - [b19-i18n — Internationalization](docs/i18n.md)
-- [Offgrid APT Audit](docs/offgrid-apt.md)
 - [Offgrid Mode and Cache Switches](docs/offgrid.md)
 - [Jinja2 Templating (minijinja)](docs/templating.md)
 - [test.d — Container Test Framework](docs/test.d.md)
