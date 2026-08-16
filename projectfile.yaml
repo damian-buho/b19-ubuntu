@@ -6,9 +6,15 @@ $schema: https://projectfile.org/schema/v1.json
 identity:
   created: "2026-06-01"
   name: ubuntu
-  summary: Community-maintained Ubuntu base image for the B19 fleet
+  summary:
+    en: Community-maintained Ubuntu base image for the B19 fleet
+    es: Imagen base Ubuntu mantenida por la comunidad para la flota B19
+    uk: Базовий образ Ubuntu з підтримкою спільноти для флоту B19
   title: B19/Ubuntu
-  description: Community-maintained Ubuntu base image for the B19 fleet. This repository holds only the packaging — Dockerfile, bootstrap scripts, and configuration, all MIT-licensed; the upstream Ubuntu rootfs is fetched at build time and retains its own licensing.
+  description:
+    en: Community-maintained Ubuntu base image for the B19 fleet. This repository holds only the packaging — Dockerfile, bootstrap scripts, and configuration, all MIT-licensed; the upstream Ubuntu rootfs is fetched at build time and retains its own licensing.
+    es: Imagen base Ubuntu mantenida por la comunidad para la flota B19. Este repositorio contiene únicamente el empaquetado — Dockerfile, scripts de arranque y configuración, todo con licencia MIT; el rootfs original de Ubuntu se obtiene en tiempo de compilación y conserva su propia licencia.
+    uk: Базовий образ Ubuntu з підтримкою спільноти для флоту B19. Цей репозиторій містить лише пакування — Dockerfile, скрипти початкового налаштування та конфігурацію, усе під ліцензією MIT; вихідний rootfs Ubuntu отримують під час збирання, і він зберігає власну ліцензію.
 includes:
   - .makefile/b19/ci.yaml
   - https://kiota.ch/b19/metadata/raw/branch/main/include.yaml

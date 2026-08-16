@@ -10,7 +10,7 @@ pf-cli-managed: yes
 
 # B19/Ubuntu
 
-Community-maintained Ubuntu base image for the B19 fleet
+Базовий образ Ubuntu з підтримкою спільноти для флоту B19
 
 [![Stand with Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://damian-buho.github.io/support-ukraine/) [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=4c1&style=flat-square)](LICENSE) ![Commit style](https://img.shields.io/static/v1?label=commits&message=conventional&color=blue&style=flat-square) ![Workflow](https://img.shields.io/static/v1?label=workflow&message=git-flow&color=blue&style=flat-square) ![Versioning](https://img.shields.io/static/v1?label=versioning&message=semantic&color=blue&style=flat-square) [![PRs welcome](https://img.shields.io/static/v1?label=PRs&message=welcome&color=4c1&style=flat-square)](CONTRIBUTING.md) [![Citation](https://img.shields.io/static/v1?label=citation&message=cff&color=blue&style=flat-square)](CITATION.cff) [![REUSE compliance](https://api.reuse.software/badge/codeberg.org/b19/ubuntu)](https://api.reuse.software/info/codeberg.org/b19/ubuntu)
 
@@ -20,35 +20,35 @@ Community-maintained Ubuntu base image for the B19 fleet
 
 ## Можливості
 
-- Persistent APT cache across builds
-- Service process management with log routing (b19-exec)
-- Cached artifact downloads with integrity verification (b19-fetch)
-- Timed command execution with failure reporting (b19-run)
-- Run-once initialization (bootstrap.d)
-- Modular build hooks (build.d)
-- Automatic CPU count detection (NUMPROCS)
-- Declarative dependency management (b19-deps)
-- Pluggable startup system (entrypoint.d)
-- Feature toggles for all subsystems
-- Built-in health monitoring (healthcheck.d)
-- Multilingual shell output (b19-i18n)
-- Image lineage tracking
-- Structured, level-filtered logging (b19-log)
-- Non-root container by default
-- Air-gapped / offline build and runtime support
-- Runtime overlay injection
-- Reproducible base image (pinned by digest)
-- Port validation
-- Unified lifecycle runner family
-- Docker secrets auto-loading (secrets)
-- Interactive shell hooks (shell.d)
-- Graceful signal handling
-- Jinja2 configuration templates (minijinja-cli)
-- Built-in test framework (test.d)
-- Pre-installed utility tools
-- XDG Base Directory paths
+- Постійний APT-кеш між збираннями
+- Керування службовими процесами зі спрямуванням журналів (b19-exec)
+- Кешовані завантаження артефактів із перевіркою цілісності (b19-fetch)
+- Вимірюване виконання команд зі звітуванням про збої (b19-run)
+- Одноразова ініціалізація (bootstrap.d)
+- Модульні хуки збирання (build.d)
+- Автоматичне визначення кількості CPU (NUMPROCS)
+- Декларативне керування залежностями (b19-deps)
+- Підключована система запуску (entrypoint.d)
+- Перемикачі функцій для всіх підсистем
+- Вбудований моніторинг стану (healthcheck.d)
+- Багатомовний вивід shell (b19-i18n)
+- Відстеження лініжу образу
+- Структуроване журналування з фільтром за рівнем (b19-log)
+- Контейнер без прав root за замовчуванням
+- Підтримка ізольованих від інтернету (air-gapped/offline) збирання й виконання
+- Ін’єкція оверлеїв під час виконання
+- Відтворюваний базовий образ (зафіксований за digest)
+- Перевірка портів
+- Уніфіковане сімейство ранерів життєвого циклу
+- Автозавантаження Docker-секретів (secrets)
+- Хуки інтерактивної shell (shell.d)
+- Плавна обробка сигналів
+- Шаблони конфігурації Jinja2 (minijinja-cli)
+- Вбудований тестовий фреймворк (test.d)
+- Попередньо встановлені службові інструменти
+- Шляхи XDG Base Directory
 
-Див. [FEATURES.md](../../FEATURES.md), щоб переглянути повний перелік.
+Див. [FEATURES.md](FEATURES.md), щоб переглянути повний перелік.
 
 ## Що надає цей проєкт
 
