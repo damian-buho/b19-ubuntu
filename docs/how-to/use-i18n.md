@@ -4,20 +4,18 @@ SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
 -->
 
-# b19-i18n — Internationalization
+# Translate strings with b19-i18n
 
-Shell-level GNU gettext integration for all b19-derived images.
+`b19-i18n` is shell-level GNU gettext for every b19 image: `_()` and `_p()` backed by `.mo` catalogs, one shared `TEXTDOMAIN` (`b19`) whose translations merge additively across image layers — a child image inherits every translated string from its parents and adds its own. The pitch: [internationalization](../features.d/i18n.md).
 
-## Overview
+Languages: `en` (source), `es` (`es_ES`), `uk` (`uk_UA`).
 
-Provides `_()` and `_p()` translation functions backed by GNU gettext `.mo` catalogs.
-All projects share a single `TEXTDOMAIN` (`b19`) — their translations are merged at build
-time into a unified `b19.mo` catalog per language. Each project ships its own `.po` files,
-and the compile step merges parent+child layers additively.
+## When to use
 
-**Languages**: `en` (source), `es` (`es_ES`), `uk` (`uk_UA`)
+- Every user-facing string in hooks, runners and tools — English-only output is a bug in this fleet.
+- Any image carrying strings a non-English operator will read at startup or in logs.
 
-## Usage
+## Quick start
 
 ```bash
 # Static string

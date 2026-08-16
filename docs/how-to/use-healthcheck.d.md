@@ -4,160 +4,23 @@ SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
 -->
 
-# healthcheck.d — Container Health Monitoring System
+# Write healthchecks
 
-The numbered-script runner that provides Docker-native health monitoring for every
-b19-based container. Each check is a plain shell script; the runner discovers,
-sorts, and executes them, reporting pass/fail counts to Docker.
+`healthcheck.d` is the Docker-native health monitor every b19 image inherits: each check is a plain shell script, the runner discovers and sorts them, counts failures and reports the count to Docker. Seven checks ship in the base image — disk space, HTTPS, DNS, ICMP, writability — and downstream images add service-specific checks at slot 100+. The pitch: [container health monitoring](../features.d/healthcheck.d.md).
 
-## Architecture
+## When to use
 
-```text
-Docker daemon (periodic HEALTHCHECK interval)
-  └─ healthcheck.d (runner: /tools.d/healthcheck.d)
-       ├─ flock (prevent overlapping runs)
-       ├─ load secrets (runs outside entrypoint context)
-       └─ execute /healthcheck.d/*.sh in subshells (ascending order)
-```
+- Every downstream image: add checks that probe the actual service, not just the process.
+- Any container whose orchestrator (Docker, compose, Swarm) reads `State.Health.Status`.
 
-Declared once in `b19/ubuntu/Dockerfile:133`:
-
-```dockerfile
-HEALTHCHECK CMD ["healthcheck.d"]
-```
-
-All ~90 downstream images inherit this via Docker layer inheritance. Their
-Dockerfiles contain only a comment:
-
-```dockerfile
-# HEALTHCHECK CMD ["healthcheck.d"] is inherited
-```
-
-## Runner Lifecycle
-
-The runner is `/tools.d/healthcheck.d` (source:
-`.container/foundation/tools.d/healthcheck.d`). When invoked:
-
-1. Checks `B19_HEALTH_ENABLED` — exits 0 immediately if `false`
-1. Acquires `flock` on `/tmp/healthcheck.d.lock` — exits 0 if another run is in progress
-1. Sets `B19_COLOR=0` — output is stored by `docker inspect`, no ANSI escapes
-1. Sources `b19-i18n` for `_()`, `_p()` translation functions
-1. Sources `b19-load-secrets` — healthchecks run outside entrypoint context, secrets must be loaded explicitly
-1. Finds all `*.sh` in `$B19_HEALTH_PATH` (default `/healthcheck.d`), sorts ascending (`sort -zn`)
-1. Executes each in a **subshell** `( . "${CHECK}" )` — failures are isolated
-1. Tracks `FINAL_EXIT_CODE` as a **counter of failed checks** (not a boolean)
-1. Prints summary: `"N of M checks failed."` or `"All N checks passed."`
-1. Exits with the failure count (0 = healthy)
-
-### Key difference from other runners
-
-| Runner        | Fail handling         | Sort order | Concurrency guard   |
-| ------------- | --------------------- | ---------- | ------------------- |
-| healthcheck.d | Continue, count fails | Forward    | `flock`             |
-| test.d        | Continue, count fails | Reverse    | None                |
-| entrypoint.d  | Abort (`set -e`)      | Forward    | None                |
-| bootstrap.d   | Abort                 | Forward    | Lockfile per script |
-
-The `flock` is critical: Docker can invoke HEALTHCHECK while a previous run is
-still executing. Without it, two concurrent runs would interleave output and
-produce duplicate log entries.
-
-## Environment Variables
-
-### Feature toggle
-
-| Variable             | Default | Description                       |
-| -------------------- | ------- | --------------------------------- |
-| `B19_HEALTH_ENABLED` | `true`  | Set to `false` to skip all checks |
-
-### Paths
-
-| Variable          | Default          | Description                        |
-| ----------------- | ---------------- | ---------------------------------- |
-| `B19_HEALTH_PATH` | `/healthcheck.d` | Directory containing check scripts |
-
-### Thresholds (base image defaults)
-
-| Variable                        | Default                                       | Description                                     |
-| ------------------------------- | --------------------------------------------- | ----------------------------------------------- |
-| `B19_HEALTH_HOME_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_HOME` before failing       |
-| `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768`                                       | Min free KB in `$XDG_CACHE_HOME` before failing |
-| `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_TEMP_PATH` before failing  |
-| `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Timeout in seconds for curl-based checks        |
-| `B19_HEALTH_NETWORK_URL`        | `"https://www.w3.org https://www.google.com"` | Space-separated URLs for connectivity checks    |
-| `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for ICMP checks             |
-| `B19_HEALTH_MEMORY_THRESHOLD`   | (unset)                                       | MB threshold for memory consumption test        |
-
-### Offgrid mode
-
-When `B19_OFFGRID_MODE=Y`, all network checks (HTTPS, DNS, ping) are skipped
-with a "skipped (offgrid mode)" log message and exit 0. Space checks still run.
-
-## Base Checks (b19/Ubuntu)
-
-Seven scripts ship in `.container/user/healthcheck.d/`:
-
-| Slot | Script                           | Check                                                                           | Skip condition                              |
-| ---- | -------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------- |
-| 050  | `check-home-directory-space.sh`  | `$B19_HOME` has > `B19_HEALTH_HOME_MIN_SPACE_KB` KB free                        | Never                                       |
-| 060  | `check-cache-directory-space.sh` | `$XDG_CACHE_HOME` has > `B19_HEALTH_CACHE_MIN_SPACE_KB`                         | Never                                       |
-| 070  | `check-temp-directory-space.sh`  | `$B19_TEMP_PATH` has > `B19_HEALTH_TEMP_MIN_SPACE_KB`                           | Never                                       |
-| 080  | `check-https-connectivity.sh`    | At least one `B19_HEALTH_NETWORK_URL` responds to `curl -I`                     | `B19_HEALTH_NETWORK_URL` empty, or offgrid  |
-| 085  | `check-dns-resolution.sh`        | At least one hostname from `B19_HEALTH_NETWORK_URL` resolves via `getent hosts` | Same as 080                                 |
-| 090  | `check-ping-connectivity.sh`     | At least one `B19_HEALTH_PING_TARGETS` responds to `ping -c 1 -W 2`             | `B19_HEALTH_PING_TARGETS` empty, or offgrid |
-| 100  | `check-dummy.sh`                 | Can `touch` + `rm` a file in `B19_HEALTH_PATH`                                  | Never                                       |
-
-### Check pattern: "at least one succeeds"
-
-Network checks (080, 085, 090) iterate over multiple targets. Success of any
-single target counts as pass. This avoids false positives from one flaky endpoint.
-
-### Slot numbering convention
-
-| Range   | Purpose                     | Reserved by                  |
-| ------- | --------------------------- | ---------------------------- |
-| 050-099 | System resource checks      | b19/Ubuntu (space, disk)     |
-| 080-099 | Network connectivity checks | b19/Ubuntu (HTTP, DNS, ICMP) |
-| 100-499 | Service-specific checks     | downstream project           |
-| 500-999 | Advanced/integration checks | downstream project           |
-| 1000+   | Multi-component checks      | downstream project           |
-
-## How Checks Get Into the Image
-
-The Dockerfile bulk-copies two directory trees to `/`:
-
-```dockerfile
-COPY .container/foundation/  /     # tools.d (runner), build hooks, locale
-COPY .container/user/        /     # healthcheck.d (checks), entrypoint.d, test.d
-```
-
-Inside the container:
-
-```text
-/healthcheck.d/                     # B19_HEALTH_PATH
-  050-check-home-directory-space.sh # from b19/ubuntu
-  060-check-cache-directory-space.sh
-  ...
-  100-custom-health.sh              # from downstream image (layered on top)
-```
-
-Downstream projects’ checks merge via Docker layer overlay. The runner finds
-all `*.sh` regardless of which image layer added them.
-
-Permissions are set by the foundation build hook
-`.container/foundation/build.d/foundation/post/200-permissions.sh`
-which creates `$B19_HEALTH_PATH` and sets ownership to `$B19_UID:0`.
-
-## Writing a Check
-
-### Template
+## Quick start
 
 ```bash
+# .container/user/healthcheck.d/100-check-service-health.sh
 #!/usr/bin/env bash
 set -o pipefail
-# shellcheck source=b19-i18n
 
-HTTP_PORT="${MY_PROJECT_HTTP_PORT}"
+HTTP_PORT="${NS_SERVICE_HTTP_PORT}"
 
 if ! curl -I --max-time "${B19_HEALTH_CURL_TIMEOUT}" -s \
      "http://localhost:${HTTP_PORT}/health" >/dev/null 2>&1; then
@@ -169,26 +32,72 @@ b19-log good "HEALTH.D" "$(_p "Service is healthy on port %s" "${HTTP_PORT}")"
 exit 0
 ```
 
-### Rules
+Do not redeclare `HEALTHCHECK` in the Dockerfile — `HEALTHCHECK CMD ["healthcheck.d"]` is inherited from b19/Ubuntu; all downstream images get it via layer inheritance.
 
-1. **`#!/usr/bin/env bash`** — always, for consistency
-1. **`set -o pipefail`** — catch pipe failures (do NOT use `set -e` — the subshell runner does not need it, and it can cause unexpected aborts)
-1. **Exit 0 = pass, non-zero = fail** — the runner captures `$?` after each subshell
-1. **Source `b19-i18n`** if using `_()` or `_p()` for translatable strings (the runner sources it before checks, but subshells inherit it)
-1. **Use `b19-log`** for all output — `b19-log good` for pass, `b19-log bad` for fail
-1. **Tag all logs as `"HEALTH.D"`** — consistent prefix for filtering
-1. **Wrap user-facing strings in `_()` or `_p()`** — i18n is mandatory (en, es, uk)
-1. **Use `B19_HEALTH_CURL_TIMEOUT`** for cURL calls — respects the configured timeout
-1. **Read config from env vars** — never hardcode ports, paths, or URLs
-1. **Skip gracefully when optional** — check for the relevant env var and `exit 0` with a "skipped" log if absent
-1. **Respect `B19_OFFGRID_MODE`** — network checks must skip when `B19_OFFGRID_MODE=Y`
-1. **Do NOT leak secrets in logs** — mask passwords with `****`
+## How it works
 
-### Common Patterns by Check Type
+```text
+Docker daemon (periodic HEALTHCHECK interval)
+  └─ healthcheck.d (runner: /tools.d/healthcheck.d)
+       ├─ flock (prevent overlapping runs)
+       ├─ load secrets (runs outside entrypoint context)
+       └─ execute /healthcheck.d/*.sh in subshells (ascending order)
+```
+
+Runner lifecycle:
+
+1. Checks `B19_HEALTH_ENABLED` — exits 0 immediately if `false`
+1. Acquires `flock` on `/tmp/healthcheck.d.lock` — exits 0 if another run is still in progress (Docker can invoke HEALTHCHECK while a previous run executes; without the lock, two runs interleave output)
+1. Sets `B19_COLOR=0` — output is stored by `docker inspect`, no ANSI escapes
+1. Sources `b19-i18n` and `b19-load-secrets` — healthchecks run outside entrypoint context, so secrets are loaded explicitly
+1. Finds all `*.sh` in `$B19_HEALTH_PATH`, sorts ascending, executes each in a **subshell** — failures are isolated
+1. Exits with the **count** of failed checks (not a boolean): `N of M checks failed.` / `All N checks passed.`
+
+The continue-and-count failure mode is the runner’s defining difference from the fail-fast runners — see [use the runner family](use-runner-family.md).
+
+### Base checks (b19/Ubuntu)
+
+| Slot | Script                           | Check                                                                                      | Skip condition                              |
+| ---- | -------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------- |
+| 0100 | `check-home-directory-space.sh`  | `$B19_HOME` has > `B19_HEALTH_HOME_MIN_SPACE_KB` KB free                                   | Never                                       |
+| 0200 | `check-cache-directory-space.sh` | `$XDG_CACHE_HOME` has > `B19_HEALTH_CACHE_MIN_SPACE_KB`                                    | Never                                       |
+| 0300 | `check-temp-directory-space.sh`  | `$B19_TEMP_PATH` has > `B19_HEALTH_TEMP_MIN_SPACE_KB`                                      | Never                                       |
+| 0400 | `check-https-connectivity.sh`    | At least one `B19_HEALTH_NETWORK_URL` responds to `curl -I`                                | `B19_HEALTH_NETWORK_URL` empty, or offgrid  |
+| 0500 | `check-dns-resolution.sh`        | At least one hostname from `B19_HEALTH_NETWORK_URL` resolves via `getent`                  | Same as 0400                                |
+| 0600 | `check-reachability.sh`          | At least one `B19_HEALTH_PING_TARGETS` answers a TCP probe on `B19_HEALTH_REACH_PORT_SAFE` | `B19_HEALTH_PING_TARGETS` empty, or offgrid |
+| 0700 | `check-dummy.sh`                 | Can `touch` + `rm` a file in `B19_HEALTH_PATH`                                             | Never                                       |
+
+Network checks iterate over multiple targets and pass when **any single target** succeeds — one flaky endpoint must not flag the container unhealthy. The reachability check probes TCP port 443 rather than ICMP: a `ping` needs `CAP_NET_RAW` or a permissive `ping_group_range`, which rootless and hardened containers do not have. The `B19_HEALTH_PING_TARGETS` name predates that switch and is kept for config stability. Under `B19_OFFGRID_MODE=Y` the network checks skip with a “skipped (offgrid mode)” line and exit 0; space checks still run.
+
+### Slot numbering
+
+| Range     | Purpose                 | Reserved by                  |
+| --------- | ----------------------- | ---------------------------- |
+| 0100-0300 | System resource checks  | b19/Ubuntu (space)           |
+| 0400-0600 | Network checks          | b19/Ubuntu (HTTPS, DNS, TCP) |
+| 0700      | Writability probe       | b19/Ubuntu                   |
+| 1000+     | Service-specific checks | downstream project           |
+
+Downstream checks merge via Docker layer overlay — the runner finds all `*.sh` regardless of which layer added them. Permissions are set by the foundation build hook `post/200-permissions.sh`, which creates `$B19_HEALTH_PATH` owned by `$B19_UID:0`.
+
+## Writing a check
+
+Rules:
+
+1. `#!/usr/bin/env bash` and `set -o pipefail` — but **not** `set -e`; the subshell runner doesn’t need it and it causes unexpected aborts.
+1. Exit 0 = pass, non-zero = fail — the runner captures `$?` after each subshell.
+1. Use `b19-log good` / `b19-log bad`, always tagged `"HEALTH.D"`.
+1. Wrap user-facing strings in `_()` / `_p()` — i18n is mandatory (en, es, uk).
+1. Use `B19_HEALTH_CURL_TIMEOUT` for cURL calls; read config from env vars, never hardcode.
+1. Skip gracefully when optional: absent env var → log “skipped” and `exit 0`.
+1. Respect `B19_OFFGRID_MODE` — network checks must skip when it is `Y`.
+1. Never leak secrets in logs — mask passwords with `****`.
+
+### Patterns by check type
 
 #### HTTP endpoint check (most common)
 
-Used by: prometheus, grafana, traefik, keycloak, forgejo, mattermost, verdaccio, etc.
+Used by prometheus, grafana, traefik, keycloak, forgejo, mattermost, verdaccio:
 
 ```bash
 #!/usr/bin/env bash
@@ -208,7 +117,7 @@ exit 0
 
 #### Database connection check
 
-Used by: mariadb, PostgreSQL, MongoDB, valkey.
+Used by mariadb, PostgreSQL, MongoDB, valkey:
 
 ```bash
 #!/usr/bin/env bash
@@ -225,7 +134,7 @@ exit 0
 
 #### Process liveness check
 
-Used by: sidekiq, snowflake, webtunnel.
+Used by sidekiq, snowflake, webtunnel:
 
 ```bash
 #!/usr/bin/env bash
@@ -240,9 +149,9 @@ b19-log good "HEALTH.D" "$(_p "%s is running" "my-process")"
 exit 0
 ```
 
-#### HTTP status code check (exact code)
+#### Exact HTTP status code
 
-Used by: stalwart, docker-registry, apt-cache, nginx.
+Used by stalwart, docker-registry, apt-cache, nginx:
 
 ```bash
 #!/usr/bin/env bash
@@ -262,7 +171,7 @@ exit 0
 
 #### Proxy-through check
 
-Used by: squid, tor.
+Used by squid, tor:
 
 ```bash
 #!/usr/bin/env bash
@@ -278,12 +187,9 @@ b19-log good "HEALTH.D" "$(_p "Proxy is working (port %s)" "${NS_PORT}")"
 exit 0
 ```
 
-#### Multi-endpoint check (healthy + ready + metrics)
+#### Multi-endpoint services
 
-Used by: prometheus, alertmanager, loki, tempo, blackbox-exporter.
-
-Some services expose separate `/-/healthy`, `/-/ready`, and `/metrics` endpoints.
-Each gets its own script at a different slot:
+Services exposing separate `/-/healthy`, `/-/ready` and `/metrics` endpoints (prometheus, alertmanager, loki, tempo) get one script per endpoint at its own slot:
 
 ```text
 100-check-service-health.sh      # /-/healthy
@@ -293,7 +199,7 @@ Each gets its own script at a different slot:
 
 #### Multi-service variant check
 
-Used by: weblate (web, celery-beat, celery-worker), mastodon (puma, sidekiq, streaming).
+One image serving several roles (weblate: web, celery-beat, celery-worker; mastodon: puma, sidekiq, streaming) switches on the role variable:
 
 ```bash
 #!/usr/bin/env bash
@@ -318,112 +224,58 @@ case "${D9T_WEBLATE_SERVICE}" in
 esac
 ```
 
-## Adding Checks to a Downstream Project
+## Configuration
 
-1. Create `.container/user/healthcheck.d/NNN-check-name.sh`
-1. Pick a slot in the appropriate range (100+ for service checks)
-1. Ensure the Dockerfile copies `.container/user/` to `/` (standard pattern: `COPY .container/user/ /`)
-1. Do NOT redeclare `HEALTHCHECK` in the Dockerfile — it is inherited from b19/Ubuntu
-1. Add i18n strings to `.container/{stage}/locale/*.po` files
+| Variable                        | Default                                       | Description                                        |
+| ------------------------------- | --------------------------------------------- | -------------------------------------------------- |
+| `B19_HEALTH_ENABLED`            | `true`                                        | Set to `false` to skip all checks                  |
+| `B19_HEALTH_PATH`               | `/healthcheck.d`                              | Directory containing check scripts                 |
+| `B19_HEALTH_HOME_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_HOME` before failing          |
+| `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768`                                       | Min free KB in `$XDG_CACHE_HOME` before failing    |
+| `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_TEMP_PATH` before failing     |
+| `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Timeout in seconds for curl-based checks           |
+| `B19_HEALTH_NETWORK_URL`        | `"https://www.w3.org https://www.google.com"` | Space-separated URLs for HTTPS and DNS checks      |
+| `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for the TCP reachability probe |
+| `B19_HEALTH_REACH_PORT_SAFE`    | `443`                                         | TCP port probed by the reachability check          |
+| `B19_HEALTH_MEMORY_THRESHOLD`   | (unset)                                       | MB threshold for memory consumption test           |
 
-### Numbering collision avoidance
+The full variable index lives in [configure-environment](configure-environment.md).
 
-Base checks occupy slots 050-100. Downstream projects should start at 100+.
-Within a project, use gaps of 10 between checks to allow future insertions:
-
-```text
-100-check-service-health.sh
-200-check-service-ready.sh
-500-check-advanced-feature.sh
-```
-
-### Disabling a check
-
-Rename the file to `*.disabled`:
+## Recipes
 
 ```text
-100-check-service-health.sh.disabled
+100-check-service-health.sh.disabled     # rename — the runner only picks up *.sh
 ```
-
-The runner only picks up `*.sh` files.
-
-### Disabling all healthchecks at runtime
 
 ```bash
 docker run -e B19_HEALTH_ENABLED=false ...
 ```
 
-Or in compose:
-
 ```yaml
+# compose
 environment:
   B19_HEALTH_ENABLED: "false"
 ```
 
-## Inspecting Health Status
-
-### Docker CLI
-
 ```bash
+# Inspect health status
 docker inspect --format='{{.State.Health.Status}}' <container>
 docker inspect --format='{{json .State.Health}}' <container> | jq
 ```
 
-### Logs
-
-Healthcheck output appears in `docker inspect` and `docker logs`. The runner
-uses `b19-log` with forced `B19_COLOR=0` so output is plain text.
-
-Typical output:
+Typical runner output (plain text, colors forced off):
 
 ```text
-[INFO]  HEALTH.D  Checks directory found
-[INFO]  HEALTH.D  Executing check: 050-check-home-directory-space.sh
+[INFO]  HEALTH.D  Executing check: 0100-check-home-directory-space.sh
 [GOOD]  HEALTH.D  /app (B19_HOME) has sufficient space: 12.50GiB > 32.00MiB
-[INFO]  HEALTH.D  Executing check: 080-check-https-connectivity.sh
+[INFO]  HEALTH.D  Executing check: 0400-check-https-connectivity.sh
 [GOOD]  HEALTH.D  HTTPS connectivity working (B19_HEALTH_NETWORK_URL: https://www.w3.org https://www.google.com)
 [GOOD]  HEALTH.D  All 7 checks passed.
 ```
 
-## i18n Integration
+After adding strings, run `make build` so `b19-compile-i18n` refreshes the `.pot` and compiles `.po` → `.mo`, then update `.container/{stage}/locale/*.po`.
 
-All check strings use `_()` (static) and `_p()` (printf-style) from `b19-i18n`.
-Translation files live in `.container/{stage}/locale/`:
-
-- `TEXTDOMAIN.pot` — template (extracted by `b19-compile-i18n`)
-- `es.po` — Spanish (es_CL)
-- `uk.po` — Ukrainian (uk_UA)
-
-After adding or modifying translatable strings:
-
-1. Run `make build` — `b19-compile-i18n` extracts strings to `.pot` and compiles `.po` → `.mo`
-1. Update `.po` files with translations for new/changed `msgid` entries
-
-## Downstream Checks Reference
-
-55 custom healthcheck scripts across the ecosystem (as of 2026-04):
-
-### b19 (2 checks, nginx only)
-
-| Project | Script                                | Method                    |
-| ------- | ------------------------------------- | ------------------------- |
-| nginx   | `1100-check-ping-status.sh`           | HTTP status on status URL |
-| nginx   | `1200-check-nginx-actual-response.sh` | `curl -I` on status URL   |
-
-## Relation to Other Runners
-
-| Runner        | When            | Fail mode | Secrets loaded | Concurrency     |
-| ------------- | --------------- | --------- | -------------- | --------------- |
-| healthcheck.d | Docker periodic | Continue  | Explicitly     | `flock`         |
-| entrypoint.d  | Container start | Abort     | By 0100 hook   | None            |
-| test.d        | `make test`     | Continue  | Via entrypoint | None            |
-| bootstrap.d   | Container start | Abort     | Via entrypoint | Per-script lock |
-
-`test.d` waits for `healthcheck.d` to pass before running (up to
-`B19_TEST_TIMEOUT` seconds). This means service-specific healthchecks gate the
-test suite — if the service is unhealthy, tests are skipped.
-
-## Quick Reference
+## Quick reference
 
 ```text
 Location:         .container/{stage}/healthcheck.d/
@@ -438,5 +290,11 @@ Disable all:      B19_HEALTH_ENABLED=false
 Disable single:   Rename to *.disabled
 Offgrid:          B19_OFFGRID_MODE=Y (skips network checks)
 Dockerfile:       HEALTHCHECK CMD ["healthcheck.d"] (inherited)
-Scaffold:         .makefile/m6e/scaffold/shared/container/user/healthcheck.d/
 ```
+
+## See also
+
+- [Use the runner family](use-runner-family.md) — the eight runners and their failure modes
+- [Run offgrid builds](use-offgrid.md) — why the network checks go quiet
+- [Test images with test.d](use-test.d.md) — the suite that waits for these checks to pass
+- [Load secrets](use-secrets.md) — what the runner loads before your checks run

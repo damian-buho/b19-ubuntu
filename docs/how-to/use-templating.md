@@ -4,14 +4,34 @@ SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
 -->
 
-# Jinja2 Templating (minijinja)
+# Render templates with minijinja
 
-All b19 images use **minijinja-cli** — a standalone Rust binary providing Jinja2-compatible
-template rendering. It ships in `b19/ubuntu` and every downstream image inherits it.
+Every b19 image ships **minijinja-cli** — a standalone Rust binary providing Jinja2-compatible rendering — plus a discovery pipeline: drop `*.j2` files under `${B19_HOME}` and they are discovered at build time and re-rendered at every container start. The pitch: [Jinja2 templating](../features.d/templating.md).
 
-Template files have the `.j2` suffix. Output filename = template name minus `.j2`.
+Template files have the `.j2` suffix; the output filename is the template name minus `.j2`.
 
-## Engine
+## When to use
+
+- Configuration that must follow the environment: per-instance ports, hosts, toggles — render at every startup.
+- Files resolvable only during build (APT sources, series-dependent package lists) — render in a build hook instead.
+
+## Quick start
+
+```text
+.container/user/app/config.yaml.j2
+```
+
+```text
+# config.yaml.j2 — every container ENV var is available as ENV.NAME
+listen: {{ ENV.MY_SERVICE_PORT }}
+home: {{ ENV.B19_HOME }}
+```
+
+That is the whole integration: the inheritable `820-save-j2.i.sh` hook discovers the template at build time, and the `1000-parallel-j2.sh` entrypoint hook renders it at every start. No hooks of your own.
+
+## How it works
+
+### Engine
 
 | Item         | Value                                                                                      |
 | ------------ | ------------------------------------------------------------------------------------------ |
@@ -20,12 +40,12 @@ Template files have the `.j2` suffix. Output filename = template name minus `.j2
 | Version      | Pinned in `b19/minijinja/.container/compile-rust/deps/cargo.deps`                          |
 | Bootstrap    | `ubuntu` COPY’s it from `b19/minijinja`; initial bootstrap: `B19_MINIJINJA_VERSION=latest` |
 
-## Tools
+### The three tools
 
 Three shell tools in `.container/foundation/tools.d/` form the rendering pipeline.
 All downstream images inherit them.
 
-### `j2-render` — Render one template
+#### `j2-render` — render one template
 
 ```bash
 j2-render <path/to/file.ext.j2>
@@ -36,7 +56,7 @@ j2-render <path/to/file.ext.j2>
 - Optional companion: `file.ext.data.json` — merged as extra context if present
 - Used internally by `parallel-j2` via `xargs -P`
 
-### `save-j2` — Discover templates and render
+#### `save-j2` — discover templates and render
 
 ```bash
 save-j2 <directory>
@@ -47,7 +67,7 @@ save-j2 <directory>
 - Respects `B19_J2_EXCLUDE_PATTERNS` (space-separated dir names, e.g. `venv node_modules`)
 - Immediately calls `parallel-j2` to render everything found
 
-### `parallel-j2` — Parallel rendering engine
+#### `parallel-j2` — parallel rendering engine
 
 ```bash
 parallel-j2 [--final] <directory>
@@ -58,9 +78,9 @@ parallel-j2 [--final] <directory>
 - Skips if `minijinja-cli` is not installed (warns)
 - `--final`: after rendering, deletes every `.j2` file and its `.data.json` companion, then removes the `.j2.list` itself — downstream images cannot re-render these templates
 
-## Two rendering lifecycles
+### Two rendering lifecycles
 
-### Build-time rendering
+#### Build-time rendering
 
 For templates that must be resolved during image build (APT sources, package lists,
 installers). Variables come from Docker `ARG`/`ENV` and files sourced into the
@@ -85,7 +105,7 @@ minijinja-cli --autoescape none --env "${J2_FILE}" -o "${OUTPUT_FILE}"
 rm "${J2_FILE}"             # cleanup template after rendering
 ```
 
-### Runtime rendering
+#### Runtime rendering
 
 For configuration files that should be configurable per container instance.
 Templates are discovered at build time (`.j2.list` saved), then re-rendered

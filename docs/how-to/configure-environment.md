@@ -4,11 +4,9 @@ SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
 -->
 
-# Environment Variables
+# Configure the image environment
 
-Every `B19_*` variable available in b19/Ubuntu — defaults, accepted values, scope,
-and what each one controls. This is the single comprehensive reference;
-topic-specific docs (ENTRYPOINT, HEALTHCHECK, OFFGRID, etc.) link here for details.
+Every `B19_*` variable on one page: default, accepted values, scope, and what each one controls. The Dockerfile `ENV`/`ARG` block is the source of truth; this article is its index, and the topic how-tos link here instead of repeating tables. The pitch: [feature toggles](../features.d/feature-toggles.md).
 
 ## Conventions
 
@@ -98,25 +96,26 @@ checks test connectivity. Network checks respect `B19_OFFGRID_MODE`.
 | `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768` (32 MB)                               | Min free KB in `$B19_TEMP_PATH`                                                                  |
 | `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Connection timeout in seconds for cURL checks (max-time = 2x)                                    |
 | `B19_HEALTH_NETWORK_URL`        | `"https://www.w3.org https://www.google.com"` | Space-separated HTTPS URLs for connectivity checks                                               |
-| `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for ICMP ping checks                                                         |
+| `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for the TCP reachability probe                                               |
+| `B19_HEALTH_REACH_PORT_SAFE`    | `443`                                         | TCP port probed by the reachability check                                                        |
 | `B19_HEALTH_MEMORY_THRESHOLD`   | (unset)                                       | MB threshold for memory consumption test. Only runs when set. Reads cgroups v2 `memory.current`. |
 
 ## Download and Fetch (build-time)
 
 Three-tier fetch model: local cache → Docker BuildKit cache → aria2c download.
 
-| Variable | Default | Accepted values | Controls |
-| \------------------------- | ----------------------- -----| ------------------ | -------------------------------------------------------------- |
-| `B19_FETCH_LOCAL_CACHE` | `Y` | `Y`, `N` | Enable Tier 1: check `.fetch` build context before network |
-| `B19_FETCH_DOCKER_CACHE` | `Y` | `Y`, `N` | Enable Tier 2: check BuildKit persistent cache before download |
-| `B19_FETCH_LOCAL_PATH` | `/fetch` | absolute path | Mount point for `.fetch` context (set by Dockerfile `--mount`) |
-| `B19_CACHE_PATH` | `/var/cache/b19` | absolute path | Parent of the download cache mount, writable by `B19_UID` |
-| `B19_DOWNLOAD_PATH` | `${B19_CACHE_PATH}/download` | absolute path | BuildKit cache mount target for aria2c downloads |
-| `B19_DOWNLOAD_DISK_CACHE` | `64m` | aria2c size string | aria2c in-memory disk cache size |
-| `B19_DOWNLOAD_MAX_TRIES` | `4` | positive integer | Max aria2c retry attempts per download |
-| `B19_DOWNLOAD_RETRY_WAIT` | `16` | positive integer | Seconds between aria2c retries |
-| `B19_BUILD_CA_FILE` | (staged) | absolute path | Build-host CA bundle staged from `M6E_CA_CERTIFICATES` |
-| `B19_BUILD_CA_ANCHOR` | (transient) | absolute path | Where a root stage installs it, then drops it pre-commit |
+| Variable                  | Default                      | Accepted values    | Controls                                                       |
+| ------------------------- | ---------------------------- | ------------------ | -------------------------------------------------------------- |
+| `B19_FETCH_LOCAL_CACHE`   | `Y`                          | `Y`, `N`           | Enable Tier 1: check `.fetch` build context before network     |
+| `B19_FETCH_DOCKER_CACHE`  | `Y`                          | `Y`, `N`           | Enable Tier 2: check BuildKit persistent cache before download |
+| `B19_FETCH_LOCAL_PATH`    | `/fetch`                     | absolute path      | Mount point for `.fetch` context (set by Dockerfile `--mount`) |
+| `B19_CACHE_PATH`          | `/var/cache/b19`             | absolute path      | Parent of the download cache mount, writable by `B19_UID`      |
+| `B19_DOWNLOAD_PATH`       | `${B19_CACHE_PATH}/download` | absolute path      | BuildKit cache mount target for aria2c downloads               |
+| `B19_DOWNLOAD_DISK_CACHE` | `64m`                        | aria2c size string | aria2c in-memory disk cache size                               |
+| `B19_DOWNLOAD_MAX_TRIES`  | `4`                          | positive integer   | Max aria2c retry attempts per download                         |
+| `B19_DOWNLOAD_RETRY_WAIT` | `16`                         | positive integer   | Seconds between aria2c retries                                 |
+| `B19_BUILD_CA_FILE`       | (staged)                     | absolute path      | Build-host CA bundle staged from `M6E_CA_CERTIFICATES`         |
+| `B19_BUILD_CA_ANCHOR`     | (transient)                  | absolute path      | Where a root stage installs it, then drops it pre-commit       |
 
 Both CA variables are inert unless the build host sets `M6E_CA_CERTIFICATES` —
 see [b19-fetch.md](use-b19-fetch.md) for why a privately fronted near cache needs
@@ -221,7 +220,7 @@ Base-image default. Inherited by every downstream image; honored by tools that r
 
 ## XDG Paths
 
-Set in the Dockerfile for consistency with XDG Base Directory Specification.
+Set in the Dockerfile for consistency with the XDG Base Directory Specification, anchored under the app home so the non-root user owns every writable path. Note the deliberate divergence: `XDG_DATA_HOME` is `${B19_HOME}/data`, not the spec’s `.local/share` — downstream volume mounts target `/app/data`.
 
 | Variable          | Default               |
 | ----------------- | --------------------- |
@@ -235,7 +234,6 @@ Set in the Dockerfile for consistency with XDG Base Directory Specification.
 Alphabetical list of every `B19_*` variable with its scope.
 
 | Variable                        | Scope           | Section          |
-| ------------------------------- | --------------- | ---------------- |
 | ------------------------------- | --------------- | ---------------- |
 | `B19_BENCHMARK_PATH`            | runtime         | Hook Directories |
 | `B19_BENCHMARK_RESULTS_PATH`    | runtime         | Hook Directories |

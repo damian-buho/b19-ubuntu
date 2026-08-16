@@ -4,11 +4,29 @@ SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
 -->
 
-# Offgrid Mode and Cache Switches
+# Run offgrid builds
 
-Three ENV switches for controlling network access and caching tiers during builds and runtime.
+Four `ENV`/`ARG` switches decide whether a build or a running container may touch the internet at all, and which cache tiers it may read on the way. This is the air-gap story of the image — `b19-fetch` is the machinery, this article is the policy. The pitch: [offgrid mode](../features.d/offgrid.md).
 
-## Variables
+## When to use
+
+- Air-gapped rebuilds: everything needed sits in `.fetch/`, the network stays cut.
+- Suspected cache corruption: bypass one or both tiers and re-download.
+- Deploying to isolated networks: the runtime healthchecks must not fail just because the internet is unreachable.
+
+## Quick start
+
+```bash
+# Air-gapped rebuild — .fetch/ must cover every file
+M6E_AI=Y make build B19_OFFGRID_MODE=Y
+
+# Runtime container on an isolated network
+docker run --rm -e B19_OFFGRID_MODE=Y <image>
+```
+
+## How it works
+
+### The switches
 
 | Variable                 | Default  | Scope           | Description                                                          |
 | ------------------------ | -------- | --------------- | -------------------------------------------------------------------- |
@@ -17,50 +35,34 @@ Three ENV switches for controlling network access and caching tiers during build
 | `B19_FETCH_DOCKER_CACHE` | `Y`      | build           | Enable checking the BuildKit disk cache before downloading           |
 | `B19_FETCH_LOCAL_PATH`   | `/fetch` | build           | Mount path for the `.fetch` context (set by Dockerfile `--mount`)    |
 
-All four have `ARG` defaults so they can also be overridden via `--build-arg` at build time.
+All four have `ARG` defaults, so they can also be overridden via `--build-arg`.
 
-## Three-Tier Fetch Model
+### The three-tier model
 
 `b19-fetch` checks caches in priority order and stops at the first hit:
 
 ```text
-1. Local Cache  (B19_FETCH_LOCAL_PATH — bind-mount from .fetch/ build context)
-2. Docker Cache (B19_DOWNLOAD_PATH   — BuildKit --mount=type=cache, persists across builds)
+1. Local cache  (B19_FETCH_LOCAL_PATH — bind-mount from .fetch/ build context)
+2. Docker cache (B19_DOWNLOAD_PATH   — BuildKit --mount=type=cache, persists across builds)
 3. Download     (aria2c from internet — blocked when B19_OFFGRID_MODE=Y)
 ```
 
-**Local cache HIT** copies the file directly to `B19_TEMP_PATH` and exits — it never writes to
-the Docker Cache. This prevents "doubling" where the same file was previously promoted
-from local cache → Docker Cache → temp.
+Tier mechanics, hash validation and the aria2c details live in [download files with b19-fetch](use-b19-fetch.md).
 
-**Hash validation** applies at both tiers: if `sha512` is provided, a mismatch on the local
-cache file causes fallthrough to the next tier rather than a hard failure.
+### Switch combinations
 
-### Flow diagram
+| Scenario                   | Tier 1       | Tier 2  | Download   |
+| -------------------------- | ------------ | ------- | ---------- |
+| Default (online)           | checked      | checked | if miss    |
+| `.fetch` miss, Docker hit  | miss         | HIT     | skipped    |
+| `.fetch` hit               | HIT (exit 0) | skipped | skipped    |
+| `B19_FETCH_LOCAL_CACHE=N`  | skipped      | checked | if miss    |
+| `B19_FETCH_DOCKER_CACHE=N` | checked      | skipped | if T1 miss |
+| `B19_OFFGRID_MODE=Y`       | checked      | checked | blocked    |
 
-```text
-b19-fetch TAG URL FILE [SHA512]
-│
-├─ B19_FETCH_LOCAL_CACHE=Y ?
-│   └─ FILE in /fetch/ ?
-│       ├─ hash match (or no hash) → copy to /tmp → EXIT 0
-│       └─ hash mismatch           → log bad, fall through
-│
-├─ B19_FETCH_DOCKER_CACHE=Y ?
-│   └─ FILE in B19_DOWNLOAD_PATH ?
-│       ├─ hash match (or no hash) → DOWNLOAD=N
-│       └─ hash mismatch           → DOWNLOAD=Y (re-download)
-│
-├─ B19_OFFGRID_MODE=Y && DOWNLOAD=Y → log error, EXIT 1
-│
-├─ DOWNLOAD=Y → aria2c ...
-│
-└─ copy B19_DOWNLOAD_PATH/FILE → B19_TEMP_PATH/FILE
-```
+### What offgrid actually cuts
 
-## Offgrid Mode
-
-`B19_OFFGRID_MODE=Y` cuts internet access at three points:
+`B19_OFFGRID_MODE=Y` cuts internet access at five points:
 
 | Component           | Behavior                                                                             |
 | ------------------- | ------------------------------------------------------------------------------------ |
@@ -70,81 +72,53 @@ b19-fetch TAG URL FILE [SHA512]
 | `healthcheck.d/085` | Skips DNS resolution check                                                           |
 | `healthcheck.d/090` | Skips ping connectivity check                                                        |
 
-"Offgrid" is intentionally distinct from "offline" — it cuts internet, not all network
-connections. LAN services (registry, APT cache proxy, near-cache) remain reachable.
+“Offgrid” is intentionally distinct from “offline” — it cuts internet, not all network connections. LAN services (registry, APT cache proxy, near-cache) remain reachable.
 
-## Use Cases
+## Populating the local cache
 
-### Air-gapped rebuild
+The local cache is a standard Docker build-context stage named `fetch`. Files placed there are available at build time via `--mount=type=bind,from=fetch,source=.,target=/fetch`. The `.fetch/` directory in a project is gitignored — populate it manually or via a CI artifact step before running an offgrid build.
 
-Pre-populate `.fetch/` with all expected binaries, then build with internet blocked:
+## The APT layer
+
+`apt-get update` is wrapped by `update-apt` (`.container/foundation/tools.d/update-apt`), which applies the same three-tier logic as `b19-fetch`:
+
+1. **Local snapshot** — if `.fetch/apt-lists/` is non-empty, lists are copied into `/var/lib/apt/lists/` and `apt-get update` is skipped
+1. **BuildKit cache** — if offgrid and no snapshot, existing cached lists are used (populated by a prior online build); `apt-get install` fails cleanly if cold
+1. **Online** — `apt-get update --allow-releaseinfo-change` runs normally
+
+Populate the local snapshot with `make copy-apt-lists` before an air-gapped build; remove it with `make copy-apt-lists-clean`.
+
+## Recipes
 
 ```bash
-# Ensure all files are in .fetch/ first
-M6E_AI=Y make build B19_OFFGRID_MODE=Y
-```
-
-If any file is missing from cache, `b19-fetch` fails fast with a clear error.
-
-### Force re-download (bypass Docker Cache)
-
-```bash
+# Force re-download, bypassing the Docker cache
 B19_FETCH_DOCKER_CACHE=N M6E_AI=Y make build
-```
 
-aria2c still runs for every file. Useful when you suspect a corrupted Docker Cache.
-
-### Force re-download (bypass both caches)
-
-```bash
+# Force re-download, bypassing both caches
 B19_FETCH_LOCAL_CACHE=N B19_FETCH_DOCKER_CACHE=N M6E_AI=Y make build
-```
 
-### Test offgrid healthchecks
-
-```bash
+# Exercise the offgrid healthcheck path
 docker run --rm -e B19_OFFGRID_MODE=Y <image> healthcheck.d
 # All three network checks report "good" immediately
 ```
 
-### Offgrid runtime container
-
 ```yaml
-# docker-compose
+# docker-compose service on an isolated network
 environment:
   - B19_OFFGRID_MODE=Y
 ```
 
-All three network healthchecks pass silently, keeping the container healthy on isolated networks.
+### Near-cache and offgrid coexist
 
-## Populating the Local Cache
+`M6E_NEAR_CACHE_HOST` and `B19_OFFGRID_MODE` serve different purposes:
 
-The local cache is a standard Docker build context stage named `fetch`. Files placed there
-are available at build time via `--mount=type=bind,from=fetch,source=.,target=/fetch`.
+- Near-cache rewrites URLs to a LAN proxy (still a network call).
+- Offgrid mode blocks all downloads regardless of URL.
 
-The `.fetch/` directory in a project is gitignored. Populate it manually or via a CI
-artifact step before running an offgrid build.
+For LAN-only builds that use a caching proxy, use `M6E_NEAR_CACHE_HOST` without `B19_OFFGRID_MODE`. For true air-gapped builds, use `B19_OFFGRID_MODE=Y` with a pre-populated `.fetch/` local cache.
 
-## APT Layer
+## See also
 
-`apt-get update` is wrapped by `update-apt` (`.container/foundation/tools.d/update-apt`), which
-applies the same three-tier logic as `b19-fetch`:
-
-1. **Local snapshot** — if `.fetch/apt-lists/` is non-empty, lists are copied into
-    `/var/lib/apt/lists/` and `apt-get update` is skipped
-1. **BuildKit cache** — if offgrid and no snapshot, existing cached lists are used (populated by a prior online build); `apt-get install` fails cleanly if cold
-1. **Online** — `apt-get update --allow-releaseinfo-change` runs normally
-
-Populate the local snapshot with `make copy-apt-lists` before an air-gapped build.
-Remove with `make copy-apt-lists-clean`.
-
-## Interaction with Near-Cache
-
-`M6E_NEAR_CACHE_HOST` and `B19_OFFGRID_MODE` serve different purposes and can coexist:
-
-- Near-cache rewrites URLs to a LAN proxy (still a network call)
-- Offgrid mode blocks all downloads regardless of URL
-
-For LAN-only builds that use a caching proxy, use `M6E_NEAR_CACHE_HOST` without
-`B19_OFFGRID_MODE`. For true air-gapped builds, use `B19_OFFGRID_MODE=Y` with a
-pre-populated `.fetch/` local cache.
+- [Download files with b19-fetch](use-b19-fetch.md) — the machinery these switches control
+- [Write healthchecks](use-healthcheck.d.md) — the network checks that go quiet in offgrid mode
+- [Configure the image environment](configure-environment.md) — every `B19_*` variable

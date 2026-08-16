@@ -4,18 +4,33 @@ SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
 -->
 
-# b19-log
+# Log with b19-log
 
-Structured, level-filtered logging with color support.
+`b19-log` is the logger every other b19 tool routes through: level-filtered, tag-prefixed, color-aware lines on stderr. One `B19_VERBOSITY` knob therefore silences or reveals the whole image, from build hooks to the running service. The pitch: [structured logging](../features.d/logging.md).
 
-## Usage
+## When to use
+
+- Any script shipped in a b19 image: user-facing output goes through `b19-log`, never a bare `echo`.
+- Wrapping noisy third-party output (APT, cURL, compilers) into one tagged stream that respects the verbosity threshold.
+
+## Quick start
+
+```bash
+b19-log good "SETUP" "Configuration loaded"
+b19-log warn "DB" "Connection pool running low"
+apt-get install -y curl 2>&1 | b19-log info "APT"
+```
+
+## How it works
 
 ```bash
 b19-log <level> <tag> [message...]
 echo "message" | b19-log <level> <tag>
 ```
 
-## Levels
+Called without a message argument, the tool reads stdin line by line — the pipe form above is the idiomatic way to capture a command’s output.
+
+### Levels
 
 | Level | Aliases   | Priority | Color                                  |
 | ----- | --------- | -------- | -------------------------------------- |
@@ -24,51 +39,40 @@ echo "message" | b19-log <level> <tag>
 | info  | bad, good | 20       | dim (info), yellow (bad), green (good) |
 | note  | debug     | 10       | blue (note), dim (debug)               |
 
-Messages below the `B19_VERBOSITY` threshold are silently discarded.
+Messages below the `B19_VERBOSITY` threshold are silently discarded. The `bad`/`good` aliases are the readable way to flag success and failure lines inside the `info` band.
 
-## Environment
+### Output format
 
-| Variable        | Default | Effect                                                      |
-| --------------- | ------- | ----------------------------------------------------------- |
-| `B19_VERBOSITY` | `warn`  | Threshold: error (40), warn (30), info (20), debug (10)     |
-| `STAGE`         | (unset) | If set, prepended as a stage label (e.g., `BUILD`, `ENTRY`) |
-
-## Output Format
-
-**Normal mode** (colors):
+All output goes to stderr, so stdout stays clean for data. A set `STAGE` variable is prepended as a label (`BUILD`, `ENTRY`, …), which is how build hooks and entrypoint hooks identify their phase:
 
 ```text
  STAGE   tag       message (colored)
 ```
 
-**Quiet mode** (`B19_VERBOSITY=error`):
+## Configuration
 
-```text
- STAGE  tag       message
-```
+| Variable        | Default | Effect                                                  |
+| --------------- | ------- | ------------------------------------------------------- |
+| `B19_VERBOSITY` | `warn`  | Threshold: error (40), warn (30), info (20), debug (10) |
+| `STAGE`         | (unset) | Prepended as a stage label when set                     |
 
-All output goes to stderr.
+The full variable index lives in [configure-environment](configure-environment.md).
 
-## Stdin Support
-
-When called without a message argument, reads from stdin line by line:
-
-```bash
-some-command 2>&1 | b19-log warn "MYTAG"
-```
-
-## Examples
+## Recipes
 
 ```bash
-# Simple message
-b19-log good "SETUP" "Configuration loaded"
-
-# Warning with tag
-b19-log warn "DB" "Connection pool running low"
-
-# Error
+# Tag an error worth failing on later
 b19-log error "APP" "Failed to bind to port 8080"
 
-# Pipe command output
-apt-get install -y curl 2>&1 | b19-log info "APT"
+# Fold a whole tool run into one tag
+make test 2>&1 | b19-log note "TEST"
+
+# Use inside a build hook (STAGE is set by the runner)
+b19-log info "FETCH" "Downloading toolchain"
 ```
+
+## See also
+
+- [Run commands with b19-run](use-b19-run.md) — timed wrapper reporting through this logger
+- [Manage long-running processes with b19-exec](use-b19-exec.md) — routes a service’s stdout/stderr through it
+- [Configure the image environment](configure-environment.md) — every `B19_*` variable
