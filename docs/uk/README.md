@@ -69,7 +69,7 @@ pf-cli-managed: yes
 docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
 ```
 
-Доступні варіанти: B19_UBUNTU_SERIES: resolute, noble
+Доступні варіанти: B19_UBUNTU_SERIES: `resolute`, `noble`
 
 ```sh
 docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
@@ -83,7 +83,7 @@ docker pull docker.io/damianbuho/b19-ubuntu-noble:latest
 docker pull kiota.ch/b19/ubuntu/resolute:latest
 ```
 
-Доступні варіанти: B19_UBUNTU_SERIES: resolute, noble
+Доступні варіанти: B19_UBUNTU_SERIES: `resolute`, `noble`
 
 ```sh
 docker pull kiota.ch/b19/ubuntu/noble:latest
@@ -97,7 +97,7 @@ docker pull kiota.ch/b19/ubuntu/noble:latest
 FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
 ```
 
-Доступні варіанти: B19_UBUNTU_SERIES: resolute, noble
+Доступні варіанти: B19_UBUNTU_SERIES: `resolute`, `noble`
 
 ```dockerfile
 FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest

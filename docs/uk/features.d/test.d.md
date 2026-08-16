@@ -4,6 +4,8 @@ SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
 -->
 
+<!-- textlint-disable terminology,common-misspellings -->
+
 # Вбудований тестовий фреймворк (test.d)
 
 - Тести виконуються всередині запущеного контейнера через `make test` чи `docker exec`.
@@ -11,3 +13,5 @@ SPDX-License-Identifier: MIT
 - Без залежності від тестового фреймворку — тести це звичайні shell-скрипти з кодами виходу.
 - Підтримуються шаблони Jinja2 у тестах, що зручно для перевірки під час виконання значень, зафіксованих під час збирання.
 - Продовжує після збоїв і звітує загальну кількість; ніколи не ховає часткові результати.
+
+<!-- textlint-enable -->

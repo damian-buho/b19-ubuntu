@@ -4,9 +4,13 @@ SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
 -->
 
+<!-- textlint-disable terminology,common-misspellings -->
+
 # Керування службовими процесами зі спрямуванням журналів (b19-exec)
 
 - Тривалі процеси (демони, сервери) мають stdout і stderr, автоматично спрямовані крізь структурований журналізатор.
 - PID служби відстежується для переспрямування сигналів — Docker stop плавно завершує головний процес.
 - Рівні журналування для потоків stdout і stderr налаштовуються незалежно один від одного.
 - Код виходу служби захоплюється й доступний подальшим хукам.
+
+<!-- textlint-enable -->

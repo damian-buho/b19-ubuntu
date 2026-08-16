@@ -4,8 +4,12 @@ SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
 SPDX-License-Identifier: MIT
 -->
 
+<!-- textlint-disable terminology,common-misspellings -->
+
 # Постійний APT-кеш між збираннями
 
 - Кеші пакетів та індексів APT зберігаються між збираннями через кеш-монтування BuildKit із ключем за серією Ubuntu та архітектурою.
 - Повторні збирання використовують уже завантажені пакети замість нового завантаження.
 - Необов’язкове автовиявлення LAN-проксі кешування APT для середовищ із кешувальним проксі.
+
+<!-- textlint-enable -->

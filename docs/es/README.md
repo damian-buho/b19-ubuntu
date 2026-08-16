@@ -69,7 +69,7 @@ Descarga la imagen de contenedor publicada:
 docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
 ```
 
-Variantes disponibles: B19_UBUNTU_SERIES: resolute, noble
+Variantes disponibles: B19_UBUNTU_SERIES: `resolute`, `noble`
 
 ```sh
 docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
@@ -83,7 +83,7 @@ Si los registros anteriores no están disponibles, descarga desde el origen:
 docker pull kiota.ch/b19/ubuntu/resolute:latest
 ```
 
-Variantes disponibles: B19_UBUNTU_SERIES: resolute, noble
+Variantes disponibles: B19_UBUNTU_SERIES: `resolute`, `noble`
 
 ```sh
 docker pull kiota.ch/b19/ubuntu/noble:latest
@@ -97,7 +97,7 @@ Construye sobre esta imagen:
 FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
 ```
 
-Variantes disponibles: B19_UBUNTU_SERIES: resolute, noble
+Variantes disponibles: B19_UBUNTU_SERIES: `resolute`, `noble`
 
 ```dockerfile
 FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
