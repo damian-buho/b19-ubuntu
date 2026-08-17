@@ -36,8 +36,17 @@
     b19-log warn "FETCH" "Off-grid mode is active"
   fi
 
-  b19-run "${TAG}" "$(_p "Make %s directory" "${B19_DOWNLOAD_PATH}")" --   \
+  # ${B19_DOWNLOAD_PATH} is a BuildKit cache-mount target: real only inside a
+  # `docker build` RUN. Outside one (container-test, a plain `docker run`,
+  # any caller after the image is built) it doesn't exist and isn't
+  # writable, so fall back to the always-owned XDG cache dir.
+  if ! b19-run "${TAG}" "$(_p "Make %s directory" "${B19_DOWNLOAD_PATH}")" --   \
     mkdir -p "${B19_DOWNLOAD_PATH}"
+  then
+    B19_DOWNLOAD_PATH="${XDG_CACHE_HOME}/download"
+    b19-run "${TAG}" "$(_p "Make %s directory" "${B19_DOWNLOAD_PATH}")" --   \
+      mkdir -p "${B19_DOWNLOAD_PATH}"
+  fi
 
   # Step 2: Local Cache
   if [ "${B19_FETCH_LOCAL_CACHE}" = "Y" ]
