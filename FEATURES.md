@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
 
 - APT package and index caches survive across builds via BuildKit cache mounts, keyed by Ubuntu series and architecture.
 - Repeated builds reuse downloaded packages instead of re-downloading.
-- Optional LAN APT cacher proxy auto-detection for environments with a caching proxy.
+- Optional LAN APT cacher proxy, enabled by setting `M6E_APT_CACHE_HOST`.
 
 ### Service process management with log routing (b19-exec)
 
@@ -96,7 +96,7 @@ SPDX-License-Identifier: MIT
 
 - Every image records its build metadata (namespace, project, version, base image) into a lineage file during build.
 - Downstream images chain lineage from their parent, producing a full base-to-current provenance chain.
-- At container startup, the full lineage chain is logged, making it easy to trace what a running container was built from.
+- The full lineage chain is logged at startup (debug verbosity) and readable from the file at any time, making it easy to trace what a running container was built from.
 
 ### Structured, level-filtered logging (b19-log)
 
@@ -128,13 +128,13 @@ SPDX-License-Identifier: MIT
 ### Reproducible base image (pinned by digest)
 
 - The Ubuntu base image is pinned by SHA-256 digest, not by tag, ensuring deterministic builds.
-- Supports multiple Ubuntu series (resolute, noble, optional: jammy, questing) selectable at build time.
+- Supports multiple Ubuntu series (resolute, noble, jammy) selectable at build time.
 - APT mirrors are configurable per architecture for LAN mirrors or air-gapped environments.
 
 ### Port validation
 
-- All `*PORT*` environment variables are validated at startup against the WHATWG blocklist of forbidden ports and privileged ports (\<1024).
-- Catches misconfigurations like `PORT=0` or `PORT=22` early, before the service fails silently.
+- Every environment variable whose name ends in `PORT` is validated at startup against the WHATWG blocklist of forbidden ports and privileged ports (\<1024).
+- Catches misconfigurations like `HTTP_PORT=22` early, before the service fails silently.
 - Can be disabled at runtime without rebuilding the image.
 
 ### Unified lifecycle runner family

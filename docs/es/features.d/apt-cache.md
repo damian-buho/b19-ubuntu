@@ -10,6 +10,6 @@ SPDX-License-Identifier: MIT
 
 - Las cachés de paquetes e índices de APT sobreviven entre compilaciones mediante montajes de caché de BuildKit, con clave por serie de Ubuntu y arquitectura.
 - Las compilaciones repetidas reutilizan los paquetes descargados en lugar de volver a descargarlos.
-- Autodetección opcional de proxy de caché APT en LAN para entornos con un proxy de caché.
+- Proxy opcional de caché APT en LAN, se activa con `M6E_APT_CACHE_HOST`.
 
 <!-- textlint-enable -->

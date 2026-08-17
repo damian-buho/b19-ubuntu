@@ -8,4 +8,4 @@ SPDX-License-Identifier: MIT
 
 - Every image records its build metadata (namespace, project, version, base image) into a lineage file during build.
 - Downstream images chain lineage from their parent, producing a full base-to-current provenance chain.
-- At container startup, the full lineage chain is logged, making it easy to trace what a running container was built from.
+- The full lineage chain is logged at startup (debug verbosity) and readable from the file at any time, making it easy to trace what a running container was built from.

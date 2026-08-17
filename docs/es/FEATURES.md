@@ -15,7 +15,7 @@ SPDX-License-Identifier: MIT
 
 - Las cachés de paquetes e índices de APT sobreviven entre compilaciones mediante montajes de caché de BuildKit, con clave por serie de Ubuntu y arquitectura.
 - Las compilaciones repetidas reutilizan los paquetes descargados en lugar de volver a descargarlos.
-- Autodetección opcional de proxy de caché APT en LAN para entornos con un proxy de caché.
+- Proxy opcional de caché APT en LAN, se activa con `M6E_APT_CACHE_HOST`.
 
 ### Gestión de procesos de servicio con enrutado de logs (b19-exec)
 
@@ -98,7 +98,7 @@ SPDX-License-Identifier: MIT
 
 - Cada imagen registra sus metadatos de compilación (namespace, proyecto, versión, imagen base) en un archivo de linaje durante la compilación.
 - Las imágenes derivadas encadenan el linaje de su padre, produciendo una cadena de procedencia completa desde la base hasta la actual.
-- Al arrancar el contenedor se registra en el log toda la cadena de linaje, lo que facilita rastrear a partir de qué se construyó un contenedor en ejecución.
+- Toda la cadena de linaje se registra al arrancar (verbosidad debug) y puede leerse del archivo en cualquier momento, lo que facilita rastrear a partir de qué se construyó un contenedor en ejecución.
 
 ### Logging estructurado con filtro por nivel (b19-log)
 
@@ -130,13 +130,13 @@ SPDX-License-Identifier: MIT
 ### Imagen base reproducible (fijada por digest)
 
 - La imagen base de Ubuntu está fijada por digest SHA-256, no por tag, lo que garantiza compilaciones deterministas.
-- Admite varias series de Ubuntu (resolute, noble, opcionales: jammy, questing) seleccionables en tiempo de compilación.
+- Admite varias series de Ubuntu (resolute, noble, jammy) seleccionables en tiempo de compilación.
 - Los mirrors de APT son configurables por arquitectura para mirrors de LAN o entornos aislados.
 
 ### Validación de puertos
 
 - Todas las variables de entorno `*PORT*` se validan al arrancar contra la lista de puertos prohibidos de WHATWG y contra los puertos privilegiados (\<1024).
-- Detecta temprano configuraciones erróneas como `PORT=0` o `PORT=22`, antes de que el servicio falle en silencio.
+- Detecta temprano configuraciones erróneas como `HTTP_PORT=22`, antes de que el servicio falle en silencio.
 - Puede desactivarse en runtime sin reconstruir la imagen.
 
 ### Familia unificada de runners del ciclo de vida

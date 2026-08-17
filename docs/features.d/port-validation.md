@@ -6,6 +6,6 @@ SPDX-License-Identifier: MIT
 
 # Port validation
 
-- All `*PORT*` environment variables are validated at startup against the WHATWG blocklist of forbidden ports and privileged ports (\<1024).
-- Catches misconfigurations like `PORT=0` or `PORT=22` early, before the service fails silently.
+- Every environment variable whose name ends in `PORT` is validated at startup against the WHATWG blocklist of forbidden ports and privileged ports (\<1024).
+- Catches misconfigurations like `HTTP_PORT=22` early, before the service fails silently.
 - Can be disabled at runtime without rebuilding the image.

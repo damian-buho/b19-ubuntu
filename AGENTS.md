@@ -132,23 +132,17 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 
 ## Docs index
 
-Deep references (read the matching one before touching a subsystem):
+How-to articles live in `docs/how-to/`, one per `docs/features.d/` fragment —
+the fragment is the pitch, the article is the guide (fragment stem `x.md` pairs
+with `docs/how-to/use-x.md`). Read the matching one before touching a subsystem:
 
-- [docs/how-to/configure-environment.md](docs/how-to/configure-environment.md) — every `B19_*` var: default, scope, effect. Start here.
-- [docs/how-to/use-build.d.md](docs/how-to/use-build.d.md) — build hook runner, phases, `.i.sh` inheritance in depth.
-- [docs/how-to/use-entrypoint.d.md](docs/how-to/use-entrypoint.d.md) — startup chain, command bypass, hook skipping.
-- [docs/how-to/use-bootstrap.d.md](docs/how-to/use-bootstrap.d.md) — run-once-per-volume setup with lockfiles.
-- [docs/how-to/use-healthcheck.d.md](docs/how-to/use-healthcheck.d.md) — the seven built-in checks, fault-tolerant network logic.
-- [docs/how-to/use-test.d.md](docs/how-to/use-test.d.md) — in-container shell test runner (`make test`).
-- [docs/how-to/use-dependencies.md](docs/how-to/use-dependencies.md) — declarative deps + auto-discovery.
-- [docs/how-to/use-templating.md](docs/how-to/use-templating.md) — minijinja-cli, build- vs startup-time rendering.
-- [docs/how-to/use-i18n.md](docs/how-to/use-i18n.md) — gettext setup, merged `b19.mo`, per-project `.po` layering.
-- [docs/how-to/use-offgrid.md](docs/how-to/use-offgrid.md) — air-gap switches;
-- [docs/how-to/MAKEFILE.md](docs/how-to/MAKEFILE.md) — available make targets (or run `make help`).
-- CLI: [b19-log](docs/how-to/use-b19-log.md) · [b19-run](docs/how-to/use-b19-run.md) · [b19-exec](docs/how-to/use-b19-exec.md) · [b19-fetch](docs/how-to/use-b19-fetch.md)
+- Build time: [use-build.d](docs/how-to/use-build.d.md) · [use-dependencies](docs/how-to/use-dependencies.md) · [use-apt-cache](docs/how-to/use-apt-cache.md) · [use-pinned-base](docs/how-to/use-pinned-base.md)
+- Runtime: [use-entrypoint.d](docs/how-to/use-entrypoint.d.md) · [use-bootstrap.d](docs/how-to/use-bootstrap.d.md) · [use-healthcheck.d](docs/how-to/use-healthcheck.d.md) · [use-test.d](docs/how-to/use-test.d.md)
+- Command-line tools: [use-b19-log](docs/how-to/use-b19-log.md) · [use-b19-run](docs/how-to/use-b19-run.md) · [use-b19-exec](docs/how-to/use-b19-exec.md) · [use-b19-fetch](docs/how-to/use-b19-fetch.md) · [use-tools](docs/how-to/use-tools.md)
+- Platform: [configure-environment](docs/how-to/configure-environment.md) — every `B19_*` var, start here · [use-runner-family](docs/how-to/use-runner-family.md) · [use-signals](docs/how-to/use-signals.md) · [use-secrets](docs/how-to/use-secrets.md) · [use-cpu-detection](docs/how-to/use-cpu-detection.md) · [use-lineage](docs/how-to/use-lineage.md) · [use-xdg-paths](docs/how-to/use-xdg-paths.md) · [use-non-root](docs/how-to/use-non-root.md)
+- Configuration: [use-templating](docs/how-to/use-templating.md) · [use-overlays](docs/how-to/use-overlays.md) · [use-i18n](docs/how-to/use-i18n.md) · [use-offgrid](docs/how-to/use-offgrid.md) · [use-port-validation](docs/how-to/use-port-validation.md) · [use-shell-hooks](docs/how-to/use-shell-hooks.md)
+- [MAKEFILE.md](docs/how-to/MAKEFILE.md) — available make targets (or run `make help`).
 
 Per-capability summaries (the "what does this give me" view) live in
-[docs/features.d/](docs/features.d/): apt-cache, cpu-detection, feature-toggles,
-lineage, logging, non-root, overlays, pinned-base, port-validation, secrets,
-shell-hooks, signals, tools, xdg-paths, runner-family, and a mirror of each
-subsystem above.
+[docs/features.d/](docs/features.d/): one short fragment per feature, assembled
+into `FEATURES.md`, each pairing with its how-to article above.
