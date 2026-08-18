@@ -49,7 +49,7 @@ Before you ask a question, please check [SUPPORT.md](SUPPORT.md) — it covers w
 A good bug report shouldn’t leave others needing to chase you up for more information. Therefore, we ask you to investigate carefully, collect information and describe the issue in detail in your report. Please complete the following steps in advance to help us fix any potential bug as fast as possible.
 
 - Make sure you are on a [supported version](SUPPORT.md).
-- Determine if your bug is really a bug and not an error on your side e.g. using incompatible environment components/versions (Make sure that you have read the [documentation](https://projectfile.org). If you are looking for support, check [SUPPORT.md](SUPPORT.md)).
+- Determine if your bug is really a bug and not an error on your side e.g. using incompatible environment components/versions (Make sure that you have read the [documentation](/docs). If you are looking for support, check [SUPPORT.md](SUPPORT.md)).
 - To see if other users have experienced (and potentially already solved) the same issue you are having, check if there is not already a bug report existing for your bug or error in the [bug tracker](https://codeberg.org/b19/ubuntu/issues?q=label%3Abug).
 - If you can, the following details would be useful:
     - Stack trace, if there is one
@@ -63,7 +63,7 @@ A good bug report shouldn’t leave others needing to chase you up for more info
 
 > You must never report security related issues, vulnerabilities or bugs including sensitive information to the issue tracker, or elsewhere in public. Instead sensitive bugs must be sent by email to <damian.buho@proton.me>.
 
-We use [issues](https://codeberg.org/b19/ubuntu/issues) to track bugs and errors. If you run into an issue with the project:
+We use [Codeberg Issues](https://codeberg.org/b19/ubuntu/issues) to track bugs and errors. If you run into an issue with the project:
 
 - Open an [Issue](https://codeberg.org/b19/ubuntu/issues/new). (Since we can’t be sure at this point whether it is a bug or not, we ask you not to talk about a bug yet and not to label the issue.)
 - Explain the behavior you would expect and the actual behavior.
@@ -78,14 +78,14 @@ This section guides you through submitting an enhancement suggestion for B19/Ubu
 ### Before Submitting an Enhancement
 
 - Make sure you are on a [supported version](SUPPORT.md).
-- Check whether the functionality is already covered, perhaps via an existing configuration — the [documentation](https://projectfile.org) is one place to look.
+- Check whether the functionality is already covered, perhaps via an existing configuration — the [documentation](/docs) is one place to look.
 - Perform a [search](https://codeberg.org/b19/ubuntu/issues) to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
 - Find out whether your idea fits with the scope and aims of the project.
 
 <!-- omit in toc -->
 ### How Do I Submit a Good Enhancement Suggestion?
 
-Enhancement suggestions are tracked as [issues](https://codeberg.org/b19/ubuntu/issues).
+Enhancement suggestions are tracked as [Codeberg Issues](https://codeberg.org/b19/ubuntu/issues).
 
 - Use a **clear and descriptive title** for the issue to identify the suggestion.
 - Provide a **step-by-step description of the suggested enhancement** in as much detail as possible.
@@ -97,9 +97,13 @@ Enhancement suggestions are tracked as [issues](https://codeberg.org/b19/ubuntu/
 - **Workflow:** git-flow
 - **Commits:** [Conventional Commits](https://www.conventionalcommits.org/)
 - **Versioning:** [Semantic Versioning](https://semver.org/)
+- **AI Policy:** [Read our AI policy](AI_POLICY.md)
 
 ## Improving The Documentation
 
-Documentation lives at [https://projectfile.org](https://projectfile.org). Fixes, improvements, and new sections are all welcome — open a pull request against the documentation source.
+Documentation lives at [/docs](/docs).
+Fixes, improvements, and new sections are all welcome — open a pull request against the documentation source.
 
-*Generated from projectfile ([learn how](https://projectfile.org/how-to/contributing))*
+## See also
+
+- [Projectfile Specification](https://projectfile.org)

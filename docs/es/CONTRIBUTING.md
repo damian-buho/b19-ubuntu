@@ -50,7 +50,7 @@ Antes de preguntar, revisa [SUPPORT.md](SUPPORT.md): explica dónde conseguir ay
 Un buen informe de fallo evita que otras personas tengan que perseguirte para obtener más información. Por eso te pedimos que investigues con cuidado, reúnas información y describas el problema con detalle. Completa estos pasos por adelantado para ayudarnos a corregir cualquier posible fallo lo antes posible.
 
 - Asegúrate de usar una [versión con soporte](SUPPORT.md).
-- Comprueba que se trata realmente de un fallo y no de un error por tu parte, por ejemplo, componentes o versiones incompatibles del entorno (asegúrate de haber leído la [documentación](https://projectfile.org). Si lo que buscas es ayuda, consulta [SUPPORT.md](SUPPORT.md)).
+- Comprueba que se trata realmente de un fallo y no de un error por tu parte, por ejemplo, componentes o versiones incompatibles del entorno (asegúrate de haber leído la [documentación](/docs). Si lo que buscas es ayuda, consulta [SUPPORT.md](SUPPORT.md)).
 - Para ver si otras personas han tenido (y quizá ya resuelto) el mismo problema, comprueba que no exista ya un informe de tu fallo o error en el [gestor de incidencias](https://codeberg.org/b19/ubuntu/issues?q=label%3Abug).
 - Si puedes, los siguientes detalles serían de ayuda:
     - Traza de la pila, si la hay
@@ -64,7 +64,7 @@ Un buen informe de fallo evita que otras personas tengan que perseguirte para ob
 
 > Nunca informes de problemas de seguridad, vulnerabilidades o fallos que incluyan información sensible en el gestor de incidencias ni en ningún otro lugar público. Los fallos sensibles deben enviarse por correo a <damian.buho@proton.me>.
 
-Usamos [incidencias](https://codeberg.org/b19/ubuntu/issues) para seguir fallos y errores. Si te topas con un problema en el proyecto:
+Usamos [Issues de Codeberg](https://codeberg.org/b19/ubuntu/issues) para seguir fallos y errores. Si te topas con un problema en el proyecto:
 
 - Abre una [incidencia](https://codeberg.org/b19/ubuntu/issues/new). (Como todavía no podemos saber si se trata de un fallo, te pedimos que no lo des por hecho ni etiquetes la incidencia.)
 - Explica el comportamiento que esperabas y el que se produjo realmente.
@@ -79,14 +79,14 @@ Esta sección te guía para enviar una propuesta de mejora para B19/Ubuntu, **ta
 ### Antes de enviar una propuesta de mejora
 
 - Asegúrate de usar una [versión con soporte](SUPPORT.md).
-- Comprueba si la funcionalidad ya existe, quizá mediante alguna configuración concreta — la [documentación](https://projectfile.org) es un buen punto de partida.
+- Comprueba si la funcionalidad ya existe, quizá mediante alguna configuración concreta — la [documentación](/docs) es un buen punto de partida.
 - Haz una [búsqueda](https://codeberg.org/b19/ubuntu/issues) para ver si ya se ha propuesto. Si es así, comenta en la incidencia existente en lugar de abrir una nueva.
 - Valora si tu idea encaja con el alcance y los objetivos del proyecto.
 
 <!-- omit in toc -->
 ### ¿Cómo envío una buena propuesta de mejora?
 
-Las propuestas de mejora se gestionan como [incidencias](https://codeberg.org/b19/ubuntu/issues).
+Las propuestas de mejora se gestionan como Issues de Codeberg.
 
 - Usa un **título claro y descriptivo** que identifique la propuesta.
 - Describe la mejora sugerida **paso a paso** y con el mayor detalle posible.
@@ -98,10 +98,13 @@ Las propuestas de mejora se gestionan como [incidencias](https://codeberg.org/b1
 - **Workflow:** git-flow
 - **Commits:** [Conventional Commits](https://www.conventionalcommits.org/)
 - **Versioning:** [Semantic Versioning](https://semver.org/)
+- **AI Policy:** [Lee nuestra política sobre IA y LLM](AI_POLICY.md)
 
 ## Mejorar la documentación
 
-La documentación está en [https://projectfile.org](https://projectfile.org). Correcciones, mejoras y secciones nuevas son bienvenidas: abre una solicitud de incorporación contra las fuentes de la documentación.
+La documentación está en [/docs](/docs). Correcciones, mejoras y secciones nuevas son bienvenidas: abre una solicitud de incorporación contra las fuentes de la documentación.
 
-*Generado desde projectfile ([saber cómo](https://projectfile.org/how-to/contributing))*
+## See also
+
+- [Especificación de Projectfile](https://projectfile.org)
 <!-- textlint-enable -->
