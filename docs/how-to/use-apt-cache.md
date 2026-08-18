@@ -17,8 +17,8 @@ APT state survives across builds: downloaded `.deb` archives and package indices
 
 ```dockerfile
 # Your stage’s RUN line carries the two cache mounts (scaffold pattern):
-RUN --mount=type=cache,id=apt-cache-${B19_UBUNTU_SERIES},target=/var/cache/apt,sharing=shared \
-    --mount=type=cache,id=apt-lists-${B19_UBUNTU_SERIES},target=/var/lib/apt,sharing=shared \
+RUN --mount=type=cache,id=apt-cache-${B19_UBUNTU_SERIES}-${TARGETARCH},target=/var/cache/apt,sharing=shared \
+    --mount=type=cache,id=apt-lists-${B19_UBUNTU_SERIES}-${TARGETARCH},target=/var/lib/apt,sharing=shared \
     build-stage base
 ```
 
