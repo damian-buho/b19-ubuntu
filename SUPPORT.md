@@ -33,8 +33,6 @@ To help us help you, please include:
 4. **Environment** — OS, version of B19/Ubuntu, runtime version.
 5. **A minimal reproducible example**, if possible.
 
-See an MCVE guide for tips.
-
 ## Response Times
 
 This is a community-maintained project. Maintainers respond when they can — typically within a few days, but there are no guarantees. Please be patient and respectful.
@@ -43,6 +41,6 @@ This is a community-maintained project. Maintainers respond when they can — ty
 
 Paid support for B19/Ubuntu is available:
 
-- [From author](https://dbuho.me)
+- [Support from author](https://dbuho.me)
 
 *Generated from projectfile ([learn how](https://projectfile.org/how-to/support))*
