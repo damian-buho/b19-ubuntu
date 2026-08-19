@@ -6,7 +6,7 @@
 
 set -eou pipefail
 
-ACTUAL=$(mold --version | grep -oP -m1 '\d+\.\d+\.\d+')
+ACTUAL=$(mold --version | grep -oP -m1 '\d+(?:\.\d+)+')
 EXPECTED=$(decomment < /deps/mold/version.deps)
 
 if [ "${ACTUAL}" != "${EXPECTED}" ]
