@@ -19,7 +19,7 @@ just what the docs claim. Root conventions live in [../../AGENTS.md](../../AGENT
 
 - `Dockerfile` `final` stage = `ubuntu@${B19_UBUNTU_HASH}` (pinned by **digest**, not tag → reproducible). The digest comes from
     `.container/foundation/deps/ubuntu/{series}.sha256.deps`.
-- Binaries `fd`, `minijinja-cli` are **copied from sibling b19 images** (`b19/fd`, `b19/minijinja`) via multi-stage `FROM`, not apt. Those images must build first (tier ordering). `mold` comes via apt + a deps pin.
+- Binaries `fd`, `minijinja-cli` are **copied from sibling b19 images** (`b19/fd`, `b19/minijinja`) via multi-stage `FROM`, not apt. Those images must build first (tier ordering). `mold` comes via a pinned GitHub-release download (`b19-fetch`), not apt — see `deps/mold/`.
 - Runs as `ubuntu` UID/GID **1000**, home `/app`. Root is only used during the
     `foundation` build stage.
 - PID 1 is `tini -g`; entrypoint is `entrypoint.d`; healthcheck is `healthcheck.d`. These three are **inherited** by every child — children must not redefine them.
@@ -119,6 +119,7 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
     `deps/ubuntu/<series>.*` or `.j2` templates, never hardcoded.
 - **deps are declarative.** Add a `*.deps` file under the right `deps/` path and the m6e build auto-discovers it (URL/version/SHA-512, arch-aware) — no Makefile edit. [docs/how-to/use-dependencies.md](docs/how-to/use-dependencies.md).
 - **`b19-resolve-dep` clobbers.** It always writes the same `M6E_UPSTREAM_VERSION` / `M6E_UPSTREAM__*` names, and hooks are SOURCED in one shell, so the last `eval` in the stage wins. A hook that reads those values MUST `eval "$(b19-resolve-dep <name>)"` itself — an earlier hook’s resolve is not yours. Silent when the value only feeds a `-X` ldflag: the linker drops an unknown target and the binary keeps its default.
+- **A hook child that reads stdin starves the hook list.** `process-hooks` feeds its `while read` loop from a process-substitution pipe on fd 0, and `b19-run` passes stdin through — a child like `npm` that drains stdin (r8e/shields: `npm run build`/`npm prune`) consumes the queued hook paths, so every hook after it silently never runs and the stage still exits 0. Guard such calls with `< /dev/null` in the hook.
 - **i18n is mandatory.** User-facing strings go through `_()`/`_p()`; update
     `.container/{stage}/locale/*.pot|*.po` (es, uk). Don’t add English-only output.
 - **offgrid is real.** `B19_OFFGRID_MODE=Y` must stay honored: any new network access needs a guard + cache path. Reference: [use-offgrid](docs/how-to/use-offgrid.md).
