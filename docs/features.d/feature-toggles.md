@@ -7,5 +7,5 @@ SPDX-License-Identifier: MIT
 # Feature toggles for all subsystems
 
 - Every major subsystem (entrypoint, healthchecks, bootstrap, tests, secrets, port validation, i18n, shell hooks) can be disabled at runtime via environment variables.
-- Individual entrypoint and bootstrap hooks can be skipped by name without disabling the whole subsystem.
+- Individual entrypoint, bootstrap and health-check hooks can be skipped by name without disabling the whole subsystem.
 - No image rebuild required — toggles are runtime-only.

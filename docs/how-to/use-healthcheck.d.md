@@ -67,6 +67,10 @@ The continue-and-count failure mode is the runner’s defining difference from t
 | 0600 | `check-reachability.sh`          | At least one `B19_HEALTH_PING_TARGETS` answers a TCP probe on `B19_HEALTH_REACH_PORT_SAFE` | `B19_HEALTH_PING_TARGETS` empty, or offgrid |
 | 0700 | `check-dummy.sh`                 | Can `touch` + `rm` a file in `B19_HEALTH_PATH`                                             | Never                                       |
 
+Any check — including the space checks — can also be disabled individually at runtime
+with `B19_HEALTH_SKIP_<NAME>=true` (see [configure-environment](configure-environment.md)),
+which logs a “Skipped” line and counts as neither passed nor failed.
+
 Network checks iterate over multiple targets and pass when **any single target** succeeds — one flaky endpoint must not flag the container unhealthy. The reachability check probes TCP port 443 rather than ICMP: a `ping` needs `CAP_NET_RAW` or a permissive `ping_group_range`, which rootless and hardened containers do not have. The `B19_HEALTH_PING_TARGETS` name predates that switch and is kept for config stability. Under `B19_OFFGRID_MODE=Y` the network checks skip with a “skipped (offgrid mode)” line and exit 0; space checks still run.
 
 ### Slot numbering
@@ -226,18 +230,19 @@ esac
 
 ## Configuration
 
-| Variable                        | Default                                       | Description                                        |
-| ------------------------------- | --------------------------------------------- | -------------------------------------------------- |
-| `B19_HEALTH_ENABLED`            | `true`                                        | Set to `false` to skip all checks                  |
-| `B19_HEALTH_PATH`               | `/healthcheck.d`                              | Directory containing check scripts                 |
-| `B19_HEALTH_HOME_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_HOME` before failing          |
-| `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768`                                       | Min free KB in `$XDG_CACHE_HOME` before failing    |
-| `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_TEMP_PATH` before failing     |
-| `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Timeout in seconds for curl-based checks           |
-| `B19_HEALTH_NETWORK_URL`        | `"https://www.w3.org https://www.google.com"` | Space-separated URLs for HTTPS and DNS checks      |
-| `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for the TCP reachability probe |
-| `B19_HEALTH_REACH_PORT_SAFE`    | `443`                                         | TCP port probed by the reachability check          |
-| `B19_HEALTH_MEMORY_THRESHOLD`   | (unset)                                       | MB threshold for memory consumption test           |
+| Variable                        | Default                                       | Description                                                        |
+| ------------------------------- | --------------------------------------------- | ------------------------------------------------------------------ |
+| `B19_HEALTH_ENABLED`            | `true`                                        | Set to `false` to skip all checks                                  |
+| `B19_HEALTH_SKIP_<NAME>`        | (unset)                                       | Skip one check by name (`B19_HEALTH_SKIP_CHECK_REACHABILITY=true`) |
+| `B19_HEALTH_PATH`               | `/healthcheck.d`                              | Directory containing check scripts                                 |
+| `B19_HEALTH_HOME_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_HOME` before failing                          |
+| `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768`                                       | Min free KB in `$XDG_CACHE_HOME` before failing                    |
+| `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_TEMP_PATH` before failing                     |
+| `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Timeout in seconds for curl-based checks                           |
+| `B19_HEALTH_NETWORK_URL`        | `"https://www.w3.org https://www.google.com"` | Space-separated URLs for HTTPS and DNS checks                      |
+| `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for the TCP reachability probe                 |
+| `B19_HEALTH_REACH_PORT_SAFE`    | `443`                                         | TCP port probed by the reachability check                          |
+| `B19_HEALTH_MEMORY_THRESHOLD`   | (unset)                                       | MB threshold for memory consumption test                           |
 
 The full variable index lives in [configure-environment](configure-environment.md).
 
@@ -287,7 +292,7 @@ Concurrency:      flock on /tmp/healthcheck.d.lock
 Colors:           Forced off (B19_COLOR=0)
 Secrets:          Loaded explicitly (b19-load-secrets)
 Disable all:      B19_HEALTH_ENABLED=false
-Disable single:   Rename to *.disabled
+Disable single:   B19_HEALTH_SKIP_<NAME>=true (or rename to *.disabled)
 Offgrid:          B19_OFFGRID_MODE=Y (skips network checks)
 Dockerfile:       HEALTHCHECK CMD ["healthcheck.d"] (inherited)
 ```

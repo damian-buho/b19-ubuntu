@@ -42,6 +42,15 @@
       CHECKS_COUNT=0
       while IFS= read -r -d '' CHECK; do
         CHECKS_COUNT=$((CHECKS_COUNT + 1))
+
+        SKIP_NAME=$(basename "${CHECK}" .sh)
+        SKIP_NAME="${SKIP_NAME#*[0-9]-}"
+        SKIP_VAR="B19_HEALTH_SKIP_$(echo "${SKIP_NAME}" | tr '[:lower:]-' '[:upper:]_')"
+        if [ "${!SKIP_VAR:-}" = "true" ]; then
+          b19-log note "HEALTH.D" "$(_p "Skipped: %s (via %s)" "${SKIP_NAME}" "${SKIP_VAR}")"
+          continue
+        fi
+
         b19-log info "HEALTH.D" "$(_ "Executing check:") $(basename "${CHECK}")"
 
         # Execute the check (subshell inherits _() and other functions).
