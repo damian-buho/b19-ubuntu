@@ -80,6 +80,9 @@ All deps live under `.container/{stage}/deps/{component}/`; a component is any d
 | `{arch}.hash.deps` | SHA-512 hex digest (no trailing newline). One per architecture.                    |
 | `hash.deps`        | SHA-512 hex digest for arch-independent components.                                |
 
+A `url.deps` whose line starts with `git+` declares a repository instead of a
+file — see [Git sources](#git-sources).
+
 URL templates are `envsubst`-expanded; `${TARGETARCH}` is `amd64`, `arm64` or `riscv64`. Multi-line URL files are supported — each line is tried in order (mirror fallback), empty lines ignored.
 
 ### Directory patterns
@@ -115,6 +118,35 @@ Series directories can carry their own arch-specific `url`/`hash` files.
 
 **Nested component paths** for grouping (PHP extensions): `deps/extensions/redis/`, resolved as `b19-resolve-dep extensions/redis`.
 
+### Git sources
+
+Some upstreams publish no artifact at all — the release is a tag in a
+repository. Declare the transport in `url.deps` as `git+<url>#<ref>`, where the
+ref is the tag the build clones:
+
+```text
+deps/radicle/version.deps
+1.10.1
+
+deps/radicle/url.deps
+git+https://seed.radicle.garden/z3gqcJUoA1n9HaHKufZs5FCSGazv5.git#releases/${M6E_UPSTREAM_VERSION}
+```
+
+There is no file to download, so such a component carries **no `hash.deps`** —
+the ref is the pin. `make fetch` still runs: it resolves the ref to a commit and
+caches it, so a version nobody published fails within the second rather than
+after a full compile. The hook clones what was declared:
+
+```bash
+eval "$(b19-resolve-dep radicle "${TARGETARCH}")"
+git clone --depth 1 --branch "${M6E_UPSTREAM__REF}" "${M6E_UPSTREAM__URL}" src/heartwood
+```
+
+`M6E_UPSTREAM__URL` is the URL with the `git+` prefix and the fragment removed,
+`M6E_UPSTREAM__REF` the fragment, `M6E_UPSTREAM__HASH` empty. Reach for this
+only when there is genuinely nothing to fetch: a tarball keeps its SHA-512
+verification, a clone trusts the remote.
+
 ### Resolution order
 
 Both `b19-resolve-dep` and `fetch.sh` fall back most-specific-wins:
@@ -132,7 +164,7 @@ Version files use two levels only (no arch dimension): `{component}/{series}/ver
 eval "$(b19-resolve-dep COMPONENT [ARCH])"
 ```
 
-Sets `M6E_UPSTREAM_VERSION`, `M6E_UPSTREAM__URL` (envsubst-expanded), `M6E_UPSTREAM__HASH`, `M6E_UPSTREAM__FILE` (`{leaf}.{version}[.{arch}][.{ext}]`), reading from `B19_DEPS_PATH` (default `/deps`). Set `M6E_SERIES` first to select a series subdirectory:
+Sets `M6E_UPSTREAM_VERSION`, `M6E_UPSTREAM__URL` (envsubst-expanded), `M6E_UPSTREAM__HASH`, `M6E_UPSTREAM__FILE` (`{leaf}.{version}[.{arch}][.{ext}]`) and `M6E_UPSTREAM__REF` (Git sources only), reading from `B19_DEPS_PATH` (default `/deps`). Set `M6E_SERIES` first to select a series subdirectory:
 
 ```bash
 M6E_SERIES="${B19_TOR_SERIES}"

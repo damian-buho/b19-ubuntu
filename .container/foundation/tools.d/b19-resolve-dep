@@ -29,8 +29,13 @@ set -euo pipefail
 # Output variables:
 #   M6E_UPSTREAM_VERSION  - resolved version
 #   M6E_UPSTREAM__URL     - resolved URL (envsubst-expanded)
-#   M6E_UPSTREAM__HASH    - resolved SHA-512 hash
+#   M6E_UPSTREAM__HASH    - resolved SHA-512 hash (empty for a git source)
 #   M6E_UPSTREAM__FILE    - fetch filename ({leaf}.{version}[.{arch}].{ext})
+#   M6E_UPSTREAM__REF     - git ref to clone, set only by a git source
+#
+# A url.deps line of the form `git+<url>#<ref>` declares a repository source:
+# the hook clones M6E_UPSTREAM__URL at M6E_UPSTREAM__REF instead of fetching a
+# file, so no hash.deps is required.
 #
 # envsubst vars available in url.deps: ${M6E_UPSTREAM_VERSION},
 # ${M6E_UPSTREAM_BUILD} (from optional build.deps), ${M6E_SERIES},
@@ -128,15 +133,28 @@ export TARGETARCH="${ARCH}"
 echo "${VERSION}" > "${DEPS_DIR}/version.deps"
 
 URL=$(decomment_filter "${URL_FILE}" | envsubst)
+URL_DECLARED="${URL}"
+
+# A git source carries its ref in the fragment; mirrors do not apply to a clone
+REF=""
+if [ "${URL#git+}" != "${URL}" ]; then
+  URL="${URL%%$'\n'*}"
+  URL="${URL#git+}"
+  REF="${URL#*#}"
+  URL="${URL%%#*}"
+fi
 
 # ---------------------------------------------------------------------------
-# Resolve hash
+# Resolve hash — a git source is pinned by its ref, so it carries none
 # ---------------------------------------------------------------------------
-HASH_FILE=$(resolve_file "hash.deps") || {
-  b19-log error "RESOLVE" "$(_p "no hash file for %s" "${COMPONENT}")"
-  exit 1
-}
-HASH=$(decomment_read "${HASH_FILE}")
+HASH=""
+if [ -z "${REF}" ]; then
+  HASH_FILE=$(resolve_file "hash.deps") || {
+    b19-log error "RESOLVE" "$(_p "no hash file for %s" "${COMPONENT}")"
+    exit 1
+  }
+  HASH=$(decomment_read "${HASH_FILE}")
+fi
 
 # ---------------------------------------------------------------------------
 # Build filename
@@ -153,6 +171,9 @@ case "${URL_BASENAME}" in
   *)         FETCH_EXT=""         ;;
 esac
 
+# Matches the name fetch.sh caches the resolved commit under
+[ -n "${REF}" ] && FETCH_EXT="git"
+
 FETCH_NAME="${COMPONENT_LEAF}.${VERSION}"
 if [ -n "${ARCH}" ]; then
   FETCH_NAME="${FETCH_NAME}.${ARCH}"
@@ -164,8 +185,8 @@ fi
 b19-log info "RESOLVE" "${COMPONENT}"
 b19-log info "RESOLVE" "$(_p "Version:   %s" "${VERSION}")"
 [ -n "${BUILD}" ] && b19-log info "RESOLVE" "$(_p "Build:     %s" "${BUILD}")"
-b19-log info "RESOLVE" "$(_p "URL:       %s" "${URL}")"
-b19-log info "RESOLVE" "$(_p "Hash:      %s" "…${HASH: -8}")"
+b19-log info "RESOLVE" "$(_p "URL:       %s" "${URL_DECLARED}")"
+[ -n "${HASH}" ] && b19-log info "RESOLVE" "$(_p "Hash:      %s" "…${HASH: -8}")"
 b19-log info "RESOLVE" "$(_p "Filename:  %s" "${FETCH_NAME}")"
 
 # ---------------------------------------------------------------------------
@@ -176,5 +197,6 @@ M6E_UPSTREAM_VERSION='${VERSION}'
 M6E_UPSTREAM__URL='${URL}'
 M6E_UPSTREAM__HASH='${HASH}'
 M6E_UPSTREAM__FILE='${FETCH_NAME}'
+M6E_UPSTREAM__REF='${REF}'
 export M6E_UPSTREAM_VERSION
 EOF
