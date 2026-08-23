@@ -31,7 +31,7 @@ b19-exec --stderr-level warn -- nginx -g "daemon off;"
 b19-exec [OPTIONS] -- COMMAND [ARGS...]
 ```
 
-Output is intercepted via process substitution and routed through `b19-log`, which applies level filtering and colors:
+Output is intercepted via process substitution and routed through `b19-log`. The stream is piped, and `b19-log` never level-filters piped input, so `--stdout-level`/`--stderr-level` only pick the tag color — payload output always reaches the console:
 
 ```text
 stdin:  /proc/1/fd/0     (container stdin)
