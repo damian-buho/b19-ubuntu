@@ -28,6 +28,8 @@ Two BuildKit `--mount=type=cache` mounts persist APT state: `/var/cache/apt` (ar
 
 Concurrent builds coordinate through lockfiles inside the shared mounts: `update-apt` wraps `apt-get update` in `flock -w 600 /var/lib/apt/.buildkit-lock`, and `install-apt` wraps `apt-get install` in `flock -w 600 /var/cache/apt/.buildkit-lock`.
 
+The lists mount is shared by every project of a series, so `update-apt` passes `--option APT::Get::List-Cleanup=false`: by default `apt-get update` deletes list files no source of *this* build declares, which is every list a concurrently building project fetched from its own repository. A project that adds a repository whose suite name varies per build (`b19/llvm`, one apt suite per LLVM series) MUST also carry that variable in its lists cache ID, so its key describes its content.
+
 Performance tuning (parallel queues, 30s timeouts) ships in `.container/foundation/etc/apt/apt.conf.d/90optimizations.conf`.
 
 ### The LAN cacher proxy

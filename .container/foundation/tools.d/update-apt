@@ -26,7 +26,8 @@
     # Serialize concurrent buildkit jobs sharing the apt-lists cache mount.
     # Lock file lives inside the shared mount so all builds see the same inode.
     b19-log info "PACKAGES" "$(_p "Acquire flock on shared APT lists cache (wait %s s)" "600")"
+    # The lists dir is a cache mount shared with concurrent builds — apt cleanup would delete list files their sources do not declare.
     b19-run "PACKAGES" "$(_ "Update APT lists")" --  \
       flock -w 600 /var/lib/apt/.buildkit-lock   \
-      apt-get update --allow-releaseinfo-change --error-on=any
+      apt-get update --allow-releaseinfo-change --error-on=any --option APT::Get::List-Cleanup=false
   fi
