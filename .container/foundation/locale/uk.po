@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-07-28 21:39+0000\n"
+"POT-Creation-Date: 2026-08-24 17:38+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -70,87 +70,89 @@ msgstr ""
 "Команду не надано. Використання: b19-exec [ПАРАМЕТРИ] -- КОМАНДА "
 "[АРГУМЕНТИ...]"
 
-#: .container/foundation/tools.d/b19-fetch:39
+#: .container/foundation/tools.d/b19-fetch:43
+#: .container/foundation/tools.d/b19-fetch:47
 #: .container/foundation/tools.d/b19-prepare-volumes:22
 #: .container/foundation/tools.d/keyscan:18
 msgid "Make %s directory"
 msgstr "Створити каталог %s"
 
-#: .container/foundation/tools.d/b19-fetch:51
+#: .container/foundation/tools.d/b19-fetch:60
 msgid "Local Cache HIT: %s"
 msgstr "Local Cache ЗНАЙДЕНО: %s"
 
-#: .container/foundation/tools.d/b19-fetch:52
-#: .container/foundation/tools.d/b19-fetch:82
+#: .container/foundation/tools.d/b19-fetch:61
+#: .container/foundation/tools.d/b19-fetch:91
 msgid "Hashes match: %s"
 msgstr "Хеші збігаються: %s"
 
-#: .container/foundation/tools.d/b19-fetch:53
-#: .container/foundation/tools.d/b19-fetch:61
-#: .container/foundation/tools.d/b19-fetch:167
+#: .container/foundation/tools.d/b19-fetch:62
+#: .container/foundation/tools.d/b19-fetch:70
+#: .container/foundation/tools.d/b19-fetch:176
 msgid "Copy from %s to %s"
 msgstr "Копіювати з %s до %s"
 
-#: .container/foundation/tools.d/b19-fetch:57
-#: .container/foundation/tools.d/b19-fetch:85
+#: .container/foundation/tools.d/b19-fetch:66
+#: .container/foundation/tools.d/b19-fetch:94
 msgid "Hashes don't match: %s"
 msgstr "Хеші не збігаються: %s"
 
-#: .container/foundation/tools.d/b19-fetch:60
-#: .container/foundation/tools.d/b19-fetch:88
+#: .container/foundation/tools.d/b19-fetch:69
+#: .container/foundation/tools.d/b19-fetch:97
 msgid "No hash for: %s, ASSUMED HIT"
 msgstr "Немає хешу для: %s, ПРИПУЩЕНО ЗНАЙДЕНО"
 
-#: .container/foundation/tools.d/b19-fetch:66
+#: .container/foundation/tools.d/b19-fetch:75
 msgid "Local Cache MISS: %s"
 msgstr "Local Cache ПРОПУЩЕНО: %s"
 
-#: .container/foundation/tools.d/b19-fetch:69
+#: .container/foundation/tools.d/b19-fetch:78
 msgid "Local Cache disabled: %s"
 msgstr "Local Cache вимкнено: %s"
 
-#: .container/foundation/tools.d/b19-fetch:77
+#: .container/foundation/tools.d/b19-fetch:86
 msgid "Docker Cache HIT: %s"
 msgstr "Docker Cache ЗНАЙДЕНО: %s"
 
-#: .container/foundation/tools.d/b19-fetch:92
+#: .container/foundation/tools.d/b19-fetch:101
 msgid "Docker Cache MISS: %s"
 msgstr "Docker Cache ПРОПУЩЕНО: %s"
 
-#: .container/foundation/tools.d/b19-fetch:95
+#: .container/foundation/tools.d/b19-fetch:104
 msgid "Docker Cache disabled: %s"
 msgstr "Docker Cache вимкнено: %s"
 
-#: .container/foundation/tools.d/b19-fetch:101
+#: .container/foundation/tools.d/b19-fetch:110
 msgid "Offgrid mode: cannot download %s"
 msgstr "Режим поза мережею: неможливо завантажити %s"
 
-#: .container/foundation/tools.d/b19-fetch:108
+#: .container/foundation/tools.d/b19-fetch:117
 msgid "Hash specified, will checksum"
 msgstr "Хеш вказано, буде перевірка"
 
-#: .container/foundation/tools.d/b19-fetch:111
+#: .container/foundation/tools.d/b19-fetch:120
 msgid "No hash, no checks"
 msgstr "Без хешу, без перевірок"
 
-#: .container/foundation/tools.d/b19-fetch:129
+#: .container/foundation/tools.d/b19-fetch:138
 msgid "Near cache %s: rewrote %s URL(s)"
 msgstr "Ближній кеш %s: переписано %s URL"
 
-#: .container/foundation/tools.d/b19-fetch:138
+#: .container/foundation/tools.d/b19-fetch:147
 msgid "Build CA bundle %s in use"
 msgstr "Використовується пакет CA для збірки %s"
 
-#: .container/foundation/tools.d/b19-fetch:141
+#: .container/foundation/tools.d/b19-fetch:150
 #: .container/foundation/tools.d/trust-ca-certificates:57
 msgid "No build CA bundle at %s, using image trust store"
-msgstr "Немає пакета CA для збірки у %s, використовується сховище довіри образу"
+msgstr ""
+"Немає пакета CA для збірки у %s, використовується сховище довіри образу"
 
-#: .container/foundation/tools.d/b19-fetch:144
+#: .container/foundation/tools.d/b19-fetch:153
 msgid "Get %s"
 msgstr "Завантажити %s"
 
-#: .container/foundation/tools.d/b19-fetch:164
+#: .container/foundation/tools.d/b19-fetch:173
 msgid "No need to download %s"
 msgstr "Завантаження %s не потрібне"
 
@@ -183,11 +185,14 @@ msgstr "Пропуск"
 msgid "already set"
 msgstr "вже встановлено"
 
-#: .container/foundation/tools.d/b19-load-secrets:57
-msgid "Skipping binary secret %s (non-UTF-8; read it from %s instead of the env var)"
-msgstr "Пропуск бінарного секрету %s (не UTF-8; читайте його з %s замість змінної середовища)"
+#: .container/foundation/tools.d/b19-load-secrets:58
+msgid ""
+"Skipping binary secret %s (non-UTF-8; read it from %s instead of the env var)"
+msgstr ""
+"Пропуск бінарного секрету %s (не UTF-8; читайте його з %s замість змінної "
+"середовища)"
 
-#: .container/foundation/tools.d/b19-load-secrets:64
+#: .container/foundation/tools.d/b19-load-secrets:65
 msgid "Loaded"
 msgstr "Завантажено"
 
@@ -212,54 +217,54 @@ msgstr "Невідомий рівень логу: %s. Дійсні: error, warn,
 msgid "Chown %s to %s:%s"
 msgstr "Змінити власника %s на %s:%s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:68
+#: .container/foundation/tools.d/b19-resolve-dep:73
 msgid "component not found: %s"
 msgstr "компонент не знайдено: %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:118
+#: .container/foundation/tools.d/b19-resolve-dep:123
 msgid "no url file for %s"
 msgstr "немає файлу url для %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:136
+#: .container/foundation/tools.d/b19-resolve-dep:153
 msgid "no hash file for %s"
 msgstr "немає файлу хешу для %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:165
+#: .container/foundation/tools.d/b19-resolve-dep:186
 msgid "Version:   %s"
 msgstr "Версія:    %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:166
+#: .container/foundation/tools.d/b19-resolve-dep:187
 #, fuzzy
 msgid "Build:     %s"
 msgstr "URL:       %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:167
+#: .container/foundation/tools.d/b19-resolve-dep:188
 msgid "URL:       %s"
 msgstr "URL:       %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:168
+#: .container/foundation/tools.d/b19-resolve-dep:189
 msgid "Hash:      %s"
 msgstr "Хеш:       %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:169
+#: .container/foundation/tools.d/b19-resolve-dep:190
 msgid "Filename:  %s"
 msgstr "Файл:      %s"
 
-#: .container/foundation/tools.d/b19-run:60
+#: .container/foundation/tools.d/b19-run:72
 msgid "Usage: b19-run <tag> <message> [--] <command> [args...]"
 msgstr ""
 "Використання: b19-run <мітка> <повідомлення> [--] <команда> [аргументи...]"
 
-#: .container/foundation/tools.d/b19-run:96
-#: .container/foundation/tools.d/b19-run:98
+#: .container/foundation/tools.d/b19-run:108
+#: .container/foundation/tools.d/b19-run:110
 msgid "success [%s]"
 msgstr "успіх [%s]"
 
-#: .container/foundation/tools.d/b19-run:119
+#: .container/foundation/tools.d/b19-run:131
 msgid "failure (exit code %s), [%s]"
 msgstr "помилка (код виходу %s), [%s]"
 
-#: .container/foundation/tools.d/b19-run:130
+#: .container/foundation/tools.d/b19-run:142
 msgid "failure (exit code %s) [%s]"
 msgstr "помилка (код виходу %s) [%s]"
 
@@ -510,9 +515,13 @@ msgstr "Режим поза мережею, без локальних списк
 msgid "Acquire flock on shared APT lists cache (wait %s s)"
 msgstr ""
 
-#: .container/foundation/tools.d/update-apt:29
-msgid "Update APT lists"
-msgstr ""
+#: .container/foundation/tools.d/update-apt:36
+msgid "Update APT lists (attempt %s/%s)"
+msgstr "Оновити списки APT (спроба %s/%s)"
+
+#: .container/foundation/tools.d/update-apt:49
+msgid "APT update attempt %s/%s failed (exit %s), retrying in %s s"
+msgstr "Спроба %s/%s оновлення APT не вдалася (код виходу %s), повтор через %s с"
 
 #: .container/user/tools.d/benchmark.d:14
 msgid "Benchmarks disabled"
@@ -576,6 +585,7 @@ msgstr "Створити каталог блокування %s"
 
 #: .container/user/tools.d/bootstrap.d:37
 #: .container/user/tools.d/entrypoint.d:39
+#: .container/user/tools.d/healthcheck.d:50
 #, fuzzy
 msgid "Skipped: %s (via %s)"
 msgstr "Помилка: %s (код виходу %s)"
@@ -630,35 +640,35 @@ msgstr "Каталог не знайдено:"
 msgid "Checks directory found"
 msgstr "Каталог перевірок знайдено"
 
-#: .container/user/tools.d/healthcheck.d:45
+#: .container/user/tools.d/healthcheck.d:54
 msgid "Executing check:"
 msgstr "Виконання перевірки:"
 
-#: .container/user/tools.d/healthcheck.d:54
+#: .container/user/tools.d/healthcheck.d:63
 msgid "Check passed:"
 msgstr "Перевірка пройдена:"
 
-#: .container/user/tools.d/healthcheck.d:58
+#: .container/user/tools.d/healthcheck.d:67
 msgid "Check failed:"
 msgstr "Перевірка не пройдена:"
 
-#: .container/user/tools.d/healthcheck.d:58
+#: .container/user/tools.d/healthcheck.d:67
 msgid "with exit code"
 msgstr "з кодом виходу"
 
-#: .container/user/tools.d/healthcheck.d:66
+#: .container/user/tools.d/healthcheck.d:75
 msgid "No health checks found in"
 msgstr "Перевірок здоров'я не знайдено в"
 
-#: .container/user/tools.d/healthcheck.d:69
+#: .container/user/tools.d/healthcheck.d:78
 msgid "Checks directory not found at"
 msgstr "Каталог перевірок не знайдено в"
 
-#: .container/user/tools.d/healthcheck.d:74
+#: .container/user/tools.d/healthcheck.d:83
 msgid "%d of %d checks failed: %s"
 msgstr "%d з %d перевірок не пройдено: %s"
 
-#: .container/user/tools.d/healthcheck.d:76
+#: .container/user/tools.d/healthcheck.d:85
 msgid "All %d checks passed."
 msgstr "Усі %d перевірок пройдено."
 
@@ -714,15 +724,18 @@ msgstr "Усі %d тестів пройдено."
 msgid "Updating CA certificates"
 msgstr "Оновлення CA сертифікатів"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:31
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:30
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:43
 msgid "Ensure exists %s"
 msgstr "Перевірити наявність %s"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:33
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:32
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:45
 msgid "Set owner %s:0 %s"
 msgstr "Встановити власника %s:0 %s"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:37
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:36
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:47
 msgid "Set permissions of %s"
 msgstr "Встановити права для %s"
 

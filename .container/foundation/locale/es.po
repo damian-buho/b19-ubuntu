@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-07-28 21:39+0000\n"
+"POT-Creation-Date: 2026-08-24 17:38+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -69,87 +69,90 @@ msgstr ""
 "No se proporcionó ningún comando. Uso: b19-exec [OPCIONES] -- COMANDO "
 "[ARGS...]"
 
-#: .container/foundation/tools.d/b19-fetch:39
+#: .container/foundation/tools.d/b19-fetch:43
+#: .container/foundation/tools.d/b19-fetch:47
 #: .container/foundation/tools.d/b19-prepare-volumes:22
 #: .container/foundation/tools.d/keyscan:18
 msgid "Make %s directory"
 msgstr "Crear directorio %s"
 
-#: .container/foundation/tools.d/b19-fetch:51
+#: .container/foundation/tools.d/b19-fetch:60
 msgid "Local Cache HIT: %s"
 msgstr "Local Cache ENCONTRADO: %s"
 
-#: .container/foundation/tools.d/b19-fetch:52
-#: .container/foundation/tools.d/b19-fetch:82
+#: .container/foundation/tools.d/b19-fetch:61
+#: .container/foundation/tools.d/b19-fetch:91
 msgid "Hashes match: %s"
 msgstr "Hashes coinciden: %s"
 
-#: .container/foundation/tools.d/b19-fetch:53
-#: .container/foundation/tools.d/b19-fetch:61
-#: .container/foundation/tools.d/b19-fetch:167
+#: .container/foundation/tools.d/b19-fetch:62
+#: .container/foundation/tools.d/b19-fetch:70
+#: .container/foundation/tools.d/b19-fetch:176
 msgid "Copy from %s to %s"
 msgstr "Copiar desde %s a %s"
 
-#: .container/foundation/tools.d/b19-fetch:57
-#: .container/foundation/tools.d/b19-fetch:85
+#: .container/foundation/tools.d/b19-fetch:66
+#: .container/foundation/tools.d/b19-fetch:94
 msgid "Hashes don't match: %s"
 msgstr "Hashes no coinciden: %s"
 
-#: .container/foundation/tools.d/b19-fetch:60
-#: .container/foundation/tools.d/b19-fetch:88
+#: .container/foundation/tools.d/b19-fetch:69
+#: .container/foundation/tools.d/b19-fetch:97
 msgid "No hash for: %s, ASSUMED HIT"
 msgstr "Sin hash para: %s, ASUMIDO ENCONTRADO"
 
-#: .container/foundation/tools.d/b19-fetch:66
+#: .container/foundation/tools.d/b19-fetch:75
 msgid "Local Cache MISS: %s"
 msgstr "Local Cache NO ENCONTRADO: %s"
 
-#: .container/foundation/tools.d/b19-fetch:69
+#: .container/foundation/tools.d/b19-fetch:78
 msgid "Local Cache disabled: %s"
 msgstr "Local Cache deshabilitado: %s"
 
-#: .container/foundation/tools.d/b19-fetch:77
+#: .container/foundation/tools.d/b19-fetch:86
 msgid "Docker Cache HIT: %s"
 msgstr "Docker Cache ENCONTRADO: %s"
 
-#: .container/foundation/tools.d/b19-fetch:92
+#: .container/foundation/tools.d/b19-fetch:101
 msgid "Docker Cache MISS: %s"
 msgstr "Docker Cache NO ENCONTRADO: %s"
 
-#: .container/foundation/tools.d/b19-fetch:95
+#: .container/foundation/tools.d/b19-fetch:104
 msgid "Docker Cache disabled: %s"
 msgstr "Docker Cache deshabilitado: %s"
 
-#: .container/foundation/tools.d/b19-fetch:101
+#: .container/foundation/tools.d/b19-fetch:110
 msgid "Offgrid mode: cannot download %s"
 msgstr "Modo fuera de red: no se puede descargar %s"
 
-#: .container/foundation/tools.d/b19-fetch:108
+#: .container/foundation/tools.d/b19-fetch:117
 msgid "Hash specified, will checksum"
 msgstr "Hash especificado, se verificará"
 
-#: .container/foundation/tools.d/b19-fetch:111
+#: .container/foundation/tools.d/b19-fetch:120
 msgid "No hash, no checks"
 msgstr "Sin hash, sin verificaciones"
 
-#: .container/foundation/tools.d/b19-fetch:129
+#: .container/foundation/tools.d/b19-fetch:138
 msgid "Near cache %s: rewrote %s URL(s)"
 msgstr "Caché cercana %s: se reescribieron %s URL(s)"
 
-#: .container/foundation/tools.d/b19-fetch:138
+#: .container/foundation/tools.d/b19-fetch:147
 msgid "Build CA bundle %s in use"
 msgstr "Paquete de CA de compilación %s en uso"
 
-#: .container/foundation/tools.d/b19-fetch:141
+#: .container/foundation/tools.d/b19-fetch:150
 #: .container/foundation/tools.d/trust-ca-certificates:57
 msgid "No build CA bundle at %s, using image trust store"
-msgstr "Sin paquete de CA de compilación en %s, se usa el almacén de confianza de la imagen"
+msgstr ""
+"Sin paquete de CA de compilación en %s, se usa el almacén de confianza de la "
+"imagen"
 
-#: .container/foundation/tools.d/b19-fetch:144
+#: .container/foundation/tools.d/b19-fetch:153
 msgid "Get %s"
 msgstr "Descargar %s"
 
-#: .container/foundation/tools.d/b19-fetch:164
+#: .container/foundation/tools.d/b19-fetch:173
 msgid "No need to download %s"
 msgstr "No es necesario descargar %s"
 
@@ -182,11 +185,14 @@ msgstr "Omitiendo"
 msgid "already set"
 msgstr "ya establecido"
 
-#: .container/foundation/tools.d/b19-load-secrets:57
-msgid "Skipping binary secret %s (non-UTF-8; read it from %s instead of the env var)"
-msgstr "Omitiendo secreto binario %s (no UTF-8; léealo de %s en lugar de la variable de entorno)"
+#: .container/foundation/tools.d/b19-load-secrets:58
+msgid ""
+"Skipping binary secret %s (non-UTF-8; read it from %s instead of the env var)"
+msgstr ""
+"Omitiendo secreto binario %s (no UTF-8; léealo de %s en lugar de la variable "
+"de entorno)"
 
-#: .container/foundation/tools.d/b19-load-secrets:64
+#: .container/foundation/tools.d/b19-load-secrets:65
 msgid "Loaded"
 msgstr "Cargado"
 
@@ -211,53 +217,53 @@ msgstr "Nivel de log desconocido: %s. Válidos: error, warn, info, debug"
 msgid "Chown %s to %s:%s"
 msgstr "Cambiar propietario de %s a %s:%s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:68
+#: .container/foundation/tools.d/b19-resolve-dep:73
 msgid "component not found: %s"
 msgstr "componente no encontrado: %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:118
+#: .container/foundation/tools.d/b19-resolve-dep:123
 msgid "no url file for %s"
 msgstr "sin archivo url para %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:136
+#: .container/foundation/tools.d/b19-resolve-dep:153
 msgid "no hash file for %s"
 msgstr "sin archivo hash para %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:165
+#: .container/foundation/tools.d/b19-resolve-dep:186
 msgid "Version:   %s"
 msgstr "Versión:   %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:166
+#: .container/foundation/tools.d/b19-resolve-dep:187
 #, fuzzy
 msgid "Build:     %s"
 msgstr "URL:       %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:167
+#: .container/foundation/tools.d/b19-resolve-dep:188
 msgid "URL:       %s"
 msgstr "URL:       %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:168
+#: .container/foundation/tools.d/b19-resolve-dep:189
 msgid "Hash:      %s"
 msgstr "Hash:      %s"
 
-#: .container/foundation/tools.d/b19-resolve-dep:169
+#: .container/foundation/tools.d/b19-resolve-dep:190
 msgid "Filename:  %s"
 msgstr "Archivo:   %s"
 
-#: .container/foundation/tools.d/b19-run:60
+#: .container/foundation/tools.d/b19-run:72
 msgid "Usage: b19-run <tag> <message> [--] <command> [args...]"
 msgstr "Uso: b19-run <etiqueta> <mensaje> [--] <comando> [args...]"
 
-#: .container/foundation/tools.d/b19-run:96
-#: .container/foundation/tools.d/b19-run:98
+#: .container/foundation/tools.d/b19-run:108
+#: .container/foundation/tools.d/b19-run:110
 msgid "success [%s]"
 msgstr "éxito [%s]"
 
-#: .container/foundation/tools.d/b19-run:119
+#: .container/foundation/tools.d/b19-run:131
 msgid "failure (exit code %s), [%s]"
 msgstr "fallo (código de salida %s), [%s]"
 
-#: .container/foundation/tools.d/b19-run:130
+#: .container/foundation/tools.d/b19-run:142
 msgid "failure (exit code %s) [%s]"
 msgstr "fallo (código de salida %s) [%s]"
 
@@ -510,9 +516,13 @@ msgstr "Modo fuera de red, sin listas locales, omitiendo apt-get update"
 msgid "Acquire flock on shared APT lists cache (wait %s s)"
 msgstr ""
 
-#: .container/foundation/tools.d/update-apt:29
-msgid "Update APT lists"
-msgstr ""
+#: .container/foundation/tools.d/update-apt:36
+msgid "Update APT lists (attempt %s/%s)"
+msgstr "Actualizar listas APT (intento %s/%s)"
+
+#: .container/foundation/tools.d/update-apt:49
+msgid "APT update attempt %s/%s failed (exit %s), retrying in %s s"
+msgstr "Intento %s/%s de actualización APT fallido (salida %s), reintentando en %s s"
 
 #: .container/user/tools.d/benchmark.d:14
 msgid "Benchmarks disabled"
@@ -576,6 +586,7 @@ msgstr "Crear directorio de bloqueo %s"
 
 #: .container/user/tools.d/bootstrap.d:37
 #: .container/user/tools.d/entrypoint.d:39
+#: .container/user/tools.d/healthcheck.d:50
 #, fuzzy
 msgid "Skipped: %s (via %s)"
 msgstr "Fallido: %s (código de salida %s)"
@@ -630,35 +641,35 @@ msgstr "Directorio no encontrado:"
 msgid "Checks directory found"
 msgstr "Directorio de verificaciones encontrado"
 
-#: .container/user/tools.d/healthcheck.d:45
+#: .container/user/tools.d/healthcheck.d:54
 msgid "Executing check:"
 msgstr "Ejecutando verificación:"
 
-#: .container/user/tools.d/healthcheck.d:54
+#: .container/user/tools.d/healthcheck.d:63
 msgid "Check passed:"
 msgstr "Verificación exitosa:"
 
-#: .container/user/tools.d/healthcheck.d:58
+#: .container/user/tools.d/healthcheck.d:67
 msgid "Check failed:"
 msgstr "Verificación fallida:"
 
-#: .container/user/tools.d/healthcheck.d:58
+#: .container/user/tools.d/healthcheck.d:67
 msgid "with exit code"
 msgstr "con código de salida"
 
-#: .container/user/tools.d/healthcheck.d:66
+#: .container/user/tools.d/healthcheck.d:75
 msgid "No health checks found in"
 msgstr "No se encontraron verificaciones de salud en"
 
-#: .container/user/tools.d/healthcheck.d:69
+#: .container/user/tools.d/healthcheck.d:78
 msgid "Checks directory not found at"
 msgstr "Directorio de verificaciones no encontrado en"
 
-#: .container/user/tools.d/healthcheck.d:74
+#: .container/user/tools.d/healthcheck.d:83
 msgid "%d of %d checks failed: %s"
 msgstr "%d de %d verificaciones fallaron: %s"
 
-#: .container/user/tools.d/healthcheck.d:76
+#: .container/user/tools.d/healthcheck.d:85
 msgid "All %d checks passed."
 msgstr "Todas las %d verificaciones pasaron."
 
@@ -714,15 +725,18 @@ msgstr "Todas las %d pruebas pasaron."
 msgid "Updating CA certificates"
 msgstr "Actualizando certificados CA"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:31
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:30
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:43
 msgid "Ensure exists %s"
 msgstr "Verificar existencia de %s"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:33
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:32
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:45
 msgid "Set owner %s:0 %s"
 msgstr "Establecer propietario %s:0 %s"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:37
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:36
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:47
 msgid "Set permissions of %s"
 msgstr "Establecer permisos de %s"
 

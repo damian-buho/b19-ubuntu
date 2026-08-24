@@ -26,8 +26,27 @@
     # Serialize concurrent buildkit jobs sharing the apt-lists cache mount.
     # Lock file lives inside the shared mount so all builds see the same inode.
     b19-log info "PACKAGES" "$(_p "Acquire flock on shared APT lists cache (wait %s s)" "600")"
-    # The lists dir is a cache mount shared with concurrent builds — apt cleanup would delete list files their sources do not declare.
-    b19-run "PACKAGES" "$(_ "Update APT lists")" --  \
-      flock -w 600 /var/lib/apt/.buildkit-lock   \
-      apt-get update --allow-releaseinfo-change --error-on=any --option APT::Get::List-Cleanup=false
+
+    # A mirror caught mid-rsync can serve an InRelease whose signature does not
+    # yet match its own content (BADSIG), self-healing within seconds. --error-on=any
+    # is meant to catch a real problem, not this — ride out the transient with
+    # retries instead of loosening the check.
+    apt_update_attempt() {
+      # The lists dir is a cache mount shared with concurrent builds — apt cleanup would delete list files their sources do not declare.
+      b19-run "PACKAGES" "$(_p "Update APT lists (attempt %s/%s)" "$1" "$2")" --  \
+        flock -w 600 /var/lib/apt/.buildkit-lock   \
+        apt-get update --allow-releaseinfo-change --error-on=any --option APT::Get::List-Cleanup=false
+    }
+
+    APT_UPDATE_ATTEMPTS=3
+    for attempt in $(seq 1 "${APT_UPDATE_ATTEMPTS}"); do
+      if apt_update_attempt "${attempt}" "${APT_UPDATE_ATTEMPTS}"; then
+        exit 0
+      fi
+      code=$?
+      [ "${attempt}" -eq "${APT_UPDATE_ATTEMPTS}" ] && exit "${code}"
+      wait_s=$(( 5 * (2 ** (attempt - 1)) + (RANDOM % 5) ))
+      b19-log warn "PACKAGES" "$(_p "APT update attempt %s/%s failed (exit %s), retrying in %s s" "${attempt}" "${APT_UPDATE_ATTEMPTS}" "${code}" "${wait_s}")"
+      sleep "${wait_s}"
+    done
   fi
