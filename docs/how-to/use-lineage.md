@@ -38,7 +38,7 @@ appending one line to `${B19_LINEAGE_FILE}` (default `${B19_HOME}/.lineage`):
 [<TARGETARCH>] <namespace/project> <yymmdd.HHMM> <M6E_VERSION> [Upstream: <version>]
 ```
 
-Because the file lives in an image layer, a downstream image built `FROM` this one keeps the parent’s entries and appends its own — the chain grows one hop per image, no ancestry walk needed. At build start, the inherited `pre/200-read-lineage.i.sh` hooks log the parent chain; at startup the `0400-print-lineage.sh` entrypoint hook logs it again — at `debug` level, so raise `B19_VERBOSITY` to see it.
+Because the file lives in an image layer, a downstream image built `FROM` this one keeps the parent’s entries and appends its own — the chain grows one hop per image, no ancestry walk needed. `read-lineage` itself only reads the file; the level is the caller’s call. At build start, the inherited `pre/200-read-lineage.i.sh` hooks log the parent chain at `info` level — visible during build (the `B19_VERBOSITY` build-arg default), silent once the final image locks it to `warn`. At startup the `0400-print-lineage.sh` entrypoint hook logs it again at `debug` level, so raise `B19_VERBOSITY` to see it there.
 
 ### The upstream version command
 

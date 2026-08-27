@@ -7,5 +7,5 @@
 
     if [ -f "${B19_LINEAGE_FILE}" ]
     then
-      b19-log debug "LINEAGE" "$(cat < "${B19_LINEAGE_FILE}")"
+      cat < "${B19_LINEAGE_FILE}"
     fi

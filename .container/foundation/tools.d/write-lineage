@@ -20,8 +20,8 @@
     _LINEAGE_ENTRY=$(printf "[%s] %-36s %-12s %-8s\n" "${TARGETARCH}" "${NAME}" "${DATE}" "${M6E_VERSION}")
   fi
 
-  b19-log debug "LINEAGE" "${_LINEAGE_ENTRY}"
+  b19-log info "LINEAGE" "${_LINEAGE_ENTRY}"
   printf '%s\n' "${_LINEAGE_ENTRY}" >> "${B19_LINEAGE_FILE}"
   unset _LINEAGE_ENTRY
 
-  read-lineage
+  b19-log info "LINEAGE" "$(read-lineage)"

@@ -299,7 +299,7 @@ Most inheritable hooks delegate to a single tool:
 
 ```bash
 #!/usr/bin/env bash
-read-lineage
+b19-log info "LINEAGE" "$(read-lineage)"
 ```
 
 ```bash

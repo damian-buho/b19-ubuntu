@@ -5,4 +5,4 @@
 # SPDX-License-Identifier: MIT
 
 
-  read-lineage
+  b19-log info "LINEAGE" "$(read-lineage)"
