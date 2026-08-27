@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-24 17:38+0000\n"
+"POT-Creation-Date: 2026-08-27 21:02+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -521,7 +521,8 @@ msgstr "Оновити списки APT (спроба %s/%s)"
 
 #: .container/foundation/tools.d/update-apt:49
 msgid "APT update attempt %s/%s failed (exit %s), retrying in %s s"
-msgstr "Спроба %s/%s оновлення APT не вдалася (код виходу %s), повтор через %s с"
+msgstr ""
+"Спроба %s/%s оновлення APT не вдалася (код виходу %s), повтор через %s с"
 
 #: .container/user/tools.d/benchmark.d:14
 msgid "Benchmarks disabled"
@@ -1314,7 +1315,19 @@ msgstr ""
 msgid "Test 6 failed: Default level incorrect"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-verbosity.sh:138
+#: .container/user/test.d/0200-b19-verbosity.sh:140
+msgid "Test 7: plain output carries the level"
+msgstr "Тест 7: звичайний вивід містить рівень"
+
+#: .container/user/test.d/0200-b19-verbosity.sh:150
+msgid "Test 7 passed: plain output carries the level"
+msgstr "Тест 7 пройдено: звичайний вивід містить рівень"
+
+#: .container/user/test.d/0200-b19-verbosity.sh:152
+msgid "Test 7 failed: plain output lost the level"
+msgstr "Тест 7 не пройдено: звичайний вивід втратив рівень"
+
+#: .container/user/test.d/0200-b19-verbosity.sh:155
 #, fuzzy
 msgid "All verbosity tests passed"
 msgstr "Усі %d тестів пройдено."

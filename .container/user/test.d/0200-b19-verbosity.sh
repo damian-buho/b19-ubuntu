@@ -135,4 +135,21 @@ else
   fail "$(_ "Test 6 failed: Default level incorrect")"
 fi
 
+# Test 7: a captured (NO_COLOR) line names its own level — without it a warn and
+# an info are byte-identical in reports/*.log and no grep can tell them apart.
+b19-log note "b19-verbosity" "$(_ "Test 7: plain output carries the level")"
+TEST_OUTPUT=$(NO_COLOR=1 B19_VERBOSITY=debug bash -c '
+  b19-log warn TEST "warn message" 2>&1
+  b19-log info TEST "info message" 2>&1
+  echo "payload line" | b19-log info TEST 2>&1
+')
+
+if echo "${TEST_OUTPUT}" | grep -q "^ WARN .*warn message" &&       \
+   echo "${TEST_OUTPUT}" | grep -q "^ INFO .*info message" &&       \
+   ! echo "${TEST_OUTPUT}" | grep -q "INFO.*payload line"; then
+  b19-log good "b19-verbosity" "$(_ "Test 7 passed: plain output carries the level")"
+else
+  fail "$(_ "Test 7 failed: plain output lost the level")"
+fi
+
 b19-log good "b19-verbosity" "$(_ "All verbosity tests passed")"

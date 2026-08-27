@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-24 17:38+0000\n"
+"POT-Creation-Date: 2026-08-27 21:02+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -522,7 +522,8 @@ msgstr "Actualizar listas APT (intento %s/%s)"
 
 #: .container/foundation/tools.d/update-apt:49
 msgid "APT update attempt %s/%s failed (exit %s), retrying in %s s"
-msgstr "Intento %s/%s de actualización APT fallido (salida %s), reintentando en %s s"
+msgstr ""
+"Intento %s/%s de actualización APT fallido (salida %s), reintentando en %s s"
 
 #: .container/user/tools.d/benchmark.d:14
 msgid "Benchmarks disabled"
@@ -1320,7 +1321,19 @@ msgstr ""
 msgid "Test 6 failed: Default level incorrect"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-verbosity.sh:138
+#: .container/user/test.d/0200-b19-verbosity.sh:140
+msgid "Test 7: plain output carries the level"
+msgstr "Prueba 7: la salida en texto plano incluye el nivel"
+
+#: .container/user/test.d/0200-b19-verbosity.sh:150
+msgid "Test 7 passed: plain output carries the level"
+msgstr "Prueba 7 superada: la salida en texto plano incluye el nivel"
+
+#: .container/user/test.d/0200-b19-verbosity.sh:152
+msgid "Test 7 failed: plain output lost the level"
+msgstr "Prueba 7 fallida: la salida en texto plano perdió el nivel"
+
+#: .container/user/test.d/0200-b19-verbosity.sh:155
 #, fuzzy
 msgid "All verbosity tests passed"
 msgstr "Todas las %d pruebas pasaron."

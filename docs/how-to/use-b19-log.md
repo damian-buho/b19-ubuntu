@@ -49,6 +49,17 @@ All output goes to stderr, so stdout stays clean for data. A set `STAGE` variabl
  STAGE   tag       message (colored)
 ```
 
+With colour disabled (`NO_COLOR=1`, which is what a capture sets) the level has
+nowhere to show, so it is printed as its own column instead — otherwise a warn
+and an info read identically in `reports/*.log`:
+
+```text
+ WARN    ENTRY.D       the message
+```
+
+Piped input keeps the bare shape: those lines are the wrapped process’s own
+output, not a b19 log record.
+
 ## Configuration
 
 | Variable        | Default | Effect                                                  |

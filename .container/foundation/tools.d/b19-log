@@ -117,10 +117,18 @@
     # Split LOG by newlines and process each line
     # The printf "%b" expands literal \n to real newlines
     if [ "${_USE_COLOR}" = "0" ]; then
-        # No color: plain text output
+        # No color: plain text output. The colored path encodes the LEVEL as the
+        # message colour, which a captured log drops on the floor — so print it as
+        # a column here instead. That is the only thing that makes a warn/error
+        # findable in reports/*.log (m6e-run greps ^WARN to quote it under a green
+        # pointer). Payload passthrough (PIPE_MODE) keeps the bare shape: those
+        # lines are the process's own output, not a b19 log record.
         while IFS= read -r line || [ -n "$line" ]; do
           if [ -n "${STAGE:-}" ]; then
             printf " %s " "${STAGE^^}" >&2
+          fi
+          if [ "${PIPE_MODE}" -eq 0 ]; then
+            printf " %-5s " "${LEVEL^^}" >&2
           fi
           printf " %-12s " "${TAG^^}" >&2
           printf " %s\n" "${line}" >&2

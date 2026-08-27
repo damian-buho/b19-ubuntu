@@ -101,7 +101,7 @@ reports/                 # lint/scan/bridge outputs (generated; do not hand-edit
 These are on `PATH` (`/tools.d`) in this and every downstream image. Prefer them
 over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 
-- `b19-log <level> <tag> [msg]` — leveled (error/warn/info/debug), color-aware, honors `NO_COLOR`. Piped input (how `b19-exec` routes process output) skips level filtering — the level only picks the color, so payload output always reaches the console. [docs](docs/how-to/use-b19-log.md)
+- `b19-log <level> <tag> [msg]` — leveled (error/warn/info/debug), color-aware, honors `NO_COLOR`. Piped input (how `b19-exec` routes process output) skips level filtering — the level only picks the color, so payload output always reaches the console. A colored line encodes the level as its COLOUR, which a captured log drops on the floor — so the plain (`NO_COLOR`) path prints the level as its own column. That is what makes a warn findable in `reports/*.log` and quotable by m6e-run’s warning reveal; payload passthrough keeps the bare shape. [docs](docs/how-to/use-b19-log.md)
 - `b19-run <tag> <msg> -- <cmd>` — timed wrapper; success output hidden unless verbose, failure always shown. [docs](docs/how-to/use-b19-run.md)
 - `b19-exec [opts] -- <cmd>` — long-running services; routes stdout/stderr through the logger, tracks PID for signal forwarding. [docs](docs/how-to/use-b19-exec.md)
 - `b19-fetch <tag> <url> <file> [sha512]` — three-tier cached download (`.fetch/` → BuildKit cache → aria2c), SHA-512 verified, offgrid-aware. [docs](docs/how-to/use-b19-fetch.md)

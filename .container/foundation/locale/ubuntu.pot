@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.6.0\n"
+"Project-Id-Version: ubuntu 1.6.1-4-ge85509b\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-24 17:38+0000\n"
+"POT-Creation-Date: 2026-08-27 21:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1286,7 +1286,19 @@ msgstr ""
 msgid "Test 6 failed: Default level incorrect"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-verbosity.sh:138
+#: .container/user/test.d/0200-b19-verbosity.sh:140
+msgid "Test 7: plain output carries the level"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:150
+msgid "Test 7 passed: plain output carries the level"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:152
+msgid "Test 7 failed: plain output lost the level"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-verbosity.sh:155
 msgid "All verbosity tests passed"
 msgstr ""
 
