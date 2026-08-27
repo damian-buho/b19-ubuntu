@@ -69,15 +69,16 @@ the next hook.
 
 ## Behavior
 
-| Variable                  | Default          | Accepted values            | Controls                                                                                                                                                                                                       |
-| ------------------------- | ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `B19_J2_EXCLUDE_PATTERNS` | (unset)          | space-separated names      | Directory names to exclude from j2 template discovery (e.g., `venv node_modules`). Used by `save-j2`.                                                                                                          |
-| `B19_IMMUTABLE`           | `N`              | `N`, `Y`                   | `Y` skips overlay copy and j2 template rendering at startup. Locks the filesystem to its build-time state.                                                                                                     |
-| `B19_OFFGRID_MODE`        | `N`              | `N`, `Y`                   | `Y` blocks all internet access. At build time: prevents downloads (cache miss = fail), skips SSH keyscan and APT upgrade. At runtime: network healthchecks skip with exit 0. See [OFFGRID.md](use-offgrid.md). |
-| `B19_RUNTIME_MODE`        | `docker-compose` | any string                 | Informational runtime environment identifier. Available for downstream images to adjust behavior.                                                                                                              |
-| `B19_TEST_TIMEOUT`        | `60`             | positive integer (seconds) | Seconds `test.d` waits for healthcheck to pass before running tests.                                                                                                                                           |
-| `B19_OVERLAY`             | (unset)          | directory name             | Name of an overlay directory under `B19_OVERLAYS_PATH/` to apply at startup. Contents are recursively copied to `/`.                                                                                           |
-| `B19_REQUIRED_SECRETS`    | (empty)          | space-separated names      | Dot-notation secret names that must exist (env var or file). Container exits 1 if any are missing. Skipped when `B19_SECRETS_ENABLED=false` or ad-hoc command mode.                                            |
+| Variable                   | Default          | Accepted values            | Controls                                                                                                                                                                                                       |
+| -------------------------- | ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `B19_J2_EXCLUDE_PATTERNS`  | (unset)          | space-separated names      | Directory names to exclude from j2 template discovery (e.g., `venv node_modules`). Used by `save-j2`.                                                                                                          |
+| `B19_IMMUTABLE`            | `N`              | `N`, `Y`                   | `Y` skips overlay copy and j2 template rendering at startup. Locks the filesystem to its build-time state.                                                                                                     |
+| `B19_OFFGRID_MODE`         | `N`              | `N`, `Y`                   | `Y` blocks all internet access. At build time: prevents downloads (cache miss = fail), skips SSH keyscan and APT upgrade. At runtime: network healthchecks skip with exit 0. See [OFFGRID.md](use-offgrid.md). |
+| `B19_RUNTIME_MODE`         | `docker-compose` | any string                 | Informational runtime environment identifier. Available for downstream images to adjust behavior.                                                                                                              |
+| `B19_SINGLE_COMMAND_IMAGE` | `N`              | `N`, `Y`                   | `Y` lets a first arg that is not a command fall through to `5000-start.sh` — an image wrapping ONE program takes its subcommand as argv. `N` exits `127`. Unconsumed argv still fails `127` at `9000`.         |
+| `B19_TEST_TIMEOUT`         | `60`             | positive integer (seconds) | Seconds `test.d` waits for healthcheck to pass before running tests.                                                                                                                                           |
+| `B19_OVERLAY`              | (unset)          | directory name             | Name of an overlay directory under `B19_OVERLAYS_PATH/` to apply at startup. Contents are recursively copied to `/`.                                                                                           |
+| `B19_REQUIRED_SECRETS`     | (empty)          | space-separated names      | Dot-notation secret names that must exist (env var or file). Container exits 1 if any are missing. Skipped when `B19_SECRETS_ENABLED=false` or ad-hoc command mode.                                            |
 
 ## Secrets
 
@@ -296,6 +297,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_SECRETS_PATH`              | runtime         | Secrets          |
 | `B19_SHELL_ENABLED`             | build + runtime | Feature Toggles  |
 | `B19_SHELL_PATH`                | runtime         | Hook Directories |
+| `B19_SINGLE_COMMAND_IMAGE`      | runtime         | Behavior         |
 | `B19_SSH_SCAN_HOSTS`            | build           | SSH              |
 | `B19_TEMP_PATH`                 | build + runtime | System Paths     |
 | `B19_TEST_ENABLED`              | runtime         | Feature Toggles  |

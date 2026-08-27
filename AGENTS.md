@@ -64,7 +64,12 @@ set-signals → load-secrets → set-cpu-count → check-ports → print-lineage
 copy-overlay → parallel-j2 (render `.j2`) → run-command → validate-secrets →
 bootstrap → start → finalize. A bare `docker run img <cmd>` short-circuits to run
 the command directly; a `<cmd>` the image does NOT carry fails closed with `127`
-at 2000 instead of falling through to bootstrap/start and finishing green. Every
+at 2000 instead of falling through to bootstrap/start and finishing green. An
+image wrapping ONE program takes its SUBCOMMAND as argv (`docker run img
+validate`), so that first arg is expected not to be a command: it sets
+`B19_SINGLE_COMMAND_IMAGE=Y` and consumes `"$@"` in its own `5000-start.sh`.
+9000-finalize still exits `127` when nothing ran the argv, so the mode cannot
+resurrect the silent green. Every
 stage and hook is toggleable at runtime via `B19_*` env (no rebuild) — see
 [docs/features.d/feature-toggles.md](docs/features.d/feature-toggles.md).
 

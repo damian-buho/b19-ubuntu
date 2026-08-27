@@ -93,6 +93,7 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_SECRETS_PATH="/run/secrets"                                               \
     B19_SHELL_ENABLED=true                                                        \
     B19_SHELL_PATH="/shell.d"                                                     \
+    B19_SINGLE_COMMAND_IMAGE=N                                                    \
     B19_TEMP_PATH="${B19_TEMP_PATH}"                                              \
     B19_TEST_ENABLED=true                                                         \
     B19_TEST_PATH=/test.d                                                         \

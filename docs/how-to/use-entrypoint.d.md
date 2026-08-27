@@ -55,11 +55,11 @@ tini -g (PID 1)
 | 0400 | `print-lineage.sh`    | Log the image lineage chain (base → current)                                                                             |
 | 0500 | `copy-overlay.sh`     | Copy files from `$B19_OVERLAYS_PATH/$B19_OVERLAY/` to `/` if `B19_OVERLAY` is set                                        |
 | 1000 | `parallel-j2.sh`      | Render all `.j2` templates in `$B19_HOME` via minijinja-cli + `xargs -P`                                                 |
-| 2000 | `run-command.sh`      | If first arg is a valid command: execute it, set `ENTRYPOINT_COMMAND_EXECUTED=Y`; if it is not, exit 127                 |
+| 2000 | `run-command.sh`      | Run a valid first arg and set `ENTRYPOINT_COMMAND_EXECUTED=Y`; otherwise exit 127                                        |
 | 2100 | `validate-secrets.sh` | Validate all secrets in `B19_REQUIRED_SECRETS` exist (env or file); exit 1 if missing                                    |
 | 3000 | `bootstrap.sh`        | Run `/bootstrap.d/` scripts with lockfile idempotency                                                                    |
 | 5000 | `start.sh`            | Default: `sleep infinity` (downstream projects **always** override this)                                                 |
-| 9000 | `finalize.sh`         | Log the final `RETURN_CODE`                                                                                              |
+| 9000 | `finalize.sh`         | Log the final `RETURN_CODE`; exit 127 when nothing ever ran the argv                                                     |
 
 ### Two execution paths
 
@@ -84,8 +84,33 @@ tini -g (PID 1)
 A command was asked for and the image does not carry it, so the run fails closed
 with the shell’s `127` — it does **not** fall through to bootstrap and start. The
 old fall-through logged a warning and finished green, so a stale image reported
-success for a run that executed nothing. `B19_ENTRYPOINT_SKIP_RUN_COMMAND=true`
-skips the hook entirely if a lineage really needs the argv ignored.
+success for a run that executed nothing.
+
+**Single-command image** (`docker run img validate`, `B19_SINGLE_COMMAND_IMAGE=Y`):
+
+```text
+0000 → 0100 → … → 2000 (not a command, left for the start hook) → 2100 → 3000 → 5000 (runs it) → 9000
+```
+
+An image that wraps exactly ONE program takes the subcommand as argv — `docker
+run kiota.ch/projectfile/cli validate` rather than `docker run
+kiota.ch/projectfile/cli pf-cli validate`. There the first arg is *expected* not
+to be a command, so `B19_SINGLE_COMMAND_IMAGE=Y` restores the fall-through and
+the image’s own `5000-start.sh` consumes `"$@"`:
+
+```bash
+if [ "${ENTRYPOINT_COMMAND_EXECUTED:-N}" = "N" ] && [ $# -gt 0 ]; then
+  b19-exec -- pf-cli "$@"
+fi
+```
+
+The mode cannot bring the silent green back: a start hook that execs owns the
+exit code, and an argv that reaches `9000-finalize` with no exit code at all was
+consumed by nobody, so the run exits `127` there instead of `0`. Declaring the
+mode without writing the start hook therefore fails loudly.
+
+`B19_ENTRYPOINT_SKIP_RUN_COMMAND=true` skips the hook entirely if a lineage
+really needs the argv ignored.
 
 The `ENTRYPOINT_COMMAND_EXECUTED` flag gates secret validation, bootstrap and service start — ad-hoc commands like `docker run img mysqldump` bypass the full startup sequence.
 

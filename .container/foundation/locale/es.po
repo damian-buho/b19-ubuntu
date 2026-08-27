@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 21:04+0000\n"
+"POT-Creation-Date: 2026-08-27 21:15+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -876,7 +876,11 @@ msgstr "Tratando %s como comando"
 msgid "Empty command, continue"
 msgstr "Comando vacío, continuar"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:20
+#: .container/user/entrypoint.d/2000-run-command.sh:22
+msgid "Single-command image: %s left for the start hook"
+msgstr "Imagen de comando único: %s se deja para el hook de arranque"
+
+#: .container/user/entrypoint.d/2000-run-command.sh:28
 msgid "%s is not a command"
 msgstr "%s no es un comando"
 
@@ -923,6 +927,10 @@ msgstr "No se proporcionó ningún comando, se dormirá"
 #: .container/user/entrypoint.d/9000-finalize.sh:7
 msgid "Done: %s"
 msgstr "Listo: %s"
+
+#: .container/user/entrypoint.d/9000-finalize.sh:15
+msgid "Nothing consumed %s — the image declares no start hook for it"
+msgstr "Nada consumió %s — la imagen no declara ningún hook de arranque para ello"
 
 #: .container/user/healthcheck.d/0100-check-home-directory-space.sh:18
 msgid "Low space in %s (B19_HOME): %s < %s"

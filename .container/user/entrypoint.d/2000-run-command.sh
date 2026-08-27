@@ -13,6 +13,14 @@
   then
     b19-log info "ENTRY.D" "$(_ "Empty command, continue")"
     ENTRYPOINT_COMMAND_EXECUTED=N
+  elif [ "${B19_SINGLE_COMMAND_IMAGE:-N}" = "Y" ];
+  then
+    # An image wrapping ONE program takes the SUBCOMMAND as argv (`docker run
+    # img validate`, not `docker run img pf-cli validate`), so a first arg that
+    # is not a command is the normal path: leave it for the image's own start
+    # hook, which knows the program. 9000-finalize fails the run if none did.
+    b19-log info "ENTRY.D" "$(_p "Single-command image: %s left for the start hook" "$*")"
+    ENTRYPOINT_COMMAND_EXECUTED=N
   else
     # A command WAS requested and the image does not carry it: fail closed with
     # the shell's 127 rather than falling through to bootstrap/start, which
