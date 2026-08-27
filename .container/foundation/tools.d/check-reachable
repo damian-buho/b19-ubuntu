@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  # A LAN cache (apt-cacher-ng, a near-cache reverse proxy) can go stuck
+  # between builds. Probing it first turns that into a graceful skip for the
+  # caller instead of a hard failure deep inside apt or aria2c.
+
+  TAG="${1}"
+  URL="${2}"
+  TIMEOUT="${3:-${B19_CACHE_CHECK_TIMEOUT:-2}}"
+
+  if [ "${B19_CACHE_CHECK_ENABLED:-true}" = "false" ]
+  then
+    b19-log debug "${TAG}" "$(_ "Cache reachability check disabled, assuming reachable")"
+    exit 0
+  fi
+
+  if curl --silent --output /dev/null --max-time "${TIMEOUT}" --retry 1 --retry-delay 1 "${URL}"
+  then
+    exit 0
+  fi
+
+  b19-log warn "${TAG}" "$(_p "%s unreachable after %ss, treating as transient" "${URL}" "${TIMEOUT}")"
+  exit 1

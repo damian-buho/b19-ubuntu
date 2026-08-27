@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.6.1-7-gd60ab81\n"
+"Project-Id-Version: ubuntu 1.6.1-8-g012cf49\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 21:52+0000\n"
+"POT-Creation-Date: 2026-08-27 22:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -81,7 +81,7 @@ msgstr ""
 
 #: .container/foundation/tools.d/b19-fetch:62
 #: .container/foundation/tools.d/b19-fetch:70
-#: .container/foundation/tools.d/b19-fetch:176
+#: .container/foundation/tools.d/b19-fetch:181
 msgid "Copy from %s to %s"
 msgstr ""
 
@@ -127,24 +127,28 @@ msgstr ""
 msgid "No hash, no checks"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:138
+#: .container/foundation/tools.d/b19-fetch:140
 msgid "Near cache %s: rewrote %s URL(s)"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:147
+#: .container/foundation/tools.d/b19-fetch:142
+msgid "Skipping near cache %s, fetching directly"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:152
 msgid "Build CA bundle %s in use"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:150
+#: .container/foundation/tools.d/b19-fetch:155
 #: .container/foundation/tools.d/trust-ca-certificates:57
 msgid "No build CA bundle at %s, using image trust store"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:153
+#: .container/foundation/tools.d/b19-fetch:158
 msgid "Get %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:173
+#: .container/foundation/tools.d/b19-fetch:178
 msgid "No need to download %s"
 msgstr ""
 
@@ -283,19 +287,31 @@ msgstr ""
 msgid "All PORT variables are safe"
 msgstr ""
 
+#: .container/foundation/tools.d/check-reachable:20
+msgid "Cache reachability check disabled, assuming reachable"
+msgstr ""
+
+#: .container/foundation/tools.d/check-reachable:29
+msgid "%s unreachable after %ss, treating as transient"
+msgstr ""
+
 #: .container/foundation/tools.d/detect-apt-cacher:21
 msgid "Not root (uid %s), apt cache proxy left untouched"
 msgstr ""
 
-#: .container/foundation/tools.d/detect-apt-cacher:31
+#: .container/foundation/tools.d/detect-apt-cacher:33
 msgid "APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 msgstr ""
 
-#: .container/foundation/tools.d/detect-apt-cacher:33
+#: .container/foundation/tools.d/detect-apt-cacher:35
+msgid "Skipping proxy for %s, apt will fetch directly"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-apt-cacher:38
 msgid "APT Cache not enabled"
 msgstr ""
 
-#: .container/foundation/tools.d/detect-apt-cacher:45
+#: .container/foundation/tools.d/detect-apt-cacher:50
 #: .container/foundation/tools.d/trust-ca-certificates:77
 msgid "Unknown action %s, expected install or remove"
 msgstr ""

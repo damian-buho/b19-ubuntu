@@ -30,6 +30,7 @@ All default-enabled. Set to `false` to disable the corresponding subsystem.
 | `B19_BENCHMARK_ENABLED`    | `true`  | runtime         | Skip benchmark suite                               |
 | `B19_SECRETS_ENABLED`      | `true`  | runtime         | Skip Docker secrets loading and validation         |
 | `B19_PORT_CHECK_ENABLED`   | `true`  | runtime         | Skip WHATWG port blocklist validation              |
+| `B19_CACHE_CHECK_ENABLED`  | `true`  | build           | Skip the apt/near-cache reachability probe         |
 | `B19_I18N_ENABLED`         | `true`  | build + runtime | Disable gettext translations (English passthrough) |
 | `B19_SHELL_ENABLED`        | `true`  | build + runtime | Disable shell.d hooks in interactive sessions      |
 
@@ -120,6 +121,7 @@ Three-tier fetch model: local cache → Docker BuildKit cache → aria2c downloa
 | `B19_DOWNLOAD_RETRY_WAIT` | `16`                         | positive integer   | Seconds between aria2c retries                                 |
 | `B19_BUILD_CA_FILE`       | (staged)                     | absolute path      | Build-host CA bundle staged from `M6E_CA_CERTIFICATES`         |
 | `B19_BUILD_CA_ANCHOR`     | (transient)                  | absolute path      | Where a root stage installs it, then drops it pre-commit       |
+| `B19_CACHE_CHECK_TIMEOUT` | `2`                          | positive integer   | Seconds `check-reachable` waits for the apt/near-cache probe   |
 
 Both CA variables are inert unless the build host sets `M6E_CA_CERTIFICATES` —
 see [b19-fetch.md](use-b19-fetch.md) for why a privately fronted near cache needs
@@ -254,6 +256,8 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_DEPS_PATH`                 | runtime         | Hook Directories |
 | `B19_BUILD_CA_ANCHOR`           | build           | Download         |
 | `B19_BUILD_CA_FILE`             | build           | Download         |
+| `B19_CACHE_CHECK_ENABLED`       | build           | Feature Toggles  |
+| `B19_CACHE_CHECK_TIMEOUT`       | build           | Download         |
 | `B19_CACHE_PATH`                | build + runtime | Download         |
 | `B19_DOCKER_GID`                | build + runtime | System Paths     |
 | `B19_DOWNLOAD_DISK_CACHE`       | build           | Download         |

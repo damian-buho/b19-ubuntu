@@ -36,12 +36,16 @@ Performance tuning (parallel queues, 30s timeouts) ships in `.container/foundati
 
 Setting `M6E_APT_CACHE_HOST` (build arg) enables the proxy path: `always/pre/020-detect-apt-cacher.i.sh` writes `/etc/apt/apt.conf.d/99proxy` pointing at `http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}` (the apt-cacher-ng default port), and `always/post/900-clean-apt-cacher.i.sh` removes it again — both run on every `build-stage` call whatever the stage is called (see [use-build.d](use-build.d.md)), so the proxy config never ships in a layer, and never reaches a runtime container either. “Detection” is exactly this: set the host, the hook acts; unset, it does nothing. `detect-apt-cacher` checks `id --user` itself and no-ops for the uid-1000 user stage, since `/etc/apt/apt.conf.d` is root-owned.
 
+Before writing the proxy config, `detect-apt-cacher` probes the cache host with `check-reachable` (a short cURL connect, `B19_CACHE_CHECK_TIMEOUT` seconds, one retry). A host that is set but unreachable — a stuck cacher-ng, a LAN outage — is treated as a transient condition: the proxy is skipped, apt falls through to a direct connection, and the build keeps going instead of failing deep inside `apt-get` once it can’t reach a proxy that was never there. Set `B19_CACHE_CHECK_ENABLED=false` to skip the probe and always trust the configured host.
+
 ## Configuration
 
-| Variable             | Default | Effect                                        |
-| -------------------- | ------- | --------------------------------------------- |
-| `M6E_APT_CACHE_HOST` | (unset) | LAN cacher hostname; empty disables the proxy |
-| `M6E_APT_CACHE_PORT` | `3142`  | LAN cacher port                               |
+| Variable                  | Default | Effect                                        |
+| ------------------------- | ------- | --------------------------------------------- |
+| `M6E_APT_CACHE_HOST`      | (unset) | LAN cacher hostname; empty disables the proxy |
+| `M6E_APT_CACHE_PORT`      | `3142`  | LAN cacher port                               |
+| `B19_CACHE_CHECK_ENABLED` | `true`  | Probe the cache host before trusting it       |
+| `B19_CACHE_CHECK_TIMEOUT` | `2`     | Seconds to wait for the reachability probe    |
 
 Packages themselves are declared in `common.apt.deps` files — see [declare dependencies](use-dependencies.md).
 

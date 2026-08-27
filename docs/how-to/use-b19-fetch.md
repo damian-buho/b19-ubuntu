@@ -60,6 +60,8 @@ https://example.com/file.tar.gz
 -> https://{M6E_NEAR_CACHE_HOST}/example.com/file.tar.gz
 ```
 
+Before rewriting, `b19-fetch` probes the near cache with `check-reachable` — the same short cURL connect `detect-apt-cacher` uses for the LAN apt proxy. A near cache that is set but unreachable is treated as transient: the rewrite is skipped, the original URLs are used, and aria2c downloads straight from the origin instead of retrying against a proxy that never answers. Set `B19_CACHE_CHECK_ENABLED=false` to skip the probe and always route through the configured host.
+
 #### Trusting a near cache behind private TLS
 
 A near cache fronted by a private root (a self-signed reverse proxy on the build LAN) is not trusted by the image’s stock CA store, and the failure reads as `SSL/TLS handshake failure: not signed by known authorities` on the download — not as a certificate problem at the place you set the proxy.
@@ -86,6 +88,8 @@ Because aria2c’s `--ca-certificate` *replaces* the default store rather than a
 | `M6E_NEAR_CACHE_HOST`     | (unset)                   | Near-cache proxy hostname                      |
 | `B19_BUILD_CA_FILE`       | (staged)                  | Build-host CA bundle in the fetch context      |
 | `B19_TEMP_PATH`           | `/tmp`                    | Destination for the final file copy            |
+| `B19_CACHE_CHECK_ENABLED` | `true`                    | Probe the near cache before routing through it |
+| `B19_CACHE_CHECK_TIMEOUT` | `2`                       | Seconds to wait for the reachability probe     |
 
 What each switch combination does — and the air-gap scenarios they serve — is the subject of [run offgrid builds](use-offgrid.md). The full variable index lives in [configure-environment](configure-environment.md).
 

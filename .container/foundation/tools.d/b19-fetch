@@ -126,16 +126,21 @@
   then
     if [ -n "${M6E_NEAR_CACHE_HOST:-}" ]
     then
-      _rewritten=()
-      for _url in "${ARIA_URLS[@]}"; do
-        # shellcheck disable=SC2016
-        _stripped="${_url#*://}"
-        _rewritten+=( "https://${M6E_NEAR_CACHE_HOST}/${_stripped}" )
-      done
-      ARIA_URLS=( "${_rewritten[@]}" )
-      unset _rewritten _url _stripped
-  ARIA_URL_PRIMARY="${ARIA_URLS[0]:-}"
-      b19-log info "DOWNLOAD" "$(_p "Near cache %s: rewrote %s URL(s)" "${M6E_NEAR_CACHE_HOST}" "${#ARIA_URLS[@]}")"
+      if check-reachable "DOWNLOAD" "https://${M6E_NEAR_CACHE_HOST}/"
+      then
+        _rewritten=()
+        for _url in "${ARIA_URLS[@]}"; do
+          # shellcheck disable=SC2016
+          _stripped="${_url#*://}"
+          _rewritten+=( "https://${M6E_NEAR_CACHE_HOST}/${_stripped}" )
+        done
+        ARIA_URLS=( "${_rewritten[@]}" )
+        unset _rewritten _url _stripped
+        ARIA_URL_PRIMARY="${ARIA_URLS[0]:-}"
+        b19-log info "DOWNLOAD" "$(_p "Near cache %s: rewrote %s URL(s)" "${M6E_NEAR_CACHE_HOST}" "${#ARIA_URLS[@]}")"
+      else
+        b19-log warn "DOWNLOAD" "$(_p "Skipping near cache %s, fetching directly" "${M6E_NEAR_CACHE_HOST}")"
+      fi
     fi
     # The user stage runs as uid 1000 and cannot write the image trust store, so
     # trust-ca-certificates cannot help there. aria2c takes the staged build-host

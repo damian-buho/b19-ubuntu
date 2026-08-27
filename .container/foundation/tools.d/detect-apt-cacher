@@ -26,9 +26,14 @@
     install)
       if [ -n "${M6E_APT_CACHE_HOST:-}" ]
       then
-        echo "Acquire::http { Proxy \"http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}\"; }" > /etc/apt/apt.conf.d/99proxy
-        # shellcheck disable=SC2016
-        b19-log warn "APTCACHE" "$(_e 'APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}')"
+        if check-reachable "APTCACHE" "http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}/"
+        then
+          echo "Acquire::http { Proxy \"http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}\"; }" > /etc/apt/apt.conf.d/99proxy
+          # shellcheck disable=SC2016
+          b19-log warn "APTCACHE" "$(_e 'APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}')"
+        else
+          b19-log warn "APTCACHE" "$(_p "Skipping proxy for %s, apt will fetch directly" "${M6E_APT_CACHE_HOST}")"
+        fi
       else
         b19-log warn "APTCACHE" "$(_ 'APT Cache not enabled')"
       fi

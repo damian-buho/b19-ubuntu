@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 21:52+0000\n"
+"POT-Creation-Date: 2026-08-27 22:09+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -87,7 +87,7 @@ msgstr "Hashes coinciden: %s"
 
 #: .container/foundation/tools.d/b19-fetch:62
 #: .container/foundation/tools.d/b19-fetch:70
-#: .container/foundation/tools.d/b19-fetch:176
+#: .container/foundation/tools.d/b19-fetch:181
 msgid "Copy from %s to %s"
 msgstr "Copiar desde %s a %s"
 
@@ -133,26 +133,30 @@ msgstr "Hash especificado, se verificará"
 msgid "No hash, no checks"
 msgstr "Sin hash, sin verificaciones"
 
-#: .container/foundation/tools.d/b19-fetch:138
+#: .container/foundation/tools.d/b19-fetch:140
 msgid "Near cache %s: rewrote %s URL(s)"
 msgstr "Caché cercana %s: se reescribieron %s URL(s)"
 
-#: .container/foundation/tools.d/b19-fetch:147
+#: .container/foundation/tools.d/b19-fetch:142
+msgid "Skipping near cache %s, fetching directly"
+msgstr "Omitiendo caché cercana %s, se descarga directamente"
+
+#: .container/foundation/tools.d/b19-fetch:152
 msgid "Build CA bundle %s in use"
 msgstr "Paquete de CA de compilación %s en uso"
 
-#: .container/foundation/tools.d/b19-fetch:150
+#: .container/foundation/tools.d/b19-fetch:155
 #: .container/foundation/tools.d/trust-ca-certificates:57
 msgid "No build CA bundle at %s, using image trust store"
 msgstr ""
 "Sin paquete de CA de compilación en %s, se usa el almacén de confianza de la "
 "imagen"
 
-#: .container/foundation/tools.d/b19-fetch:153
+#: .container/foundation/tools.d/b19-fetch:158
 msgid "Get %s"
 msgstr "Descargar %s"
 
-#: .container/foundation/tools.d/b19-fetch:173
+#: .container/foundation/tools.d/b19-fetch:178
 msgid "No need to download %s"
 msgstr "No es necesario descargar %s"
 
@@ -296,20 +300,32 @@ msgstr ""
 msgid "All PORT variables are safe"
 msgstr "Todas las variables PORT son seguras"
 
+#: .container/foundation/tools.d/check-reachable:20
+msgid "Cache reachability check disabled, assuming reachable"
+msgstr "Verificación de alcance de caché deshabilitada, se asume alcanzable"
+
+#: .container/foundation/tools.d/check-reachable:29
+msgid "%s unreachable after %ss, treating as transient"
+msgstr "%s inalcanzable tras %ss, se trata como transitorio"
+
 #: .container/foundation/tools.d/detect-apt-cacher:21
 msgid "Not root (uid %s), apt cache proxy left untouched"
 msgstr "Sin privilegios de root (uid %s), proxy de caché APT intacto"
 
-#: .container/foundation/tools.d/detect-apt-cacher:31
+#: .container/foundation/tools.d/detect-apt-cacher:33
 msgid "APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 msgstr ""
 "Caché APT habilitado en ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 
-#: .container/foundation/tools.d/detect-apt-cacher:33
+#: .container/foundation/tools.d/detect-apt-cacher:35
+msgid "Skipping proxy for %s, apt will fetch directly"
+msgstr "Omitiendo proxy para %s, apt descargará directamente"
+
+#: .container/foundation/tools.d/detect-apt-cacher:38
 msgid "APT Cache not enabled"
 msgstr "Caché APT no habilitado"
 
-#: .container/foundation/tools.d/detect-apt-cacher:45
+#: .container/foundation/tools.d/detect-apt-cacher:50
 #: .container/foundation/tools.d/trust-ca-certificates:77
 msgid "Unknown action %s, expected install or remove"
 msgstr "Acción desconocida %s, se esperaba install o remove"
