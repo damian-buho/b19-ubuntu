@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 21:02+0000\n"
+"POT-Creation-Date: 2026-08-27 21:04+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -872,13 +872,13 @@ msgstr "B19_IMMUTABLE=Y, omitiendo superposiciones"
 msgid "Treating %s as command"
 msgstr "Tratando %s como comando"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:15
+#: .container/user/entrypoint.d/2000-run-command.sh:14
 msgid "Empty command, continue"
 msgstr "Comando vacío, continuar"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:17
-msgid "%s is not a command, continue"
-msgstr "%s no es un comando, continuar"
+#: .container/user/entrypoint.d/2000-run-command.sh:20
+msgid "%s is not a command"
+msgstr "%s no es un comando"
 
 #: .container/user/entrypoint.d/2100-validate-secrets.sh:18
 msgid "Secrets validation disabled (B19_SECRETS_ENABLED=false)"

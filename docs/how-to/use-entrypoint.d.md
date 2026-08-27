@@ -55,7 +55,7 @@ tini -g (PID 1)
 | 0400 | `print-lineage.sh`    | Log the image lineage chain (base → current)                                                                             |
 | 0500 | `copy-overlay.sh`     | Copy files from `$B19_OVERLAYS_PATH/$B19_OVERLAY/` to `/` if `B19_OVERLAY` is set                                        |
 | 1000 | `parallel-j2.sh`      | Render all `.j2` templates in `$B19_HOME` via minijinja-cli + `xargs -P`                                                 |
-| 2000 | `run-command.sh`      | If first arg is a valid command: execute it, set `ENTRYPOINT_COMMAND_EXECUTED=Y`                                         |
+| 2000 | `run-command.sh`      | If first arg is a valid command: execute it, set `ENTRYPOINT_COMMAND_EXECUTED=Y`; if it is not, exit 127                 |
 | 2100 | `validate-secrets.sh` | Validate all secrets in `B19_REQUIRED_SECRETS` exist (env or file); exit 1 if missing                                    |
 | 3000 | `bootstrap.sh`        | Run `/bootstrap.d/` scripts with lockfile idempotency                                                                    |
 | 5000 | `start.sh`            | Default: `sleep infinity` (downstream projects **always** override this)                                                 |
@@ -74,6 +74,18 @@ tini -g (PID 1)
 ```text
 0000 → 0100 → … → 2000 (executes command, ENTRYPOINT_COMMAND_EXECUTED=Y) → 2100 (skips) → 3000 (skips) → 5000 (skips) → 9000
 ```
+
+**Unknown command** (`docker run img typo`):
+
+```text
+0000 → 0100 → … → 2000 (exit 127)
+```
+
+A command was asked for and the image does not carry it, so the run fails closed
+with the shell’s `127` — it does **not** fall through to bootstrap and start. The
+old fall-through logged a warning and finished green, so a stale image reported
+success for a run that executed nothing. `B19_ENTRYPOINT_SKIP_RUN_COMMAND=true`
+skips the hook entirely if a lineage really needs the argv ignored.
 
 The `ENTRYPOINT_COMMAND_EXECUTED` flag gates secret validation, bootstrap and service start — ad-hoc commands like `docker run img mysqldump` bypass the full startup sequence.
 

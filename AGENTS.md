@@ -63,8 +63,10 @@ foundation.
 set-signals → load-secrets → set-cpu-count → check-ports → print-lineage →
 copy-overlay → parallel-j2 (render `.j2`) → run-command → validate-secrets →
 bootstrap → start → finalize. A bare `docker run img <cmd>` short-circuits to run
-the command directly. Every stage and hook is toggleable at runtime via `B19_*`
-env (no rebuild) — see [docs/features.d/feature-toggles.md](docs/features.d/feature-toggles.md).
+the command directly; a `<cmd>` the image does NOT carry fails closed with `127`
+at 2000 instead of falling through to bootstrap/start and finishing green. Every
+stage and hook is toggleable at runtime via `B19_*` env (no rebuild) — see
+[docs/features.d/feature-toggles.md](docs/features.d/feature-toggles.md).
 
 ## The runner family (one pattern, eight runners)
 

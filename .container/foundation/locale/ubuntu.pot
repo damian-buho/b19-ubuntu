@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.6.1-4-ge85509b\n"
+"Project-Id-Version: ubuntu 1.6.1-5-g847fd30\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 21:02+0000\n"
+"POT-Creation-Date: 2026-08-27 21:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -855,12 +855,12 @@ msgstr ""
 msgid "Treating %s as command"
 msgstr ""
 
-#: .container/user/entrypoint.d/2000-run-command.sh:15
+#: .container/user/entrypoint.d/2000-run-command.sh:14
 msgid "Empty command, continue"
 msgstr ""
 
-#: .container/user/entrypoint.d/2000-run-command.sh:17
-msgid "%s is not a command, continue"
+#: .container/user/entrypoint.d/2000-run-command.sh:20
+msgid "%s is not a command"
 msgstr ""
 
 #: .container/user/entrypoint.d/2100-validate-secrets.sh:18
