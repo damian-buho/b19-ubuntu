@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 21:15+0000\n"
+"POT-Creation-Date: 2026-08-27 21:52+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -296,13 +296,22 @@ msgstr "Перевірку портів не пройдено: знайдено 
 msgid "All PORT variables are safe"
 msgstr "Усі змінні PORT безпечні"
 
-#: .container/foundation/tools.d/detect-apt-cacher:15
+#: .container/foundation/tools.d/detect-apt-cacher:21
+msgid "Not root (uid %s), apt cache proxy left untouched"
+msgstr "Не root (uid %s), проксі кешу APT не змінено"
+
+#: .container/foundation/tools.d/detect-apt-cacher:31
 msgid "APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 msgstr "Кеш APT увімкнено на ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 
-#: .container/foundation/tools.d/detect-apt-cacher:17
+#: .container/foundation/tools.d/detect-apt-cacher:33
 msgid "APT Cache not enabled"
 msgstr "Кеш APT не увімкнено"
+
+#: .container/foundation/tools.d/detect-apt-cacher:45
+#: .container/foundation/tools.d/trust-ca-certificates:77
+msgid "Unknown action %s, expected install or remove"
+msgstr "Невідома дія %s, очікувалося install або remove"
 
 #: .container/foundation/tools.d/detect-cpu-count:12
 msgid "NUMPROCS %s from K8S downward API"
@@ -494,10 +503,6 @@ msgstr "Перебудувати сховище довіри без %s"
 #: .container/foundation/tools.d/trust-ca-certificates:72
 msgid "No build CA anchor at %s to drop"
 msgstr "Немає якоря CA для збірки у %s для вилучення"
-
-#: .container/foundation/tools.d/trust-ca-certificates:77
-msgid "Unknown action %s, expected install or remove"
-msgstr "Невідома дія %s, очікувалося install або remove"
 
 #: .container/foundation/tools.d/update-apt:19
 msgid "Copy APT lists from %s"

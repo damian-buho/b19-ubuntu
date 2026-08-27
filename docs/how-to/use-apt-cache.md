@@ -34,7 +34,7 @@ Performance tuning (parallel queues, 30s timeouts) ships in `.container/foundati
 
 ### The LAN cacher proxy
 
-Setting `M6E_APT_CACHE_HOST` (build arg) enables the proxy path: the inherited `pre/100-detect-apt-cacher.i.sh` hook writes `/etc/apt/apt.conf.d/99proxy` pointing at `http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}` (the apt-cacher-ng default port), and the post-stage hook removes it again — the proxy config never ships in a layer. “Detection” is exactly this: set the host, the hook acts; unset, it does nothing.
+Setting `M6E_APT_CACHE_HOST` (build arg) enables the proxy path: `always/pre/020-detect-apt-cacher.i.sh` writes `/etc/apt/apt.conf.d/99proxy` pointing at `http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}` (the apt-cacher-ng default port), and `always/post/900-clean-apt-cacher.i.sh` removes it again — both run on every `build-stage` call whatever the stage is called (see [use-build.d](use-build.d.md)), so the proxy config never ships in a layer, and never reaches a runtime container either. “Detection” is exactly this: set the host, the hook acts; unset, it does nothing. `detect-apt-cacher` checks `id --user` itself and no-ops for the uid-1000 user stage, since `/etc/apt/apt.conf.d` is root-owned.
 
 ## Configuration
 

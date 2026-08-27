@@ -7,17 +7,42 @@
   # shellcheck source=.container/foundation/tools.d/b19-i18n
   . b19-i18n
 
-  # we don't use auto-apt-proxy, because it's not available at the very beginning
-  if [ -n "${M6E_APT_CACHE_HOST:-}" ]
-  then
-    echo "Acquire::http { Proxy \"http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}\"; }" > /etc/apt/apt.conf.d/99proxy
-    # shellcheck disable=SC2016
-    b19-log warn "APTCACHE" "$(_e 'APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}')"
-  else
-    b19-log warn "APTCACHE" "$(_ 'APT Cache not enabled')"
+  # Stage-independent: any stage may need the LAN cacher, so the proxy is armed
+  # in always/pre and dropped again in always/post — inside the same RUN, so no
+  # layer, and no runtime container, ever carries it.
 
-    if [ -f /etc/apt/apt.conf.d/99proxy ]
-    then
-      rm /etc/apt/apt.conf.d/99proxy
-    fi
+  # we don't use auto-apt-proxy, because it's not available at the very beginning
+  ACTION="${1:-install}"
+
+  # /etc/apt/apt.conf.d is root-owned, and this runs from a stage-independent
+  # hook, so the user stage reaches it too. There it is simply left alone.
+  if [ "$(id --user)" -ne 0 ]
+  then
+    b19-log info "APTCACHE" "$(_p "Not root (uid %s), apt cache proxy left untouched" "$(id --user)")"
+    exit 0
   fi
+
+  case "${ACTION}" in
+    install)
+      if [ -n "${M6E_APT_CACHE_HOST:-}" ]
+      then
+        echo "Acquire::http { Proxy \"http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}\"; }" > /etc/apt/apt.conf.d/99proxy
+        # shellcheck disable=SC2016
+        b19-log warn "APTCACHE" "$(_e 'APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}')"
+      else
+        b19-log warn "APTCACHE" "$(_ 'APT Cache not enabled')"
+      fi
+      ;;
+
+    remove)
+      if [ -f /etc/apt/apt.conf.d/99proxy ]
+      then
+        rm /etc/apt/apt.conf.d/99proxy
+      fi
+      ;;
+
+    *)
+      b19-log error "APTCACHE" "$(_p "Unknown action %s, expected install or remove" "${ACTION}")"
+      exit 64
+      ;;
+  esac

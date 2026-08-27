@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 21:15+0000\n"
+"POT-Creation-Date: 2026-08-27 21:52+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -296,14 +296,23 @@ msgstr ""
 msgid "All PORT variables are safe"
 msgstr "Todas las variables PORT son seguras"
 
-#: .container/foundation/tools.d/detect-apt-cacher:15
+#: .container/foundation/tools.d/detect-apt-cacher:21
+msgid "Not root (uid %s), apt cache proxy left untouched"
+msgstr "Sin privilegios de root (uid %s), proxy de caché APT intacto"
+
+#: .container/foundation/tools.d/detect-apt-cacher:31
 msgid "APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 msgstr ""
 "Caché APT habilitado en ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 
-#: .container/foundation/tools.d/detect-apt-cacher:17
+#: .container/foundation/tools.d/detect-apt-cacher:33
 msgid "APT Cache not enabled"
 msgstr "Caché APT no habilitado"
+
+#: .container/foundation/tools.d/detect-apt-cacher:45
+#: .container/foundation/tools.d/trust-ca-certificates:77
+msgid "Unknown action %s, expected install or remove"
+msgstr "Acción desconocida %s, se esperaba install o remove"
 
 #: .container/foundation/tools.d/detect-cpu-count:12
 msgid "NUMPROCS %s from K8S downward API"
@@ -495,10 +504,6 @@ msgstr "Reconstruir el almacén de confianza sin %s"
 #: .container/foundation/tools.d/trust-ca-certificates:72
 msgid "No build CA anchor at %s to drop"
 msgstr "No hay ancla de CA de compilación en %s que eliminar"
-
-#: .container/foundation/tools.d/trust-ca-certificates:77
-msgid "Unknown action %s, expected install or remove"
-msgstr "Acción desconocida %s, se esperaba install o remove"
 
 #: .container/foundation/tools.d/update-apt:19
 msgid "Copy APT lists from %s"
@@ -930,7 +935,8 @@ msgstr "Listo: %s"
 
 #: .container/user/entrypoint.d/9000-finalize.sh:15
 msgid "Nothing consumed %s — the image declares no start hook for it"
-msgstr "Nada consumió %s — la imagen no declara ningún hook de arranque para ello"
+msgstr ""
+"Nada consumió %s — la imagen no declara ningún hook de arranque para ello"
 
 #: .container/user/healthcheck.d/0100-check-home-directory-space.sh:18
 msgid "Low space in %s (B19_HOME): %s < %s"

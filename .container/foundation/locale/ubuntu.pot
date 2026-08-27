@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.6.1-6-g621f375\n"
+"Project-Id-Version: ubuntu 1.6.1-7-gd60ab81\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 21:15+0000\n"
+"POT-Creation-Date: 2026-08-27 21:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -283,12 +283,21 @@ msgstr ""
 msgid "All PORT variables are safe"
 msgstr ""
 
-#: .container/foundation/tools.d/detect-apt-cacher:15
+#: .container/foundation/tools.d/detect-apt-cacher:21
+msgid "Not root (uid %s), apt cache proxy left untouched"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-apt-cacher:31
 msgid "APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 msgstr ""
 
-#: .container/foundation/tools.d/detect-apt-cacher:17
+#: .container/foundation/tools.d/detect-apt-cacher:33
 msgid "APT Cache not enabled"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-apt-cacher:45
+#: .container/foundation/tools.d/trust-ca-certificates:77
+msgid "Unknown action %s, expected install or remove"
 msgstr ""
 
 #: .container/foundation/tools.d/detect-cpu-count:12
@@ -480,10 +489,6 @@ msgstr ""
 
 #: .container/foundation/tools.d/trust-ca-certificates:72
 msgid "No build CA anchor at %s to drop"
-msgstr ""
-
-#: .container/foundation/tools.d/trust-ca-certificates:77
-msgid "Unknown action %s, expected install or remove"
 msgstr ""
 
 #: .container/foundation/tools.d/update-apt:19

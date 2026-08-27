@@ -47,7 +47,7 @@ The `PATH` includes `/tools.d` and `/command.d`; the tree is assembled from `.co
 
 ### The smaller helpers
 
-- `detect-apt-cacher` — write/remove the LAN APT proxy config from `M6E_APT_CACHE_HOST`
+- `detect-apt-cacher install|remove` — write/remove the LAN APT proxy config from `M6E_APT_CACHE_HOST`; root-only, no-ops otherwise
 - `b19-generate-locales` / `b19-ensure-locale` — compile/validate locales
 - `decomment` — strip `#` comments from a stream
 - `ansi`, `hr` — ANSI escapes and horizontal rules for pretty output
