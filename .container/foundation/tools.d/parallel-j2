@@ -25,16 +25,34 @@
 
     if command -v minijinja-cli > /dev/null 2>&1; then
         FILE_COUNT=$(wc -l < "${J2_LIST}")
+
+        RENDER_LIST="${J2_LIST}"
+        if [ -n "${B19_J2_SKIP_FILES:-}" ]; then
+          # shellcheck disable=SC2016 # regex chars are literal, not shell expansion
+          SKIP_PATTERN=$(echo "${B19_J2_SKIP_FILES}" | tr ',' '\n' | sed 's/[.[\*^$()+?{|]/\\&/g' | paste -sd'|')
+          RENDER_LIST=$(mktemp)
+          grep -vE "(${SKIP_PATTERN})" "${J2_LIST}" > "${RENDER_LIST}" || true
+          SKIP_COUNT=$(( FILE_COUNT - $(wc -l < "${RENDER_LIST}") ))
+          if [ "${SKIP_COUNT}" -gt 0 ]; then
+            b19-log info "J2" "$(_p "Skipped %s file(s) via B19_J2_SKIP_FILES" "${SKIP_COUNT}")"
+          fi
+        fi
+
+        FILE_COUNT=$(wc -l < "${RENDER_LIST}")
         b19-log info "J2" "$(_p "Loaded %s files from %s" "${FILE_COUNT}" "${J2_LIST}")"
-        xargs -P "${NUMPROCS:-4}" -I{} j2-render {} < "${J2_LIST}"
+        xargs -P "${NUMPROCS:-4}" -I{} j2-render {} < "${RENDER_LIST}"
 
         if [ "${B19_J2_FINAL}" = "Y" ]; then
           b19-log info "J2" "$(_p "Final mode: deleting %s source templates" "${FILE_COUNT}")"
           while IFS= read -r _j2_file; do
             rm -f "${_j2_file}"
             rm -f "${_j2_file%.j2}.data.json"
-          done < "${J2_LIST}"
+          done < "${RENDER_LIST}"
           rm -f "${J2_LIST}"
+        fi
+
+        if [ "${RENDER_LIST}" != "${J2_LIST}" ]; then
+          rm -f "${RENDER_LIST}"
         fi
       else
         b19-log warn "J2" "$(_ "minijinja-cli not installed, skipping")"
