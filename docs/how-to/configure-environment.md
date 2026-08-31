@@ -73,6 +73,7 @@ the next hook.
 | Variable                   | Default          | Accepted values            | Controls                                                                                                                                                                                                       |
 | -------------------------- | ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `B19_J2_EXCLUDE_PATTERNS`  | (unset)          | space-separated names      | Directory names to exclude from j2 template discovery (e.g., `venv node_modules`). Used by `save-j2`.                                                                                                          |
+| `B19_J2_SKIP_FILES`        | (unset)          | comma-separated basenames  | Basenames (without `.j2`) to skip at render time (e.g. `robots.txt`). Used by `parallel-j2`.                                                                                                                   |
 | `B19_IMMUTABLE`            | `N`              | `N`, `Y`                   | `Y` skips overlay copy and j2 template rendering at startup. Locks the filesystem to its build-time state.                                                                                                     |
 | `B19_OFFGRID_MODE`         | `N`              | `N`, `Y`                   | `Y` blocks all internet access. At build time: prevents downloads (cache miss = fail), skips SSH keyscan and APT upgrade. At runtime: network healthchecks skip with exit 0. See [OFFGRID.md](use-offgrid.md). |
 | `B19_RUNTIME_MODE`         | `docker-compose` | any string                 | Informational runtime environment identifier. Available for downstream images to adjust behavior.                                                                                                              |
@@ -287,6 +288,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_I18N_ENABLED`              | build + runtime | Feature Toggles  |
 | `B19_IMMUTABLE`                 | runtime         | Behavior         |
 | `B19_J2_EXCLUDE_PATTERNS`       | runtime         | Behavior         |
+| `B19_J2_SKIP_FILES`             | runtime         | Behavior         |
 | `B19_LINEAGE_FILE`              | build + runtime | System Paths     |
 | `B19_LOCALES`                   | build           | Build-time Only  |
 | `B19_OFFGRID_MODE`              | build + runtime | Behavior         |

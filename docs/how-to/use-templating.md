@@ -76,7 +76,8 @@ parallel-j2 [--final] <directory>
 - Reads `<directory>/.j2.list` and renders each template via `xargs -P "${NUMPROCS:-4}" j2-render`
 - Skips entirely if `B19_IMMUTABLE=Y` (production-locked images)
 - Skips if `minijinja-cli` is not installed (warns)
-- `--final`: after rendering, deletes every `.j2` file and its `.data.json` companion, then removes the `.j2.list` itself — downstream images cannot re-render these templates
+- Filters out templates listed in `B19_J2_SKIP_FILES` (comma-separated basenames, e.g. `robots.txt,nginx.conf`)
+- `--final`: after rendering, deletes every rendered `.j2` file and its `.data.json` companion, then removes the `.j2.list` itself — skipped templates are not deleted
 
 ### Two rendering lifecycles
 
@@ -305,6 +306,16 @@ Set `B19_J2_EXCLUDE_PATTERNS` in the Dockerfile or Makefile:
 ENV B19_J2_EXCLUDE_PATTERNS="venv node_modules .cache"
 ```
 
+### Skipping specific files at runtime
+
+Set `B19_J2_SKIP_FILES` to prevent specific templates from being rendered at startup. The value is a comma-separated list of basenames (without `.j2`):
+
+```bash
+ENV B19_J2_SKIP_FILES="robots.txt,nginx.conf"
+```
+
+This is useful when a downstream image ships its own version of a file that the base image also templates. For example, `o9s/nginx` ships `robots.txt.j2` as a fallback, but a project that builds its own `robots.txt` via Astro can set `B19_J2_SKIP_FILES=robots.txt` to keep the build-time version.
+
 ## Companion data files (optional)
 
 `j2-render` checks for `<template>.data.json` alongside each `.j2` file.
@@ -339,6 +350,7 @@ B19_VERBOSITY=debug minijinja-cli --autoescape none --env template.j2
 | Symptom                                  | Cause             | Fix                                                                            |
 | ---------------------------------------- | ----------------- | ------------------------------------------------------------------------------ |
 | Template not rendered at startup         | Not in `.j2.list` | Check `820-save-j2` hook ran at build time; ensure file is under `${B19_HOME}` |
+| Template rendered but should be skipped  | Not configured    | Set `B19_J2_SKIP_FILES` (see below)                                            |
 | `minijinja-cli not installed, skipping`  | Binary missing    | Image must inherit from `b19/ubuntu` (or copy binary from `b19/minijinja`)     |
 | `B19_IMMUTABLE=Y, skipping j2 templates` | Intentional lock  | Remove `B19_IMMUTABLE=Y` or pre-render at build time                           |
 | Variable renders empty                   | ENV var not set   | Check Dockerfile `ENV` or runtime env; use `\| default("fallback")`            |
