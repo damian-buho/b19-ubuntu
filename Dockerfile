@@ -73,6 +73,8 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_GROUP="${B19_GROUP}"                                                      \
     B19_HEALTH_CACHE_MIN_SPACE_KB=32768                                           \
     B19_HEALTH_CURL_TIMEOUT=8                                                     \
+    B19_HEALTH_DRAIN_FILE=/tmp/b19-draining                                       \
+    B19_HEALTH_EGRESS=false                                                       \
     B19_HEALTH_ENABLED=true                                                       \
     B19_HEALTH_HOME_MIN_SPACE_KB=32768                                            \
     B19_HEALTH_NETWORK_URL="https://www.w3.org https://www.google.com"            \
@@ -89,6 +91,7 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_OVERLAYS_PATH=/overlays/                                                  \
     B19_PORT_CHECK_ENABLED=true                                                   \
     B19_PREFIX=/usr/local                                                         \
+    B19_READY_PORT=""                                                             \
     B19_REPORTD_FAT_FILES_AMOUNT=64                                               \
     B19_RUNTIME_MODE=docker-compose                                               \
     B19_SECRETS_ENABLED=true                                                      \
@@ -145,5 +148,6 @@ RUN --mount=type=bind,from=fetch,source=.,target=/fetch                         
 ENV B19_VERBOSITY=warn
 
 ENTRYPOINT      ["/usr/bin/tini", "-g", "--", "entrypoint.d"]
-HEALTHCHECK --start-period=15s --start-interval=5s CMD ["healthcheck.d"]
+HEALTHCHECK --start-period=90s --start-interval=1s --interval=10s --timeout=5s --retries=3 \
+            CMD ["healthcheck.d"]
 # Don't use CMD ["sleep", "infinity"] here

@@ -31,9 +31,52 @@
     # shellcheck source=.container/foundation/tools.d/b19-load-secrets
     . b19-load-secrets
 
+    # Drain gate: a deploy touches this file on the OUTGOING container so it
+    # reports not-ready and Traefik's health filter routes around it, while the
+    # container keeps serving requests already in flight. Checked before any
+    # check runs — draining must win over every check result.
+    if [ -f "${B19_HEALTH_DRAIN_FILE}" ]; then
+      b19-log warn "HEALTH.D" "$(_p "Draining via %s: reporting not ready" "${B19_HEALTH_DRAIN_FILE}")"
+      exit 1
+    fi
+
     CHECKS_PATH="/healthcheck.d"
     FINAL_EXIT_CODE=0  # Tracks the number of failed checks
     FAILED_NAMES=""    # Space-separated basenames of failed checks, for callers
+
+    # NUMPROCS is unset here — a healthcheck is a fresh daemon-spawned process,
+    # not the entrypoint tree that exports it — so detect it directly. Caps
+    # concurrency: a 0.5-CPU container must not fork one background check per
+    # script.
+    # shellcheck source=.container/foundation/tools.d/detect-cpu-count
+    . detect-cpu-count
+    b19-log debug "HEALTH.D" "$(_p "Parallel check cap (NUMPROCS): %s" "${NUMPROCS}")"
+
+    declare -A PID_NAMES=()
+    declare -a FAILED_LIST=()
+    RUNNING=0
+
+    # Waits for the next background check to finish. Run as an `if` condition
+    # so a failing check's non-zero `wait` does not trip `set -e` before the
+    # summary can be logged — same reasoning as the check execution below.
+    reap_one_check() {
+      local FINISHED_PID CHECK_EXIT CHECK_NAME
+      if wait -n -p FINISHED_PID; then
+        CHECK_EXIT=0
+      else
+        CHECK_EXIT=$?
+      fi
+      CHECK_NAME="${PID_NAMES[${FINISHED_PID}]}"
+      unset "PID_NAMES[${FINISHED_PID}]"
+      RUNNING=$((RUNNING - 1))
+      if [ "${CHECK_EXIT}" -eq 0 ]; then
+        b19-log good "HEALTH.D" "$(_ "Check passed:") ${CHECK_NAME}"
+      else
+        b19-log bad "HEALTH.D" "$(_ "Check failed:") ${CHECK_NAME} $(_ "with exit code") ${CHECK_EXIT}"
+        FINAL_EXIT_CODE=$((FINAL_EXIT_CODE + 1))  # Increment failed checks counter
+        FAILED_LIST+=("${CHECK_NAME}")
+      fi
+    }
 
     if [ -d "${CHECKS_PATH}" ]; then
       b19-log info "HEALTH.D" "$(_ "Checks directory found")"
@@ -41,6 +84,7 @@
       # Find and sort scripts in the CHECKS_PATH directory
       CHECKS_COUNT=0
       while IFS= read -r -d '' CHECK; do
+        CHECK_BASENAME=$(basename "${CHECK}")
         CHECKS_COUNT=$((CHECKS_COUNT + 1))
 
         SKIP_NAME=$(basename "${CHECK}" .sh)
@@ -51,24 +95,25 @@
           continue
         fi
 
-        b19-log info "HEALTH.D" "$(_ "Executing check:") $(basename "${CHECK}")"
+        b19-log info "HEALTH.D" "$(_ "Executing check:") ${CHECK_BASENAME}"
 
-        # Execute the check (subshell inherits _() and other functions).
-        # Run it as an `if` condition so a failing check does NOT trip `set -e`
-        # in the parent — an unguarded `( . ... )` would abort the whole loop
-        # before the "Check failed" line and the final summary could be logged,
-        # which is why the last check's result message was silently swallowed.
+        # Launch in the background, </dev/null so a check that reads stdin
+        # cannot drain the process-substitution pipe the outer loop still
+        # reads its remaining paths from (same trap as process-hooks).
         # shellcheck disable=SC1090
-        if ( . "${CHECK}" ); then
-          b19-log good "HEALTH.D" "$(_ "Check passed:") $(basename "${CHECK}")"
-        else
-          _CHECK_EXIT=$?
-          _CHECK_NAME=$(basename "${CHECK}")
-          b19-log bad "HEALTH.D" "$(_ "Check failed:") ${_CHECK_NAME} $(_ "with exit code") ${_CHECK_EXIT}"
-          FINAL_EXIT_CODE=$((FINAL_EXIT_CODE + 1))  # Increment failed checks counter
-          FAILED_NAMES="${FAILED_NAMES:+${FAILED_NAMES} }${_CHECK_NAME}"
+        ( . "${CHECK}" ) </dev/null &
+        CHECK_PID=$!
+        PID_NAMES[${CHECK_PID}]="${CHECK_BASENAME}"
+        RUNNING=$((RUNNING + 1))
+
+        if [ "${RUNNING}" -ge "${NUMPROCS}" ]; then
+          reap_one_check
         fi
       done < <(fd --print0 --hidden --type file --extension sh . "${CHECKS_PATH}" | sort --zero-terminated --numeric-sort)
+
+      while [ "${RUNNING}" -gt 0 ]; do
+        reap_one_check
+      done
 
       # Handle the case where no scripts are found
       if [ "${CHECKS_COUNT}" -eq 0 ]; then
@@ -76,6 +121,13 @@
       fi
     else
       b19-log note "HEALTH.D" "$(_ "Checks directory not found at") ${CHECKS_PATH}"
+    fi
+
+    # Sort — parallel checks finish in a non-deterministic order, but the
+    # stdout contract callers rely on (test.d) must stay deterministic.
+    if [ "${#FAILED_LIST[@]}" -gt 0 ]; then
+      readarray -t FAILED_LIST < <(printf '%s\n' "${FAILED_LIST[@]}" | sort)
+      FAILED_NAMES="${FAILED_LIST[*]}"
     fi
 
     # Final log and exit

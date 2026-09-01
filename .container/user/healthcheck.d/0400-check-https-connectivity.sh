@@ -18,6 +18,12 @@ if [ -z "${B19_HEALTH_NETWORK_URL}" ]; then
   exit 0
 fi
 
+# Egress checks are opt-in: an image that never reaches the internet must not fail on it.
+if [ "${B19_HEALTH_EGRESS:-false}" != "true" ]; then
+  b19-log good "HEALTH.D" "$(_ "HTTPS connectivity check skipped (B19_HEALTH_EGRESS not enabled)")"
+  exit 0
+fi
+
 if [ "${B19_OFFGRID_MODE:-N}" = "Y" ]; then
   b19-log good "HEALTH.D" "$(_ "HTTPS connectivity check skipped (offgrid mode)")"
   exit 0

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 22:09+0000\n"
+"POT-Creation-Date: 2026-08-31 18:04+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -607,7 +607,7 @@ msgstr "Створити каталог блокування %s"
 
 #: .container/user/tools.d/bootstrap.d:37
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:50
+#: .container/user/tools.d/healthcheck.d:78
 #, fuzzy
 msgid "Skipped: %s (via %s)"
 msgstr "Помилка: %s (код виходу %s)"
@@ -659,38 +659,42 @@ msgid "Directory not found:"
 msgstr "Каталог не знайдено:"
 
 #: .container/user/tools.d/healthcheck.d:39
+msgid "Draining via %s: reporting not ready"
+msgstr "Дренаж через %s: позначено як не готовий"
+
+#: .container/user/tools.d/healthcheck.d:57
 msgid "Checks directory found"
 msgstr "Каталог перевірок знайдено"
 
-#: .container/user/tools.d/healthcheck.d:54
+#: .container/user/tools.d/healthcheck.d:82
 msgid "Executing check:"
 msgstr "Виконання перевірки:"
 
-#: .container/user/tools.d/healthcheck.d:63
+#: .container/user/tools.d/healthcheck.d:91
 msgid "Check passed:"
 msgstr "Перевірка пройдена:"
 
-#: .container/user/tools.d/healthcheck.d:67
+#: .container/user/tools.d/healthcheck.d:95
 msgid "Check failed:"
 msgstr "Перевірка не пройдена:"
 
-#: .container/user/tools.d/healthcheck.d:67
+#: .container/user/tools.d/healthcheck.d:95
 msgid "with exit code"
 msgstr "з кодом виходу"
 
-#: .container/user/tools.d/healthcheck.d:75
+#: .container/user/tools.d/healthcheck.d:103
 msgid "No health checks found in"
 msgstr "Перевірок здоров'я не знайдено в"
 
-#: .container/user/tools.d/healthcheck.d:78
+#: .container/user/tools.d/healthcheck.d:106
 msgid "Checks directory not found at"
 msgstr "Каталог перевірок не знайдено в"
 
-#: .container/user/tools.d/healthcheck.d:83
+#: .container/user/tools.d/healthcheck.d:111
 msgid "%d of %d checks failed: %s"
 msgstr "%d з %d перевірок не пройдено: %s"
 
-#: .container/user/tools.d/healthcheck.d:85
+#: .container/user/tools.d/healthcheck.d:113
 msgid "All %d checks passed."
 msgstr "Усі %d перевірок пройдено."
 
@@ -981,6 +985,10 @@ msgid "HTTPS connectivity check skipped (no B19_HEALTH_NETWORK_URL configured)"
 msgstr ""
 "Перевірку HTTPS-з'єднання пропущено (B19_HEALTH_NETWORK_URL не налаштовано)"
 
+#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:23
+msgid "HTTPS connectivity check skipped (B19_HEALTH_EGRESS not enabled)"
+msgstr "Перевірку HTTPS-з'єднання пропущено (B19_HEALTH_EGRESS не увімкнено)"
+
 #: .container/user/healthcheck.d/0400-check-https-connectivity.sh:22
 msgid "HTTPS connectivity check skipped (offgrid mode)"
 msgstr "Перевірку HTTPS-з'єднання пропущено (режим поза мережею)"
@@ -997,6 +1005,10 @@ msgstr "HTTPS-з'єднання працює (B19_HEALTH_NETWORK_URL: %s)"
 msgid "DNS resolution check skipped (no B19_HEALTH_NETWORK_URL configured)"
 msgstr ""
 "Перевірку розпізнавання DNS пропущено (B19_HEALTH_NETWORK_URL не налаштовано)"
+
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:26
+msgid "DNS resolution check skipped (B19_HEALTH_EGRESS not enabled)"
+msgstr "Перевірку розпізнавання DNS пропущено (B19_HEALTH_EGRESS не увімкнено)"
 
 #: .container/user/healthcheck.d/0500-check-dns-resolution.sh:25
 msgid "DNS resolution check skipped (offgrid mode)"
@@ -1018,6 +1030,10 @@ msgstr "Розпізнавання DNS працює (B19_HEALTH_NETWORK_URL: %s)
 msgid "Reachability check skipped (no B19_HEALTH_PING_TARGETS configured)"
 msgstr ""
 "Перевірку доступності пропущено (B19_HEALTH_PING_TARGETS не налаштовано)"
+
+#: .container/user/healthcheck.d/0600-check-reachability.sh:34
+msgid "Reachability check skipped (B19_HEALTH_EGRESS not enabled)"
+msgstr "Перевірку доступності пропущено (B19_HEALTH_EGRESS не увімкнено)"
 
 #: .container/user/healthcheck.d/0600-check-reachability.sh:33
 msgid "Reachability check skipped (offgrid mode)"
@@ -1042,6 +1058,18 @@ msgstr ""
 #: .container/user/healthcheck.d/0700-check-dummy.sh:17
 msgid "Healthcheck directory operations working (B19_HEALTH_PATH: %s)"
 msgstr "Операції з директорією перевірки стану працюють (B19_HEALTH_PATH: %s)"
+
+#: .container/user/healthcheck.d/1000-check-listen.sh:19
+msgid "Listen check skipped (no B19_READY_PORT configured)"
+msgstr "Перевірку прослуховування пропущено (B19_READY_PORT не налаштовано)"
+
+#: .container/user/healthcheck.d/1000-check-listen.sh:25
+msgid "Listening on 127.0.0.1:%s"
+msgstr "Прослуховується на 127.0.0.1:%s"
+
+#: .container/user/healthcheck.d/1000-check-listen.sh:29
+msgid "Not listening on 127.0.0.1:%s"
+msgstr "Не прослуховується на 127.0.0.1:%s"
 
 #: .container/user/bootstrap.d/100-smoke-test.sh:11
 msgid "Create smoke-test marker"

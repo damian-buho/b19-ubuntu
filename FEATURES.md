@@ -79,11 +79,12 @@ SPDX-License-Identifier: MIT
 
 ### Built-in health monitoring (healthcheck.d)
 
-- Docker-native healthcheck declared in the base image and inherited by all downstream images with no extra configuration.
-- Seven default checks: disk space on home, cache, and temp directories; HTTPS connectivity, DNS resolution, ICMP ping; and filesystem writability.
-- Network checks are fault-tolerant — success on any target counts as pass.
-- All network checks automatically skip in offgrid mode; all checks can be disabled at runtime.
-- Downstream images add service-specific checks (HTTP endpoints, database connections, process liveness) by dropping scripts into a directory.
+- Docker-native healthcheck inherited by every downstream image with no extra configuration.
+- Egress checks are opt-in: a container that never reaches the internet carries no check a third party can fail, while one whose job is the internet reports unhealthy the moment the outside is gone.
+- Works the same offline as online — egress checks stand down automatically under offgrid mode.
+- Adding a check is dropping a script in a directory, not writing Docker plumbing.
+
+See [use-healthcheck.d](../how-to/use-healthcheck.d.md) for the check list, slot numbering, and configuration.
 
 ### Multilingual shell output (b19-i18n)
 
@@ -169,6 +170,7 @@ SPDX-License-Identifier: MIT
 - Jinja2-compatible template rendering at both build time and container startup.
 - Drop a `.j2` file anywhere in the app directory; it is discovered at build time and rendered at every startup with all environment variables available.
 - Runtime rendering is parallel and automatic — downstream images get it with zero configuration.
+- Skip specific templates at runtime with `B19_J2_SKIP_FILES` (comma-separated basenames).
 - Immutable mode (`B19_IMMUTABLE=Y`) locks the filesystem to build-time state, skipping all runtime rendering.
 
 ### Built-in test framework (test.d)

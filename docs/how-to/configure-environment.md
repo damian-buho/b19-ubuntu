@@ -105,6 +105,13 @@ checks test connectivity. Network checks respect `B19_OFFGRID_MODE`.
 | `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for the TCP reachability probe                                               |
 | `B19_HEALTH_REACH_PORT_SAFE`    | `443`                                         | TCP port probed by the reachability check                                                        |
 | `B19_HEALTH_MEMORY_THRESHOLD`   | (unset)                                       | MB threshold for memory consumption test. Only runs when set. Reads cgroups v2 `memory.current`. |
+| `B19_HEALTH_EGRESS`             | `false`                                       | `true` runs the egress checks (HTTPS, DNS, reachability); they stand down otherwise              |
+| `B19_HEALTH_DRAIN_FILE`         | `/tmp/b19-draining`                           | Present → the runner reports not ready before running any check                                  |
+| `B19_READY_PORT`                | (unset)                                       | Port the slot-`0800` `check-listen.sh` TCP-connects on `127.0.0.1`; empty skips it               |
+
+The egress checks are opt-in because most containers never reach the public
+internet — see [use-healthcheck.d: egress
+checks](use-healthcheck.d.md#egress-checks).
 
 ## Download and Fetch (build-time)
 
@@ -277,12 +284,15 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_GROUP`                     | build + runtime | User Identity    |
 | `B19_HEALTH_CACHE_MIN_SPACE_KB` | runtime         | Health           |
 | `B19_HEALTH_CURL_TIMEOUT`       | runtime         | Health           |
+| `B19_HEALTH_DRAIN_FILE`         | runtime         | Health           |
+| `B19_HEALTH_EGRESS`             | runtime         | Health           |
 | `B19_HEALTH_ENABLED`            | runtime         | Feature Toggles  |
 | `B19_HEALTH_HOME_MIN_SPACE_KB`  | runtime         | Health           |
 | `B19_HEALTH_MEMORY_THRESHOLD`   | runtime         | Health           |
 | `B19_HEALTH_NETWORK_URL`        | runtime         | Health           |
 | `B19_HEALTH_PATH`               | runtime         | Hook Directories |
 | `B19_HEALTH_PING_TARGETS`       | runtime         | Health           |
+| `B19_HEALTH_REACH_PORT_SAFE`    | runtime         | Health           |
 | `B19_HEALTH_TEMP_MIN_SPACE_KB`  | runtime         | Health           |
 | `B19_HOME`                      | build + runtime | User Identity    |
 | `B19_I18N_ENABLED`              | build + runtime | Feature Toggles  |
@@ -296,6 +306,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_OVERLAYS_PATH`             | runtime         | Hook Directories |
 | `B19_PORT_CHECK_ENABLED`        | runtime         | Feature Toggles  |
 | `B19_PREFIX`                    | build + runtime | System Paths     |
+| `B19_READY_PORT`                | runtime         | Health           |
 | `B19_REPORTD_FAT_FILES_AMOUNT`  | runtime         | Report           |
 | `B19_REQUIRED_SECRETS`          | runtime         | Behavior         |
 | `B19_RUN_TIMING_PRECISION`      | runtime         | Logging          |

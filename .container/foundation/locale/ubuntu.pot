@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.6.1-8-g012cf49\n"
+"Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 22:09+0000\n"
+"POT-Creation-Date: 2026-08-31 18:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -593,7 +593,7 @@ msgstr ""
 
 #: .container/user/tools.d/bootstrap.d:37
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:50
+#: .container/user/tools.d/healthcheck.d:78
 msgid "Skipped: %s (via %s)"
 msgstr ""
 
@@ -644,38 +644,42 @@ msgid "Directory not found:"
 msgstr ""
 
 #: .container/user/tools.d/healthcheck.d:39
+msgid "Draining via %s: reporting not ready"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:57
 msgid "Checks directory found"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:54
+#: .container/user/tools.d/healthcheck.d:82
 msgid "Executing check:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:63
+#: .container/user/tools.d/healthcheck.d:91
 msgid "Check passed:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:67
+#: .container/user/tools.d/healthcheck.d:95
 msgid "Check failed:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:67
+#: .container/user/tools.d/healthcheck.d:95
 msgid "with exit code"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:75
+#: .container/user/tools.d/healthcheck.d:103
 msgid "No health checks found in"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:78
+#: .container/user/tools.d/healthcheck.d:106
 msgid "Checks directory not found at"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:83
+#: .container/user/tools.d/healthcheck.d:111
 msgid "%d of %d checks failed: %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:85
+#: .container/user/tools.d/healthcheck.d:113
 msgid "All %d checks passed."
 msgstr ""
 
@@ -964,6 +968,10 @@ msgstr ""
 msgid "HTTPS connectivity check skipped (no B19_HEALTH_NETWORK_URL configured)"
 msgstr ""
 
+#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:23
+msgid "HTTPS connectivity check skipped (B19_HEALTH_EGRESS not enabled)"
+msgstr ""
+
 #: .container/user/healthcheck.d/0400-check-https-connectivity.sh:22
 msgid "HTTPS connectivity check skipped (offgrid mode)"
 msgstr ""
@@ -978,6 +986,10 @@ msgstr ""
 
 #: .container/user/healthcheck.d/0500-check-dns-resolution.sh:20
 msgid "DNS resolution check skipped (no B19_HEALTH_NETWORK_URL configured)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:26
+msgid "DNS resolution check skipped (B19_HEALTH_EGRESS not enabled)"
 msgstr ""
 
 #: .container/user/healthcheck.d/0500-check-dns-resolution.sh:25
@@ -1000,6 +1012,10 @@ msgstr ""
 msgid "Reachability check skipped (no B19_HEALTH_PING_TARGETS configured)"
 msgstr ""
 
+#: .container/user/healthcheck.d/0600-check-reachability.sh:34
+msgid "Reachability check skipped (B19_HEALTH_EGRESS not enabled)"
+msgstr ""
+
 #: .container/user/healthcheck.d/0600-check-reachability.sh:33
 msgid "Reachability check skipped (offgrid mode)"
 msgstr ""
@@ -1019,6 +1035,18 @@ msgstr ""
 
 #: .container/user/healthcheck.d/0700-check-dummy.sh:17
 msgid "Healthcheck directory operations working (B19_HEALTH_PATH: %s)"
+msgstr ""
+
+#: .container/user/healthcheck.d/1000-check-listen.sh:19
+msgid "Listen check skipped (no B19_READY_PORT configured)"
+msgstr ""
+
+#: .container/user/healthcheck.d/1000-check-listen.sh:25
+msgid "Listening on 127.0.0.1:%s"
+msgstr ""
+
+#: .container/user/healthcheck.d/1000-check-listen.sh:29
+msgid "Not listening on 127.0.0.1:%s"
 msgstr ""
 
 #: .container/user/bootstrap.d/100-smoke-test.sh:11

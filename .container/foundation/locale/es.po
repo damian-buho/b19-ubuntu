@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-27 22:09+0000\n"
+"POT-Creation-Date: 2026-08-31 18:04+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -608,7 +608,7 @@ msgstr "Crear directorio de bloqueo %s"
 
 #: .container/user/tools.d/bootstrap.d:37
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:50
+#: .container/user/tools.d/healthcheck.d:78
 #, fuzzy
 msgid "Skipped: %s (via %s)"
 msgstr "Fallido: %s (código de salida %s)"
@@ -660,38 +660,42 @@ msgid "Directory not found:"
 msgstr "Directorio no encontrado:"
 
 #: .container/user/tools.d/healthcheck.d:39
+msgid "Draining via %s: reporting not ready"
+msgstr "En drenaje mediante %s: notificando no disponible"
+
+#: .container/user/tools.d/healthcheck.d:57
 msgid "Checks directory found"
 msgstr "Directorio de verificaciones encontrado"
 
-#: .container/user/tools.d/healthcheck.d:54
+#: .container/user/tools.d/healthcheck.d:82
 msgid "Executing check:"
 msgstr "Ejecutando verificación:"
 
-#: .container/user/tools.d/healthcheck.d:63
+#: .container/user/tools.d/healthcheck.d:91
 msgid "Check passed:"
 msgstr "Verificación exitosa:"
 
-#: .container/user/tools.d/healthcheck.d:67
+#: .container/user/tools.d/healthcheck.d:95
 msgid "Check failed:"
 msgstr "Verificación fallida:"
 
-#: .container/user/tools.d/healthcheck.d:67
+#: .container/user/tools.d/healthcheck.d:95
 msgid "with exit code"
 msgstr "con código de salida"
 
-#: .container/user/tools.d/healthcheck.d:75
+#: .container/user/tools.d/healthcheck.d:103
 msgid "No health checks found in"
 msgstr "No se encontraron verificaciones de salud en"
 
-#: .container/user/tools.d/healthcheck.d:78
+#: .container/user/tools.d/healthcheck.d:106
 msgid "Checks directory not found at"
 msgstr "Directorio de verificaciones no encontrado en"
 
-#: .container/user/tools.d/healthcheck.d:83
+#: .container/user/tools.d/healthcheck.d:111
 msgid "%d of %d checks failed: %s"
 msgstr "%d de %d verificaciones fallaron: %s"
 
-#: .container/user/tools.d/healthcheck.d:85
+#: .container/user/tools.d/healthcheck.d:113
 msgid "All %d checks passed."
 msgstr "Todas las %d verificaciones pasaron."
 
@@ -984,6 +988,10 @@ msgstr ""
 "Verificación de conectividad HTTPS omitida (B19_HEALTH_NETWORK_URL no "
 "configurado)"
 
+#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:23
+msgid "HTTPS connectivity check skipped (B19_HEALTH_EGRESS not enabled)"
+msgstr "Verificación de conectividad HTTPS omitida (B19_HEALTH_EGRESS no habilitado)"
+
 #: .container/user/healthcheck.d/0400-check-https-connectivity.sh:22
 msgid "HTTPS connectivity check skipped (offgrid mode)"
 msgstr "Verificación de conectividad HTTPS omitida (modo fuera de red)"
@@ -1001,6 +1009,10 @@ msgid "DNS resolution check skipped (no B19_HEALTH_NETWORK_URL configured)"
 msgstr ""
 "Verificación de resolución DNS omitida (B19_HEALTH_NETWORK_URL no "
 "configurado)"
+
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:26
+msgid "DNS resolution check skipped (B19_HEALTH_EGRESS not enabled)"
+msgstr "Verificación de resolución DNS omitida (B19_HEALTH_EGRESS no habilitado)"
 
 #: .container/user/healthcheck.d/0500-check-dns-resolution.sh:25
 msgid "DNS resolution check skipped (offgrid mode)"
@@ -1023,6 +1035,10 @@ msgstr "Resolución DNS funcionando (B19_HEALTH_NETWORK_URL: %s)"
 msgid "Reachability check skipped (no B19_HEALTH_PING_TARGETS configured)"
 msgstr ""
 "Verificación de alcance omitida (B19_HEALTH_PING_TARGETS no configurado)"
+
+#: .container/user/healthcheck.d/0600-check-reachability.sh:34
+msgid "Reachability check skipped (B19_HEALTH_EGRESS not enabled)"
+msgstr "Verificación de alcance omitida (B19_HEALTH_EGRESS no habilitado)"
 
 #: .container/user/healthcheck.d/0600-check-reachability.sh:33
 msgid "Reachability check skipped (offgrid mode)"
@@ -1048,6 +1064,18 @@ msgstr ""
 msgid "Healthcheck directory operations working (B19_HEALTH_PATH: %s)"
 msgstr ""
 "Operaciones en directorio de healthcheck funcionando (B19_HEALTH_PATH: %s)"
+
+#: .container/user/healthcheck.d/1000-check-listen.sh:19
+msgid "Listen check skipped (no B19_READY_PORT configured)"
+msgstr "Verificación de escucha omitida (B19_READY_PORT no configurado)"
+
+#: .container/user/healthcheck.d/1000-check-listen.sh:25
+msgid "Listening on 127.0.0.1:%s"
+msgstr "Escuchando en 127.0.0.1:%s"
+
+#: .container/user/healthcheck.d/1000-check-listen.sh:29
+msgid "Not listening on 127.0.0.1:%s"
+msgstr "No escucha en 127.0.0.1:%s"
 
 #: .container/user/bootstrap.d/100-smoke-test.sh:11
 msgid "Create smoke-test marker"
