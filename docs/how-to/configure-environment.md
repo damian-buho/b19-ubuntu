@@ -107,7 +107,7 @@ checks test connectivity. Network checks respect `B19_OFFGRID_MODE`.
 | `B19_HEALTH_MEMORY_THRESHOLD`   | (unset)                                       | MB threshold for memory consumption test. Only runs when set. Reads cgroups v2 `memory.current`. |
 | `B19_HEALTH_EGRESS`             | `false`                                       | `true` runs the egress checks (HTTPS, DNS, reachability); they stand down otherwise              |
 | `B19_HEALTH_DRAIN_FILE`         | `/tmp/b19-draining`                           | Present → the runner reports not ready before running any check                                  |
-| `B19_READY_PORT`                | (unset)                                       | Port the slot-`0800` `check-listen.sh` TCP-connects on `127.0.0.1`; empty skips it               |
+| `B19_READY_PORT`                | (unset)                                       | Port `check-listen.sh` TCP-connects on `127.0.0.1`; empty skips it                               |
 
 The egress checks are opt-in because most containers never reach the public
 internet — see [use-healthcheck.d: egress

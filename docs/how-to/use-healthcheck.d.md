@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 
 `healthcheck.d` is the Docker-native health monitor every b19 image inherits: each check is a plain shell script, the runner discovers and sorts them, counts failures and reports the count to Docker. Eight checks ship in the base image — disk space, HTTPS, DNS, TCP reachability, writability, and a generic listen-port probe — and downstream images add service-specific checks in their own slot range. The pitch: [container health monitoring](../features.d/healthcheck.d.md).
 
-Checks that reach the public internet are opt-in: slots `0400`-`0600` stand down unless `B19_HEALTH_EGRESS=true`. A container that only serves local traffic carries no check that a third party can fail, and a container whose whole job is egress (proxy, mirror, relay) turns them on and reports unhealthy when the outside is gone. See [Egress checks](#egress-checks) below.
+Checks that reach the public internet are opt-in: `check-https-connectivity.sh`, `check-dns-resolution.sh` and `check-reachability.sh` stand down unless `B19_HEALTH_EGRESS=true`. Each carries the guard itself, next to the offgrid guard it already had — the runner dispatches on nothing. A container that only serves local traffic carries no check that a third party can fail, and a container whose whole job is egress (proxy, mirror, relay) turns them on and reports unhealthy when the outside is gone. See [Egress checks](#egress-checks) below.
 
 ## When to use
 
@@ -88,7 +88,7 @@ A check therefore sorts after every check of the image it inherits from.
 | Range     | Purpose                   | Reserved by                  |
 | --------- | ------------------------- | ---------------------------- |
 | 0100-0300 | System resource checks    | b19/Ubuntu (space)           |
-| 0400-0600 | Egress checks             | b19/Ubuntu (HTTPS, DNS, TCP) |
+| 0400-0600 | HTTPS, DNS, reachability  | b19/Ubuntu                   |
 | 0700      | Writability probe         | b19/Ubuntu                   |
 | 0800      | Generic listen-port probe | b19/Ubuntu                   |
 | 1xxx      | Service-specific checks   | an image built on b19/Ubuntu |
@@ -100,9 +100,9 @@ Downstream checks merge via Docker layer overlay — the runner finds all `*.sh`
 
 Most containers never talk to the public internet, and a check they cannot fail is a check worth not running.
 
-- **`B19_HEALTH_EGRESS=false`** (default) stands slots `0400`-`0600` down with a “skipped” line: no `curl`, no `getent`, no TCP probe, nothing to time out.
+- **`B19_HEALTH_EGRESS=false`** (default) stands the three egress checks down with a “skipped” line: no `curl`, no `getent`, no TCP probe, nothing to time out.
 - **`B19_HEALTH_EGRESS=true`** runs them, and losing the outside marks the container unhealthy. Set it on images that cannot do their job offline — a proxy, a mirror, a relay, a federating service.
-- Slot `0800` (`check-listen.sh`) ships in the base image and is the only check most images need for a working readiness probe: set `B19_READY_PORT` to the port the service listens on and it TCP-connects `127.0.0.1:$B19_READY_PORT`. Empty (the default) skips it — a plain b19/Ubuntu container has nothing to probe.
+- `check-listen.sh` ships in the base image and is the only check most images need for a working readiness probe: set `B19_READY_PORT` to the port the service listens on and it TCP-connects `127.0.0.1:$B19_READY_PORT`. Empty (the default) skips it — a plain b19/Ubuntu container has nothing to probe.
   Reference the project’s own port variable, never a second literal: declare it in its own `ENV` instruction ahead of the main block, then read it back — Docker resolves an `ENV`-to-`ENV` reference across instructions, but not within the same multi-key instruction. Two independent literals (`B19_READY_PORT=8080` next to `MYPROJECT_PORT=8080`) drift silently the day one changes and the other doesn’t. See `d9t/mcphub`’s Dockerfile for the pattern.
 - **`B19_HEALTH_DRAIN_FILE`** (default `/tmp/b19-draining`): when this path exists, the runner reports not ready before anything else runs. A blue-green flip touches it on the outgoing container so Traefik routes around it while it keeps serving in-flight requests — see [blue-green deploy](../../../../blue-green.md).
 
@@ -256,9 +256,9 @@ esac
 | ------------------------------- | --------------------------------------------- | ------------------------------------------------------------------ |
 | `B19_HEALTH_ENABLED`            | `true`                                        | Set to `false` to skip all checks                                  |
 | `B19_HEALTH_SKIP_<NAME>`        | (unset)                                       | Skip one check by name (`B19_HEALTH_SKIP_CHECK_REACHABILITY=true`) |
-| `B19_HEALTH_EGRESS`             | `false`                                       | `true` runs the egress checks (slots `0400`-`0600`)                |
+| `B19_HEALTH_EGRESS`             | `false`                                       | `true` runs the egress checks (HTTPS, DNS, reachability)           |
 | `B19_HEALTH_DRAIN_FILE`         | `/tmp/b19-draining`                           | Present → reports not ready                                        |
-| `B19_READY_PORT`                | (unset)                                       | Port the slot-`0800` listen probe TCP-connects on `127.0.0.1`      |
+| `B19_READY_PORT`                | (unset)                                       | Port `check-listen.sh` TCP-connects on `127.0.0.1`                 |
 | `B19_HEALTH_PATH`               | `/healthcheck.d`                              | Directory containing check scripts                                 |
 | `B19_HEALTH_HOME_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_HOME` before failing                          |
 | `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768`                                       | Min free KB in `$XDG_CACHE_HOME` before failing                    |
@@ -332,7 +332,7 @@ Secrets:          Loaded explicitly (b19-load-secrets)
 Disable all:      B19_HEALTH_ENABLED=false
 Disable single:   B19_HEALTH_SKIP_<NAME>=true (or rename to *.disabled)
 Offgrid:          B19_OFFGRID_MODE=Y (skips egress checks)
-Egress:           B19_HEALTH_EGRESS=true (opt in to slots 0400-0600)
+Egress:           B19_HEALTH_EGRESS=true (opt in to the egress checks)
 Drain:            touch $B19_HEALTH_DRAIN_FILE (default /tmp/b19-draining)
 Dockerfile:       HEALTHCHECK CMD ["healthcheck.d"] (inherited)
 ```
