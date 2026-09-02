@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 # Unified lifecycle runner family
 
-- Eight numbered-hook runners cover the full container lifecycle: startup, healthchecks, tests, bootstrap, build hooks, benchmarks, reports, and shell sessions.
-- All runners share the same pattern: drop a numbered script into a directory, it is auto-discovered and executed.
-- Scripts from different image layers merge — upstream and downstream hooks coexist without conflict.
-- Each runner has tailored failure semantics: abort on error (entrypoint, bootstrap), continue and count failures (healthchecks, tests), always succeed (reports).
+- Every lifecycle concern — startup, healthchecks, tests, bootstrap, build, benchmarks, reports, and shell — follows the same discoverable hook pattern.
+- Drop a numbered script into a directory and it is auto-discovered and executed, no wiring required.
+- Scripts from different image layers merge, so upstream and downstream hooks coexist without conflict.
+- Each runner has tailored failure semantics: abort on error, continue and count failures, or always succeed as appropriate.

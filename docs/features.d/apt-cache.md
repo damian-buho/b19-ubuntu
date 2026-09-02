@@ -6,6 +6,6 @@ SPDX-License-Identifier: MIT
 
 # Persistent APT cache across builds
 
-- APT package and index caches survive across builds via BuildKit cache mounts, keyed by Ubuntu series and architecture.
-- Repeated builds reuse downloaded packages instead of re-downloading.
-- Optional LAN APT cacher proxy, enabled by setting `M6E_APT_CACHE_HOST`.
+- Package downloads and index caches persist across builds, so repeated builds skip redundant downloads.
+- Cache is keyed by Ubuntu series and architecture, avoiding cross-contamination.
+- Optional LAN APT cacher proxy can be enabled for faster local builds.
