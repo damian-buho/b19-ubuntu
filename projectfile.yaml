@@ -17,6 +17,8 @@ identity:
     uk: Базовий образ Ubuntu з підтримкою спільноти для флоту B19. Цей репозиторій містить лише пакування — Dockerfile, скрипти початкового налаштування та конфігурацію, усе під ліцензією MIT; вихідний rootfs Ubuntu отримують під час збирання, і він зберігає власну ліцензію.
 includes:
   - .makefile/b19/ci.yaml
+  - .makefile/b19/images/fd.yaml
+  - .makefile/b19/images/minijinja.yaml
   - https://kiota.ch/b19/metadata/raw/branch/main/include.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
 kind: SoftwareSourceCode
@@ -31,9 +33,7 @@ org:
       - riscv64
     build:
       args:
-        B19_FD_IMAGE: ${B19_DOCKER_REGISTRY}/b19/fd:${M6E_BASE_IMAGE_DEFAULT_VERSION}
         B19_LOCALES: ""
-        B19_MINIJINJA_IMAGE: ${B19_DOCKER_REGISTRY}/b19/minijinja:${M6E_BASE_IMAGE_DEFAULT_VERSION}
         B19_UBUNTU_HASH:
           file: .container/foundation/deps/ubuntu/{B19_UBUNTU_SERIES}.sha256.deps
         B19_UBUNTU_MIRROR_AMD64: ""

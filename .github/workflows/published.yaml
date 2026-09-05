@@ -191,11 +191,11 @@ jobs:
       M6E_NAMESPACE: b19
       M6E_PROJECT: ubuntu
       B19_COLOR: ${{ inputs.B19_COLOR || vars.B19_COLOR || '1' }}
-      B19_FD_IMAGE: ${{ vars.B19_DOCKER_REGISTRY }}/b19/fd:${{ vars.BASE_IMAGE_DEFAULT_VERSION || 'latest' }}
+      B19_FD_IMAGE: ${{ vars.B19_FD_IMAGE || format('{0}/b19/fd:{1}', vars.SOURCE_DOCKER_REGISTRY || 'ghcr.io/damian-buho', vars.BASE_IMAGE_DEFAULT_VERSION || 'latest') }}
       B19_FETCH_DOCKER_CACHE: ${{ inputs.B19_FETCH_DOCKER_CACHE || vars.B19_FETCH_DOCKER_CACHE || 'Y' }}
       B19_FETCH_LOCAL_CACHE: ${{ inputs.B19_FETCH_LOCAL_CACHE || vars.B19_FETCH_LOCAL_CACHE || 'Y' }}
       B19_LOCALES: ${{ inputs.B19_LOCALES || vars.B19_LOCALES }}
-      B19_MINIJINJA_IMAGE: ${{ vars.B19_DOCKER_REGISTRY }}/b19/minijinja:${{ vars.BASE_IMAGE_DEFAULT_VERSION || 'latest' }}
+      B19_MINIJINJA_IMAGE: ${{ vars.B19_MINIJINJA_IMAGE || format('{0}/b19/minijinja:{1}', vars.SOURCE_DOCKER_REGISTRY || 'ghcr.io/damian-buho', vars.BASE_IMAGE_DEFAULT_VERSION || 'latest') }}
       B19_OFFGRID_MODE: ${{ inputs.B19_OFFGRID_MODE || vars.B19_OFFGRID_MODE || 'N' }}
       B19_UBUNTU_MIRROR_AMD64: ${{ inputs.B19_UBUNTU_MIRROR_AMD64 || vars.B19_UBUNTU_MIRROR_AMD64 }}
       B19_UBUNTU_MIRROR_ARM64: ${{ inputs.B19_UBUNTU_MIRROR_ARM64 || vars.B19_UBUNTU_MIRROR_ARM64 }}
@@ -220,11 +220,11 @@ jobs:
           image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}-${{ matrix.M6E_ARCH }}
           build-args: |-
             B19_COLOR=${{ inputs.B19_COLOR || vars.B19_COLOR || '1' }}
-            B19_FD_IMAGE=${{ vars.B19_DOCKER_REGISTRY }}/b19/fd:${{ env.M6E_TAG }}
+            B19_FD_IMAGE=${{ vars.B19_FD_IMAGE || format('{0}/b19/fd:{1}', vars.SOURCE_DOCKER_REGISTRY || 'ghcr.io/damian-buho', env.M6E_TAG) }}
             B19_FETCH_DOCKER_CACHE=${{ inputs.B19_FETCH_DOCKER_CACHE || vars.B19_FETCH_DOCKER_CACHE || 'Y' }}
             B19_FETCH_LOCAL_CACHE=${{ inputs.B19_FETCH_LOCAL_CACHE || vars.B19_FETCH_LOCAL_CACHE || 'Y' }}
             B19_LOCALES=${{ inputs.B19_LOCALES || vars.B19_LOCALES }}
-            B19_MINIJINJA_IMAGE=${{ vars.B19_DOCKER_REGISTRY }}/b19/minijinja:${{ env.M6E_TAG }}
+            B19_MINIJINJA_IMAGE=${{ vars.B19_MINIJINJA_IMAGE || format('{0}/b19/minijinja:{1}', vars.SOURCE_DOCKER_REGISTRY || 'ghcr.io/damian-buho', env.M6E_TAG) }}
             B19_OFFGRID_MODE=${{ inputs.B19_OFFGRID_MODE || vars.B19_OFFGRID_MODE || 'N' }}
             B19_UBUNTU_MIRROR_AMD64=${{ inputs.B19_UBUNTU_MIRROR_AMD64 || vars.B19_UBUNTU_MIRROR_AMD64 }}
             B19_UBUNTU_MIRROR_ARM64=${{ inputs.B19_UBUNTU_MIRROR_ARM64 || vars.B19_UBUNTU_MIRROR_ARM64 }}
