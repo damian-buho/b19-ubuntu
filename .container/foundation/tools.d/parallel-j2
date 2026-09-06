@@ -19,7 +19,7 @@
     J2_LIST="${DIRECTORY}/.j2.list"
 
     if [ ! -f "${J2_LIST}" ] || [ ! -s "${J2_LIST}" ]; then
-      b19-log info "J2" "$(_ 'Not found')"
+      b19-log debug "J2" "$(_p "No .j2 files in %s, nothing to process" "${DIRECTORY}")"
       exit 0
     fi
 

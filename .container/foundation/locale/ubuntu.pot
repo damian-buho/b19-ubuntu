@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu development\n"
+"Project-Id-Version: ubuntu 1.8.1-2-gee0e1cb\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-08-31 18:04+0000\n"
+"POT-Creation-Date: 2026-09-06 07:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -369,22 +369,26 @@ msgid "B19_SSH_SCAN_HOSTS is not set, skipping"
 msgstr ""
 
 #: .container/foundation/tools.d/parallel-j2:22
-msgid "Not found"
+msgid "No .j2 files in %s, nothing to process"
 msgstr ""
 
-#: .container/foundation/tools.d/parallel-j2:28
+#: .container/foundation/tools.d/parallel-j2:37
+msgid "Skipped %s file(s) via B19_J2_SKIP_FILES"
+msgstr ""
+
+#: .container/foundation/tools.d/parallel-j2:42
 msgid "Loaded %s files from %s"
 msgstr ""
 
-#: .container/foundation/tools.d/parallel-j2:32
+#: .container/foundation/tools.d/parallel-j2:46
 msgid "Final mode: deleting %s source templates"
 msgstr ""
 
-#: .container/foundation/tools.d/parallel-j2:40
+#: .container/foundation/tools.d/parallel-j2:58
 msgid "minijinja-cli not installed, skipping"
 msgstr ""
 
-#: .container/foundation/tools.d/parallel-j2:43
+#: .container/foundation/tools.d/parallel-j2:61
 msgid "B19_IMMUTABLE=Y, skipping j2 templates"
 msgstr ""
 
@@ -593,7 +597,7 @@ msgstr ""
 
 #: .container/user/tools.d/bootstrap.d:37
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:78
+#: .container/user/tools.d/healthcheck.d:94
 msgid "Skipped: %s (via %s)"
 msgstr ""
 
@@ -647,39 +651,43 @@ msgstr ""
 msgid "Draining via %s: reporting not ready"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:57
-msgid "Checks directory found"
+#: .container/user/tools.d/healthcheck.d:53
+msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:82
-msgid "Executing check:"
-msgstr ""
-
-#: .container/user/tools.d/healthcheck.d:91
+#: .container/user/tools.d/healthcheck.d:73
 msgid "Check passed:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:95
+#: .container/user/tools.d/healthcheck.d:75
 msgid "Check failed:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:95
+#: .container/user/tools.d/healthcheck.d:75
 msgid "with exit code"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:103
+#: .container/user/tools.d/healthcheck.d:82
+msgid "Checks directory found"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:98
+msgid "Executing check:"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:120
 msgid "No health checks found in"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:106
+#: .container/user/tools.d/healthcheck.d:123
 msgid "Checks directory not found at"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:111
+#: .container/user/tools.d/healthcheck.d:135
 msgid "%d of %d checks failed: %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:113
+#: .container/user/tools.d/healthcheck.d:137
 msgid "All %d checks passed."
 msgstr ""
 
@@ -972,15 +980,15 @@ msgstr ""
 msgid "HTTPS connectivity check skipped (B19_HEALTH_EGRESS not enabled)"
 msgstr ""
 
-#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:22
+#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:28
 msgid "HTTPS connectivity check skipped (offgrid mode)"
 msgstr ""
 
-#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:37
+#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:43
 msgid "HTTPS connectivity failed (B19_HEALTH_NETWORK_URL: %s)"
 msgstr ""
 
-#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:41
+#: .container/user/healthcheck.d/0400-check-https-connectivity.sh:47
 msgid "HTTPS connectivity working (B19_HEALTH_NETWORK_URL: %s)"
 msgstr ""
 
@@ -992,19 +1000,19 @@ msgstr ""
 msgid "DNS resolution check skipped (B19_HEALTH_EGRESS not enabled)"
 msgstr ""
 
-#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:25
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:31
 msgid "DNS resolution check skipped (offgrid mode)"
 msgstr ""
 
-#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:41
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:47
 msgid "DNS resolution failed - could not extract hostname from URL: %s"
 msgstr ""
 
-#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:53
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:59
 msgid "DNS resolution failed for all URLs (B19_HEALTH_NETWORK_URL: %s)"
 msgstr ""
 
-#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:57
+#: .container/user/healthcheck.d/0500-check-dns-resolution.sh:63
 msgid "DNS resolution working (B19_HEALTH_NETWORK_URL: %s)"
 msgstr ""
 
@@ -1016,16 +1024,16 @@ msgstr ""
 msgid "Reachability check skipped (B19_HEALTH_EGRESS not enabled)"
 msgstr ""
 
-#: .container/user/healthcheck.d/0600-check-reachability.sh:33
+#: .container/user/healthcheck.d/0600-check-reachability.sh:39
 msgid "Reachability check skipped (offgrid mode)"
 msgstr ""
 
-#: .container/user/healthcheck.d/0600-check-reachability.sh:50
+#: .container/user/healthcheck.d/0600-check-reachability.sh:56
 msgid ""
 "Reachability failed for all targets on port %s (B19_HEALTH_PING_TARGETS: %s)"
 msgstr ""
 
-#: .container/user/healthcheck.d/0600-check-reachability.sh:54
+#: .container/user/healthcheck.d/0600-check-reachability.sh:60
 msgid "Reachability working on port %s (B19_HEALTH_PING_TARGETS: %s)"
 msgstr ""
 
@@ -1037,15 +1045,15 @@ msgstr ""
 msgid "Healthcheck directory operations working (B19_HEALTH_PATH: %s)"
 msgstr ""
 
-#: .container/user/healthcheck.d/1000-check-listen.sh:19
+#: .container/user/healthcheck.d/0800-check-listen.sh:19
 msgid "Listen check skipped (no B19_READY_PORT configured)"
 msgstr ""
 
-#: .container/user/healthcheck.d/1000-check-listen.sh:25
+#: .container/user/healthcheck.d/0800-check-listen.sh:25
 msgid "Listening on 127.0.0.1:%s"
 msgstr ""
 
-#: .container/user/healthcheck.d/1000-check-listen.sh:29
+#: .container/user/healthcheck.d/0800-check-listen.sh:29
 msgid "Not listening on 127.0.0.1:%s"
 msgstr ""
 
@@ -1357,6 +1365,42 @@ msgstr ""
 
 #: .container/user/test.d/0200-b19-verbosity.sh:155
 msgid "All verbosity tests passed"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:19
+msgid "Expected %s to exist"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:28
+msgid "Expected %s to NOT exist"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:40
+msgid "Content mismatch in %s: expected '%s', got '%s'"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:91
+msgid "Expected 3 templates in .j2.list, got %s"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:154
+msgid "Expected 2 rendered files, got %s (skip filter broken?)"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:177
+msgid "Expected 1 rendered file, got %s (skip filter broken?)"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:201
+msgid "Expected 1 source .j2 remaining, got %s (--final delete broken?)"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:211
+msgid "%s failed, %s passed"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:215
+msgid "J2 system: %s assertions passed"
 msgstr ""
 
 #: .container/user/test.d/0200-test-b19-run.sh:14
