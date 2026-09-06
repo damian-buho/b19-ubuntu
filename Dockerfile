@@ -41,7 +41,8 @@ ARG TARGETARCH
 
 ARG B19_BIN_PATH=${B19_HOME}/bin
 
-ENV XDG_CACHE_HOME=${B19_HOME}/.cache       \
+ENV HOME=${B19_HOME}                        \
+    XDG_CACHE_HOME=${B19_HOME}/.cache       \
     XDG_CONFIG_HOME=${B19_HOME}/.config     \
     XDG_DATA_HOME=${B19_HOME}/data          \
     XDG_STATE_HOME=${B19_HOME}/.state
