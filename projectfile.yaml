@@ -21,56 +21,13 @@ includes:
   - .makefile/b19/images/minijinja.yaml
   - https://kiota.ch/b19/metadata/raw/branch/main/include.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
+keywords:
+  - ubuntu
+  - base-image
+  - linux
+  - os
+  - docker
 kind: SoftwareSourceCode
-org:
-  b19:
-    scaffold:
-      root-stage: base
-  projectfile:
-    architecture:
-      - amd64
-      - arm64
-      - riscv64
-    build:
-      args:
-        B19_LOCALES: ""
-        B19_UBUNTU_HASH:
-          file: .container/foundation/deps/ubuntu/{B19_UBUNTU_SERIES}.sha256.deps
-        B19_UBUNTU_MIRROR_AMD64: ""
-        B19_UBUNTU_MIRROR_ARM64: ""
-        B19_UBUNTU_MIRROR_RISCV64: ""
-        B19_UBUNTU_SERIES: resolute
-    image:
-      series: "{B19_UBUNTU_SERIES}"
-      path: ${org}/${name}/${series}
-      flatpath: ${org}-${name}-${series}
-    ci:
-      image: b19/ubuntu/{B19_UBUNTU_SERIES}
-      matrix:
-        axes:
-          B19_UBUNTU_SERIES:
-            - resolute
-            - noble
-      secrets:
-        b19.test.secret:
-          value: hello-from-shell-d
-    conventions:
-      fragments: {}
-    operating-system:
-      - linux
-    status: maintained
-repositories:
-  - issues: true
-    role: mirror
-    type: git
-    url: ssh://git@codeberg.org/b19/ubuntu.git
-  - role: mirror
-    type: git
-    url: git@github.com:damian-buho/b19-ubuntu.git
-  - branch: main
-    role: origin
-    type: git
-    url: ssh://git@kiota.ch/b19/ubuntu.git
 links:
   - label:
       en: B19/Ubuntu on Codeberg
@@ -115,11 +72,52 @@ links:
       - support
     type: bugs
     url: https://github.com/damian-buho/b19-ubuntu/issues
-keywords:
-  - ubuntu
-  - base-image
-  - linux
-  - os
-  - docker
+org:
+  b19:
+    scaffold:
+      root-stage: base
+  projectfile:
+    architecture:
+      - amd64
+      - arm64
+      - riscv64
+    build:
+      args:
+        B19_LOCALES: ""
+        B19_UBUNTU_HASH:
+          file: .container/foundation/deps/ubuntu/{B19_UBUNTU_SERIES}.sha256.deps
+        B19_UBUNTU_MIRROR_AMD64: ""
+        B19_UBUNTU_MIRROR_ARM64: ""
+        B19_UBUNTU_MIRROR_RISCV64: ""
+        B19_UBUNTU_SERIES: resolute
+    image:
+      series: "{B19_UBUNTU_SERIES}"
+      path: ${org}/${name}/${series}
+      flatpath: ${org}-${name}-${series}
+    ci:
+      image: b19/ubuntu/{B19_UBUNTU_SERIES}
+      matrix:
+        axes:
+          B19_UBUNTU_SERIES:
+            - resolute
+            - noble
+      secrets:
+        b19.test.secret:
+          value: hello-from-shell-d
+    operating-system:
+      - linux
+    status: maintained
+repositories:
+  - issues: true
+    role: mirror
+    type: git
+    url: ssh://git@codeberg.org/b19/ubuntu.git
+  - role: mirror
+    type: git
+    url: git@github.com:damian-buho/b19-ubuntu.git
+  - branch: main
+    role: origin
+    type: git
+    url: ssh://git@kiota.ch/b19/ubuntu.git
 technologies:
   - docker
