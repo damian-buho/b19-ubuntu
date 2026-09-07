@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.8.1-2-gee0e1cb\n"
+"Project-Id-Version: ubuntu 1.8.2\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-06 07:54+0000\n"
+"POT-Creation-Date: 2026-09-07 03:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
