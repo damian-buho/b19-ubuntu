@@ -188,7 +188,7 @@ jobs:
           - M6E_ARCH: "arm64"
             M6E_RUNNER: "ubuntu-24.04-arm"
           - M6E_ARCH: "riscv64"
-            M6E_RUNNER: "ubuntu-26.04-riscv"
+            M6E_RUNNER: "ubuntu-24.04-riscv"
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
       M6E_ARCH: ${{ matrix.M6E_ARCH }}
@@ -276,7 +276,7 @@ jobs:
           - M6E_ARCH: "arm64"
             M6E_RUNNER: "ubuntu-24.04-arm"
           - M6E_ARCH: "riscv64"
-            M6E_RUNNER: "ubuntu-26.04-riscv"
+            M6E_RUNNER: "ubuntu-24.04-riscv"
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
       M6E_ARCH: ${{ matrix.M6E_ARCH }}

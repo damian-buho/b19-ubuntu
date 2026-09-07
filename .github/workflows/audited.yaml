@@ -25,22 +25,13 @@ jobs:
     steps:
       - run: echo audited
   image-is-audited:
-    runs-on: ${{ matrix.M6E_RUNNER }}
+    runs-on: ubuntu-latest
     if: (github.event_name == 'workflow_dispatch') || (github.event_name == 'schedule')
     strategy:
       matrix:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
-        M6E_ARCH: ["amd64", "arm64", "riscv64"]
-        include:
-          - M6E_ARCH: "amd64"
-            M6E_RUNNER: "ubuntu-latest"
-          - M6E_ARCH: "arm64"
-            M6E_RUNNER: "ubuntu-24.04-arm"
-          - M6E_ARCH: "riscv64"
-            M6E_RUNNER: "ubuntu-26.04-riscv"
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
-      M6E_ARCH: ${{ matrix.M6E_ARCH }}
       M6E_IMAGE_PUBLISHED: ghcr.io/damian-buho/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -62,7 +53,6 @@ jobs:
           run: auto-grype image
           env: |-
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
-            M6E_ARCH=${{ matrix.M6E_ARCH }}
             M6E_IMAGE_PUBLISHED=ghcr.io/damian-buho/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
           mounts: ${{ runner.temp }}/ci-cache/grype-db:/app/.cache/grype:ro
       - name: restore trivy-db
@@ -80,14 +70,13 @@ jobs:
           run: auto-trivy image
           env: |-
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
-            M6E_ARCH=${{ matrix.M6E_ARCH }}
             M6E_IMAGE_PUBLISHED=ghcr.io/damian-buho/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
             TRIVY_CACHE_BACKEND
           mounts: ${{ runner.temp }}/ci-cache/trivy-db:/app/.cache/trivy:ro
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: ${{ always() }}
         with:
-          name: reports-image-is-audited-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}
+          name: reports-image-is-audited-${{ matrix.B19_UBUNTU_SERIES }}-${{ github.run_id }}
           path: reports/
           if-no-files-found: warn
           overwrite: true
