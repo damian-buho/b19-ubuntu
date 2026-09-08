@@ -6,6 +6,8 @@ name: debug-riscv64-isa
 
 on:
   workflow_dispatch: {}
+  push:
+    branches: ["debug/riscv64-isa-probe"]
 
 jobs:
   probe:
