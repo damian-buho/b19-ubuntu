@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-24.04-riscv
     steps:
       - name: host uname/cpuinfo/isa
+        continue-on-error: true
         run: |
           uname -a
           echo "--- /proc/cpuinfo ---"
@@ -22,14 +23,16 @@ jobs:
           cat /proc/version
           echo "--- sysfs isa (per-hart, if present) ---"
           for f in /sys/devices/system/cpu/cpu*/riscv/isa; do
-            echo "$f:"; cat "$f" 2>&1
+            echo "$f:"; cat "$f" 2>&1 || true
           done
           echo "--- binfmt_misc (confirm native, not qemu) ---"
           cat /proc/sys/fs/binfmt_misc/qemu-riscv64 2>&1 || true
           ls /proc/sys/fs/binfmt_misc/ 2>&1 || true
       - name: docker version
+        continue-on-error: true
         run: docker version
       - name: pull resolute (26.04) riscv64 base
+        continue-on-error: true
         run: docker pull ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b
       - name: resolute /bin/true
         continue-on-error: true
@@ -52,6 +55,7 @@ jobs:
           docker run --rm ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b /lib/riscv64-linux-gnu/ld-linux-riscv64-lp64d.so.1 --version
           echo "exit=$?"
       - name: pull noble (24.04) riscv64 base
+        continue-on-error: true
         run: docker pull ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517
       - name: noble /bin/true
         continue-on-error: true
