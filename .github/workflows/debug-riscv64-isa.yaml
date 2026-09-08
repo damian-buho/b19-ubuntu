@@ -1,0 +1,68 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+name: debug-riscv64-isa
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04-riscv
+    steps:
+      - name: host uname/cpuinfo/isa
+        run: |
+          uname -a
+          echo "--- /proc/cpuinfo ---"
+          cat /proc/cpuinfo
+          echo "--- /proc/version ---"
+          cat /proc/version
+          echo "--- sysfs isa (per-hart, if present) ---"
+          for f in /sys/devices/system/cpu/cpu*/riscv/isa; do
+            echo "$f:"; cat "$f" 2>&1
+          done
+          echo "--- binfmt_misc (confirm native, not qemu) ---"
+          cat /proc/sys/fs/binfmt_misc/qemu-riscv64 2>&1 || true
+          ls /proc/sys/fs/binfmt_misc/ 2>&1 || true
+      - name: docker version
+        run: docker version
+      - name: pull resolute (26.04) riscv64 base
+        run: docker pull ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b
+      - name: resolute /bin/true
+        continue-on-error: true
+        run: |
+          docker run --rm ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b /bin/true
+          echo "exit=$?"
+      - name: resolute /bin/echo
+        continue-on-error: true
+        run: |
+          docker run --rm ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b /bin/echo hi
+          echo "exit=$?"
+      - name: resolute bash
+        continue-on-error: true
+        run: |
+          docker run --rm ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b bash -c 'echo hi'
+          echo "exit=$?"
+      - name: resolute ldd/glibc version
+        continue-on-error: true
+        run: |
+          docker run --rm ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b /lib/riscv64-linux-gnu/ld-linux-riscv64-lp64d.so.1 --version
+          echo "exit=$?"
+      - name: pull noble (24.04) riscv64 base
+        run: docker pull ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517
+      - name: noble /bin/true
+        continue-on-error: true
+        run: |
+          docker run --rm ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517 /bin/true
+          echo "exit=$?"
+      - name: noble bash
+        continue-on-error: true
+        run: |
+          docker run --rm ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517 bash -c 'echo hi'
+          echo "exit=$?"
+      - name: noble ldd/glibc version
+        continue-on-error: true
+        run: |
+          docker run --rm ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517 /lib/riscv64-linux-gnu/ld-linux-riscv64-lp64d.so.1 --version
+          echo "exit=$?"
