@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.8.2\n"
+"Project-Id-Version: ubuntu 1.8.3-13-gd0146b5\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-07 03:45+0000\n"
+"POT-Creation-Date: 2026-09-09 20:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,92 +63,104 @@ msgstr ""
 msgid "No command provided. Usage: b19-exec-with-secrets COMMAND [ARGS...]"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:43
-#: .container/foundation/tools.d/b19-fetch:47
+#: .container/foundation/tools.d/b19-fetch:45
+#: .container/foundation/tools.d/b19-fetch:49
 #: .container/foundation/tools.d/b19-prepare-volumes:22
 #: .container/foundation/tools.d/keyscan:18
 msgid "Make %s directory"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:60
+#: .container/foundation/tools.d/b19-fetch:62
 msgid "Local Cache HIT: %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:61
-#: .container/foundation/tools.d/b19-fetch:91
+#: .container/foundation/tools.d/b19-fetch:63
+#: .container/foundation/tools.d/b19-fetch:93
 msgid "Hashes match: %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:62
-#: .container/foundation/tools.d/b19-fetch:70
-#: .container/foundation/tools.d/b19-fetch:181
+#: .container/foundation/tools.d/b19-fetch:64
+#: .container/foundation/tools.d/b19-fetch:72
+#: .container/foundation/tools.d/b19-fetch:210
 msgid "Copy from %s to %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:66
-#: .container/foundation/tools.d/b19-fetch:94
+#: .container/foundation/tools.d/b19-fetch:68
+#: .container/foundation/tools.d/b19-fetch:96
 msgid "Hashes don't match: %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:69
-#: .container/foundation/tools.d/b19-fetch:97
+#: .container/foundation/tools.d/b19-fetch:71
+#: .container/foundation/tools.d/b19-fetch:99
 msgid "No hash for: %s, ASSUMED HIT"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:75
+#: .container/foundation/tools.d/b19-fetch:77
 msgid "Local Cache MISS: %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:78
+#: .container/foundation/tools.d/b19-fetch:80
 msgid "Local Cache disabled: %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:86
+#: .container/foundation/tools.d/b19-fetch:88
 msgid "Docker Cache HIT: %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:101
+#: .container/foundation/tools.d/b19-fetch:103
 msgid "Docker Cache MISS: %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:104
+#: .container/foundation/tools.d/b19-fetch:106
 msgid "Docker Cache disabled: %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:110
+#: .container/foundation/tools.d/b19-fetch:112
 msgid "Offgrid mode: cannot download %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:117
+#: .container/foundation/tools.d/b19-fetch:119
 msgid "Hash specified, will checksum"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:120
+#: .container/foundation/tools.d/b19-fetch:122
 msgid "No hash, no checks"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:140
+#: .container/foundation/tools.d/b19-fetch:142
 msgid "Near cache %s: rewrote %s URL(s)"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:142
+#: .container/foundation/tools.d/b19-fetch:144
 msgid "Skipping near cache %s, fetching directly"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:152
+#: .container/foundation/tools.d/b19-fetch:154
 msgid "Build CA bundle %s in use"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:155
+#: .container/foundation/tools.d/b19-fetch:157
 #: .container/foundation/tools.d/trust-ca-certificates:57
 msgid "No build CA bundle at %s, using image trust store"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:158
-msgid "Get %s"
+#: .container/foundation/tools.d/b19-fetch:166
+msgid "Get %s (attempt %s/%s)"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:178
+#: .container/foundation/tools.d/b19-fetch:190
+msgid "Permanent failure %s on %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:196
+msgid "Code %s on %s survived %s attempt(s)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:202
+msgid "Transient %s on %s, attempt %s in %ss"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch:207
 msgid "No need to download %s"
 msgstr ""
 

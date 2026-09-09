@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-06 07:54+0000\n"
+"POT-Creation-Date: 2026-09-09 20:04+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -69,94 +69,106 @@ msgstr ""
 "No se proporcionó ningún comando. Uso: b19-exec [OPCIONES] -- COMANDO "
 "[ARGS...]"
 
-#: .container/foundation/tools.d/b19-fetch:43
-#: .container/foundation/tools.d/b19-fetch:47
+#: .container/foundation/tools.d/b19-fetch:45
+#: .container/foundation/tools.d/b19-fetch:49
 #: .container/foundation/tools.d/b19-prepare-volumes:22
 #: .container/foundation/tools.d/keyscan:18
 msgid "Make %s directory"
 msgstr "Crear directorio %s"
 
-#: .container/foundation/tools.d/b19-fetch:60
+#: .container/foundation/tools.d/b19-fetch:62
 msgid "Local Cache HIT: %s"
 msgstr "Local Cache ENCONTRADO: %s"
 
-#: .container/foundation/tools.d/b19-fetch:61
-#: .container/foundation/tools.d/b19-fetch:91
+#: .container/foundation/tools.d/b19-fetch:63
+#: .container/foundation/tools.d/b19-fetch:93
 msgid "Hashes match: %s"
 msgstr "Hashes coinciden: %s"
 
-#: .container/foundation/tools.d/b19-fetch:62
-#: .container/foundation/tools.d/b19-fetch:70
-#: .container/foundation/tools.d/b19-fetch:181
+#: .container/foundation/tools.d/b19-fetch:64
+#: .container/foundation/tools.d/b19-fetch:72
+#: .container/foundation/tools.d/b19-fetch:210
 msgid "Copy from %s to %s"
 msgstr "Copiar desde %s a %s"
 
-#: .container/foundation/tools.d/b19-fetch:66
-#: .container/foundation/tools.d/b19-fetch:94
+#: .container/foundation/tools.d/b19-fetch:68
+#: .container/foundation/tools.d/b19-fetch:96
 msgid "Hashes don't match: %s"
 msgstr "Hashes no coinciden: %s"
 
-#: .container/foundation/tools.d/b19-fetch:69
-#: .container/foundation/tools.d/b19-fetch:97
+#: .container/foundation/tools.d/b19-fetch:71
+#: .container/foundation/tools.d/b19-fetch:99
 msgid "No hash for: %s, ASSUMED HIT"
 msgstr "Sin hash para: %s, ASUMIDO ENCONTRADO"
 
-#: .container/foundation/tools.d/b19-fetch:75
+#: .container/foundation/tools.d/b19-fetch:77
 msgid "Local Cache MISS: %s"
 msgstr "Local Cache NO ENCONTRADO: %s"
 
-#: .container/foundation/tools.d/b19-fetch:78
+#: .container/foundation/tools.d/b19-fetch:80
 msgid "Local Cache disabled: %s"
 msgstr "Local Cache deshabilitado: %s"
 
-#: .container/foundation/tools.d/b19-fetch:86
+#: .container/foundation/tools.d/b19-fetch:88
 msgid "Docker Cache HIT: %s"
 msgstr "Docker Cache ENCONTRADO: %s"
 
-#: .container/foundation/tools.d/b19-fetch:101
+#: .container/foundation/tools.d/b19-fetch:103
 msgid "Docker Cache MISS: %s"
 msgstr "Docker Cache NO ENCONTRADO: %s"
 
-#: .container/foundation/tools.d/b19-fetch:104
+#: .container/foundation/tools.d/b19-fetch:106
 msgid "Docker Cache disabled: %s"
 msgstr "Docker Cache deshabilitado: %s"
 
-#: .container/foundation/tools.d/b19-fetch:110
+#: .container/foundation/tools.d/b19-fetch:112
 msgid "Offgrid mode: cannot download %s"
 msgstr "Modo fuera de red: no se puede descargar %s"
 
-#: .container/foundation/tools.d/b19-fetch:117
+#: .container/foundation/tools.d/b19-fetch:119
 msgid "Hash specified, will checksum"
 msgstr "Hash especificado, se verificará"
 
-#: .container/foundation/tools.d/b19-fetch:120
+#: .container/foundation/tools.d/b19-fetch:122
 msgid "No hash, no checks"
 msgstr "Sin hash, sin verificaciones"
 
-#: .container/foundation/tools.d/b19-fetch:140
+#: .container/foundation/tools.d/b19-fetch:142
 msgid "Near cache %s: rewrote %s URL(s)"
 msgstr "Caché cercana %s: se reescribieron %s URL(s)"
 
-#: .container/foundation/tools.d/b19-fetch:142
+#: .container/foundation/tools.d/b19-fetch:144
 msgid "Skipping near cache %s, fetching directly"
 msgstr "Omitiendo caché cercana %s, se descarga directamente"
 
-#: .container/foundation/tools.d/b19-fetch:152
+#: .container/foundation/tools.d/b19-fetch:154
 msgid "Build CA bundle %s in use"
 msgstr "Paquete de CA de compilación %s en uso"
 
-#: .container/foundation/tools.d/b19-fetch:155
+#: .container/foundation/tools.d/b19-fetch:157
 #: .container/foundation/tools.d/trust-ca-certificates:57
 msgid "No build CA bundle at %s, using image trust store"
 msgstr ""
 "Sin paquete de CA de compilación en %s, se usa el almacén de confianza de la "
 "imagen"
 
-#: .container/foundation/tools.d/b19-fetch:158
-msgid "Get %s"
-msgstr "Descargar %s"
+#: .container/foundation/tools.d/b19-fetch:166
+msgid "Get %s (attempt %s/%s)"
+msgstr "Descargar %s (intento %s/%s)"
 
-#: .container/foundation/tools.d/b19-fetch:178
+#: .container/foundation/tools.d/b19-fetch:190
+msgid "Permanent failure %s on %s"
+msgstr "Fallo permanente %s en %s"
+
+#: .container/foundation/tools.d/b19-fetch:196
+msgid "Code %s on %s survived %s attempt(s)"
+msgstr "El código %s en %s persistió tras %s intento(s)"
+
+#: .container/foundation/tools.d/b19-fetch:202
+msgid "Transient %s on %s, attempt %s in %ss"
+msgstr "Transitorio %s en %s, intento %s en %ss"
+
+#: .container/foundation/tools.d/b19-fetch:207
 msgid "No need to download %s"
 msgstr "No es necesario descargar %s"
 
@@ -1473,6 +1485,9 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
+
+#~ msgid "Get %s"
+#~ msgstr "Descargar %s"
 
 #~ msgid "Not found"
 #~ msgstr "No encontrado"

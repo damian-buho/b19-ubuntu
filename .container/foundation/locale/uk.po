@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-06 07:54+0000\n"
+"POT-Creation-Date: 2026-09-09 20:04+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -70,93 +70,105 @@ msgstr ""
 "Команду не надано. Використання: b19-exec [ПАРАМЕТРИ] -- КОМАНДА "
 "[АРГУМЕНТИ...]"
 
-#: .container/foundation/tools.d/b19-fetch:43
-#: .container/foundation/tools.d/b19-fetch:47
+#: .container/foundation/tools.d/b19-fetch:45
+#: .container/foundation/tools.d/b19-fetch:49
 #: .container/foundation/tools.d/b19-prepare-volumes:22
 #: .container/foundation/tools.d/keyscan:18
 msgid "Make %s directory"
 msgstr "Створити каталог %s"
 
-#: .container/foundation/tools.d/b19-fetch:60
+#: .container/foundation/tools.d/b19-fetch:62
 msgid "Local Cache HIT: %s"
 msgstr "Local Cache ЗНАЙДЕНО: %s"
 
-#: .container/foundation/tools.d/b19-fetch:61
-#: .container/foundation/tools.d/b19-fetch:91
+#: .container/foundation/tools.d/b19-fetch:63
+#: .container/foundation/tools.d/b19-fetch:93
 msgid "Hashes match: %s"
 msgstr "Хеші збігаються: %s"
 
-#: .container/foundation/tools.d/b19-fetch:62
-#: .container/foundation/tools.d/b19-fetch:70
-#: .container/foundation/tools.d/b19-fetch:181
+#: .container/foundation/tools.d/b19-fetch:64
+#: .container/foundation/tools.d/b19-fetch:72
+#: .container/foundation/tools.d/b19-fetch:210
 msgid "Copy from %s to %s"
 msgstr "Копіювати з %s до %s"
 
-#: .container/foundation/tools.d/b19-fetch:66
-#: .container/foundation/tools.d/b19-fetch:94
+#: .container/foundation/tools.d/b19-fetch:68
+#: .container/foundation/tools.d/b19-fetch:96
 msgid "Hashes don't match: %s"
 msgstr "Хеші не збігаються: %s"
 
-#: .container/foundation/tools.d/b19-fetch:69
-#: .container/foundation/tools.d/b19-fetch:97
+#: .container/foundation/tools.d/b19-fetch:71
+#: .container/foundation/tools.d/b19-fetch:99
 msgid "No hash for: %s, ASSUMED HIT"
 msgstr "Немає хешу для: %s, ПРИПУЩЕНО ЗНАЙДЕНО"
 
-#: .container/foundation/tools.d/b19-fetch:75
+#: .container/foundation/tools.d/b19-fetch:77
 msgid "Local Cache MISS: %s"
 msgstr "Local Cache ПРОПУЩЕНО: %s"
 
-#: .container/foundation/tools.d/b19-fetch:78
+#: .container/foundation/tools.d/b19-fetch:80
 msgid "Local Cache disabled: %s"
 msgstr "Local Cache вимкнено: %s"
 
-#: .container/foundation/tools.d/b19-fetch:86
+#: .container/foundation/tools.d/b19-fetch:88
 msgid "Docker Cache HIT: %s"
 msgstr "Docker Cache ЗНАЙДЕНО: %s"
 
-#: .container/foundation/tools.d/b19-fetch:101
+#: .container/foundation/tools.d/b19-fetch:103
 msgid "Docker Cache MISS: %s"
 msgstr "Docker Cache ПРОПУЩЕНО: %s"
 
-#: .container/foundation/tools.d/b19-fetch:104
+#: .container/foundation/tools.d/b19-fetch:106
 msgid "Docker Cache disabled: %s"
 msgstr "Docker Cache вимкнено: %s"
 
-#: .container/foundation/tools.d/b19-fetch:110
+#: .container/foundation/tools.d/b19-fetch:112
 msgid "Offgrid mode: cannot download %s"
 msgstr "Режим поза мережею: неможливо завантажити %s"
 
-#: .container/foundation/tools.d/b19-fetch:117
+#: .container/foundation/tools.d/b19-fetch:119
 msgid "Hash specified, will checksum"
 msgstr "Хеш вказано, буде перевірка"
 
-#: .container/foundation/tools.d/b19-fetch:120
+#: .container/foundation/tools.d/b19-fetch:122
 msgid "No hash, no checks"
 msgstr "Без хешу, без перевірок"
 
-#: .container/foundation/tools.d/b19-fetch:140
+#: .container/foundation/tools.d/b19-fetch:142
 msgid "Near cache %s: rewrote %s URL(s)"
 msgstr "Ближній кеш %s: переписано %s URL"
 
-#: .container/foundation/tools.d/b19-fetch:142
+#: .container/foundation/tools.d/b19-fetch:144
 msgid "Skipping near cache %s, fetching directly"
 msgstr "Пропуск ближнього кешу %s, завантаження напряму"
 
-#: .container/foundation/tools.d/b19-fetch:152
+#: .container/foundation/tools.d/b19-fetch:154
 msgid "Build CA bundle %s in use"
 msgstr "Використовується пакет CA для збірки %s"
 
-#: .container/foundation/tools.d/b19-fetch:155
+#: .container/foundation/tools.d/b19-fetch:157
 #: .container/foundation/tools.d/trust-ca-certificates:57
 msgid "No build CA bundle at %s, using image trust store"
 msgstr ""
 "Немає пакета CA для збірки у %s, використовується сховище довіри образу"
 
-#: .container/foundation/tools.d/b19-fetch:158
-msgid "Get %s"
-msgstr "Завантажити %s"
+#: .container/foundation/tools.d/b19-fetch:166
+msgid "Get %s (attempt %s/%s)"
+msgstr "Завантажити %s (спроба %s/%s)"
 
-#: .container/foundation/tools.d/b19-fetch:178
+#: .container/foundation/tools.d/b19-fetch:190
+msgid "Permanent failure %s on %s"
+msgstr "Постійна помилка %s для %s"
+
+#: .container/foundation/tools.d/b19-fetch:196
+msgid "Code %s on %s survived %s attempt(s)"
+msgstr "Код %s для %s зберігся після %s спроб(и)"
+
+#: .container/foundation/tools.d/b19-fetch:202
+msgid "Transient %s on %s, attempt %s in %ss"
+msgstr "Тимчасовий %s для %s, спроба %s через %s с"
+
+#: .container/foundation/tools.d/b19-fetch:207
 msgid "No need to download %s"
 msgstr "Завантаження %s не потрібне"
 
@@ -1464,6 +1476,9 @@ msgstr "Загальне використання пам'яті (%s МБ) пер
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "Загальне використання пам'яті в межах порогу (%s МБ)"
+
+#~ msgid "Get %s"
+#~ msgstr "Завантажити %s"
 
 #~ msgid "Not found"
 #~ msgstr "Не знайдено"

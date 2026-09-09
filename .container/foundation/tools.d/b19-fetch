@@ -30,6 +30,8 @@
   B19_FETCH_DOCKER_CACHE="${B19_FETCH_DOCKER_CACHE:-Y}"
   B19_OFFGRID_MODE="${B19_OFFGRID_MODE:-N}"
   B19_BUILD_CA_FILE="${B19_BUILD_CA_FILE:-${B19_FETCH_LOCAL_PATH}/.m6e-ca-certificates.crt}"
+  B19_DOWNLOAD_ATTEMPTS="${B19_DOWNLOAD_ATTEMPTS:-3}"
+  B19_DOWNLOAD_RETRY_CODES="${B19_DOWNLOAD_RETRY_CODES:-1 2 6 22 29}"
 
   if [ "${B19_OFFGRID_MODE}" = 'Y' ]
   then
@@ -154,25 +156,52 @@
       CA_OPTION=""
       b19-log info "DOWNLOAD" "$(_p "No build CA bundle at %s, using image trust store" "${B19_BUILD_CA_FILE}")"
     fi
-    # shellcheck disable=SC2086
-    b19-run "${TAG}" "$(_p "Get %s" "${ARIA_URL_PRIMARY}")" --     \
-      aria2c  ${CHECKSUM}                                     \
-              ${CA_OPTION}                                    \
-              --conditional-get=true                          \
-              --continue=true                                 \
-              --dir=${B19_DOWNLOAD_PATH}                      \
-              --disk-cache=${B19_DOWNLOAD_DISK_CACHE}         \
-              --file-allocation=falloc                        \
-              --http-accept-gzip=true                         \
-              --max-concurrent-downloads="${NUMPROCS}"        \
-              --max-connection-per-server=16                  \
-              --max-tries=${B19_DOWNLOAD_MAX_TRIES}           \
-              --out "${ARIA_FILE}"                            \
-              --retry-wait=${B19_DOWNLOAD_RETRY_WAIT}         \
-              "${ARIA_URLS[@]}"
-              # 16 is not hardcode, but aria2c's limit
-              # --file-allocation=falloc may not work on overlayfs;
-              # aria2c falls back to prealloc internally when falloc fails
+    ARIA_ATTEMPT=1
+    # aria2c honours --max-tries for 503 alone, so 500/502/504 abort on attempt 1
+    while :
+    do
+      ARIA_CODE=0
+      # 16 is aria2c's per-server limit; falloc degrades to prealloc on overlayfs
+      # shellcheck disable=SC2086
+      b19-run "${TAG}" "$(_p "Get %s (attempt %s/%s)" "${ARIA_URL_PRIMARY}" "${ARIA_ATTEMPT}" "${B19_DOWNLOAD_ATTEMPTS}")" -- \
+        aria2c  ${CHECKSUM}                                   \
+                ${CA_OPTION}                                  \
+                --conditional-get=true                        \
+                --continue=true                               \
+                --dir=${B19_DOWNLOAD_PATH}                    \
+                --disk-cache=${B19_DOWNLOAD_DISK_CACHE}       \
+                --file-allocation=falloc                      \
+                --http-accept-gzip=true                       \
+                --max-concurrent-downloads="${NUMPROCS}"      \
+                --max-connection-per-server=16                \
+                --max-tries=${B19_DOWNLOAD_MAX_TRIES}         \
+                --out "${ARIA_FILE}"                          \
+                --retry-wait=${B19_DOWNLOAD_RETRY_WAIT}       \
+                "${ARIA_URLS[@]}" || ARIA_CODE=$?
+      if [ "${ARIA_CODE}" -eq 0 ]
+      then
+        break
+      fi
+      # a code outside the transient set is upstream's verdict, not a blip
+      case " ${B19_DOWNLOAD_RETRY_CODES} " in
+        *" ${ARIA_CODE} "*)
+          ;;
+        *)
+          b19-log error "DOWNLOAD" "$(_p "Permanent failure %s on %s" "${ARIA_CODE}" "${ARIA_FILE}")"
+          exit "${ARIA_CODE}"
+          ;;
+      esac
+      if [ "${ARIA_ATTEMPT}" -ge "${B19_DOWNLOAD_ATTEMPTS}" ]
+      then
+        b19-log error "DOWNLOAD" "$(_p "Code %s on %s survived %s attempt(s)" "${ARIA_CODE}" "${ARIA_FILE}" "${B19_DOWNLOAD_ATTEMPTS}")"
+        exit "${ARIA_CODE}"
+      fi
+      # jitter keeps a six-cell matrix from retrying upstream in lockstep
+      ARIA_BACKOFF=$(( B19_DOWNLOAD_RETRY_WAIT * ARIA_ATTEMPT + RANDOM % B19_DOWNLOAD_RETRY_WAIT ))
+      ARIA_ATTEMPT=$(( ARIA_ATTEMPT + 1 ))
+      b19-log warn "DOWNLOAD" "$(_p "Transient %s on %s, attempt %s in %ss" "${ARIA_CODE}" "${ARIA_FILE}" "${ARIA_ATTEMPT}" "${ARIA_BACKOFF}")"
+      sleep "${ARIA_BACKOFF}"
+    done
 
   else
     b19-log good "${TAG}" "$(_p "No need to download %s" "${ARIA_URL_PRIMARY}")"

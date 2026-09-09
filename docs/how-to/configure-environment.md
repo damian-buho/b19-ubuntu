@@ -123,9 +123,11 @@ Three-tier fetch model: local cache → Docker BuildKit cache → aria2c downloa
 | `B19_FETCH_DOCKER_CACHE`  | `Y`                          | `Y`, `N`           | Enable Tier 2: check BuildKit persistent cache before download |
 | `B19_FETCH_LOCAL_PATH`    | `/fetch`                     | absolute path      | Mount point for `.fetch` context (set by Dockerfile `--mount`) |
 | `B19_CACHE_PATH`          | `/var/cache/b19`             | absolute path      | Parent of the download cache mount, writable by `B19_UID`      |
+| `B19_DOWNLOAD_ATTEMPTS`   | `3`                          | positive integer   | Whole-download attempts around aria2c; `1` disables the retry  |
 | `B19_DOWNLOAD_PATH`       | `${B19_CACHE_PATH}/download` | absolute path      | BuildKit cache mount target for aria2c downloads               |
 | `B19_DOWNLOAD_DISK_CACHE` | `64m`                        | aria2c size string | aria2c in-memory disk cache size                               |
 | `B19_DOWNLOAD_MAX_TRIES`  | `4`                          | positive integer   | Max aria2c retry attempts per download                         |
+| `B19_DOWNLOAD_RETRY_CODES`| `1 2 6 22 29`                | aria2c exit codes  | Codes treated as transient; anything else fails immediately    |
 | `B19_DOWNLOAD_RETRY_WAIT` | `16`                         | positive integer   | Seconds between aria2c retries                                 |
 | `B19_BUILD_CA_FILE`       | (staged)                     | absolute path      | Build-host CA bundle staged from `M6E_CA_CERTIFICATES`         |
 | `B19_BUILD_CA_ANCHOR`     | (transient)                  | absolute path      | Where a root stage installs it, then drops it pre-commit       |
@@ -268,9 +270,11 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_CACHE_CHECK_TIMEOUT`       | build           | Download         |
 | `B19_CACHE_PATH`                | build + runtime | Download         |
 | `B19_DOCKER_GID`                | build + runtime | System Paths     |
+| `B19_DOWNLOAD_ATTEMPTS`         | build           | Download         |
 | `B19_DOWNLOAD_DISK_CACHE`       | build           | Download         |
 | `B19_DOWNLOAD_MAX_TRIES`        | build           | Download         |
 | `B19_DOWNLOAD_PATH`             | build           | Download         |
+| `B19_DOWNLOAD_RETRY_CODES`      | build           | Download         |
 | `B19_DOWNLOAD_RETRY_WAIT`       | build           | Download         |
 | `B19_ENTRYPOINT_ENABLED`        | runtime         | Feature Toggles  |
 | `B19_ENTRYPOINT_PATH`           | runtime         | Hook Directories |

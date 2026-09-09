@@ -51,6 +51,14 @@ Runs when both tiers miss or are disabled. Blocked entirely when `B19_OFFGRID_MO
 
 aria2c runs with conditional GET and resume support, up to 16 connections per server (its maximum), gzip acceptance and `fallocate` allocation.
 
+`--max-tries` is aria2c-internal and covers 503 and network errors only: every
+other unsuccessful status — 500, 502, 504 — aborts on the first attempt. So the
+whole download is wrapped in its own loop of `B19_DOWNLOAD_ATTEMPTS`, waiting
+`B19_DOWNLOAD_RETRY_WAIT` scaled by attempt number plus jitter, and retrying only
+the exit codes named in `B19_DOWNLOAD_RETRY_CODES`. A code outside that set — a
+404, a checksum mismatch — fails immediately rather than burning the budget.
+Set `B19_DOWNLOAD_ATTEMPTS=1` to restore aria2c-only behaviour.
+
 ### Near-cache proxy
 
 When `M6E_NEAR_CACHE_HOST` is set, URLs are rewritten to route through the proxy — a caching proxy (e.g. squid) on the LAN that reduces external downloads in CI:
@@ -75,21 +83,23 @@ Because aria2c’s `--ca-certificate` *replaces* the default store rather than a
 
 ## Configuration
 
-| Variable                  | Default                   | Description                                    |
-| ------------------------- | ------------------------- | ---------------------------------------------- |
-| `B19_FETCH_LOCAL_CACHE`   | `Y`                       | Enable local cache tier (`.fetch` context)     |
-| `B19_FETCH_DOCKER_CACHE`  | `Y`                       | Enable Docker cache tier (`B19_DOWNLOAD_PATH`) |
-| `B19_FETCH_LOCAL_PATH`    | `/fetch`                  | Mount path for the local cache context         |
-| `B19_OFFGRID_MODE`        | `N`                       | Block downloads; fail if download required     |
-| `B19_DOWNLOAD_PATH`       | `/var/cache/b19/download` | Docker cache directory                         |
-| `B19_DOWNLOAD_DISK_CACHE` | `64m`                     | aria2c disk cache size                         |
-| `B19_DOWNLOAD_MAX_TRIES`  | `4`                       | Maximum retry attempts                         |
-| `B19_DOWNLOAD_RETRY_WAIT` | `16`                      | Seconds between retries                        |
-| `M6E_NEAR_CACHE_HOST`     | (unset)                   | Near-cache proxy hostname                      |
-| `B19_BUILD_CA_FILE`       | (staged)                  | Build-host CA bundle in the fetch context      |
-| `B19_TEMP_PATH`           | `/tmp`                    | Destination for the final file copy            |
-| `B19_CACHE_CHECK_ENABLED` | `true`                    | Probe the near cache before routing through it |
-| `B19_CACHE_CHECK_TIMEOUT` | `2`                       | Seconds to wait for the reachability probe     |
+| Variable                   | Default                   | Description                                                   |
+| -------------------------- | ------------------------- | ------------------------------------------------------------- |
+| `B19_FETCH_LOCAL_CACHE`    | `Y`                       | Enable local cache tier (`.fetch` context)                    |
+| `B19_FETCH_DOCKER_CACHE`   | `Y`                       | Enable Docker cache tier (`B19_DOWNLOAD_PATH`)                |
+| `B19_FETCH_LOCAL_PATH`     | `/fetch`                  | Mount path for the local cache context                        |
+| `B19_OFFGRID_MODE`         | `N`                       | Block downloads; fail if download required                    |
+| `B19_DOWNLOAD_PATH`        | `/var/cache/b19/download` | Docker cache directory                                        |
+| `B19_DOWNLOAD_DISK_CACHE`  | `64m`                     | aria2c disk cache size                                        |
+| `B19_DOWNLOAD_MAX_TRIES`   | `4`                       | aria2c-internal retries — 503 and network errors only         |
+| `B19_DOWNLOAD_RETRY_WAIT`  | `16`                      | Seconds between retries, scaled per attempt and jittered      |
+| `B19_DOWNLOAD_ATTEMPTS`    | `3`                       | Whole-download attempts around aria2c; `1` disables the retry |
+| `B19_DOWNLOAD_RETRY_CODES` | `1 2 6 22 29`             | aria2c exit codes treated as transient                        |
+| `M6E_NEAR_CACHE_HOST`      | (unset)                   | Near-cache proxy hostname                                     |
+| `B19_BUILD_CA_FILE`        | (staged)                  | Build-host CA bundle in the fetch context                     |
+| `B19_TEMP_PATH`            | `/tmp`                    | Destination for the final file copy                           |
+| `B19_CACHE_CHECK_ENABLED`  | `true`                    | Probe the near cache before routing through it                |
+| `B19_CACHE_CHECK_TIMEOUT`  | `2`                       | Seconds to wait for the reachability probe                    |
 
 What each switch combination does — and the air-gap scenarios they serve — is the subject of [run offgrid builds](use-offgrid.md). The full variable index lives in [configure-environment](configure-environment.md).
 
