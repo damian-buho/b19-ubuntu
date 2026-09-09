@@ -113,6 +113,7 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 - `b19-exec [opts] -- <cmd>` — long-running services; routes stdout/stderr through the logger, tracks PID for signal forwarding. [docs](docs/how-to/use-b19-exec.md)
 - `b19-fetch <tag> <url> <file> [sha512]` — three-tier cached download (`.fetch/` → BuildKit cache → aria2c), SHA-512 verified, offgrid-aware. [docs](docs/how-to/use-b19-fetch.md)
 - `b19-i18n` — sourced to get `_()` / `_p()` gettext helpers (TEXTDOMAIN `b19`).
+- `b19-cache-guard <tag> <dir> <ttl> -- <cmd>` — refreshes a cache dir when it is empty or older than `<ttl>`, under `flock`; `M6E_SHARED_CACHE=Y` leaves staleness to the cache’s external writer, and an unwritable dir degrades to a warning.
 - `build-stage`, `process-hooks` — the build hook engine described above.
 - `trust-ca-certificates install|remove` — trusts the build host’s CA bundle for one build stage. [docs](docs/how-to/use-b19-fetch.md)
 - `b19-load-secrets` / `b19-exec-with-secrets`, `b19-resolve-dep`,

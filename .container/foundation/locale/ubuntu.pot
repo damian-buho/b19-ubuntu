@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.8.3-13-gd0146b5\n"
+"Project-Id-Version: ubuntu 1.8.3-14-g61e15d5\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-09 20:04+0000\n"
+"POT-Creation-Date: 2026-09-09 20:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,6 +21,58 @@ msgstr ""
 
 #: .container/foundation/tools.d/add-user-to-docker:17
 msgid "Add user %s to group %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:20
+msgid "Usage: b19-cache-guard <tag> <dir> <ttl-seconds> -- <refresh-command…>"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:34
+msgid "Cache guard disabled, using %s as-is"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:55
+msgid "Cache %s is empty, refreshing"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:60
+msgid "Cache %s is shared, leaving staleness to its writer"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:65
+msgid "Cache %s is older than %ss, refreshing"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:68
+msgid "Cache %s is fresh"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:79
+msgid "Cache %s is not writable, scanning with what is there"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:87
+msgid "Timed out after %ss waiting for %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:93
+msgid "Cache %s was refreshed by another holder"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:97
+msgid "Refresh cache %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:100
+msgid "Cache %s refreshed"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:107
+msgid "Cache %s is empty and its refresh failed"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-cache-guard:110
+msgid "Refresh of %s failed, falling back to the cached copy"
 msgstr ""
 
 #: .container/foundation/tools.d/b19-compile-i18n:28

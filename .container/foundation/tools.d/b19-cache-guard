@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=/dev/null
+  . b19-i18n
+
+  TAG=${1:-}
+  GUARD_DIR=${2:-}
+  GUARD_TTL=${3:-}
+  shift 3 || true
+  [ "${1:-}" = "--" ] && shift
+
+  if [ -z "${TAG}" ] || [ -z "${GUARD_DIR}" ] || [ -z "${GUARD_TTL}" ] || [ "$#" -eq 0 ]
+  then
+    printf '%s\n' "$(_ 'Usage: b19-cache-guard <tag> <dir> <ttl-seconds> -- <refresh-command…>')" >&2
+    exit 64
+  fi
+
+  B19_CACHE_GUARD_ENABLED="${B19_CACHE_GUARD_ENABLED:-true}"
+  B19_CACHE_GUARD_STAMP="${B19_CACHE_GUARD_STAMP:-.b19-cache-stamp}"
+  B19_CACHE_GUARD_TIMEOUT="${B19_CACHE_GUARD_TIMEOUT:-900}"
+  M6E_SHARED_CACHE="${M6E_SHARED_CACHE:-N}"
+
+  GUARD_STAMP="${GUARD_DIR}/${B19_CACHE_GUARD_STAMP}"
+  GUARD_LOCK="${GUARD_DIR}/.b19-cache-lock"
+
+  if [ "${B19_CACHE_GUARD_ENABLED}" != "true" ]
+  then
+    b19-log warn "${TAG}" "$(_p "Cache guard disabled, using %s as-is" "${GUARD_DIR}")"
+    exit 0
+  fi
+
+  # a cache with no stamp has never been populated, whoever was supposed to own it
+  _is_empty() {
+    [ ! -e "${GUARD_STAMP}" ]
+  }
+
+  # a stamp older than the TTL is stale; TTL 0 forces a refresh every call
+  _is_stale() {
+    [ "${GUARD_TTL}" -eq 0 ] && return 0
+    local _age
+    _age=$(( $(date +%s) - $(stat --format=%Y "${GUARD_STAMP}" 2>/dev/null || echo 0) ))
+    [ "${_age}" -ge "${GUARD_TTL}" ]
+  }
+
+  # on a fleet-shared cache an external writer owns staleness, so only emptiness is ours
+  _needs_refresh() {
+    if _is_empty
+    then
+      b19-log warn "${TAG}" "$(_p "Cache %s is empty, refreshing" "${GUARD_DIR}")"
+      return 0
+    fi
+    if [ "${M6E_SHARED_CACHE}" = "Y" ]
+    then
+      b19-log info "${TAG}" "$(_p "Cache %s is shared, leaving staleness to its writer" "${GUARD_DIR}")"
+      return 1
+    fi
+    if _is_stale
+    then
+      b19-log warn "${TAG}" "$(_p "Cache %s is older than %ss, refreshing" "${GUARD_DIR}" "${GUARD_TTL}")"
+      return 0
+    fi
+    b19-log good "${TAG}" "$(_p "Cache %s is fresh" "${GUARD_DIR}")"
+    return 1
+  }
+
+  if ! _needs_refresh
+  then
+    exit 0
+  fi
+
+  if ! mkdir --parents "${GUARD_DIR}" 2>/dev/null || [ ! -w "${GUARD_DIR}" ]
+  then
+    b19-log warn "${TAG}" "$(_p "Cache %s is not writable, scanning with what is there" "${GUARD_DIR}")"
+    exit 0
+  fi
+
+  # a second holder re-tests inside the lock, so a queued twin refresh becomes a no-op
+  exec 9>"${GUARD_LOCK}"
+  if ! flock --timeout "${B19_CACHE_GUARD_TIMEOUT}" 9
+  then
+    b19-log error "${TAG}" "$(_p "Timed out after %ss waiting for %s" "${B19_CACHE_GUARD_TIMEOUT}" "${GUARD_LOCK}")"
+    exit 1
+  fi
+
+  if ! _needs_refresh
+  then
+    b19-log info "${TAG}" "$(_p "Cache %s was refreshed by another holder" "${GUARD_DIR}")"
+    exit 0
+  fi
+
+  if b19-run "${TAG}" "$(_p "Refresh cache %s" "${GUARD_DIR}")" -- "$@"
+  then
+    touch "${GUARD_STAMP}"
+    b19-log good "${TAG}" "$(_p "Cache %s refreshed" "${GUARD_DIR}")"
+    exit 0
+  fi
+
+  # a refresh that fails over a populated cache degrades to the copy already on disk
+  if _is_empty
+  then
+    b19-log error "${TAG}" "$(_p "Cache %s is empty and its refresh failed" "${GUARD_DIR}")"
+    exit 1
+  fi
+  b19-log warn "${TAG}" "$(_p "Refresh of %s failed, falling back to the cached copy" "${GUARD_DIR}")"
+  exit 0

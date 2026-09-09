@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-09 20:04+0000\n"
+"POT-Creation-Date: 2026-09-09 20:28+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -24,6 +24,58 @@ msgstr "Створити групу %s з ID %s"
 #: .container/foundation/tools.d/add-user-to-docker:17
 msgid "Add user %s to group %s"
 msgstr "Додати користувача %s до групи %s"
+
+#: .container/foundation/tools.d/b19-cache-guard:20
+msgid "Usage: b19-cache-guard <tag> <dir> <ttl-seconds> -- <refresh-command…>"
+msgstr "Використання: b19-cache-guard <мітка> <каталог> <ttl-секунди> -- <команда-оновлення…>"
+
+#: .container/foundation/tools.d/b19-cache-guard:34
+msgid "Cache guard disabled, using %s as-is"
+msgstr "Вартового кешу вимкнено, %s використовується як є"
+
+#: .container/foundation/tools.d/b19-cache-guard:55
+msgid "Cache %s is empty, refreshing"
+msgstr "Кеш %s порожній, оновлюємо"
+
+#: .container/foundation/tools.d/b19-cache-guard:60
+msgid "Cache %s is shared, leaving staleness to its writer"
+msgstr "Кеш %s спільний, за його свіжість відповідає власний записувач"
+
+#: .container/foundation/tools.d/b19-cache-guard:65
+msgid "Cache %s is older than %ss, refreshing"
+msgstr "Кеш %s старший за %s с, оновлюємо"
+
+#: .container/foundation/tools.d/b19-cache-guard:68
+msgid "Cache %s is fresh"
+msgstr "Кеш %s свіжий"
+
+#: .container/foundation/tools.d/b19-cache-guard:79
+msgid "Cache %s is not writable, scanning with what is there"
+msgstr "Кеш %s недоступний для запису, скануємо з наявним"
+
+#: .container/foundation/tools.d/b19-cache-guard:87
+msgid "Timed out after %ss waiting for %s"
+msgstr "Час очікування %s с на %s вичерпано"
+
+#: .container/foundation/tools.d/b19-cache-guard:93
+msgid "Cache %s was refreshed by another holder"
+msgstr "Кеш %s уже оновив інший процес"
+
+#: .container/foundation/tools.d/b19-cache-guard:97
+msgid "Refresh cache %s"
+msgstr "Оновити кеш %s"
+
+#: .container/foundation/tools.d/b19-cache-guard:100
+msgid "Cache %s refreshed"
+msgstr "Кеш %s оновлено"
+
+#: .container/foundation/tools.d/b19-cache-guard:107
+msgid "Cache %s is empty and its refresh failed"
+msgstr "Кеш %s порожній, і його оновлення не вдалося"
+
+#: .container/foundation/tools.d/b19-cache-guard:110
+msgid "Refresh of %s failed, falling back to the cached copy"
+msgstr "Оновлення %s не вдалося, використовуємо кешовану копію"
 
 #: .container/foundation/tools.d/b19-compile-i18n:28
 msgid "%s does not exist"
