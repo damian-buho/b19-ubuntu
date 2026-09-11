@@ -22,6 +22,7 @@ includes:
   - https://kiota.ch/b19/metadata/raw/branch/main/include.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/dockerhub.yaml
+  - https://kiota.ch/damian-buho/metadata/raw/branch/main/ghcr.yaml
 keywords:
   - ubuntu
   - base-image
