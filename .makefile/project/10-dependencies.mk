@@ -22,29 +22,29 @@ $(FETCH_PATH)/.fd.10.4.2.arm64.stamp: .container/foundation/deps/fd/arm64.url.de
 
 PREREQUISITES += .container/foundation/deps/fd/arm64.hash.deps
 
-$(FETCH_PATH)/.mold.2.42.0.amd64.stamp: .container/foundation/deps/mold/amd64.url.deps .container/foundation/deps/mold/version.deps
+$(FETCH_PATH)/.mold.2.42.1.amd64.stamp: .container/foundation/deps/mold/amd64.url.deps .container/foundation/deps/mold/version.deps
 	M6E_DEPS_STAGE=foundation TARGETARCH=amd64 .makefile/container/scripts/fetch.sh mold
 	touch $@
 
-.container/foundation/deps/mold/amd64.hash.deps: $(FETCH_PATH)/.mold.2.42.0.amd64.stamp
+.container/foundation/deps/mold/amd64.hash.deps: $(FETCH_PATH)/.mold.2.42.1.amd64.stamp
 	M6E_DEPS_STAGE=foundation TARGETARCH=amd64 .makefile/container/scripts/update-hash.sh mold
 
 PREREQUISITES += .container/foundation/deps/mold/amd64.hash.deps
 
-$(FETCH_PATH)/.mold.2.42.0.arm64.stamp: .container/foundation/deps/mold/arm64.url.deps .container/foundation/deps/mold/version.deps
+$(FETCH_PATH)/.mold.2.42.1.arm64.stamp: .container/foundation/deps/mold/arm64.url.deps .container/foundation/deps/mold/version.deps
 	M6E_DEPS_STAGE=foundation TARGETARCH=arm64 .makefile/container/scripts/fetch.sh mold
 	touch $@
 
-.container/foundation/deps/mold/arm64.hash.deps: $(FETCH_PATH)/.mold.2.42.0.arm64.stamp
+.container/foundation/deps/mold/arm64.hash.deps: $(FETCH_PATH)/.mold.2.42.1.arm64.stamp
 	M6E_DEPS_STAGE=foundation TARGETARCH=arm64 .makefile/container/scripts/update-hash.sh mold
 
 PREREQUISITES += .container/foundation/deps/mold/arm64.hash.deps
 
-$(FETCH_PATH)/.mold.2.42.0.riscv64.stamp: .container/foundation/deps/mold/riscv64.url.deps .container/foundation/deps/mold/version.deps
+$(FETCH_PATH)/.mold.2.42.1.riscv64.stamp: .container/foundation/deps/mold/riscv64.url.deps .container/foundation/deps/mold/version.deps
 	M6E_DEPS_STAGE=foundation TARGETARCH=riscv64 .makefile/container/scripts/fetch.sh mold
 	touch $@
 
-.container/foundation/deps/mold/riscv64.hash.deps: $(FETCH_PATH)/.mold.2.42.0.riscv64.stamp
+.container/foundation/deps/mold/riscv64.hash.deps: $(FETCH_PATH)/.mold.2.42.1.riscv64.stamp
 	M6E_DEPS_STAGE=foundation TARGETARCH=riscv64 .makefile/container/scripts/update-hash.sh mold
 
 PREREQUISITES += .container/foundation/deps/mold/riscv64.hash.deps
