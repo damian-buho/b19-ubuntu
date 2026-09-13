@@ -15,14 +15,15 @@ identity:
     en: Community-maintained Ubuntu base image for the B19 fleet. This repository holds only the packaging — Dockerfile, bootstrap scripts, and configuration, all MIT-licensed; the upstream Ubuntu rootfs is fetched at build time and retains its own licensing.
     es: Imagen base Ubuntu mantenida por la comunidad para la flota B19. Este repositorio contiene únicamente el empaquetado — Dockerfile, scripts de arranque y configuración, todo con licencia MIT; el rootfs original de Ubuntu se obtiene en tiempo de compilación y conserva su propia licencia.
     uk: Базовий образ Ubuntu з підтримкою спільноти для флоту B19. Цей репозиторій містить лише пакування — Dockerfile, скрипти початкового налаштування та конфігурацію, усе під ліцензією MIT; вихідний rootfs Ubuntu отримують під час збирання, і він зберігає власну ліцензію.
+  version: 1.10.1
 includes:
   - .makefile/b19/ci.yaml
   - .makefile/b19/images/fd.yaml
   - .makefile/b19/images/minijinja.yaml
   - https://kiota.ch/b19/metadata/raw/branch/main/include.yaml
-  - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/dockerhub.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/ghcr.yaml
+  - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
 keywords:
   - ubuntu
   - base-image
@@ -74,6 +75,18 @@ links:
       - support
     type: bugs
     url: https://github.com/damian-buho/b19-ubuntu/issues
+  - label:
+      en: Packages on Docker Hub
+      es: Paquetes en Docker Hub
+      uk: Пакунки на Docker Hub
+    type: package-registry
+    url: https://hub.docker.com/r/damianbuho/b19-ubuntu-{B19_UBUNTU_SERIES}
+  - label:
+      en: Packages on GHCR
+      es: Paquetes en GHCR
+      uk: Пакунки на GHCR
+    type: package-registry
+    url: https://github.com/damian-buho/b19-ubuntu/pkgs/container/b19%2Fubuntu%2F{B19_UBUNTU_SERIES}
 org:
   b19:
     scaffold:
