@@ -7,15 +7,12 @@
 # customise — direct edits here are overwritten on the next generation.
 # pf-cli-managed: yes
 
-# >>> user-include
+# >>> user-patterns
+.env
 .git
+.secrets/
 CITATION.cff
 LICENSE
 LICENSES
-# <<< user-include
-
-# >>> user-extra
-.env
-.secrets/
-# <<< user-extra
+# <<< user-patterns
 
