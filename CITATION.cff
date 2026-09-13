@@ -9,7 +9,7 @@
 cff-version: 1.2.0
 message: Please cite this software using the metadata from this file.
 type: software
-title: B19/Ubuntu
+title: B19 / Ubuntu
 abstract: Community-maintained Ubuntu base image for the B19 fleet
 authors:
   - family-names: Búho
@@ -31,3 +31,4 @@ keywords:
   - linux
   - os
   - docker
+version: 1.10.1

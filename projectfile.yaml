@@ -10,7 +10,7 @@ identity:
     en: Community-maintained Ubuntu base image for the B19 fleet
     es: Imagen base Ubuntu mantenida por la comunidad para la flota B19
     uk: Базовий образ Ubuntu з підтримкою спільноти для флоту B19
-  title: B19/Ubuntu
+  title: B19 / Ubuntu
   description:
     en: Community-maintained Ubuntu base image for the B19 fleet. This repository holds only the packaging — Dockerfile, bootstrap scripts, and configuration, all MIT-licensed; the upstream Ubuntu rootfs is fetched at build time and retains its own licensing.
     es: Imagen base Ubuntu mantenida por la comunidad para la flota B19. Este repositorio contiene únicamente el empaquetado — Dockerfile, scripts de arranque y configuración, todo con licencia MIT; el rootfs original de Ubuntu se obtiene en tiempo de compilación y conserva su propia licencia.

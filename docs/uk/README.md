@@ -8,7 +8,7 @@ pf-cli-managed: yes
 
 [English](../../README.md) · [Español](../es/README.md)
 
-# B19/Ubuntu
+# B19 / Ubuntu
 
 Базовий образ Ubuntu з підтримкою спільноти для флоту B19
 

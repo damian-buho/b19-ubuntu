@@ -6,7 +6,7 @@ pf-cli-managed: yes
 
 [Español](docs/es/README.md) · [Українська](docs/uk/README.md)
 
-# B19/Ubuntu
+# B19 / Ubuntu
 
 Community-maintained Ubuntu base image for the B19 fleet
 
