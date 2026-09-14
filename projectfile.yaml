@@ -98,6 +98,7 @@ org:
       path: ${org}/${name}/${series}
       flatpath: ${org}-${name}-${series}
     ci:
+      targets: [gha]
       image: b19/ubuntu/{B19_UBUNTU_SERIES}
       matrix:
         axes:
