@@ -33,9 +33,9 @@ keywords:
 kind: SoftwareSourceCode
 links:
   - label:
-      en: B19/Ubuntu on Codeberg
-      es: B19/Ubuntu en Codeberg
-      uk: B19/Ubuntu на Codeberg
+      en: B19 / Ubuntu on Codeberg
+      es: B19 / Ubuntu en Codeberg
+      uk: B19 / Ubuntu на Codeberg
     tags:
       - public
       - badges
@@ -43,9 +43,17 @@ links:
     type: source-code
     url: https://codeberg.org/b19/ubuntu
   - label:
-      en: B19/Ubuntu on GitHub
-      es: B19/Ubuntu en GitHub
-      uk: B19/Ubuntu на GitHub
+      en: Issues on Codeberg
+      es: Incidencias en Codeberg
+      uk: Задачі на Codeberg
+    tags:
+      - support
+    type: bugs
+    url: https://codeberg.org/b19/ubuntu/issues
+  - label:
+      en: B19 / Ubuntu on GitHub
+      es: B19 / Ubuntu en GitHub
+      uk: B19 / Ubuntu на GitHub
     tags:
       - public
       - badges
@@ -53,40 +61,20 @@ links:
     type: source-code
     url: https://github.com/damian-buho/b19-ubuntu
   - label:
-      en: B19/Ubuntu on kiota.ch
-      es: B19/Ubuntu en kiota.ch
-      uk: B19/Ubuntu на kiota.ch
-    preferred: true
-    type: source-code
-    url: https://kiota.ch/b19/ubuntu
-  - label:
-      en: Issues on Codeberg
-      es: Incidencias en Codeberg
-      uk: Issues на Codeberg
-    tags:
-      - support
-    type: bugs
-    url: https://codeberg.org/b19/ubuntu/issues
-  - label:
       en: Issues on GitHub
       es: Incidencias en GitHub
-      uk: Issues на GitHub
+      uk: Задачі на GitHub
     tags:
       - support
     type: bugs
     url: https://github.com/damian-buho/b19-ubuntu/issues
   - label:
-      en: Packages on Docker Hub
-      es: Paquetes en Docker Hub
-      uk: Пакунки на Docker Hub
-    type: package-registry
-    url: https://hub.docker.com/r/damianbuho/b19-ubuntu-{B19_UBUNTU_SERIES}
-  - label:
-      en: Packages on GHCR
-      es: Paquetes en GHCR
-      uk: Пакунки на GHCR
-    type: package-registry
-    url: https://github.com/damian-buho/b19-ubuntu/pkgs/container/b19%2Fubuntu%2F{B19_UBUNTU_SERIES}
+      en: B19 / Ubuntu on kiota.ch
+      es: B19 / Ubuntu en kiota.ch
+      uk: B19 / Ubuntu на kiota.ch
+    preferred: true
+    type: source-code
+    url: https://kiota.ch/b19/ubuntu
 org:
   b19:
     scaffold:
@@ -123,8 +111,7 @@ org:
       - linux
     status: maintained
 repositories:
-  - issues: true
-    role: mirror
+  - role: mirror
     type: git
     url: ssh://git@codeberg.org/b19/ubuntu.git
   - role: mirror
