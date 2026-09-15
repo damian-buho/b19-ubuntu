@@ -77,6 +77,34 @@ links:
     preferred: true
     type: source-code
     url: https://kiota.ch/b19/ubuntu
+  - derived: true
+    label:
+      en: Packages on Docker Hub
+      es: Paquetes en Docker Hub
+      uk: Пакунки на Docker Hub
+    type: package-registry
+    url: https://hub.docker.com/r/damianbuho/b19-ubuntu-resolute
+  - derived: true
+    label:
+      en: Packages on Docker Hub
+      es: Paquetes en Docker Hub
+      uk: Пакунки на Docker Hub
+    type: package-registry
+    url: https://hub.docker.com/r/damianbuho/b19-ubuntu-noble
+  - derived: true
+    label:
+      en: Packages on GHCR
+      es: Paquetes en GHCR
+      uk: Пакунки на GHCR
+    type: package-registry
+    url: https://github.com/damian-buho/b19-ubuntu/pkgs/container/b19%2Fubuntu%2Fresolute
+  - derived: true
+    label:
+      en: Packages on GHCR
+      es: Paquetes en GHCR
+      uk: Пакунки на GHCR
+    type: package-registry
+    url: https://github.com/damian-buho/b19-ubuntu/pkgs/container/b19%2Fubuntu%2Fnoble
 org:
   b19:
     scaffold:
