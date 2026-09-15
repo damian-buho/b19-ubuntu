@@ -241,6 +241,21 @@ jobs:
     needs: ["container-is-verified", "image-is-secure"]
     steps:
       - run: echo image-is-ready
+  image-is-released:
+    runs-on: docker
+    needs: ["publish-image"]
+    if: startsWith(github.ref, 'refs/tags/')
+    env:
+      FORGEJO_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          persist-credentials: false
+      - name: forgejo-release
+        uses: projectfile/actions/forgejo-release@v1
+        with:
+          version: ${{ github.ref_name }}
   image-is-secure:
     runs-on: docker
     needs: ["image-is-built"]
@@ -395,7 +410,7 @@ jobs:
           sink: ${{ matrix.M6E_PUBLISH_SINK }}
   published:
     runs-on: docker
-    needs: ["publish-image", "ready-to-publish"]
+    needs: ["image-is-released", "publish-image", "ready-to-publish"]
     steps:
       - run: echo published
   ready-to-publish:

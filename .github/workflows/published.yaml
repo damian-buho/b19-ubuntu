@@ -253,6 +253,22 @@ jobs:
     needs: ["container-is-verified", "image-is-secure"]
     steps:
       - run: echo image-is-ready
+  image-is-released:
+    runs-on: ubuntu-latest
+    needs: ["publish-image"]
+    permissions:
+      contents: write
+    if: startsWith(github.ref, 'refs/tags/')
+    env:
+      RELEASE_TAG: ${{ github.ref_name }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          submodules: true
+          persist-credentials: false
+      - name: gh-release
+        run: gh release create "$RELEASE_TAG" --verify-tag --generate-notes || gh release view "$RELEASE_TAG"
   image-is-secure:
     runs-on: ubuntu-latest
     needs: ["image-is-built"]
@@ -436,7 +452,7 @@ jobs:
           sink: ${{ matrix.M6E_PUBLISH_SINK }}
   published:
     runs-on: ubuntu-latest
-    needs: ["publish-image", "ready-to-publish"]
+    needs: ["image-is-released", "publish-image", "ready-to-publish"]
     steps:
       - run: echo published
   ready-to-publish:
