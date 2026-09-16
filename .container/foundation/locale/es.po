@@ -347,20 +347,20 @@ msgstr "Verificación de puertos desactivada (B19_PORT_CHECK_ENABLED=false)"
 msgid "Forbidden ports list not found, skipping check"
 msgstr "Lista de puertos prohibidos no encontrada, omitiendo verificación"
 
-#: .container/foundation/tools.d/check-ports:42
+#: .container/foundation/tools.d/check-ports:58
 msgid "%s=%s is browser-blocked (WHATWG bad port)"
 msgstr "%s=%s está bloqueado por navegadores (puerto prohibido WHATWG)"
 
-#: .container/foundation/tools.d/check-ports:48
-msgid "%s=%s requires root privileges (port < 1024)"
-msgstr "%s=%s requiere privilegios de root (puerto < 1024)"
+#: .container/foundation/tools.d/check-ports:64
+msgid "%s=%s requires root or NET_BIND_SERVICE (port < 1024)"
+msgstr "%s=%s requiere root o NET_BIND_SERVICE (puerto < 1024)"
 
-#: .container/foundation/tools.d/check-ports:55
+#: .container/foundation/tools.d/check-ports:71
 msgid "Port check failed: %s unsafe port(s) found"
 msgstr ""
 "Verificación de puertos fallida: %s puerto(s) inseguro(s) encontrado(s)"
 
-#: .container/foundation/tools.d/check-ports:59
+#: .container/foundation/tools.d/check-ports:75
 msgid "All PORT variables are safe"
 msgstr "Todas las variables PORT son seguras"
 
@@ -1517,6 +1517,64 @@ msgstr "nslookup google.com 8.8.8.8 falló (la red puede estar aislada)"
 #: .container/user/test.d/0300-nslookup.sh:16
 msgid "nslookup google.com 1.1.1.1 failed (network may be isolated)"
 msgstr "nslookup google.com 1.1.1.1 falló (la red puede estar aislada)"
+
+#: .container/user/test.d/0310-check-ports.sh:43
+msgid "Forbidden ports list missing, cannot test"
+msgstr "Lista de puertos prohibidos ausente, no se puede probar"
+
+#: .container/user/test.d/0310-check-ports.sh:46
+msgid "Test %s: safe high port passes"
+msgstr "Prueba %s: el puerto alto seguro pasa"
+
+#: .container/user/test.d/0310-check-ports.sh:48
+#: .container/user/test.d/0310-check-ports.sh:57
+#: .container/user/test.d/0310-check-ports.sh:62
+#: .container/user/test.d/0310-check-ports.sh:70
+#: .container/user/test.d/0310-check-ports.sh:78
+#: .container/user/test.d/0310-check-ports.sh:84
+msgid "Test %s passed"
+msgstr "Prueba %s superada"
+
+#: .container/user/test.d/0310-check-ports.sh:50
+msgid "Safe high port was rejected"
+msgstr "El puerto alto seguro fue rechazado"
+
+#: .container/user/test.d/0310-check-ports.sh:53
+msgid "Test %s: WHATWG-blocked port fails"
+msgstr "Prueba %s: el puerto bloqueado por WHATWG falla"
+
+#: .container/user/test.d/0310-check-ports.sh:55
+msgid "WHATWG-blocked port was allowed"
+msgstr "El puerto bloqueado por WHATWG fue permitido"
+
+#: .container/user/test.d/0310-check-ports.sh:60
+msgid "Test %s: port 0 passes"
+msgstr "Prueba %s: el puerto 0 pasa"
+
+#: .container/user/test.d/0310-check-ports.sh:64
+msgid "Port 0 was rejected"
+msgstr "El puerto 0 fue rechazado"
+
+#: .container/user/test.d/0310-check-ports.sh:67
+msgid "Test %s: privileged port follows the kernel"
+msgstr "Prueba %s: el puerto privilegiado sigue al núcleo"
+
+#: .container/user/test.d/0310-check-ports.sh:72
+#: .container/user/test.d/0310-check-ports.sh:76
+msgid "Privileged port verdict disagrees with the kernel"
+msgstr "El veredicto del puerto privilegiado no coincide con el núcleo"
+
+#: .container/user/test.d/0310-check-ports.sh:82
+msgid "Test %s: disabled check passes"
+msgstr "Prueba %s: la verificación desactivada pasa"
+
+#: .container/user/test.d/0310-check-ports.sh:86
+msgid "Disabled check still rejected the port"
+msgstr "La verificación desactivada aún rechazó el puerto"
+
+#: .container/user/test.d/0310-check-ports.sh:89
+msgid "All check-ports tests passed"
+msgstr "Todas las pruebas de check-ports superadas"
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
 msgid ""

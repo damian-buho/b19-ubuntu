@@ -348,19 +348,19 @@ msgstr "Перевірку портів вимкнено (B19_PORT_CHECK_ENABLED
 msgid "Forbidden ports list not found, skipping check"
 msgstr "Список заборонених портів не знайдено, перевірку пропущено"
 
-#: .container/foundation/tools.d/check-ports:42
+#: .container/foundation/tools.d/check-ports:58
 msgid "%s=%s is browser-blocked (WHATWG bad port)"
 msgstr "%s=%s заблоковано браузерами (заборонений порт WHATWG)"
 
-#: .container/foundation/tools.d/check-ports:48
-msgid "%s=%s requires root privileges (port < 1024)"
-msgstr "%s=%s потребує привілеїв root (порт < 1024)"
+#: .container/foundation/tools.d/check-ports:64
+msgid "%s=%s requires root or NET_BIND_SERVICE (port < 1024)"
+msgstr "%s=%s потребує root або NET_BIND_SERVICE (порт < 1024)"
 
-#: .container/foundation/tools.d/check-ports:55
+#: .container/foundation/tools.d/check-ports:71
 msgid "Port check failed: %s unsafe port(s) found"
 msgstr "Перевірку портів не пройдено: знайдено %s небезпечний(х) порт(ів)"
 
-#: .container/foundation/tools.d/check-ports:59
+#: .container/foundation/tools.d/check-ports:75
 msgid "All PORT variables are safe"
 msgstr "Усі змінні PORT безпечні"
 
@@ -1508,6 +1508,64 @@ msgstr "nslookup google.com 8.8.8.8 не вдався (мережа може б�
 #: .container/user/test.d/0300-nslookup.sh:16
 msgid "nslookup google.com 1.1.1.1 failed (network may be isolated)"
 msgstr "nslookup google.com 1.1.1.1 не вдався (мережа може бути ізольована)"
+
+#: .container/user/test.d/0310-check-ports.sh:43
+msgid "Forbidden ports list missing, cannot test"
+msgstr "Список заборонених портів відсутній, неможливо протестувати"
+
+#: .container/user/test.d/0310-check-ports.sh:46
+msgid "Test %s: safe high port passes"
+msgstr "Тест %s: безпечний високий порт проходить"
+
+#: .container/user/test.d/0310-check-ports.sh:48
+#: .container/user/test.d/0310-check-ports.sh:57
+#: .container/user/test.d/0310-check-ports.sh:62
+#: .container/user/test.d/0310-check-ports.sh:70
+#: .container/user/test.d/0310-check-ports.sh:78
+#: .container/user/test.d/0310-check-ports.sh:84
+msgid "Test %s passed"
+msgstr "Тест %s пройдено"
+
+#: .container/user/test.d/0310-check-ports.sh:50
+msgid "Safe high port was rejected"
+msgstr "Безпечний високий порт відхилено"
+
+#: .container/user/test.d/0310-check-ports.sh:53
+msgid "Test %s: WHATWG-blocked port fails"
+msgstr "Тест %s: заборонений WHATWG порт не проходить"
+
+#: .container/user/test.d/0310-check-ports.sh:55
+msgid "WHATWG-blocked port was allowed"
+msgstr "Заборонений WHATWG порт дозволено"
+
+#: .container/user/test.d/0310-check-ports.sh:60
+msgid "Test %s: port 0 passes"
+msgstr "Тест %s: порт 0 проходить"
+
+#: .container/user/test.d/0310-check-ports.sh:64
+msgid "Port 0 was rejected"
+msgstr "Порт 0 відхилено"
+
+#: .container/user/test.d/0310-check-ports.sh:67
+msgid "Test %s: privileged port follows the kernel"
+msgstr "Тест %s: привілейований порт відповідає ядру"
+
+#: .container/user/test.d/0310-check-ports.sh:72
+#: .container/user/test.d/0310-check-ports.sh:76
+msgid "Privileged port verdict disagrees with the kernel"
+msgstr "Вердикт щодо привілейованого порту не збігається з ядром"
+
+#: .container/user/test.d/0310-check-ports.sh:82
+msgid "Test %s: disabled check passes"
+msgstr "Тест %s: вимкнена перевірка проходить"
+
+#: .container/user/test.d/0310-check-ports.sh:86
+msgid "Disabled check still rejected the port"
+msgstr "Вимкнена перевірка все одно відхилила порт"
+
+#: .container/user/test.d/0310-check-ports.sh:89
+msgid "All check-ports tests passed"
+msgstr "Усі тести check-ports пройдено"
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
 msgid ""

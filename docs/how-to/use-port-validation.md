@@ -16,9 +16,9 @@ Every environment variable whose name ends in `PORT` is validated at startup and
 ## Quick start
 
 ```bash
-docker run -e HTTPS_PORT=10025 <image>
+docker run -e HTTPS_PORT=6000 <image>
 # entrypoint fails fast:
-# PORTS  HTTPS_PORT=10025 is browser-blocked (WHATWG bad port)
+# PORTS  HTTPS_PORT=6000 is browser-blocked (WHATWG bad port)
 ```
 
 ## How it works
@@ -26,7 +26,7 @@ docker run -e HTTPS_PORT=10025 <image>
 The `check-ports` tool scans `env` for uppercase names matching `*PORT` with purely numeric values, and checks each against:
 
 - `${B19_HOME}/.forbidden-ports.txt` — the WHATWG bad-ports blocklist shipped in the image (comments stripped, one port per line). If the file is missing, the check is skipped with a warning.
-- The privileged range: values below 1024 error **only when the container is not root** (`id -u != 0`), because root could legitimately bind them.
+- The privileged range: values below 1024 error **unless the process can bind them** — as root (`id -u == 0`) or with `CAP_NET_BIND_SERVICE` (read from `/proc/self/status`, bit 10 of `CapEff`) — because the kernel would refuse the bind otherwise.
 
 Any violation exits 1 and stops the entrypoint chain. The check runs twice — at container startup (entrypoint `0300-check-ports.sh`) and at image build time (inherited `user/post/020-check-ports.i.sh`) — so a bad port fails the build itself.
 
@@ -35,6 +35,7 @@ Scope details that matter:
 - Only names **ending** in `PORT` are matched, and only uppercase: `HTTP_PORT` is checked, a bare `PORT` is not.
 - `0` is exempt from the privileged check (the conventional “let the OS pick” value).
 - 443 is not in the blocklist — `HTTPS_PORT=443` passes.
+- A non-root container granted `NET_BIND_SERVICE` (for example via `cap_add`) passes the privileged check, so it can serve 80/443 without running as root.
 
 ## Configuration
 

@@ -335,19 +335,19 @@ msgstr ""
 msgid "Forbidden ports list not found, skipping check"
 msgstr ""
 
-#: .container/foundation/tools.d/check-ports:42
+#: .container/foundation/tools.d/check-ports:58
 msgid "%s=%s is browser-blocked (WHATWG bad port)"
 msgstr ""
 
-#: .container/foundation/tools.d/check-ports:48
-msgid "%s=%s requires root privileges (port < 1024)"
+#: .container/foundation/tools.d/check-ports:64
+msgid "%s=%s requires root or NET_BIND_SERVICE (port < 1024)"
 msgstr ""
 
-#: .container/foundation/tools.d/check-ports:55
+#: .container/foundation/tools.d/check-ports:71
 msgid "Port check failed: %s unsafe port(s) found"
 msgstr ""
 
-#: .container/foundation/tools.d/check-ports:59
+#: .container/foundation/tools.d/check-ports:75
 msgid "All PORT variables are safe"
 msgstr ""
 
@@ -1477,6 +1477,64 @@ msgstr ""
 
 #: .container/user/test.d/0300-nslookup.sh:16
 msgid "nslookup google.com 1.1.1.1 failed (network may be isolated)"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:43
+msgid "Forbidden ports list missing, cannot test"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:46
+msgid "Test %s: safe high port passes"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:48
+#: .container/user/test.d/0310-check-ports.sh:57
+#: .container/user/test.d/0310-check-ports.sh:62
+#: .container/user/test.d/0310-check-ports.sh:70
+#: .container/user/test.d/0310-check-ports.sh:78
+#: .container/user/test.d/0310-check-ports.sh:84
+msgid "Test %s passed"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:50
+msgid "Safe high port was rejected"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:53
+msgid "Test %s: WHATWG-blocked port fails"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:55
+msgid "WHATWG-blocked port was allowed"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:60
+msgid "Test %s: port 0 passes"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:64
+msgid "Port 0 was rejected"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:67
+msgid "Test %s: privileged port follows the kernel"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:72
+#: .container/user/test.d/0310-check-ports.sh:76
+msgid "Privileged port verdict disagrees with the kernel"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:82
+msgid "Test %s: disabled check passes"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:86
+msgid "Disabled check still rejected the port"
+msgstr ""
+
+#: .container/user/test.d/0310-check-ports.sh:89
+msgid "All check-ports tests passed"
 msgstr ""
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
