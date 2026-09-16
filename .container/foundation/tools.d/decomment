@@ -33,17 +33,18 @@ while IFS= read -r line || [ -n "$line" ]; do
         continue
     fi
 
-    # Remove inline comments using a simpler approach
-    # shellcheck disable=SC2001
-    line=$(echo "$line" | sed 's/\\#/ESCAPED_HASH/g')
-    # shellcheck disable=SC2001
-    line=$(echo "$line" | sed 's/[[:space:]]*#.*$//')
-    # shellcheck disable=SC2001
-    line=$(echo "$line" | sed 's/ESCAPED_HASH/#/g')
-
-    # Trim trailing whitespace and carriage return
-    # shellcheck disable=SC2001
-    line=$(echo "$line" | sed 's/[[:space:]]*$//' | tr -d '\r')
+    # Shield escaped hashes so the inline strip below leaves them alone
+    line=${line//\\#/ESCAPED_HASH}
+    # Cut at the first hash, trailing spaces go with the trim below
+    line=${line%%#*}
+    # Restore the shielded hashes
+    line=${line//ESCAPED_HASH/#}
+    # Drop every carriage return, matching the old tr -d '\r'
+    line=${line//$'\r'/}
+    # Trim trailing whitespace without forking sed
+    while [[ "${line}" == *[[:space:]] ]]; do
+        line=${line%?}
+    done
 
     # Skip blank lines after processing
     [[ -z "${line}" ]] && continue
