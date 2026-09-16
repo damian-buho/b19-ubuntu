@@ -21,8 +21,11 @@
         exit 0
     fi
 
-    # Read forbidden ports, stripping REUSE comment lines
-    mapfile -t FORBIDDEN_PORTS < <(decomment < "${FORBIDDEN_PORTS_FILE}")
+    # Index forbidden ports once for O(1) lookup without a grep per variable
+    declare -A FORBIDDEN_PORTS=()
+    while IFS= read -r _port; do
+        FORBIDDEN_PORTS["${_port}"]=1
+    done < <(decomment < "${FORBIDDEN_PORTS_FILE}")
 
     # CAP_NET_BIND_SERVICE is bit 10 of CapEff, so non-root holders bind <1024.
     _b19_can_bind_privileged() {
@@ -40,6 +43,11 @@
         return 1
     }
 
+    # Probe the capability once instead of forking id and awk per port
+    _CAN_BIND_PRIVILEGED=0
+    if _b19_can_bind_privileged; then
+        _CAN_BIND_PRIVILEGED=1
+    fi
     ERRORS=0
 
     while IFS= read -r ENV_LINE; do
@@ -54,13 +62,13 @@
         PORT="${VAR_VALUE}"
 
         # Check against WHATWG bad ports list
-        if printf '%s\n' "${FORBIDDEN_PORTS[@]}" | grep -qxF "${PORT}"; then
+        if [[ -n "${FORBIDDEN_PORTS[${PORT}]:-}" ]]; then
             b19-log error "PORT-CHECK" "$(_p "%s=%s is browser-blocked (WHATWG bad port)" "${VAR_NAME}" "${PORT}")"
             ERRORS=$((ERRORS + 1))
         fi
 
         # Ports below 1024 need root or CAP_NET_BIND_SERVICE, 0 lets the OS choose.
-        if [[ "${PORT}" -lt 1024 && "${PORT}" != 0 ]] && ! _b19_can_bind_privileged; then
+        if [[ "${PORT}" -lt 1024 && "${PORT}" != 0 && "${_CAN_BIND_PRIVILEGED}" -eq 0 ]]; then
             b19-log error "PORT-CHECK" "$(_p "%s=%s requires root or NET_BIND_SERVICE (port < 1024)" "${VAR_NAME}" "${PORT}")"
             ERRORS=$((ERRORS + 1))
         fi
