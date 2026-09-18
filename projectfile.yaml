@@ -23,10 +23,11 @@ includes:
   - .makefile/b19/images/minijinja.yaml
   - .makefile/b19/traits/release.yaml
   - https://kiota.ch/b19/metadata/raw/branch/main/include.yaml
-  - https://kiota.ch/damian-buho/metadata/raw/branch/main/registry/dockerhub.yaml
-  - https://kiota.ch/damian-buho/metadata/raw/branch/main/registry/ghcr.yaml
+  - https://kiota.ch/damian-buho/metadata/raw/branch/main/forge/codeberg.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/forge/github.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
+  - https://kiota.ch/damian-buho/metadata/raw/branch/main/registry/dockerhub.yaml
+  - https://kiota.ch/damian-buho/metadata/raw/branch/main/registry/ghcr.yaml
 keywords:
   - ubuntu
   - base-image
@@ -35,24 +36,6 @@ keywords:
   - docker
 kind: SoftwareSourceCode
 links:
-  - label:
-      en: B19 / Ubuntu on Codeberg
-      es: B19 / Ubuntu en Codeberg
-      uk: B19 / Ubuntu на Codeberg
-    tags:
-      - public
-      - badges
-      - badges-gitea
-    type: source-code
-    url: https://codeberg.org/b19/ubuntu
-  - label:
-      en: Issues on Codeberg
-      es: Incidencias en Codeberg
-      uk: Задачі на Codeberg
-    tags:
-      - support
-    type: bugs
-    url: https://codeberg.org/b19/ubuntu/issues
   - label:
       en: B19 / Ubuntu on GitHub
       es: B19 / Ubuntu en GitHub
@@ -81,29 +64,45 @@ links:
     priority: 10
     type: source-code
     url: https://kiota.ch/b19/ubuntu
-  - derived: true
-    label:
+  - label:
+      en: B19 / Ubuntu on Codeberg
+      es: B19 / Ubuntu en Codeberg
+      uk: B19 / Ubuntu на Codeberg
+    priority: 90
+    tags:
+      - public
+      - badges
+      - badges-gitea
+    type: source-code
+    url: https://codeberg.org/b19/ubuntu
+  - label:
+      en: Issues on Codeberg
+      es: Incidencias en Codeberg
+      uk: Задачі на Codeberg
+    priority: 90
+    tags:
+      - support
+    type: bugs
+    url: https://codeberg.org/b19/ubuntu/issues
+  - label:
       en: Packages on Docker Hub
       es: Paquetes en Docker Hub
       uk: Пакунки на Docker Hub
     type: package-registry
     url: https://hub.docker.com/r/damianbuho/b19-ubuntu-resolute
-  - derived: true
-    label:
+  - label:
       en: Packages on Docker Hub
       es: Paquetes en Docker Hub
       uk: Пакунки на Docker Hub
     type: package-registry
     url: https://hub.docker.com/r/damianbuho/b19-ubuntu-noble
-  - derived: true
-    label:
+  - label:
       en: Packages on GHCR
       es: Paquetes en GHCR
       uk: Пакунки на GHCR
     type: package-registry
     url: https://github.com/damian-buho/b19-ubuntu/pkgs/container/b19%2Fubuntu%2Fresolute
-  - derived: true
-    label:
+  - label:
       en: Packages on GHCR
       es: Paquetes en GHCR
       uk: Пакунки на GHCR
@@ -155,5 +154,8 @@ repositories:
     role: origin
     type: git
     url: ssh://git@kiota.ch/b19/ubuntu.git
+  - role: mirror
+    type: git
+    url: git@codeberg.org:b19/ubuntu.git
 technologies:
   - docker
