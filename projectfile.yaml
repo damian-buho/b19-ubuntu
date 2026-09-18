@@ -57,6 +57,7 @@ links:
       en: B19 / Ubuntu on GitHub
       es: B19 / Ubuntu en GitHub
       uk: B19 / Ubuntu на GitHub
+    priority: 80
     tags:
       - public
       - badges
@@ -67,6 +68,7 @@ links:
       en: Issues on GitHub
       es: Incidencias en GitHub
       uk: Задачі на GitHub
+    priority: 80
     tags:
       - support
     type: bugs
@@ -76,6 +78,7 @@ links:
       es: B19 / Ubuntu en kiota.ch
       uk: B19 / Ubuntu на kiota.ch
     preferred: true
+    priority: 10
     type: source-code
     url: https://kiota.ch/b19/ubuntu
   - derived: true

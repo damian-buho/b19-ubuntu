@@ -16,8 +16,8 @@ pf-cli-managed: yes
 
 Перегляньте це спершу — можливо, відповідь уже є:
 
-- [Задачі на Codeberg](https://codeberg.org/b19/ubuntu/issues)
 - [Задачі на GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
+- [Задачі на Codeberg](https://codeberg.org/b19/ubuntu/issues)
 
 ## Куди звертатися
 

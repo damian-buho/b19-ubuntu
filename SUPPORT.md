@@ -15,8 +15,8 @@ This document explains where to get help and how to ask effective questions.
 
 Please check these first — your question may already be answered:
 
-- [Issues on Codeberg](https://codeberg.org/b19/ubuntu/issues)
 - [Issues on GitHub](https://github.com/damian-buho/b19-ubuntu/issues)
+- [Issues on Codeberg](https://codeberg.org/b19/ubuntu/issues)
 
 ## Where to Ask
 
