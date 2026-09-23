@@ -218,10 +218,12 @@ tar --extract --file "${B19_TEMP_PATH}/${M6E_UPSTREAM__FILE}"
 
 APT deps ride the same tree but are read directly by `install-apt`, not by the fetch pipeline. Resolution is stage-prefixed first (most specific wins):
 
-1. `{stage}.apt.txt`
-1. `{stage}.common.apt.deps` + `{stage}.apt.{codename}.txt`
-1. `apt.txt`
-1. `common.apt.deps` + `apt.{codename}.txt`
+1. `{stage}.apt.deps`
+1. `{stage}.common.apt.deps` + `{stage}.{codename}.apt.deps` + `{stage}.{arch}.apt.deps`
+1. `apt.deps`
+1. `common.apt.deps` + `{codename}.apt.deps` + `{arch}.apt.deps`
+
+`{arch}` is `dpkg --print-architecture` (`amd64`, `arm64`, `riscv64`), so a package that exists on some architectures only goes in that architecture’s list.
 
 One package per line, `name[=version] # comment`; `install-apt` installs with `--no-install-recommends`, honors the [APT cache](use-apt-cache.md) and proxy, and cleans up consumed files.
 
@@ -248,7 +250,7 @@ Files in `.container/{stage}/deps/` outside the fetch pipeline:
 
 | File              | Purpose                                                                                      |
 | ----------------- | -------------------------------------------------------------------------------------------- |
-| `common.apt.deps` | APT packages installed by `install-apt`                                                      |
+| `common.apt.deps` | APT packages for `install-apt`; `{codename}` and `{arch}` lists add to it                    |
 | `volumes.deps`    | Dirs pre-created + chowned by `b19-prepare-volumes` (see [build with hooks](use-build.d.md)) |
 | `*.j2`            | Jinja2 templates for APT sources etc.                                                        |
 | `install-*.sh`    | Extension-specific install hooks (PHP extensions)                                            |

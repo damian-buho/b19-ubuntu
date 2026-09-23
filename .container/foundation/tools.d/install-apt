@@ -12,16 +12,18 @@
   . /etc/lsb-release
 
   FULL_DEPS="/deps/apt.deps"
+  DPKG_ARCH="$(dpkg --print-architecture)"
   declare -a sources=()
 
   # Collect source files for each family (regular and inheritable) by priority:
-  # stage-prefixed full > stage-prefixed common+release > unprefixed full > unprefixed common+release
+  # stage-prefixed full > stage-prefixed common+release+arch > unprefixed full > unprefixed common+release+arch
   for infix in "" "i."; do
     sfx="${infix}deps"
     for stage_prefix in "${STAGE}." ""; do
       full="/deps/${stage_prefix}apt.${sfx}"
       common="/deps/${stage_prefix}common.${infix}apt.deps"
       release="/deps/${stage_prefix}${DISTRIB_CODENAME}.${infix}apt.deps"
+      arch="/deps/${stage_prefix}${DPKG_ARCH}.${infix}apt.deps"
 
       if [ -f "${full}" ];
       then
@@ -32,6 +34,7 @@
       then
         sources+=("${common}")
         [ -f "${release}" ] && sources+=("${release}")
+        [ -f "${arch}" ] && sources+=("${arch}")
         break
       fi
     done
@@ -77,10 +80,12 @@
     # Delete regular source files only; .i.deps files are preserved for downstream stages to inherit
     rm -f "/deps/${STAGE}.apt.deps"                          \
           "/deps/${STAGE}.common.apt.deps"                   \
-          "/deps/${STAGE}.${DISTRIB_CODENAME}.apt.deps"
+          "/deps/${STAGE}.${DISTRIB_CODENAME}.apt.deps"     \
+          "/deps/${STAGE}.${DPKG_ARCH}.apt.deps"
     rm -f "${FULL_DEPS}"                                     \
           "/deps/common.apt.deps"                            \
-          "/deps/${DISTRIB_CODENAME}.apt.deps"
+          "/deps/${DISTRIB_CODENAME}.apt.deps"               \
+          "/deps/${DPKG_ARCH}.apt.deps"
   else
     b19-log info "PACKAGES" "$(_p "Dependencies list (%s) is not detected" "${FULL_DEPS}")"
   fi
