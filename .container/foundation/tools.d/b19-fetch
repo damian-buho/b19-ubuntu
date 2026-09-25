@@ -22,7 +22,7 @@
   unset _raw_urls _line
   ARIA_URL_PRIMARY="${ARIA_URLS[0]}"
   ARIA_FILE=${3}
-  ARIA_HASH=${4}
+  ARIA_HASH=${4:-}
   DOWNLOAD=Y
 
   B19_FETCH_LOCAL_PATH="${B19_FETCH_LOCAL_PATH:-/fetch}"
@@ -128,21 +128,31 @@
   then
     if [ -n "${M6E_NEAR_CACHE_HOST:-}" ]
     then
-      if check-reachable "DOWNLOAD" "https://${M6E_NEAR_CACHE_HOST}/"
+      # unset/empty scheme stays https; an explicit http opts into plaintext
+      _scheme="${M6E_NEAR_CACHE_SCHEME:-https}"
+      _authority="${M6E_NEAR_CACHE_HOST}"
+      if [ -n "${M6E_NEAR_CACHE_PORT:-}" ]
+      then
+        _authority="${_authority}:${M6E_NEAR_CACHE_PORT}"
+      fi
+      _near="${_scheme}://${_authority}"
+      if [ -s "${B19_BUILD_CA_FILE}" ]; then export CURL_CA_BUNDLE="${B19_BUILD_CA_FILE}"; fi
+      if check-reachable "DOWNLOAD" "${_near}/"
       then
         _rewritten=()
         for _url in "${ARIA_URLS[@]}"; do
           # shellcheck disable=SC2016
           _stripped="${_url#*://}"
-          _rewritten+=( "https://${M6E_NEAR_CACHE_HOST}/${_stripped}" )
+          _rewritten+=( "${_near}/${_stripped}" )
         done
         ARIA_URLS=( "${_rewritten[@]}" )
         unset _rewritten _url _stripped
         ARIA_URL_PRIMARY="${ARIA_URLS[0]:-}"
-        b19-log info "DOWNLOAD" "$(_p "Near cache %s: rewrote %s URL(s)" "${M6E_NEAR_CACHE_HOST}" "${#ARIA_URLS[@]}")"
+        b19-log info "DOWNLOAD" "$(_p "Near cache %s: rewrote %s URL(s)" "${_near}" "${#ARIA_URLS[@]}")"
       else
-        b19-log warn "DOWNLOAD" "$(_p "Skipping near cache %s, fetching directly" "${M6E_NEAR_CACHE_HOST}")"
+        b19-log warn "DOWNLOAD" "$(_p "Skipping near cache %s, fetching directly" "${_near}")"
       fi
+      unset _scheme _authority _near
     fi
     # The user stage runs as uid 1000 and cannot write the image trust store, so
     # trust-ca-certificates cannot help there. aria2c takes the staged build-host

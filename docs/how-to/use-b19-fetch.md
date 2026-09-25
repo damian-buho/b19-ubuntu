@@ -65,8 +65,10 @@ When `M6E_NEAR_CACHE_HOST` is set, URLs are rewritten to route through the proxy
 
 ```text
 https://example.com/file.tar.gz
--> https://{M6E_NEAR_CACHE_HOST}/example.com/file.tar.gz
+-> {scheme}://{host}[:{port}]/example.com/file.tar.gz
 ```
+
+`scheme` is `M6E_NEAR_CACHE_SCHEME` (default `https` — an explicit `http` opts into plaintext for a proxy on a trusted network) and `port` is `M6E_NEAR_CACHE_PORT` (appended only when set; empty means the scheme default port):
 
 Before rewriting, `b19-fetch` probes the near cache with `check-reachable` — the same short cURL connect `detect-apt-cacher` uses for the LAN apt proxy. A near cache that is set but unreachable is treated as transient: the rewrite is skipped, the original URLs are used, and aria2c downloads straight from the origin instead of retrying against a proxy that never answers. Set `B19_CACHE_CHECK_ENABLED=false` to skip the probe and always route through the configured host.
 
@@ -79,7 +81,7 @@ Set `M6E_CA_CERTIFICATES` on the **build host** to the path of a complete CA bun
 - the stage-independent hooks `always/pre/010` and `always/post/950` install it through [`trust-ca-certificates`](use-build.d.md) and drop it again before the layer commits, so every root stage of every image is covered and none ships it;
 - non-root stages leave the trust store alone (uid 1000 cannot write it), so `b19-fetch` hands the bundle to aria2c directly via `--ca-certificate`.
 
-Because aria2c’s `--ca-certificate` *replaces* the default store rather than adding to it, `M6E_CA_CERTIFICATES` must name a full bundle — a lone extra root would leave the user stage unable to verify anything else. Unset (the CI and published-image default) means nothing is staged and the image trust store is used untouched.
+Because aria2c’s `--ca-certificate` *replaces* the default store rather than adding to it, `M6E_CA_CERTIFICATES` must name a full bundle — a lone extra root would leave the user stage unable to verify anything else. Unset (the CI and published-image default) means nothing is staged and the image trust store is used untouched. The reachability probe uses the same staged bundle, so a private-TLS cache is probed with the trust it needs instead of being skipped as unreachable.
 
 ## Configuration
 
@@ -96,6 +98,8 @@ Because aria2c’s `--ca-certificate` *replaces* the default store rather than a
 | `B19_DOWNLOAD_ATTEMPTS`    | `3`                       | Whole-download attempts around aria2c; `1` disables the retry |
 | `B19_DOWNLOAD_RETRY_CODES` | `1 2 6 22 29`             | aria2c exit codes treated as transient                        |
 | `M6E_NEAR_CACHE_HOST`      | (unset)                   | Near-cache proxy hostname                                     |
+| `M6E_NEAR_CACHE_PORT`      | (unset)                   | Near-cache proxy port (empty = scheme default)                |
+| `M6E_NEAR_CACHE_SCHEME`    | `https`                   | Near-cache proxy scheme (`https`, or `http` on a trusted net) |
 | `B19_BUILD_CA_FILE`        | (staged)                  | Build-host CA bundle in the fetch context                     |
 | `B19_TEMP_PATH`            | `/tmp`                    | Destination for the final file copy                           |
 | `B19_CACHE_CHECK_ENABLED`  | `true`                    | Probe the near cache before routing through it                |
@@ -111,8 +115,13 @@ b19-fetch "TOOL" \
   "https://github.com/example/tool/releases/download/v1.0/tool.tar.gz" \
   "tool-1.0.tar.gz"
 
-# Through a near-cache proxy
-M6E_NEAR_CACHE_HOST=cache.local b19-fetch "PKG" \
+# Through a near-cache proxy (https default, custom port)
+M6E_NEAR_CACHE_HOST=cache.local M6E_NEAR_CACHE_PORT=8443 b19-fetch "PKG" \
+  "https://registry.npmjs.org/package/-/package-1.0.tgz" \
+  "package-1.0.tgz"
+
+# Through a plaintext near-cache proxy on a trusted network
+M6E_NEAR_CACHE_HOST=cache.local M6E_NEAR_CACHE_PORT=8080 M6E_NEAR_CACHE_SCHEME=http b19-fetch "PKG" \
   "https://registry.npmjs.org/package/-/package-1.0.tgz" \
   "package-1.0.tgz"
 
