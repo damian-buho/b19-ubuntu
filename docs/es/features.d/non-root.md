@@ -10,6 +10,6 @@ SPDX-License-Identifier: MIT
 
 - El contenedor se ejecuta como usuario sin privilegios de root (`ubuntu`, UID/GID 1000) con todos los archivos de runtime en propiedad de ese usuario.
 - Una compilación en dos etapas separa la instalación del sistema a nivel root de la configuración del runtime a nivel de usuario.
-- La identidad del usuario es configurable en tiempo de compilación.
+- La identidad del usuario es configurable en tiempo de compilación, y un arranque opcional como root la reasigna al usuario del host para que los montajes bind conserven su propietario.
 
 <!-- textlint-enable -->

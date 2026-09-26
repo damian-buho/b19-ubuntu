@@ -49,8 +49,24 @@ Runtime behavior adapts to the non-root reality: privileged-port validation erro
 | `B19_GROUP` | `ubuntu` | Group name env                                     |
 | `B19_GID`   | `1000`   | Group GID                                          |
 | `B19_HOME`  | `/app`   | Working directory and user home                    |
+| `B19_PUID`  | (empty)  | Opt-in: remap the UID when started as root         |
+| `B19_PGID`  | (empty)  | Opt-in: remap the GID, together with `B19_PUID`    |
 
 Directories your service needs on mounted volumes at build time belong in a `volumes.deps` file — see [build with hooks](use-build.d.md) for the mount-shadowing gotcha.
+
+## Run as the host user
+
+A bind mount keeps the host’s ownership, so UID 1000 inside may not match the host user that owns `./data`. Two ways out, neither of them the default:
+
+```bash
+# No root at all: any UID in group 0 can write the home (g+rwX posture)
+docker run --user "$(id -u):0" --volume ./data:/app/data image
+
+# Opt-in remap: start as root, remap, then drop to the host UID/GID for good
+docker run --user 0 --env B19_PUID="$(id -u)" --env B19_PGID="$(id -g)" --volume ./data:/app/data:z image
+```
+
+The remap (`entrypoint.d/0010-remap-user.sh`) acts only when `B19_PUID` is set AND the container starts as root; set but not root, it warns and carries on as 1000. It moves `ubuntu` to the requested IDs, chowns `${B19_HOME}` to the new UID (group 0 stays), and restarts the entrypoint through `setpriv`, so no hook after it and no service ever runs as root. It refuses a non-numeric ID and one owned by another account, root included. It needs a writable `/etc/passwd`, so it does not combine with `--read-only`, and it needs `CHOWN`, `SETUID` and `SETGID`, so it does not combine with `--cap-drop ALL`. `B19_ENTRYPOINT_SKIP_REMAP_USER=true` switches it off. The `:z` suffix relabels the mount on SELinux hosts. Rootless Podman gets the same result with `--userns=keep-id` and no remap.
 
 ## Recipes
 

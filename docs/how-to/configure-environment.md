@@ -184,6 +184,8 @@ hook system.
 | `B19_UID`   | `1000`   | User UID                    |
 | `B19_GROUP` | `ubuntu` | Group name                  |
 | `B19_GID`   | `1000`   | Group GID                   |
+| `B19_PUID`  | (empty)  | Opt-in root-start UID remap |
+| `B19_PGID`  | (empty)  | Opt-in root-start GID remap |
 
 ### System paths
 
@@ -315,8 +317,10 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_OFFGRID_MODE`              | build + runtime | Behavior         |
 | `B19_OVERLAY`                   | runtime         | Behavior         |
 | `B19_OVERLAYS_PATH`             | runtime         | Hook Directories |
+| `B19_PGID`                      | runtime         | User Identity    |
 | `B19_PORT_CHECK_ENABLED`        | runtime         | Feature Toggles  |
 | `B19_PREFIX`                    | build + runtime | System Paths     |
+| `B19_PUID`                      | runtime         | User Identity    |
 | `B19_READY_PORT`                | runtime         | Health           |
 | `B19_REPORTD_FAT_FILES_AMOUNT`  | runtime         | Report           |
 | `B19_REQUIRED_SECRETS`          | runtime         | Behavior         |

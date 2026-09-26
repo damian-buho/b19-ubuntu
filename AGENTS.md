@@ -21,7 +21,7 @@ just what the docs claim. Root conventions live in [../../AGENTS.md](../../AGENT
     `.container/foundation/deps/ubuntu/{series}.sha256.deps`.
 - Binaries `fd`, `minijinja-cli` are **copied from sibling b19 images** (`b19/fd`, `b19/minijinja`) via multi-stage `FROM`, not apt. Those images must build first (tier ordering). `mold` comes via a pinned GitHub-release download (`b19-fetch`), not apt — see `deps/mold/`.
 - Runs as `ubuntu` UID/GID **1000**, home `/app`. Root is only used during the
-    `foundation` build stage.
+    `foundation` build stage. The one runtime exception is opt-in: `--user 0` plus `B19_PUID` makes `0010-remap-user` move the account to that UID/GID and `setpriv` back down before secrets load or anything starts. [use-non-root](docs/how-to/use-non-root.md)
 - PID 1 is `tini -g`; entrypoint is `entrypoint.d`; healthcheck is `healthcheck.d`. These three are **inherited** by every child — children must not redefine them.
 - `CMD` is intentionally **absent** (the Dockerfile comment warns against `sleep infinity`). Children set their own `CMD`.
 
@@ -60,7 +60,7 @@ foundation.
 ## Runtime lifecycle
 
 `tini -g` → `entrypoint.d` runs numbered hooks from `.container/user/entrypoint.d/`:
-set-signals → load-secrets → set-cpu-count → check-ports → print-lineage →
+set-signals → remap-user → load-secrets → set-cpu-count → check-ports → print-lineage →
 copy-overlay → parallel-j2 (render `.j2`) → run-command → validate-secrets →
 bootstrap → start → finalize. A bare `docker run img <cmd>` short-circuits to run
 the command directly; a `<cmd>` the image does NOT carry fails closed with `127`
