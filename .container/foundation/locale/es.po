@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-26 17:08+0000\n"
+"POT-Creation-Date: 2026-09-26 17:23+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -963,6 +963,49 @@ msgstr "Señal %s interceptada, no hay proceso de carga activo para señalizar"
 msgid "%s trapped"
 msgstr "%s interceptado"
 
+#: .container/user/entrypoint.d/0010-remap-user.sh:10
+msgid "B19_PUID unset, keeping uid %s"
+msgstr "B19_PUID sin definir, se mantiene el uid %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:16
+msgid "B19_PUID=%s B19_PGID=%s must be numeric"
+msgstr "B19_PUID=%s B19_PGID=%s deben ser numéricos"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:23
+msgid "B19_PUID=%s already belongs to %s"
+msgstr "B19_PUID=%s ya pertenece a %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:29
+msgid "Already running as uid %s"
+msgstr "Ya se ejecuta como uid %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:35
+msgid "B19_PUID=%s ignored: uid %s is not root, start with --user 0"
+msgstr "B19_PUID=%s ignorado: el uid %s no es root, arranque con --user 0"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:39
+#, fuzzy
+msgid "Set uid of %s to %s"
+msgstr "Guardar lista .j2 %s en %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:47
+msgid "B19_PGID=%s already belongs to %s"
+msgstr "B19_PGID=%s ya pertenece a %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:50
+#, fuzzy
+msgid "Set gid of %s to %s"
+msgstr "Guardar lista .j2 %s en %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:57
+#, fuzzy
+msgid "Set owner of %s to %s"
+msgstr "Establecer propietario %s:0 %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:63
+msgid "Dropping root, restarting entrypoint as %s:%s"
+msgstr "Renunciando a root, reiniciando el entrypoint como %s:%s"
+
 #: .container/user/entrypoint.d/0500-copy-overlay.sh:11
 msgid "%s is active"
 msgstr "%s está activo"
@@ -1632,9 +1675,6 @@ msgstr "El uso de memoria total está dentro del umbral (%s MB)"
 
 #~ msgid "Failed scripts: %s"
 #~ msgstr "Scripts fallidos: %s"
-
-#~ msgid "Save .j2 list %s to %s"
-#~ msgstr "Guardar lista .j2 %s en %s"
 
 #~ msgid "Setup Pass as credential store"
 #~ msgstr "Configurar Pass como almacén de credenciales"

@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.13.0\n"
+"Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-26 17:08+0000\n"
+"POT-Creation-Date: 2026-09-26 17:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -942,6 +942,46 @@ msgstr ""
 
 #: .container/user/entrypoint.d/0000-set-signals.sh:35
 msgid "%s trapped"
+msgstr ""
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:10
+msgid "B19_PUID unset, keeping uid %s"
+msgstr ""
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:16
+msgid "B19_PUID=%s B19_PGID=%s must be numeric"
+msgstr ""
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:23
+msgid "B19_PUID=%s already belongs to %s"
+msgstr ""
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:29
+msgid "Already running as uid %s"
+msgstr ""
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:35
+msgid "B19_PUID=%s ignored: uid %s is not root, start with --user 0"
+msgstr ""
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:39
+msgid "Set uid of %s to %s"
+msgstr ""
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:47
+msgid "B19_PGID=%s already belongs to %s"
+msgstr ""
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:50
+msgid "Set gid of %s to %s"
+msgstr ""
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:57
+msgid "Set owner of %s to %s"
+msgstr ""
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:63
+msgid "Dropping root, restarting entrypoint as %s:%s"
 msgstr ""
 
 #: .container/user/entrypoint.d/0500-copy-overlay.sh:11

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-26 17:08+0000\n"
+"POT-Creation-Date: 2026-09-26 17:23+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -962,6 +962,49 @@ msgstr "Перехоплено %s, немає активного процесу 
 msgid "%s trapped"
 msgstr "%s перехоплено"
 
+#: .container/user/entrypoint.d/0010-remap-user.sh:10
+msgid "B19_PUID unset, keeping uid %s"
+msgstr "B19_PUID не задано, залишається uid %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:16
+msgid "B19_PUID=%s B19_PGID=%s must be numeric"
+msgstr "B19_PUID=%s B19_PGID=%s мають бути числами"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:23
+msgid "B19_PUID=%s already belongs to %s"
+msgstr "B19_PUID=%s вже належить %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:29
+msgid "Already running as uid %s"
+msgstr "Вже працює як uid %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:35
+msgid "B19_PUID=%s ignored: uid %s is not root, start with --user 0"
+msgstr "B19_PUID=%s проігноровано: uid %s не root, запустіть з --user 0"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:39
+#, fuzzy
+msgid "Set uid of %s to %s"
+msgstr "Зберегти список .j2 %s у %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:47
+msgid "B19_PGID=%s already belongs to %s"
+msgstr "B19_PGID=%s вже належить %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:50
+#, fuzzy
+msgid "Set gid of %s to %s"
+msgstr "Зберегти список .j2 %s у %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:57
+#, fuzzy
+msgid "Set owner of %s to %s"
+msgstr "Встановити власника %s:0 %s"
+
+#: .container/user/entrypoint.d/0010-remap-user.sh:63
+msgid "Dropping root, restarting entrypoint as %s:%s"
+msgstr "Відмова від root, перезапуск entrypoint як %s:%s"
+
 #: .container/user/entrypoint.d/0500-copy-overlay.sh:11
 msgid "%s is active"
 msgstr "%s активний"
@@ -1623,9 +1666,6 @@ msgstr "Загальне використання пам'яті в межах п
 
 #~ msgid "Failed scripts: %s"
 #~ msgstr "Скрипти з помилками: %s"
-
-#~ msgid "Save .j2 list %s to %s"
-#~ msgstr "Зберегти список .j2 %s у %s"
 
 #~ msgid "Setup Pass as credential store"
 #~ msgstr "Налаштувати Pass як сховище паролів"
