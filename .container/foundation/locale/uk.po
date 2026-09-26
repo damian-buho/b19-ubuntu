@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
-"Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-09 20:28+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
+"POT-Creation-Date: 2026-09-26 17:08+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -27,7 +27,9 @@ msgstr "Додати користувача %s до групи %s"
 
 #: .container/foundation/tools.d/b19-cache-guard:20
 msgid "Usage: b19-cache-guard <tag> <dir> <ttl-seconds> -- <refresh-command…>"
-msgstr "Використання: b19-cache-guard <мітка> <каталог> <ttl-секунди> -- <команда-оновлення…>"
+msgstr ""
+"Використання: b19-cache-guard <мітка> <каталог> <ttl-секунди> -- <команда-"
+"оновлення…>"
 
 #: .container/foundation/tools.d/b19-cache-guard:34
 msgid "Cache guard disabled, using %s as-is"
@@ -140,7 +142,7 @@ msgstr "Хеші збігаються: %s"
 
 #: .container/foundation/tools.d/b19-fetch:64
 #: .container/foundation/tools.d/b19-fetch:72
-#: .container/foundation/tools.d/b19-fetch:210
+#: .container/foundation/tools.d/b19-fetch:224
 msgid "Copy from %s to %s"
 msgstr "Копіювати з %s до %s"
 
@@ -186,41 +188,41 @@ msgstr "Хеш вказано, буде перевірка"
 msgid "No hash, no checks"
 msgstr "Без хешу, без перевірок"
 
-#: .container/foundation/tools.d/b19-fetch:142
+#: .container/foundation/tools.d/b19-fetch:155
 msgid "Near cache %s: rewrote %s URL(s)"
 msgstr "Ближній кеш %s: переписано %s URL"
 
-#: .container/foundation/tools.d/b19-fetch:144
+#: .container/foundation/tools.d/b19-fetch:157
 msgid "Skipping near cache %s, fetching directly"
 msgstr "Пропуск ближнього кешу %s, завантаження напряму"
 
-#: .container/foundation/tools.d/b19-fetch:154
+#: .container/foundation/tools.d/b19-fetch:168
 msgid "Build CA bundle %s in use"
 msgstr "Використовується пакет CA для збірки %s"
 
-#: .container/foundation/tools.d/b19-fetch:157
+#: .container/foundation/tools.d/b19-fetch:171
 #: .container/foundation/tools.d/trust-ca-certificates:57
 msgid "No build CA bundle at %s, using image trust store"
 msgstr ""
 "Немає пакета CA для збірки у %s, використовується сховище довіри образу"
 
-#: .container/foundation/tools.d/b19-fetch:166
+#: .container/foundation/tools.d/b19-fetch:180
 msgid "Get %s (attempt %s/%s)"
 msgstr "Завантажити %s (спроба %s/%s)"
 
-#: .container/foundation/tools.d/b19-fetch:190
+#: .container/foundation/tools.d/b19-fetch:204
 msgid "Permanent failure %s on %s"
 msgstr "Постійна помилка %s для %s"
 
-#: .container/foundation/tools.d/b19-fetch:196
+#: .container/foundation/tools.d/b19-fetch:210
 msgid "Code %s on %s survived %s attempt(s)"
 msgstr "Код %s для %s зберігся після %s спроб(и)"
 
-#: .container/foundation/tools.d/b19-fetch:202
+#: .container/foundation/tools.d/b19-fetch:216
 msgid "Transient %s on %s, attempt %s in %ss"
 msgstr "Тимчасовий %s для %s, спроба %s через %s с"
 
-#: .container/foundation/tools.d/b19-fetch:207
+#: .container/foundation/tools.d/b19-fetch:221
 msgid "No need to download %s"
 msgstr "Завантаження %s не потрібне"
 
@@ -348,19 +350,19 @@ msgstr "Перевірку портів вимкнено (B19_PORT_CHECK_ENABLED
 msgid "Forbidden ports list not found, skipping check"
 msgstr "Список заборонених портів не знайдено, перевірку пропущено"
 
-#: .container/foundation/tools.d/check-ports:58
+#: .container/foundation/tools.d/check-ports:66
 msgid "%s=%s is browser-blocked (WHATWG bad port)"
 msgstr "%s=%s заблоковано браузерами (заборонений порт WHATWG)"
 
-#: .container/foundation/tools.d/check-ports:64
+#: .container/foundation/tools.d/check-ports:72
 msgid "%s=%s requires root or NET_BIND_SERVICE (port < 1024)"
 msgstr "%s=%s потребує root або NET_BIND_SERVICE (порт < 1024)"
 
-#: .container/foundation/tools.d/check-ports:71
+#: .container/foundation/tools.d/check-ports:79
 msgid "Port check failed: %s unsafe port(s) found"
 msgstr "Перевірку портів не пройдено: знайдено %s небезпечний(х) порт(ів)"
 
-#: .container/foundation/tools.d/check-ports:75
+#: .container/foundation/tools.d/check-ports:83
 msgid "All PORT variables are safe"
 msgstr "Усі змінні PORT безпечні"
 
@@ -368,7 +370,15 @@ msgstr "Усі змінні PORT безпечні"
 msgid "Cache reachability check disabled, assuming reachable"
 msgstr "Перевірку доступності кешу вимкнено, вважається доступним"
 
-#: .container/foundation/tools.d/check-reachable:29
+#: .container/foundation/tools.d/check-reachable:37
+msgid "curl absent, probing %s:%s over /dev/tcp"
+msgstr "curl відсутній, перевірка %s:%s через /dev/tcp"
+
+#: .container/foundation/tools.d/check-reachable:44
+msgid "curl absent, cannot probe %s"
+msgstr "curl відсутній, неможливо перевірити %s"
+
+#: .container/foundation/tools.d/check-reachable:48
 msgid "%s unreachable after %ss, treating as transient"
 msgstr "%s недоступний після %sс, вважається тимчасовим"
 
@@ -376,19 +386,19 @@ msgstr "%s недоступний після %sс, вважається тимч
 msgid "Not root (uid %s), apt cache proxy left untouched"
 msgstr "Не root (uid %s), проксі кешу APT не змінено"
 
-#: .container/foundation/tools.d/detect-apt-cacher:33
+#: .container/foundation/tools.d/detect-apt-cacher:37
 msgid "APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 msgstr "Кеш APT увімкнено на ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 
-#: .container/foundation/tools.d/detect-apt-cacher:35
+#: .container/foundation/tools.d/detect-apt-cacher:39
 msgid "Skipping proxy for %s, apt will fetch directly"
 msgstr "Пропуск проксі для %s, apt завантажить напряму"
 
-#: .container/foundation/tools.d/detect-apt-cacher:38
+#: .container/foundation/tools.d/detect-apt-cacher:42
 msgid "APT Cache not enabled"
 msgstr "Кеш APT не увімкнено"
 
-#: .container/foundation/tools.d/detect-apt-cacher:50
+#: .container/foundation/tools.d/detect-apt-cacher:54
 #: .container/foundation/tools.d/trust-ca-certificates:77
 msgid "Unknown action %s, expected install or remove"
 msgstr "Невідома дія %s, очікувалося install або remove"
@@ -409,23 +419,23 @@ msgstr "NUMPROCS %s з nproc (cgroups без обмежень)"
 msgid "NUMPROCS %s from nproc"
 msgstr "NUMPROCS %s з nproc"
 
-#: .container/foundation/tools.d/install-apt:41
+#: .container/foundation/tools.d/install-apt:44
 msgid "Appending deps file (%s)"
 msgstr ""
 
-#: .container/foundation/tools.d/install-apt:48
+#: .container/foundation/tools.d/install-apt:51
 msgid "Dependencies list is detected"
 msgstr "Список залежностей виявлено"
 
-#: .container/foundation/tools.d/install-apt:59
+#: .container/foundation/tools.d/install-apt:62
 msgid "Acquire flock on shared APT archives cache (wait %s s)"
 msgstr ""
 
-#: .container/foundation/tools.d/install-apt:68
+#: .container/foundation/tools.d/install-apt:71
 msgid "Install dependencies (%s packages)"
 msgstr "Встановити залежності (%s пакетів)"
 
-#: .container/foundation/tools.d/install-apt:85
+#: .container/foundation/tools.d/install-apt:90
 msgid "Dependencies list (%s) is not detected"
 msgstr "Список залежностей (%s) не виявлено"
 

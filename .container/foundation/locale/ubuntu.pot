@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.8.3-14-g61e15d5\n"
-"Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-09 20:28+0000\n"
+"Project-Id-Version: ubuntu 1.13.0\n"
+"Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
+"POT-Creation-Date: 2026-09-26 17:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -133,7 +133,7 @@ msgstr ""
 
 #: .container/foundation/tools.d/b19-fetch:64
 #: .container/foundation/tools.d/b19-fetch:72
-#: .container/foundation/tools.d/b19-fetch:210
+#: .container/foundation/tools.d/b19-fetch:224
 msgid "Copy from %s to %s"
 msgstr ""
 
@@ -179,40 +179,40 @@ msgstr ""
 msgid "No hash, no checks"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:142
+#: .container/foundation/tools.d/b19-fetch:155
 msgid "Near cache %s: rewrote %s URL(s)"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:144
+#: .container/foundation/tools.d/b19-fetch:157
 msgid "Skipping near cache %s, fetching directly"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:154
+#: .container/foundation/tools.d/b19-fetch:168
 msgid "Build CA bundle %s in use"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:157
+#: .container/foundation/tools.d/b19-fetch:171
 #: .container/foundation/tools.d/trust-ca-certificates:57
 msgid "No build CA bundle at %s, using image trust store"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:166
+#: .container/foundation/tools.d/b19-fetch:180
 msgid "Get %s (attempt %s/%s)"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:190
+#: .container/foundation/tools.d/b19-fetch:204
 msgid "Permanent failure %s on %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:196
+#: .container/foundation/tools.d/b19-fetch:210
 msgid "Code %s on %s survived %s attempt(s)"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:202
+#: .container/foundation/tools.d/b19-fetch:216
 msgid "Transient %s on %s, attempt %s in %ss"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-fetch:207
+#: .container/foundation/tools.d/b19-fetch:221
 msgid "No need to download %s"
 msgstr ""
 
@@ -335,19 +335,19 @@ msgstr ""
 msgid "Forbidden ports list not found, skipping check"
 msgstr ""
 
-#: .container/foundation/tools.d/check-ports:58
+#: .container/foundation/tools.d/check-ports:66
 msgid "%s=%s is browser-blocked (WHATWG bad port)"
 msgstr ""
 
-#: .container/foundation/tools.d/check-ports:64
+#: .container/foundation/tools.d/check-ports:72
 msgid "%s=%s requires root or NET_BIND_SERVICE (port < 1024)"
 msgstr ""
 
-#: .container/foundation/tools.d/check-ports:71
+#: .container/foundation/tools.d/check-ports:79
 msgid "Port check failed: %s unsafe port(s) found"
 msgstr ""
 
-#: .container/foundation/tools.d/check-ports:75
+#: .container/foundation/tools.d/check-ports:83
 msgid "All PORT variables are safe"
 msgstr ""
 
@@ -355,7 +355,15 @@ msgstr ""
 msgid "Cache reachability check disabled, assuming reachable"
 msgstr ""
 
-#: .container/foundation/tools.d/check-reachable:29
+#: .container/foundation/tools.d/check-reachable:37
+msgid "curl absent, probing %s:%s over /dev/tcp"
+msgstr ""
+
+#: .container/foundation/tools.d/check-reachable:44
+msgid "curl absent, cannot probe %s"
+msgstr ""
+
+#: .container/foundation/tools.d/check-reachable:48
 msgid "%s unreachable after %ss, treating as transient"
 msgstr ""
 
@@ -363,19 +371,19 @@ msgstr ""
 msgid "Not root (uid %s), apt cache proxy left untouched"
 msgstr ""
 
-#: .container/foundation/tools.d/detect-apt-cacher:33
+#: .container/foundation/tools.d/detect-apt-cacher:37
 msgid "APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 msgstr ""
 
-#: .container/foundation/tools.d/detect-apt-cacher:35
+#: .container/foundation/tools.d/detect-apt-cacher:39
 msgid "Skipping proxy for %s, apt will fetch directly"
 msgstr ""
 
-#: .container/foundation/tools.d/detect-apt-cacher:38
+#: .container/foundation/tools.d/detect-apt-cacher:42
 msgid "APT Cache not enabled"
 msgstr ""
 
-#: .container/foundation/tools.d/detect-apt-cacher:50
+#: .container/foundation/tools.d/detect-apt-cacher:54
 #: .container/foundation/tools.d/trust-ca-certificates:77
 msgid "Unknown action %s, expected install or remove"
 msgstr ""
@@ -396,23 +404,23 @@ msgstr ""
 msgid "NUMPROCS %s from nproc"
 msgstr ""
 
-#: .container/foundation/tools.d/install-apt:41
+#: .container/foundation/tools.d/install-apt:44
 msgid "Appending deps file (%s)"
 msgstr ""
 
-#: .container/foundation/tools.d/install-apt:48
+#: .container/foundation/tools.d/install-apt:51
 msgid "Dependencies list is detected"
 msgstr ""
 
-#: .container/foundation/tools.d/install-apt:59
+#: .container/foundation/tools.d/install-apt:62
 msgid "Acquire flock on shared APT archives cache (wait %s s)"
 msgstr ""
 
-#: .container/foundation/tools.d/install-apt:68
+#: .container/foundation/tools.d/install-apt:71
 msgid "Install dependencies (%s packages)"
 msgstr ""
 
-#: .container/foundation/tools.d/install-apt:85
+#: .container/foundation/tools.d/install-apt:90
 msgid "Dependencies list (%s) is not detected"
 msgstr ""
 

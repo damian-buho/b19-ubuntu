@@ -26,7 +26,11 @@
     install)
       if [ -n "${M6E_APT_CACHE_HOST:-}" ]
       then
-        if check-reachable "APTCACHE" "http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}/"
+        REACHABLE=0
+        check-reachable "APTCACHE" "http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}/" || REACHABLE=$?
+        # 127 is a broken probe, not a down cache: fail the build.
+        [ "${REACHABLE}" -ne 127 ] || exit 127
+        if [ "${REACHABLE}" -eq 0 ]
         then
           echo "Acquire::http { Proxy \"http://${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}\"; }" > /etc/apt/apt.conf.d/99proxy
           # shellcheck disable=SC2016

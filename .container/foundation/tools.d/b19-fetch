@@ -137,7 +137,11 @@
       fi
       _near="${_scheme}://${_authority}"
       if [ -s "${B19_BUILD_CA_FILE}" ]; then export CURL_CA_BUNDLE="${B19_BUILD_CA_FILE}"; fi
-      if check-reachable "DOWNLOAD" "${_near}/"
+      _reachable=0
+      check-reachable "DOWNLOAD" "${_near}/" || _reachable=$?
+      # 127 is a broken probe, not a down cache: fail the build.
+      [ "${_reachable}" -ne 127 ] || exit 127
+      if [ "${_reachable}" -eq 0 ]
       then
         _rewritten=()
         for _url in "${ARIA_URLS[@]}"; do

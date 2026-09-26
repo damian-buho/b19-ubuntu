@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
-"Report-Msgid-Bugs-To: https://codeberg.org/b19/ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-09 20:28+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
+"POT-Creation-Date: 2026-09-26 17:08+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -26,7 +26,9 @@ msgstr "Agregar usuario %s al grupo %s"
 
 #: .container/foundation/tools.d/b19-cache-guard:20
 msgid "Usage: b19-cache-guard <tag> <dir> <ttl-seconds> -- <refresh-command…>"
-msgstr "Uso: b19-cache-guard <etiqueta> <directorio> <ttl-segundos> -- <comando-de-actualización…>"
+msgstr ""
+"Uso: b19-cache-guard <etiqueta> <directorio> <ttl-segundos> -- <comando-de-"
+"actualización…>"
 
 #: .container/foundation/tools.d/b19-cache-guard:34
 msgid "Cache guard disabled, using %s as-is"
@@ -139,7 +141,7 @@ msgstr "Hashes coinciden: %s"
 
 #: .container/foundation/tools.d/b19-fetch:64
 #: .container/foundation/tools.d/b19-fetch:72
-#: .container/foundation/tools.d/b19-fetch:210
+#: .container/foundation/tools.d/b19-fetch:224
 msgid "Copy from %s to %s"
 msgstr "Copiar desde %s a %s"
 
@@ -185,42 +187,42 @@ msgstr "Hash especificado, se verificará"
 msgid "No hash, no checks"
 msgstr "Sin hash, sin verificaciones"
 
-#: .container/foundation/tools.d/b19-fetch:142
+#: .container/foundation/tools.d/b19-fetch:155
 msgid "Near cache %s: rewrote %s URL(s)"
 msgstr "Caché cercana %s: se reescribieron %s URL(s)"
 
-#: .container/foundation/tools.d/b19-fetch:144
+#: .container/foundation/tools.d/b19-fetch:157
 msgid "Skipping near cache %s, fetching directly"
 msgstr "Omitiendo caché cercana %s, se descarga directamente"
 
-#: .container/foundation/tools.d/b19-fetch:154
+#: .container/foundation/tools.d/b19-fetch:168
 msgid "Build CA bundle %s in use"
 msgstr "Paquete de CA de compilación %s en uso"
 
-#: .container/foundation/tools.d/b19-fetch:157
+#: .container/foundation/tools.d/b19-fetch:171
 #: .container/foundation/tools.d/trust-ca-certificates:57
 msgid "No build CA bundle at %s, using image trust store"
 msgstr ""
 "Sin paquete de CA de compilación en %s, se usa el almacén de confianza de la "
 "imagen"
 
-#: .container/foundation/tools.d/b19-fetch:166
+#: .container/foundation/tools.d/b19-fetch:180
 msgid "Get %s (attempt %s/%s)"
 msgstr "Descargar %s (intento %s/%s)"
 
-#: .container/foundation/tools.d/b19-fetch:190
+#: .container/foundation/tools.d/b19-fetch:204
 msgid "Permanent failure %s on %s"
 msgstr "Fallo permanente %s en %s"
 
-#: .container/foundation/tools.d/b19-fetch:196
+#: .container/foundation/tools.d/b19-fetch:210
 msgid "Code %s on %s survived %s attempt(s)"
 msgstr "El código %s en %s persistió tras %s intento(s)"
 
-#: .container/foundation/tools.d/b19-fetch:202
+#: .container/foundation/tools.d/b19-fetch:216
 msgid "Transient %s on %s, attempt %s in %ss"
 msgstr "Transitorio %s en %s, intento %s en %ss"
 
-#: .container/foundation/tools.d/b19-fetch:207
+#: .container/foundation/tools.d/b19-fetch:221
 msgid "No need to download %s"
 msgstr "No es necesario descargar %s"
 
@@ -347,20 +349,20 @@ msgstr "Verificación de puertos desactivada (B19_PORT_CHECK_ENABLED=false)"
 msgid "Forbidden ports list not found, skipping check"
 msgstr "Lista de puertos prohibidos no encontrada, omitiendo verificación"
 
-#: .container/foundation/tools.d/check-ports:58
+#: .container/foundation/tools.d/check-ports:66
 msgid "%s=%s is browser-blocked (WHATWG bad port)"
 msgstr "%s=%s está bloqueado por navegadores (puerto prohibido WHATWG)"
 
-#: .container/foundation/tools.d/check-ports:64
+#: .container/foundation/tools.d/check-ports:72
 msgid "%s=%s requires root or NET_BIND_SERVICE (port < 1024)"
 msgstr "%s=%s requiere root o NET_BIND_SERVICE (puerto < 1024)"
 
-#: .container/foundation/tools.d/check-ports:71
+#: .container/foundation/tools.d/check-ports:79
 msgid "Port check failed: %s unsafe port(s) found"
 msgstr ""
 "Verificación de puertos fallida: %s puerto(s) inseguro(s) encontrado(s)"
 
-#: .container/foundation/tools.d/check-ports:75
+#: .container/foundation/tools.d/check-ports:83
 msgid "All PORT variables are safe"
 msgstr "Todas las variables PORT son seguras"
 
@@ -368,7 +370,15 @@ msgstr "Todas las variables PORT son seguras"
 msgid "Cache reachability check disabled, assuming reachable"
 msgstr "Verificación de alcance de caché deshabilitada, se asume alcanzable"
 
-#: .container/foundation/tools.d/check-reachable:29
+#: .container/foundation/tools.d/check-reachable:37
+msgid "curl absent, probing %s:%s over /dev/tcp"
+msgstr "curl ausente, sondeando %s:%s por /dev/tcp"
+
+#: .container/foundation/tools.d/check-reachable:44
+msgid "curl absent, cannot probe %s"
+msgstr "curl ausente, no se puede sondear %s"
+
+#: .container/foundation/tools.d/check-reachable:48
 msgid "%s unreachable after %ss, treating as transient"
 msgstr "%s inalcanzable tras %ss, se trata como transitorio"
 
@@ -376,20 +386,20 @@ msgstr "%s inalcanzable tras %ss, se trata como transitorio"
 msgid "Not root (uid %s), apt cache proxy left untouched"
 msgstr "Sin privilegios de root (uid %s), proxy de caché APT intacto"
 
-#: .container/foundation/tools.d/detect-apt-cacher:33
+#: .container/foundation/tools.d/detect-apt-cacher:37
 msgid "APT Cache enabled at ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 msgstr ""
 "Caché APT habilitado en ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE_PORT:-3142}"
 
-#: .container/foundation/tools.d/detect-apt-cacher:35
+#: .container/foundation/tools.d/detect-apt-cacher:39
 msgid "Skipping proxy for %s, apt will fetch directly"
 msgstr "Omitiendo proxy para %s, apt descargará directamente"
 
-#: .container/foundation/tools.d/detect-apt-cacher:38
+#: .container/foundation/tools.d/detect-apt-cacher:42
 msgid "APT Cache not enabled"
 msgstr "Caché APT no habilitado"
 
-#: .container/foundation/tools.d/detect-apt-cacher:50
+#: .container/foundation/tools.d/detect-apt-cacher:54
 #: .container/foundation/tools.d/trust-ca-certificates:77
 msgid "Unknown action %s, expected install or remove"
 msgstr "Acción desconocida %s, se esperaba install o remove"
@@ -410,23 +420,23 @@ msgstr "NUMPROCS %s desde nproc (cgroups sin límite)"
 msgid "NUMPROCS %s from nproc"
 msgstr "NUMPROCS %s desde nproc"
 
-#: .container/foundation/tools.d/install-apt:41
+#: .container/foundation/tools.d/install-apt:44
 msgid "Appending deps file (%s)"
 msgstr ""
 
-#: .container/foundation/tools.d/install-apt:48
+#: .container/foundation/tools.d/install-apt:51
 msgid "Dependencies list is detected"
 msgstr "Lista de dependencias detectada"
 
-#: .container/foundation/tools.d/install-apt:59
+#: .container/foundation/tools.d/install-apt:62
 msgid "Acquire flock on shared APT archives cache (wait %s s)"
 msgstr ""
 
-#: .container/foundation/tools.d/install-apt:68
+#: .container/foundation/tools.d/install-apt:71
 msgid "Install dependencies (%s packages)"
 msgstr "Instalar dependencias (%s paquetes)"
 
-#: .container/foundation/tools.d/install-apt:85
+#: .container/foundation/tools.d/install-apt:90
 msgid "Dependencies list (%s) is not detected"
 msgstr "Lista de dependencias (%s) no detectada"
 

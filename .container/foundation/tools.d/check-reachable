@@ -21,9 +21,28 @@
     exit 0
   fi
 
-  if curl --silent --output /dev/null --max-time "${TIMEOUT}" --retry 1 --retry-delay 1 "${URL}"
+  if command -v curl >/dev/null
   then
-    exit 0
+    if curl --silent --output /dev/null --max-time "${TIMEOUT}" --retry 1 --retry-delay 1 "${URL}"
+    then
+      exit 0
+    fi
+  elif [[ "${URL}" == http://* ]]
+  then
+    AUTHORITY="${URL#http://}"
+    AUTHORITY="${AUTHORITY%%/*}"
+    HOST="${AUTHORITY%%:*}"
+    PORT="${AUTHORITY##*:}"
+    [ "${PORT}" = "${AUTHORITY}" ] && PORT=80
+    b19-log debug "${TAG}" "$(_p "curl absent, probing %s:%s over /dev/tcp" "${HOST}" "${PORT}")"
+    # shellcheck disable=SC2016 # bare base has no curl yet: raw HTTP HEAD over bash /dev/tcp
+    if timeout "${TIMEOUT}" bash -c 'exec 3<>"/dev/tcp/${0}/${1}" && printf "HEAD / HTTP/1.0\r\n\r\n" >&3 && head --bytes=5 <&3 | grep --quiet "^HTTP/"' "${HOST}" "${PORT}" 2>/dev/null
+    then
+      exit 0
+    fi
+  else
+    b19-log error "${TAG}" "$(_p "curl absent, cannot probe %s" "${URL}")"
+    exit 127
   fi
 
   b19-log warn "${TAG}" "$(_p "%s unreachable after %ss, treating as transient" "${URL}" "${TIMEOUT}")"
