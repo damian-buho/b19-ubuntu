@@ -23,7 +23,8 @@
 
   SIGNALS_FILE="${B19_HOME}/.signals"
   if [ ! -f "${SIGNALS_FILE}" ]; then
-    exit 0
+    b19-log debug "SIGNALS" "$(_p "%s not found, no signals trapped" "${SIGNALS_FILE}")"
+    return 0
   fi
 
   SIGNALS=$(decomment < "${SIGNALS_FILE}") || true

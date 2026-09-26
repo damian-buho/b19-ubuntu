@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu development\n"
+"Project-Id-Version: ubuntu 1.13.0-2-g0a5c43d\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-26 17:23+0000\n"
+"POT-Creation-Date: 2026-09-26 17:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -940,7 +940,11 @@ msgstr ""
 msgid "Caught %s, no active payload process to signal"
 msgstr ""
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:35
+#: .container/user/entrypoint.d/0000-set-signals.sh:26
+msgid "%s not found, no signals trapped"
+msgstr ""
+
+#: .container/user/entrypoint.d/0000-set-signals.sh:36
 msgid "%s trapped"
 msgstr ""
 

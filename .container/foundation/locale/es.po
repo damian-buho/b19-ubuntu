@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-26 17:23+0000\n"
+"POT-Creation-Date: 2026-09-26 17:27+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -959,7 +959,11 @@ msgstr "Señal %s interceptada, transfiriendo a %s"
 msgid "Caught %s, no active payload process to signal"
 msgstr "Señal %s interceptada, no hay proceso de carga activo para señalizar"
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:35
+#: .container/user/entrypoint.d/0000-set-signals.sh:26
+msgid "%s not found, no signals trapped"
+msgstr "%s no encontrado, no se capturan señales"
+
+#: .container/user/entrypoint.d/0000-set-signals.sh:36
 msgid "%s trapped"
 msgstr "%s interceptado"
 

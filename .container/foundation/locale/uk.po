@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-26 17:23+0000\n"
+"POT-Creation-Date: 2026-09-26 17:27+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -958,7 +958,11 @@ msgstr "Перехоплено %s, передаємо до %s"
 msgid "Caught %s, no active payload process to signal"
 msgstr "Перехоплено %s, немає активного процесу навантаження для сигналізації"
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:35
+#: .container/user/entrypoint.d/0000-set-signals.sh:26
+msgid "%s not found, no signals trapped"
+msgstr "%s не знайдено, сигнали не перехоплюються"
+
+#: .container/user/entrypoint.d/0000-set-signals.sh:36
 msgid "%s trapped"
 msgstr "%s перехоплено"
 
