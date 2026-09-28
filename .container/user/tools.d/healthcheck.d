@@ -12,8 +12,12 @@
     # Prevent overlapping healthcheck executions
     LOCKFILE="/tmp/healthcheck.d.lock"
     exec 9>"${LOCKFILE}"
-    if ! flock -n 9; then
-      exit 0
+    if ! flock --wait "${B19_HEALTH_LOCK_TIMEOUT:-10}" 9; then
+      # shellcheck source=.container/foundation/tools.d/b19-i18n
+      . b19-i18n
+      b19-log bad "HEALTH.D" "$(_p "Another healthcheck still holds %s after %ss" "${LOCKFILE}" "${B19_HEALTH_LOCK_TIMEOUT:-10}")"
+      echo "healthcheck.d.lock"
+      exit 1
     fi
 
     # Enable safer bash scripting

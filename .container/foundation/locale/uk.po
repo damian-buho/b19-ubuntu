@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-26 17:27+0000\n"
+"POT-Creation-Date: 2026-09-28 19:09+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -685,7 +685,7 @@ msgstr "Створити каталог блокування %s"
 
 #: .container/user/tools.d/bootstrap.d:37
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:94
+#: .container/user/tools.d/healthcheck.d:98
 #, fuzzy
 msgid "Skipped: %s (via %s)"
 msgstr "Помилка: %s (код виходу %s)"
@@ -736,47 +736,51 @@ msgstr "Скриптів точки входу не знайдено в"
 msgid "Directory not found:"
 msgstr "Каталог не знайдено:"
 
-#: .container/user/tools.d/healthcheck.d:39
+#: .container/user/tools.d/healthcheck.d:18
+msgid "Another healthcheck still holds %s after %ss"
+msgstr "Інша перевірка стану досі утримує %s після %s с"
+
+#: .container/user/tools.d/healthcheck.d:43
 msgid "Draining via %s: reporting not ready"
 msgstr "Дренаж через %s: позначено як не готовий"
 
-#: .container/user/tools.d/healthcheck.d:53
+#: .container/user/tools.d/healthcheck.d:57
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:73
+#: .container/user/tools.d/healthcheck.d:77
 msgid "Check passed:"
 msgstr "Перевірка пройдена:"
 
-#: .container/user/tools.d/healthcheck.d:75
+#: .container/user/tools.d/healthcheck.d:79
 msgid "Check failed:"
 msgstr "Перевірка не пройдена:"
 
-#: .container/user/tools.d/healthcheck.d:75
+#: .container/user/tools.d/healthcheck.d:79
 msgid "with exit code"
 msgstr "з кодом виходу"
 
-#: .container/user/tools.d/healthcheck.d:82
+#: .container/user/tools.d/healthcheck.d:86
 msgid "Checks directory found"
 msgstr "Каталог перевірок знайдено"
 
-#: .container/user/tools.d/healthcheck.d:98
+#: .container/user/tools.d/healthcheck.d:102
 msgid "Executing check:"
 msgstr "Виконання перевірки:"
 
-#: .container/user/tools.d/healthcheck.d:120
+#: .container/user/tools.d/healthcheck.d:124
 msgid "No health checks found in"
 msgstr "Перевірок здоров'я не знайдено в"
 
-#: .container/user/tools.d/healthcheck.d:123
+#: .container/user/tools.d/healthcheck.d:127
 msgid "Checks directory not found at"
 msgstr "Каталог перевірок не знайдено в"
 
-#: .container/user/tools.d/healthcheck.d:135
+#: .container/user/tools.d/healthcheck.d:139
 msgid "%d of %d checks failed: %s"
 msgstr "%d з %d перевірок не пройдено: %s"
 
-#: .container/user/tools.d/healthcheck.d:137
+#: .container/user/tools.d/healthcheck.d:141
 msgid "All %d checks passed."
 msgstr "Усі %d перевірок пройдено."
 

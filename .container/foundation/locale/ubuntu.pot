@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 1.13.0-2-g0a5c43d\n"
+"Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-26 17:27+0000\n"
+"POT-Creation-Date: 2026-09-28 19:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -669,7 +669,7 @@ msgstr ""
 
 #: .container/user/tools.d/bootstrap.d:37
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:94
+#: .container/user/tools.d/healthcheck.d:98
 msgid "Skipped: %s (via %s)"
 msgstr ""
 
@@ -719,47 +719,51 @@ msgstr ""
 msgid "Directory not found:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:39
+#: .container/user/tools.d/healthcheck.d:18
+msgid "Another healthcheck still holds %s after %ss"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:43
 msgid "Draining via %s: reporting not ready"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:53
+#: .container/user/tools.d/healthcheck.d:57
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:73
+#: .container/user/tools.d/healthcheck.d:77
 msgid "Check passed:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:75
+#: .container/user/tools.d/healthcheck.d:79
 msgid "Check failed:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:75
+#: .container/user/tools.d/healthcheck.d:79
 msgid "with exit code"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:82
+#: .container/user/tools.d/healthcheck.d:86
 msgid "Checks directory found"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:98
+#: .container/user/tools.d/healthcheck.d:102
 msgid "Executing check:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:120
+#: .container/user/tools.d/healthcheck.d:124
 msgid "No health checks found in"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:123
+#: .container/user/tools.d/healthcheck.d:127
 msgid "Checks directory not found at"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:135
+#: .container/user/tools.d/healthcheck.d:139
 msgid "%d of %d checks failed: %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:137
+#: .container/user/tools.d/healthcheck.d:141
 msgid "All %d checks passed."
 msgstr ""
 

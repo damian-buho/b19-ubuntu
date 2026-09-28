@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-26 17:27+0000\n"
+"POT-Creation-Date: 2026-09-28 19:09+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -686,7 +686,7 @@ msgstr "Crear directorio de bloqueo %s"
 
 #: .container/user/tools.d/bootstrap.d:37
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:94
+#: .container/user/tools.d/healthcheck.d:98
 #, fuzzy
 msgid "Skipped: %s (via %s)"
 msgstr "Fallido: %s (código de salida %s)"
@@ -737,47 +737,51 @@ msgstr "No se encontraron scripts de entrada en"
 msgid "Directory not found:"
 msgstr "Directorio no encontrado:"
 
-#: .container/user/tools.d/healthcheck.d:39
+#: .container/user/tools.d/healthcheck.d:18
+msgid "Another healthcheck still holds %s after %ss"
+msgstr "Otra comprobación de salud aún retiene %s después de %ss"
+
+#: .container/user/tools.d/healthcheck.d:43
 msgid "Draining via %s: reporting not ready"
 msgstr "En drenaje mediante %s: notificando no disponible"
 
-#: .container/user/tools.d/healthcheck.d:53
+#: .container/user/tools.d/healthcheck.d:57
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:73
+#: .container/user/tools.d/healthcheck.d:77
 msgid "Check passed:"
 msgstr "Verificación exitosa:"
 
-#: .container/user/tools.d/healthcheck.d:75
+#: .container/user/tools.d/healthcheck.d:79
 msgid "Check failed:"
 msgstr "Verificación fallida:"
 
-#: .container/user/tools.d/healthcheck.d:75
+#: .container/user/tools.d/healthcheck.d:79
 msgid "with exit code"
 msgstr "con código de salida"
 
-#: .container/user/tools.d/healthcheck.d:82
+#: .container/user/tools.d/healthcheck.d:86
 msgid "Checks directory found"
 msgstr "Directorio de verificaciones encontrado"
 
-#: .container/user/tools.d/healthcheck.d:98
+#: .container/user/tools.d/healthcheck.d:102
 msgid "Executing check:"
 msgstr "Ejecutando verificación:"
 
-#: .container/user/tools.d/healthcheck.d:120
+#: .container/user/tools.d/healthcheck.d:124
 msgid "No health checks found in"
 msgstr "No se encontraron verificaciones de salud en"
 
-#: .container/user/tools.d/healthcheck.d:123
+#: .container/user/tools.d/healthcheck.d:127
 msgid "Checks directory not found at"
 msgstr "Directorio de verificaciones no encontrado en"
 
-#: .container/user/tools.d/healthcheck.d:135
+#: .container/user/tools.d/healthcheck.d:139
 msgid "%d of %d checks failed: %s"
 msgstr "%d de %d verificaciones fallaron: %s"
 
-#: .container/user/tools.d/healthcheck.d:137
+#: .container/user/tools.d/healthcheck.d:141
 msgid "All %d checks passed."
 msgstr "Todas las %d verificaciones pasaron."
 

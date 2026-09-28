@@ -102,6 +102,7 @@ checks test connectivity. Network checks respect `B19_OFFGRID_MODE`.
 | `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768` (32 MB)                               | Min free KB in `$XDG_CACHE_HOME`                                                                 |
 | `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768` (32 MB)                               | Min free KB in `$B19_TEMP_PATH`                                                                  |
 | `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Connection timeout in seconds for cURL checks (max-time = 2x)                                    |
+| `B19_HEALTH_LOCK_TIMEOUT`       | `10`                                          | Seconds to wait for an overlapping healthcheck run before reporting unhealthy                    |
 | `B19_HEALTH_NETWORK_URL`        | `"https://www.w3.org https://www.google.com"` | Space-separated HTTPS URLs for connectivity checks                                               |
 | `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for the TCP reachability probe                                               |
 | `B19_HEALTH_REACH_PORT_SAFE`    | `443`                                         | TCP port probed by the reachability check                                                        |
@@ -301,6 +302,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_HEALTH_EGRESS`             | runtime         | Health           |
 | `B19_HEALTH_ENABLED`            | runtime         | Feature Toggles  |
 | `B19_HEALTH_HOME_MIN_SPACE_KB`  | runtime         | Health           |
+| `B19_HEALTH_LOCK_TIMEOUT`       | runtime         | Health           |
 | `B19_HEALTH_MEMORY_THRESHOLD`   | runtime         | Health           |
 | `B19_HEALTH_NETWORK_URL`        | runtime         | Health           |
 | `B19_HEALTH_PATH`               | runtime         | Hook Directories |
