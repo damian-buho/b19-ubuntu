@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+      # Priority: K8S downward API > cgroups v2 > /proc/meminfo, lowest wins
+      MEMTOTAL_KB=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo)
+      b19-log debug "ENTRY.D" "$(_p "MEMTOTAL_KB %s from /proc/meminfo" "${MEMTOTAL_KB}")"
+      if [[ -f /etc/podinfo/mem_limit ]]; then
+        MEM_LIMIT_BYTES=$(cat /etc/podinfo/mem_limit)
+        b19-log debug "ENTRY.D" "$(_p "Memory limit %s bytes from K8S downward API" "${MEM_LIMIT_BYTES}")"
+      elif [[ -f /sys/fs/cgroup/memory.max ]]; then
+        MEM_LIMIT_BYTES=$(cat /sys/fs/cgroup/memory.max)
+        b19-log debug "ENTRY.D" "$(_p "Memory limit %s from cgroups v2" "${MEM_LIMIT_BYTES}")"
+      else
+        MEM_LIMIT_BYTES=max
+        b19-log debug "ENTRY.D" "$(_p "Memory limit %s, no cgroups v2" "${MEM_LIMIT_BYTES}")"
+      fi
+      if [[ "${MEM_LIMIT_BYTES}" =~ ^[0-9]+$ ]] && (( MEM_LIMIT_BYTES / 1024 < MEMTOTAL_KB )); then
+        MEMTOTAL_KB=$(( MEM_LIMIT_BYTES / 1024 ))
+        b19-log debug "ENTRY.D" "$(_p "MEMTOTAL_KB %s capped by memory limit" "${MEMTOTAL_KB}")"
+      fi
+
+      export MEMTOTAL_KB

@@ -117,7 +117,7 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 - `build-stage`, `process-hooks` — the build hook engine described above.
 - `trust-ca-certificates install|remove` — trusts the build host’s CA bundle for one build stage. [docs](docs/how-to/use-b19-fetch.md)
 - `b19-load-secrets` / `b19-exec-with-secrets`, `b19-resolve-dep`,
-    `read-lineage`/`write-lineage`, `detect-cpu-count`, `check-ports`,
+    `read-lineage`/`write-lineage`, `detect-cpu-count`, `detect-memory` (`MEMTOTAL_KB`, capped by the cgroup limit), `check-ports`,
     `install-apt`, `j2-render`/`parallel-j2`/`save-j2`, `keyscan`, `setup-ssh`.
 
 ## Non-obvious facts / gotchas

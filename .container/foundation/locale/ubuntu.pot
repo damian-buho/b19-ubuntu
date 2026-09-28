@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-28 19:20+0000\n"
+"POT-Creation-Date: 2026-09-28 22:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -406,6 +406,26 @@ msgstr ""
 
 #: .container/foundation/tools.d/detect-cpu-count:27
 msgid "NUMPROCS %s from nproc"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-memory:9
+msgid "MEMTOTAL_KB %s from /proc/meminfo"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-memory:12
+msgid "Memory limit %s bytes from K8S downward API"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-memory:15
+msgid "Memory limit %s from cgroups v2"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-memory:18
+msgid "Memory limit %s, no cgroups v2"
+msgstr ""
+
+#: .container/foundation/tools.d/detect-memory:22
+msgid "MEMTOTAL_KB %s capped by memory limit"
 msgstr ""
 
 #: .container/foundation/tools.d/install-apt:44

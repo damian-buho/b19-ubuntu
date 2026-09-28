@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-28 19:20+0000\n"
+"POT-Creation-Date: 2026-09-28 22:21+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -423,6 +423,26 @@ msgstr "NUMPROCS %s desde nproc (cgroups sin límite)"
 #: .container/foundation/tools.d/detect-cpu-count:27
 msgid "NUMPROCS %s from nproc"
 msgstr "NUMPROCS %s desde nproc"
+
+#: .container/foundation/tools.d/detect-memory:9
+msgid "MEMTOTAL_KB %s from /proc/meminfo"
+msgstr "MEMTOTAL_KB %s de /proc/meminfo"
+
+#: .container/foundation/tools.d/detect-memory:12
+msgid "Memory limit %s bytes from K8S downward API"
+msgstr "Límite de memoria %s bytes de la downward API de K8S"
+
+#: .container/foundation/tools.d/detect-memory:15
+msgid "Memory limit %s from cgroups v2"
+msgstr "Límite de memoria %s de cgroups v2"
+
+#: .container/foundation/tools.d/detect-memory:18
+msgid "Memory limit %s, no cgroups v2"
+msgstr "Límite de memoria %s, sin cgroups v2"
+
+#: .container/foundation/tools.d/detect-memory:22
+msgid "MEMTOTAL_KB %s capped by memory limit"
+msgstr "MEMTOTAL_KB %s limitado por el límite de memoria"
 
 #: .container/foundation/tools.d/install-apt:44
 msgid "Appending deps file (%s)"
