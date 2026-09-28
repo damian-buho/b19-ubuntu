@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-28 19:09+0000\n"
+"POT-Creation-Date: 2026-09-28 19:20+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -54,27 +54,23 @@ msgstr "La caché %s está al día"
 msgid "Cache %s is not writable, scanning with what is there"
 msgstr "La caché %s no admite escritura, se analiza con lo que hay"
 
-#: .container/foundation/tools.d/b19-cache-guard:87
-msgid "Timed out after %ss waiting for %s"
-msgstr "Tiempo agotado tras %ss esperando %s"
-
-#: .container/foundation/tools.d/b19-cache-guard:93
+#: .container/foundation/tools.d/b19-cache-guard:90
 msgid "Cache %s was refreshed by another holder"
 msgstr "Otro proceso ya actualizó la caché %s"
 
-#: .container/foundation/tools.d/b19-cache-guard:97
+#: .container/foundation/tools.d/b19-cache-guard:94
 msgid "Refresh cache %s"
 msgstr "Actualizar caché %s"
 
-#: .container/foundation/tools.d/b19-cache-guard:100
+#: .container/foundation/tools.d/b19-cache-guard:97
 msgid "Cache %s refreshed"
 msgstr "Caché %s actualizada"
 
-#: .container/foundation/tools.d/b19-cache-guard:107
+#: .container/foundation/tools.d/b19-cache-guard:104
 msgid "Cache %s is empty and its refresh failed"
 msgstr "La caché %s está vacía y su actualización falló"
 
-#: .container/foundation/tools.d/b19-cache-guard:110
+#: .container/foundation/tools.d/b19-cache-guard:107
 msgid "Refresh of %s failed, falling back to the cached copy"
 msgstr "Falló la actualización de %s, se recurre a la copia en caché"
 
@@ -277,6 +273,14 @@ msgstr "cargados,"
 #: .container/foundation/tools.d/b19-load-secrets:70
 msgid "skipped"
 msgstr "omitidos"
+
+#: .container/foundation/tools.d/b19-lock:12
+msgid "Timed out after %ss waiting for %s"
+msgstr "Tiempo agotado tras %ss esperando %s"
+
+#: .container/foundation/tools.d/b19-lock:19
+msgid "Holding lock %s"
+msgstr "Bloqueo %s adquirido"
 
 #: .container/foundation/tools.d/b19-log:71
 #: .container/foundation/tools.d/b19-log:111
@@ -632,47 +636,47 @@ msgstr "Benchmarks deshabilitados"
 msgid "Make results directory"
 msgstr "Crear directorio de resultados"
 
-#: .container/user/tools.d/benchmark.d:34
+#: .container/user/tools.d/benchmark.d:39
 msgid "Benchmark suite not found: %s"
 msgstr "Suite de benchmark no encontrada: %s"
 
-#: .container/user/tools.d/benchmark.d:40
+#: .container/user/tools.d/benchmark.d:45
 msgid "Setup: %s"
 msgstr "Configurar: %s"
 
-#: .container/user/tools.d/benchmark.d:43
+#: .container/user/tools.d/benchmark.d:48
 msgid "Setup failed for %s — skipping"
 msgstr "Preparación fallida para %s — omitiendo"
 
-#: .container/user/tools.d/benchmark.d:50
+#: .container/user/tools.d/benchmark.d:55
 msgid "Benchmarking: %s"
 msgstr "Benchmarking: %s"
 
-#: .container/user/tools.d/benchmark.d:57
+#: .container/user/tools.d/benchmark.d:62
 msgid "Teardown: %s"
 msgstr "Limpieza: %s"
 
-#: .container/user/tools.d/benchmark.d:78
+#: .container/user/tools.d/benchmark.d:83
 msgid "Reading from: %s"
 msgstr "Leyendo de: %s"
 
-#: .container/user/tools.d/benchmark.d:79 .container/user/tools.d/report.d:18
+#: .container/user/tools.d/benchmark.d:84 .container/user/tools.d/report.d:19
 msgid "Writing to:"
 msgstr "Escribiendo en:"
 
-#: .container/user/tools.d/benchmark.d:94
+#: .container/user/tools.d/benchmark.d:99
 msgid "No benchmark suites found in %s"
 msgstr "No se encontraron suites de benchmark en %s"
 
-#: .container/user/tools.d/benchmark.d:97
+#: .container/user/tools.d/benchmark.d:102
 msgid "Benchmark directory not found: %s"
 msgstr "Directorio de benchmark no encontrado: %s"
 
-#: .container/user/tools.d/benchmark.d:102
+#: .container/user/tools.d/benchmark.d:107
 msgid "%d of %d benchmark suites failed."
 msgstr "%d de %d suites de benchmark fallaron."
 
-#: .container/user/tools.d/benchmark.d:104
+#: .container/user/tools.d/benchmark.d:109
 msgid "All %d benchmark suites completed."
 msgstr "Todas las %d suites de benchmark completadas."
 
@@ -684,38 +688,38 @@ msgstr "Directorio no encontrado: %s"
 msgid "Create lock directory %s"
 msgstr "Crear directorio de bloqueo %s"
 
-#: .container/user/tools.d/bootstrap.d:37
+#: .container/user/tools.d/bootstrap.d:42
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:98
+#: .container/user/tools.d/healthcheck.d:97
 #, fuzzy
 msgid "Skipped: %s (via %s)"
 msgstr "Fallido: %s (código de salida %s)"
 
-#: .container/user/tools.d/bootstrap.d:44
+#: .container/user/tools.d/bootstrap.d:49
 msgid "Already done: %s"
 msgstr "Ya completado: %s"
 
-#: .container/user/tools.d/bootstrap.d:48
+#: .container/user/tools.d/bootstrap.d:53
 msgid "Running: %s"
 msgstr "Ejecutando: %s"
 
-#: .container/user/tools.d/bootstrap.d:49
+#: .container/user/tools.d/bootstrap.d:54
 msgid "Execute: %s"
 msgstr "Ejecutar: %s"
 
-#: .container/user/tools.d/bootstrap.d:50
+#: .container/user/tools.d/bootstrap.d:55
 msgid "Lock: %s"
 msgstr "Bloquear: %s"
 
-#: .container/user/tools.d/bootstrap.d:51
+#: .container/user/tools.d/bootstrap.d:56
 msgid "Completed: %s"
 msgstr "Completado: %s"
 
-#: .container/user/tools.d/bootstrap.d:55
+#: .container/user/tools.d/bootstrap.d:60
 msgid "No scripts found in %s"
 msgstr "No se encontraron scripts en %s"
 
-#: .container/user/tools.d/entrypoint.d:26 .container/user/tools.d/report.d:25
+#: .container/user/tools.d/entrypoint.d:26 .container/user/tools.d/report.d:26
 #: .container/user/tools.d/test.d:47
 msgid "Directory found:"
 msgstr "Directorio encontrado:"
@@ -732,68 +736,64 @@ msgstr "Se ejecutará"
 msgid "No entrypoint scripts found in"
 msgstr "No se encontraron scripts de entrada en"
 
-#: .container/user/tools.d/entrypoint.d:55 .container/user/tools.d/report.d:51
+#: .container/user/tools.d/entrypoint.d:55 .container/user/tools.d/report.d:52
 #: .container/user/tools.d/test.d:69
 msgid "Directory not found:"
 msgstr "Directorio no encontrado:"
 
-#: .container/user/tools.d/healthcheck.d:18
-msgid "Another healthcheck still holds %s after %ss"
-msgstr "Otra comprobación de salud aún retiene %s después de %ss"
-
-#: .container/user/tools.d/healthcheck.d:43
+#: .container/user/tools.d/healthcheck.d:40
 msgid "Draining via %s: reporting not ready"
 msgstr "En drenaje mediante %s: notificando no disponible"
 
-#: .container/user/tools.d/healthcheck.d:57
+#: .container/user/tools.d/healthcheck.d:54
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:77
+#: .container/user/tools.d/healthcheck.d:76
 msgid "Check passed:"
 msgstr "Verificación exitosa:"
 
-#: .container/user/tools.d/healthcheck.d:79
+#: .container/user/tools.d/healthcheck.d:78
 msgid "Check failed:"
 msgstr "Verificación fallida:"
 
-#: .container/user/tools.d/healthcheck.d:79
+#: .container/user/tools.d/healthcheck.d:78
 msgid "with exit code"
 msgstr "con código de salida"
 
-#: .container/user/tools.d/healthcheck.d:86
+#: .container/user/tools.d/healthcheck.d:85
 msgid "Checks directory found"
 msgstr "Directorio de verificaciones encontrado"
 
-#: .container/user/tools.d/healthcheck.d:102
+#: .container/user/tools.d/healthcheck.d:101
 msgid "Executing check:"
 msgstr "Ejecutando verificación:"
 
-#: .container/user/tools.d/healthcheck.d:124
+#: .container/user/tools.d/healthcheck.d:123
 msgid "No health checks found in"
 msgstr "No se encontraron verificaciones de salud en"
 
-#: .container/user/tools.d/healthcheck.d:127
+#: .container/user/tools.d/healthcheck.d:126
 msgid "Checks directory not found at"
 msgstr "Directorio de verificaciones no encontrado en"
 
-#: .container/user/tools.d/healthcheck.d:139
+#: .container/user/tools.d/healthcheck.d:138
 msgid "%d of %d checks failed: %s"
 msgstr "%d de %d verificaciones fallaron: %s"
 
-#: .container/user/tools.d/healthcheck.d:141
+#: .container/user/tools.d/healthcheck.d:140
 msgid "All %d checks passed."
 msgstr "Todas las %d verificaciones pasaron."
 
-#: .container/user/tools.d/report.d:17 .container/user/tools.d/test.d:23
+#: .container/user/tools.d/report.d:18 .container/user/tools.d/test.d:23
 msgid "Reading from:"
 msgstr "Leyendo de:"
 
-#: .container/user/tools.d/report.d:32
+#: .container/user/tools.d/report.d:33
 msgid "Processing report:"
 msgstr "Procesando reporte:"
 
-#: .container/user/tools.d/report.d:45
+#: .container/user/tools.d/report.d:46
 msgid "No report scripts found in"
 msgstr "No se encontraron scripts de reporte en"
 
@@ -1656,6 +1656,9 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
+
+#~ msgid "Another healthcheck still holds %s after %ss"
+#~ msgstr "Otra comprobación de salud aún retiene %s después de %ss"
 
 #~ msgid "Get %s"
 #~ msgstr "Descargar %s"

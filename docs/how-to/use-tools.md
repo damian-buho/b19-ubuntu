@@ -40,6 +40,7 @@ The `PATH` includes `/tools.d` and `/command.d`; the tree is assembled from `.co
 | [`j2-render` / `save-j2` / `parallel-j2`](use-templating.md)   | minijinja template pipeline                   |
 | [`read-lineage` / `write-lineage`](use-lineage.md)             | Provenance chain append/print                 |
 | [`detect-cpu-count`](use-cpu-detection.md)                     | `NUMPROCS` from quota/cgroups/nproc           |
+| [`b19-lock`](use-runner-family.md)                             | Bounded wait for a lock, released on exit     |
 | [`b19-load-secrets` / `b19-exec-with-secrets`](use-secrets.md) | Secret files → env vars                       |
 | [`b19-prepare-volumes`](use-build.d.md)                        | `volumes.deps` mkdir + chown                  |
 | [`trust-ca-certificates`](use-b19-fetch.md)                    | Trust the build host CA for exactly one stage |

@@ -210,7 +210,9 @@ All runners discover scripts in these directories.
 | `B19_TEST_RESULTS_PATH`      | `${B19_TEMP_PATH}/test.d`     | test.d               |
 | `B19_BOOTSTRAP_PATH`         | `/bootstrap.d`                | bootstrap.d          |
 | `B19_BOOTSTRAP_LOCK_PATH`    | `${XDG_DATA_HOME}/.bootstrap` | bootstrap.d          |
+| `B19_BOOTSTRAP_LOCK_TIMEOUT` | `600`                         | bootstrap.d          |
 | `B19_BENCHMARK_PATH`         | `/benchmark.d`                | benchmark.d          |
+| `B19_BENCHMARK_LOCK_TIMEOUT` | `3600`                        | benchmark.d          |
 | `B19_BENCHMARK_RESULTS_PATH` | `/tmp/benchmark.d`            | benchmark.d          |
 | `B19_BUILD_PATH`             | `/build.d`                    | build-stage          |
 | `B19_COMMAND_PATH`           | `/command.d`                  | (on PATH)            |
@@ -258,11 +260,13 @@ Alphabetical list of every `B19_*` variable with its scope.
 
 | Variable                        | Scope           | Section          |
 | ------------------------------- | --------------- | ---------------- |
+| `B19_BENCHMARK_LOCK_TIMEOUT`    | runtime         | Hook Directories |
 | `B19_BENCHMARK_PATH`            | runtime         | Hook Directories |
 | `B19_BENCHMARK_RESULTS_PATH`    | runtime         | Hook Directories |
 | `B19_BIN_PATH`                  | build + runtime | System Paths     |
 | `B19_BOOTSTRAP_ENABLED`         | runtime         | Feature Toggles  |
 | `B19_BOOTSTRAP_LOCK_PATH`       | runtime         | Hook Directories |
+| `B19_BOOTSTRAP_LOCK_TIMEOUT`    | runtime         | Hook Directories |
 | `B19_BOOTSTRAP_PATH`            | runtime         | Hook Directories |
 | `B19_BOOTSTRAP_SKIP_*`          | runtime         | Per-script Skip  |
 | `B19_BUILD_ALWAYS_ENABLED`      | build           | Feature Toggles  |

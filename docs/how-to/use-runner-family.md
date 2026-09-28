@@ -34,14 +34,16 @@ Every runner discovers scripts the same way — `fd --print0 --hidden --type fil
 | `test.d`        | `/test.d`        | `/tools.d/test.d`                        | descending             | continue, count failures; waits for healthcheck first                |
 | `bootstrap.d`   | `/bootstrap.d`   | `/tools.d/bootstrap.d`                   | ascending              | abort; per-script lockfile idempotency                               |
 | `build.d`       | `/build.d`       | `/tools.d/build-stage` → `process-hooks` | ascending              | abort via ERR trap; non-`*.i.sh` hooks deleted after run             |
-| `benchmark.d`   | `/benchmark.d`   | `/tools.d/benchmark.d`                   | ascending (suite dirs) | continue per suite                                                   |
-| `report.d`      | `/report.d`      | `/tools.d/report.d`                      | descending             | always succeeds                                                      |
+| `benchmark.d`   | `/benchmark.d`   | `/tools.d/benchmark.d`                   | ascending (suite dirs) | continue per suite; one run at a time under `b19-lock`               |
+| `report.d`      | `/report.d`      | `/tools.d/report.d`                      | descending             | always succeeds; private temp file per run                           |
 | `shell.d`       | `/shell.d`       | `/etc/bash.bashrc` block                 | alphabetical glob      | n/a (interactive)                                                    |
 
 Two mechanism differences worth knowing:
 
 - **Sourced vs executed** — `entrypoint.d` sources its hooks into one shell, which is how `ENTRYPOINT_COMMAND_EXECUTED`, `PAYLOAD_PID` and `NUMPROCS` flow between hooks. `healthcheck.d` sources inside a subshell (isolated failures); `test.d` executes each test via `b19-run`.
 - **Suites vs scripts** — `benchmark.d` discovers **directories** (each holding `benchmark.sh` plus optional `setup.sh`/`teardown.sh`), not loose scripts.
+
+- **Locks** — `healthcheck.d`, `bootstrap.d`, `benchmark.d` and `b19-cache-guard` serialize through `b19-lock`. A busy lock is waited on for a bounded time (`B19_HEALTH_LOCK_TIMEOUT`, `B19_BOOTSTRAP_LOCK_TIMEOUT`, `B19_BENCHMARK_LOCK_TIMEOUT`, `B19_CACHE_GUARD_TIMEOUT`), and a timeout is a failure, never a pass. The lock is an `flock` on fd 9: it dies with the holder, an EXIT trap releases it even when an orphaned child still holds the descriptor, and every child starts with `9>&-` so none inherits it.
 
 `build.d` is the one runner with a two-level layout (`{stage}/{pre,on,post}`) and an inheritance mechanism (`*.i.sh` survives the post-run prune to fire again in downstream images) — see [build with hooks](use-build.d.md).
 

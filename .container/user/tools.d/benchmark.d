@@ -22,6 +22,11 @@
     b19-run "BENCH.D" "$(_ "Make results directory") " -- \
       mkdir -p "${RESULTS_PATH}"
 
+    # One benchmark run at a time, so suites neither share CPU nor result files
+    # shellcheck source=.container/foundation/tools.d/b19-lock
+    . b19-lock
+    b19_lock "BENCH.D" "${RESULTS_PATH}/.lock" "${B19_BENCHMARK_LOCK_TIMEOUT:-3600}" || exit 1
+
     # Run a single benchmark suite
     run_suite() {
       local SUITE="$1"
@@ -48,7 +53,7 @@
       # Execute benchmark (skip if setup failed, e.g. offgrid apt-get)
       if [ "${SETUP_FAILED}" -eq 0 ]; then
         b19-log info "BENCH.D" "$(_p "Benchmarking: %s" "${SUITE}")"
-        "${SUITE_DIR}/benchmark.sh" 2>&1 | tee "${RESULTS_PATH}/${SUITE}.log"
+        "${SUITE_DIR}/benchmark.sh" 9>&- 2>&1 | tee "${RESULTS_PATH}/${SUITE}.log"
         EXIT_CODE=${PIPESTATUS[0]}
       fi
 

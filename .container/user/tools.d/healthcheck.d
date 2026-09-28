@@ -9,17 +9,6 @@
       exit 0
     fi
 
-    # Prevent overlapping healthcheck executions
-    LOCKFILE="/tmp/healthcheck.d.lock"
-    exec 9>"${LOCKFILE}"
-    if ! flock --wait "${B19_HEALTH_LOCK_TIMEOUT:-10}" 9; then
-      # shellcheck source=.container/foundation/tools.d/b19-i18n
-      . b19-i18n
-      b19-log bad "HEALTH.D" "$(_p "Another healthcheck still holds %s after %ss" "${LOCKFILE}" "${B19_HEALTH_LOCK_TIMEOUT:-10}")"
-      echo "healthcheck.d.lock"
-      exit 1
-    fi
-
     # Enable safer bash scripting
     set -euo pipefail
 
@@ -30,6 +19,14 @@
 
     # shellcheck source=.container/foundation/tools.d/b19-i18n
     . b19-i18n
+
+    # Wait for an overlapping run instead of answering for it
+    # shellcheck source=.container/foundation/tools.d/b19-lock
+    . b19-lock
+    if ! b19_lock "HEALTH.D" "/tmp/healthcheck.d.lock" "${B19_HEALTH_LOCK_TIMEOUT:-10}"; then
+      echo "healthcheck.d.lock"
+      exit 1
+    fi
 
     # Load secrets into environment (healthchecks run outside entrypoint context)
     # shellcheck source=.container/foundation/tools.d/b19-load-secrets
@@ -57,6 +54,8 @@
     b19-log debug "HEALTH.D" "$(_p "Parallel check cap (NUMPROCS): %s" "${NUMPROCS}")"
 
     declare -A PID_NAMES=()
+    # Stop checks still running when we exit, so none outlives its probe
+    trap 'kill "${!PID_NAMES[@]}" 2>/dev/null || true; b19_unlock' EXIT
     declare -a FAILED_LIST=()
     RUNNING=0
 
@@ -105,7 +104,7 @@
         # cannot drain the process-substitution pipe the outer loop still
         # reads its remaining paths from (same trap as process-hooks).
         # shellcheck disable=SC1090
-        ( . "${CHECK}" ) </dev/null &
+        ( . "${CHECK}" ) </dev/null 9>&- &
         CHECK_PID=$!
         PID_NAMES[${CHECK_PID}]="${CHECK_BASENAME}"
         RUNNING=$((RUNNING + 1))

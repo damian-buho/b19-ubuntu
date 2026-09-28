@@ -11,7 +11,8 @@
     . b19-i18n
 
     REPORTS_PATH="/report.d"
-    REPORTS_RESULTS_PATH="/tmp/report.txt"
+    REPORTS_RESULTS_PATH="$(mktemp --suffix=.report.txt)"
+    trap 'rm -f "${REPORTS_RESULTS_PATH}"' EXIT
 
     # Log the paths being used
     b19-log info "REPORT.D" "$(_ "Reading from:") ${REPORTS_PATH}"

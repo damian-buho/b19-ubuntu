@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+    # Holds FILE on fd 9 until the caller exits; start children with 9>&- so none keeps it
+    b19_lock() {
+      local _tag="$1" _file="$2" _timeout="$3"
+      exec 9>"${_file}"
+      if ! flock --wait "${_timeout}" 9; then
+        b19-log error "${_tag}" "$(_p "Timed out after %ss waiting for %s" "${_timeout}" "${_file}")"
+        return 1
+      fi
+      trap 'b19_unlock' EXIT
+      trap 'exit 129' HUP
+      trap 'exit 130' INT
+      trap 'exit 143' TERM
+      b19-log debug "${_tag}" "$(_p "Holding lock %s" "${_file}")"
+    }
+
+    # Releases the lock for every process sharing fd 9, orphaned children included
+    b19_unlock() {
+      flock --unlock 9 2>/dev/null || true
+    }

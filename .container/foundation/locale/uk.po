@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-28 19:09+0000\n"
+"POT-Creation-Date: 2026-09-28 19:20+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -55,27 +55,23 @@ msgstr "Кеш %s свіжий"
 msgid "Cache %s is not writable, scanning with what is there"
 msgstr "Кеш %s недоступний для запису, скануємо з наявним"
 
-#: .container/foundation/tools.d/b19-cache-guard:87
-msgid "Timed out after %ss waiting for %s"
-msgstr "Час очікування %s с на %s вичерпано"
-
-#: .container/foundation/tools.d/b19-cache-guard:93
+#: .container/foundation/tools.d/b19-cache-guard:90
 msgid "Cache %s was refreshed by another holder"
 msgstr "Кеш %s уже оновив інший процес"
 
-#: .container/foundation/tools.d/b19-cache-guard:97
+#: .container/foundation/tools.d/b19-cache-guard:94
 msgid "Refresh cache %s"
 msgstr "Оновити кеш %s"
 
-#: .container/foundation/tools.d/b19-cache-guard:100
+#: .container/foundation/tools.d/b19-cache-guard:97
 msgid "Cache %s refreshed"
 msgstr "Кеш %s оновлено"
 
-#: .container/foundation/tools.d/b19-cache-guard:107
+#: .container/foundation/tools.d/b19-cache-guard:104
 msgid "Cache %s is empty and its refresh failed"
 msgstr "Кеш %s порожній, і його оновлення не вдалося"
 
-#: .container/foundation/tools.d/b19-cache-guard:110
+#: .container/foundation/tools.d/b19-cache-guard:107
 msgid "Refresh of %s failed, falling back to the cached copy"
 msgstr "Оновлення %s не вдалося, використовуємо кешовану копію"
 
@@ -277,6 +273,14 @@ msgstr "завантажено,"
 #: .container/foundation/tools.d/b19-load-secrets:70
 msgid "skipped"
 msgstr "пропущено"
+
+#: .container/foundation/tools.d/b19-lock:12
+msgid "Timed out after %ss waiting for %s"
+msgstr "Час очікування %s с на %s вичерпано"
+
+#: .container/foundation/tools.d/b19-lock:19
+msgid "Holding lock %s"
+msgstr "Утримується блокування %s"
 
 #: .container/foundation/tools.d/b19-log:71
 #: .container/foundation/tools.d/b19-log:111
@@ -631,47 +635,47 @@ msgstr "Бенчмарки вимкнено"
 msgid "Make results directory"
 msgstr "Створити каталог результатів"
 
-#: .container/user/tools.d/benchmark.d:34
+#: .container/user/tools.d/benchmark.d:39
 msgid "Benchmark suite not found: %s"
 msgstr "Набір бенчмарків не знайдено: %s"
 
-#: .container/user/tools.d/benchmark.d:40
+#: .container/user/tools.d/benchmark.d:45
 msgid "Setup: %s"
 msgstr "Налаштування: %s"
 
-#: .container/user/tools.d/benchmark.d:43
+#: .container/user/tools.d/benchmark.d:48
 msgid "Setup failed for %s — skipping"
 msgstr "Налаштування не вдалося для %s — пропускаємо"
 
-#: .container/user/tools.d/benchmark.d:50
+#: .container/user/tools.d/benchmark.d:55
 msgid "Benchmarking: %s"
 msgstr "Бенчмаркінг: %s"
 
-#: .container/user/tools.d/benchmark.d:57
+#: .container/user/tools.d/benchmark.d:62
 msgid "Teardown: %s"
 msgstr "Очищення: %s"
 
-#: .container/user/tools.d/benchmark.d:78
+#: .container/user/tools.d/benchmark.d:83
 msgid "Reading from: %s"
 msgstr "Читання з: %s"
 
-#: .container/user/tools.d/benchmark.d:79 .container/user/tools.d/report.d:18
+#: .container/user/tools.d/benchmark.d:84 .container/user/tools.d/report.d:19
 msgid "Writing to:"
 msgstr "Запис до:"
 
-#: .container/user/tools.d/benchmark.d:94
+#: .container/user/tools.d/benchmark.d:99
 msgid "No benchmark suites found in %s"
 msgstr "Набори бенчмарків не знайдено в %s"
 
-#: .container/user/tools.d/benchmark.d:97
+#: .container/user/tools.d/benchmark.d:102
 msgid "Benchmark directory not found: %s"
 msgstr "Каталог бенчмарків не знайдено: %s"
 
-#: .container/user/tools.d/benchmark.d:102
+#: .container/user/tools.d/benchmark.d:107
 msgid "%d of %d benchmark suites failed."
 msgstr "%d з %d наборів бенчмарків завершилися з помилкою."
 
-#: .container/user/tools.d/benchmark.d:104
+#: .container/user/tools.d/benchmark.d:109
 msgid "All %d benchmark suites completed."
 msgstr "Усі %d наборів бенчмарків завершено."
 
@@ -683,38 +687,38 @@ msgstr "Каталог не знайдено: %s"
 msgid "Create lock directory %s"
 msgstr "Створити каталог блокування %s"
 
-#: .container/user/tools.d/bootstrap.d:37
+#: .container/user/tools.d/bootstrap.d:42
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:98
+#: .container/user/tools.d/healthcheck.d:97
 #, fuzzy
 msgid "Skipped: %s (via %s)"
 msgstr "Помилка: %s (код виходу %s)"
 
-#: .container/user/tools.d/bootstrap.d:44
+#: .container/user/tools.d/bootstrap.d:49
 msgid "Already done: %s"
 msgstr "Вже виконано: %s"
 
-#: .container/user/tools.d/bootstrap.d:48
+#: .container/user/tools.d/bootstrap.d:53
 msgid "Running: %s"
 msgstr "Виконання: %s"
 
-#: .container/user/tools.d/bootstrap.d:49
+#: .container/user/tools.d/bootstrap.d:54
 msgid "Execute: %s"
 msgstr "Виконати: %s"
 
-#: .container/user/tools.d/bootstrap.d:50
+#: .container/user/tools.d/bootstrap.d:55
 msgid "Lock: %s"
 msgstr "Блокування: %s"
 
-#: .container/user/tools.d/bootstrap.d:51
+#: .container/user/tools.d/bootstrap.d:56
 msgid "Completed: %s"
 msgstr "Завершено: %s"
 
-#: .container/user/tools.d/bootstrap.d:55
+#: .container/user/tools.d/bootstrap.d:60
 msgid "No scripts found in %s"
 msgstr "Скрипти не знайдено в %s"
 
-#: .container/user/tools.d/entrypoint.d:26 .container/user/tools.d/report.d:25
+#: .container/user/tools.d/entrypoint.d:26 .container/user/tools.d/report.d:26
 #: .container/user/tools.d/test.d:47
 msgid "Directory found:"
 msgstr "Каталог знайдено:"
@@ -731,68 +735,64 @@ msgstr "Буде запущено"
 msgid "No entrypoint scripts found in"
 msgstr "Скриптів точки входу не знайдено в"
 
-#: .container/user/tools.d/entrypoint.d:55 .container/user/tools.d/report.d:51
+#: .container/user/tools.d/entrypoint.d:55 .container/user/tools.d/report.d:52
 #: .container/user/tools.d/test.d:69
 msgid "Directory not found:"
 msgstr "Каталог не знайдено:"
 
-#: .container/user/tools.d/healthcheck.d:18
-msgid "Another healthcheck still holds %s after %ss"
-msgstr "Інша перевірка стану досі утримує %s після %s с"
-
-#: .container/user/tools.d/healthcheck.d:43
+#: .container/user/tools.d/healthcheck.d:40
 msgid "Draining via %s: reporting not ready"
 msgstr "Дренаж через %s: позначено як не готовий"
 
-#: .container/user/tools.d/healthcheck.d:57
+#: .container/user/tools.d/healthcheck.d:54
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:77
+#: .container/user/tools.d/healthcheck.d:76
 msgid "Check passed:"
 msgstr "Перевірка пройдена:"
 
-#: .container/user/tools.d/healthcheck.d:79
+#: .container/user/tools.d/healthcheck.d:78
 msgid "Check failed:"
 msgstr "Перевірка не пройдена:"
 
-#: .container/user/tools.d/healthcheck.d:79
+#: .container/user/tools.d/healthcheck.d:78
 msgid "with exit code"
 msgstr "з кодом виходу"
 
-#: .container/user/tools.d/healthcheck.d:86
+#: .container/user/tools.d/healthcheck.d:85
 msgid "Checks directory found"
 msgstr "Каталог перевірок знайдено"
 
-#: .container/user/tools.d/healthcheck.d:102
+#: .container/user/tools.d/healthcheck.d:101
 msgid "Executing check:"
 msgstr "Виконання перевірки:"
 
-#: .container/user/tools.d/healthcheck.d:124
+#: .container/user/tools.d/healthcheck.d:123
 msgid "No health checks found in"
 msgstr "Перевірок здоров'я не знайдено в"
 
-#: .container/user/tools.d/healthcheck.d:127
+#: .container/user/tools.d/healthcheck.d:126
 msgid "Checks directory not found at"
 msgstr "Каталог перевірок не знайдено в"
 
-#: .container/user/tools.d/healthcheck.d:139
+#: .container/user/tools.d/healthcheck.d:138
 msgid "%d of %d checks failed: %s"
 msgstr "%d з %d перевірок не пройдено: %s"
 
-#: .container/user/tools.d/healthcheck.d:141
+#: .container/user/tools.d/healthcheck.d:140
 msgid "All %d checks passed."
 msgstr "Усі %d перевірок пройдено."
 
-#: .container/user/tools.d/report.d:17 .container/user/tools.d/test.d:23
+#: .container/user/tools.d/report.d:18 .container/user/tools.d/test.d:23
 msgid "Reading from:"
 msgstr "Читання з:"
 
-#: .container/user/tools.d/report.d:32
+#: .container/user/tools.d/report.d:33
 msgid "Processing report:"
 msgstr "Обробка звіту:"
 
-#: .container/user/tools.d/report.d:45
+#: .container/user/tools.d/report.d:46
 msgid "No report scripts found in"
 msgstr "Скриптів звітів не знайдено в"
 
@@ -1647,6 +1647,9 @@ msgstr "Загальне використання пам'яті (%s МБ) пер
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "Загальне використання пам'яті в межах порогу (%s МБ)"
+
+#~ msgid "Another healthcheck still holds %s after %ss"
+#~ msgstr "Інша перевірка стану досі утримує %s після %s с"
 
 #~ msgid "Get %s"
 #~ msgstr "Завантажити %s"

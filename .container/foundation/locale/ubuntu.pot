@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-28 19:09+0000\n"
+"POT-Creation-Date: 2026-09-28 19:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,27 +51,23 @@ msgstr ""
 msgid "Cache %s is not writable, scanning with what is there"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-cache-guard:87
-msgid "Timed out after %ss waiting for %s"
-msgstr ""
-
-#: .container/foundation/tools.d/b19-cache-guard:93
+#: .container/foundation/tools.d/b19-cache-guard:90
 msgid "Cache %s was refreshed by another holder"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-cache-guard:97
+#: .container/foundation/tools.d/b19-cache-guard:94
 msgid "Refresh cache %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-cache-guard:100
+#: .container/foundation/tools.d/b19-cache-guard:97
 msgid "Cache %s refreshed"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-cache-guard:107
+#: .container/foundation/tools.d/b19-cache-guard:104
 msgid "Cache %s is empty and its refresh failed"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-cache-guard:110
+#: .container/foundation/tools.d/b19-cache-guard:107
 msgid "Refresh of %s failed, falling back to the cached copy"
 msgstr ""
 
@@ -263,6 +259,14 @@ msgstr ""
 
 #: .container/foundation/tools.d/b19-load-secrets:70
 msgid "skipped"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-lock:12
+msgid "Timed out after %ss waiting for %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-lock:19
+msgid "Holding lock %s"
 msgstr ""
 
 #: .container/foundation/tools.d/b19-log:71
@@ -615,47 +619,47 @@ msgstr ""
 msgid "Make results directory"
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:34
+#: .container/user/tools.d/benchmark.d:39
 msgid "Benchmark suite not found: %s"
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:40
+#: .container/user/tools.d/benchmark.d:45
 msgid "Setup: %s"
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:43
+#: .container/user/tools.d/benchmark.d:48
 msgid "Setup failed for %s — skipping"
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:50
+#: .container/user/tools.d/benchmark.d:55
 msgid "Benchmarking: %s"
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:57
+#: .container/user/tools.d/benchmark.d:62
 msgid "Teardown: %s"
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:78
+#: .container/user/tools.d/benchmark.d:83
 msgid "Reading from: %s"
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:79 .container/user/tools.d/report.d:18
+#: .container/user/tools.d/benchmark.d:84 .container/user/tools.d/report.d:19
 msgid "Writing to:"
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:94
+#: .container/user/tools.d/benchmark.d:99
 msgid "No benchmark suites found in %s"
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:97
+#: .container/user/tools.d/benchmark.d:102
 msgid "Benchmark directory not found: %s"
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:102
+#: .container/user/tools.d/benchmark.d:107
 msgid "%d of %d benchmark suites failed."
 msgstr ""
 
-#: .container/user/tools.d/benchmark.d:104
+#: .container/user/tools.d/benchmark.d:109
 msgid "All %d benchmark suites completed."
 msgstr ""
 
@@ -667,37 +671,37 @@ msgstr ""
 msgid "Create lock directory %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:37
+#: .container/user/tools.d/bootstrap.d:42
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:98
+#: .container/user/tools.d/healthcheck.d:97
 msgid "Skipped: %s (via %s)"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:44
+#: .container/user/tools.d/bootstrap.d:49
 msgid "Already done: %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:48
+#: .container/user/tools.d/bootstrap.d:53
 msgid "Running: %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:49
+#: .container/user/tools.d/bootstrap.d:54
 msgid "Execute: %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:50
+#: .container/user/tools.d/bootstrap.d:55
 msgid "Lock: %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:51
+#: .container/user/tools.d/bootstrap.d:56
 msgid "Completed: %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:55
+#: .container/user/tools.d/bootstrap.d:60
 msgid "No scripts found in %s"
 msgstr ""
 
-#: .container/user/tools.d/entrypoint.d:26 .container/user/tools.d/report.d:25
+#: .container/user/tools.d/entrypoint.d:26 .container/user/tools.d/report.d:26
 #: .container/user/tools.d/test.d:47
 msgid "Directory found:"
 msgstr ""
@@ -714,68 +718,64 @@ msgstr ""
 msgid "No entrypoint scripts found in"
 msgstr ""
 
-#: .container/user/tools.d/entrypoint.d:55 .container/user/tools.d/report.d:51
+#: .container/user/tools.d/entrypoint.d:55 .container/user/tools.d/report.d:52
 #: .container/user/tools.d/test.d:69
 msgid "Directory not found:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:18
-msgid "Another healthcheck still holds %s after %ss"
-msgstr ""
-
-#: .container/user/tools.d/healthcheck.d:43
+#: .container/user/tools.d/healthcheck.d:40
 msgid "Draining via %s: reporting not ready"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:57
+#: .container/user/tools.d/healthcheck.d:54
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:77
+#: .container/user/tools.d/healthcheck.d:76
 msgid "Check passed:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:79
+#: .container/user/tools.d/healthcheck.d:78
 msgid "Check failed:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:79
+#: .container/user/tools.d/healthcheck.d:78
 msgid "with exit code"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:86
+#: .container/user/tools.d/healthcheck.d:85
 msgid "Checks directory found"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:102
+#: .container/user/tools.d/healthcheck.d:101
 msgid "Executing check:"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:124
+#: .container/user/tools.d/healthcheck.d:123
 msgid "No health checks found in"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:127
+#: .container/user/tools.d/healthcheck.d:126
 msgid "Checks directory not found at"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:139
+#: .container/user/tools.d/healthcheck.d:138
 msgid "%d of %d checks failed: %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:141
+#: .container/user/tools.d/healthcheck.d:140
 msgid "All %d checks passed."
 msgstr ""
 
-#: .container/user/tools.d/report.d:17 .container/user/tools.d/test.d:23
+#: .container/user/tools.d/report.d:18 .container/user/tools.d/test.d:23
 msgid "Reading from:"
 msgstr ""
 
-#: .container/user/tools.d/report.d:32
+#: .container/user/tools.d/report.d:33
 msgid "Processing report:"
 msgstr ""
 
-#: .container/user/tools.d/report.d:45
+#: .container/user/tools.d/report.d:46
 msgid "No report scripts found in"
 msgstr ""
 

@@ -81,12 +81,9 @@
   fi
 
   # a second holder re-tests inside the lock, so a queued twin refresh becomes a no-op
-  exec 9>"${GUARD_LOCK}"
-  if ! flock --timeout "${B19_CACHE_GUARD_TIMEOUT}" 9
-  then
-    b19-log error "${TAG}" "$(_p "Timed out after %ss waiting for %s" "${B19_CACHE_GUARD_TIMEOUT}" "${GUARD_LOCK}")"
-    exit 1
-  fi
+  # shellcheck source=.container/foundation/tools.d/b19-lock
+  . b19-lock
+  b19_lock "${TAG}" "${GUARD_LOCK}" "${B19_CACHE_GUARD_TIMEOUT}" || exit 1
 
   if ! _needs_refresh
   then
@@ -94,7 +91,7 @@
     exit 0
   fi
 
-  if b19-run "${TAG}" "$(_p "Refresh cache %s" "${GUARD_DIR}")" -- "$@"
+  if b19-run "${TAG}" "$(_p "Refresh cache %s" "${GUARD_DIR}")" -- "$@" 9>&-
   then
     touch "${GUARD_STAMP}"
     b19-log good "${TAG}" "$(_p "Cache %s refreshed" "${GUARD_DIR}")"

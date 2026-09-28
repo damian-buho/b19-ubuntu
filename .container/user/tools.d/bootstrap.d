@@ -26,6 +26,11 @@
     # Ensure lock directory exists
     b19-run "BOOTSTRAP" "$(_p "Create lock directory %s" "${LOCK_PATH}")" --  mkdir -p "${LOCK_PATH}"
 
+    # One bootstrap at a time per lock directory, even across replicas sharing it
+    # shellcheck source=.container/foundation/tools.d/b19-lock
+    . b19-lock
+    b19_lock "BOOTSTRAP" "${LOCK_PATH}/.lock" "${B19_BOOTSTRAP_LOCK_TIMEOUT:-600}" || exit 1
+
     SCRIPT_COUNT=0
 
     while IFS= read -r -d '' SCRIPT; do
@@ -46,7 +51,7 @@
       fi
 
       b19-log info "BOOTSTRAP" "$(_p "Running: %s" "${BASENAME}")"
-      b19-run "BOOTSTRAP" "$(_p "Execute: %s" "${BASENAME}")" --  "${SCRIPT}"
+      b19-run "BOOTSTRAP" "$(_p "Execute: %s" "${BASENAME}")" --  "${SCRIPT}" 9>&-
       b19-run "BOOTSTRAP" "$(_p "Lock: %s" "${BASENAME}")" --    touch "${LOCK_FILE}"
       b19-log good "BOOTSTRAP" "$(_p "Completed: %s" "${BASENAME}")"
     done < <(fd --print0 --hidden --type file --extension sh . "${BOOTSTRAP_PATH}" | sort --zero-terminated --numeric-sort)
