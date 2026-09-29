@@ -50,7 +50,7 @@ Docker daemon (periodic HEALTHCHECK interval)
 Runner lifecycle:
 
 1. Checks `B19_HEALTH_ENABLED` — exits 0 immediately if `false`
-1. Acquires `flock` on `/tmp/healthcheck.d.lock` — waits up to `B19_HEALTH_LOCK_TIMEOUT` seconds for a run still in progress, then reports unhealthy, so an overlapping caller never reads a pass nobody checked
+1. Acquires `flock` on `/tmp/healthcheck.d.lock` — waits up to `B19_HEALTH_LOCK_TIMEOUT` seconds for a run still in progress, then reports unhealthy (keep it below the `HEALTHCHECK` `--timeout`, 5 s by default), so an overlapping caller never reads a pass nobody checked
 1. Sets `B19_COLOR=auto` — color only on a TTY; `docker inspect` and file redirects get plain text automatically
 1. Sources `b19-i18n` and `b19-load-secrets` — healthchecks run outside entrypoint context, so secrets are loaded explicitly
 1. Checks `B19_HEALTH_DRAIN_FILE` — exits 1 unconditionally if present (a deploy marks the outgoing container not-ready so Traefik routes around it while it keeps serving in-flight requests)
@@ -264,7 +264,7 @@ esac
 | `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768`                                       | Min free KB in `$XDG_CACHE_HOME` before failing                    |
 | `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_TEMP_PATH` before failing                     |
 | `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Timeout in seconds for curl-based checks                           |
-| `B19_HEALTH_LOCK_TIMEOUT`       | `10`                                          | Seconds to wait for an overlapping run before failing              |
+| `B19_HEALTH_LOCK_TIMEOUT`       | `4`                                           | Seconds to wait for an overlapping run before failing              |
 | `B19_HEALTH_NETWORK_URL`        | `"https://www.w3.org https://www.google.com"` | Space-separated URLs for HTTPS and DNS checks                      |
 | `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for the TCP reachability probe                 |
 | `B19_HEALTH_REACH_PORT_SAFE`    | `443`                                         | TCP port probed by the reachability check                          |
