@@ -19,11 +19,6 @@ if [[ "${B19_SECRETS_ENABLED:-}" == "false" ]]; then
   return 0
 fi
 
-if [ "${ENTRYPOINT_COMMAND_EXECUTED:-N}" = "Y" ]
-then
-    return 0
-fi
-
 MISSING_SECRETS=""
 LOADED_SECRETS=""
 SECRET_COUNT=0

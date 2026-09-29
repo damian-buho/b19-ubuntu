@@ -52,7 +52,7 @@ The service reads `MY_DB_PASSWORD` from its environment.
 | Interactive shells   | `shell.d/010-load-secrets.sh`                                                  |
 | Ad-hoc `docker exec` | `b19-exec-with-secrets <cmd>` — loads, then `exec "$@"`                        |
 
-Validation passes when the env var is non-empty **or** the file exists under `${B19_SECRETS_PATH}`; it is skipped entirely for ad-hoc commands (`ENTRYPOINT_COMMAND_EXECUTED=Y`) and when `B19_SECRETS_ENABLED=false`.
+Validation passes when the env var is non-empty **or** the file exists under `${B19_SECRETS_PATH}`; it runs for ad-hoc commands too (`docker run img some-command`) and is skipped only when `B19_SECRETS_ENABLED=false`.
 
 The make wrapper uses the same path for pipeline commands: `M6E_DOCKER_EXEC = docker exec <instance> b19-exec-with-secrets`.
 

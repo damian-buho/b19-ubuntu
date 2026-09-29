@@ -7,7 +7,7 @@
   if [ $# -gt 0 ] && command -v "$1" >/dev/null 2>&1;
   then
     b19-log note "ENTRY.D" "$(_p "Treating %s as command" "$*")"
-    "$@" && RETURN_CODE=0 || RETURN_CODE=$?
+    # Claim the argv; 4000-run-command runs it after secrets and bootstrap
     ENTRYPOINT_COMMAND_EXECUTED=Y
   elif [ $# -eq 0 ] || [ -z "${1:-}" ];
   then

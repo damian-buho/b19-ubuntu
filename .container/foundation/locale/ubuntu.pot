@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-28 22:21+0000\n"
+"POT-Creation-Date: 2026-09-29 17:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -702,6 +702,7 @@ msgid "Already done: %s"
 msgstr ""
 
 #: .container/user/tools.d/bootstrap.d:53
+#: .container/user/entrypoint.d/4000-run-command.sh:10
 msgid "Running: %s"
 msgstr ""
 
@@ -1024,19 +1025,19 @@ msgstr ""
 msgid "B19_IMMUTABLE=Y, skipping overlays"
 msgstr ""
 
-#: .container/user/entrypoint.d/2000-run-command.sh:9
+#: .container/user/entrypoint.d/2000-select-command.sh:9
 msgid "Treating %s as command"
 msgstr ""
 
-#: .container/user/entrypoint.d/2000-run-command.sh:14
+#: .container/user/entrypoint.d/2000-select-command.sh:14
 msgid "Empty command, continue"
 msgstr ""
 
-#: .container/user/entrypoint.d/2000-run-command.sh:22
+#: .container/user/entrypoint.d/2000-select-command.sh:22
 msgid "Single-command image: %s left for the start hook"
 msgstr ""
 
-#: .container/user/entrypoint.d/2000-run-command.sh:28
+#: .container/user/entrypoint.d/2000-select-command.sh:28
 msgid "%s is not a command"
 msgstr ""
 
@@ -1044,35 +1045,35 @@ msgstr ""
 msgid "Secrets validation disabled (B19_SECRETS_ENABLED=false)"
 msgstr ""
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:33
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:28
 msgid "No required secrets defined, skipping validation"
 msgstr ""
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:37
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:32
 msgid "Validating required secrets..."
 msgstr ""
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:65
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:60
 msgid "Loaded:%s"
 msgstr ""
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:70
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:65
 msgid "Missing required secrets:%s"
 msgstr ""
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:71
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:66
 msgid "Provide secrets via:"
 msgstr ""
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:72
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:67
 msgid "  - Environment variables (%s format)"
 msgstr ""
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:73
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:68
 msgid "  - Docker secrets files (%s/b19.* format)"
 msgstr ""
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:77
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:72
 msgid "All %d required secrets validated"
 msgstr ""
 
@@ -1569,6 +1570,11 @@ msgstr ""
 #: .container/user/test.d/0310-check-ports.sh:70
 #: .container/user/test.d/0310-check-ports.sh:78
 #: .container/user/test.d/0310-check-ports.sh:84
+#: .container/user/test.d/0320-entrypoint-command-path.sh:40
+#: .container/user/test.d/0320-entrypoint-command-path.sh:48
+#: .container/user/test.d/0320-entrypoint-command-path.sh:57
+#: .container/user/test.d/0320-entrypoint-command-path.sh:65
+#: .container/user/test.d/0320-entrypoint-command-path.sh:71
 msgid "Test %s passed"
 msgstr ""
 
@@ -1611,6 +1617,50 @@ msgstr ""
 
 #: .container/user/test.d/0310-check-ports.sh:89
 msgid "All check-ports tests passed"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:38
+msgid "Test %s: explicit command runs after bootstrap"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:42
+msgid "Explicit command ran before bootstrap"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:45
+msgid "Test %s: single-command subcommand reaches bootstrap"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:50
+msgid "Single-command subcommand skipped bootstrap"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:53
+msgid "Test %s: missing secret fails the explicit command"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:55
+msgid "Explicit command ran without a required secret"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:60
+msgid "Test %s: missing secret fails the single-command subcommand"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:63
+msgid "Single-command subcommand reached bootstrap without a required secret"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:68
+msgid "Test %s: unknown command fails before bootstrap"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:73
+msgid "Unknown command exited %s or reached bootstrap"
+msgstr ""
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:77
+msgid "All command-path tests passed"
 msgstr ""
 
 #: .container/user/test.d/0900-memory-consumption.sh:17

@@ -61,9 +61,12 @@ foundation.
 
 `tini -g` → `entrypoint.d` runs numbered hooks from `.container/user/entrypoint.d/`:
 set-signals → remap-user → load-secrets → set-cpu-count → check-ports → print-lineage →
-copy-overlay → parallel-j2 (render `.j2`) → run-command → validate-secrets →
-bootstrap → start → finalize. A bare `docker run img <cmd>` short-circuits to run
-the command directly; a `<cmd>` the image does NOT carry fails closed with `127`
+copy-overlay → parallel-j2 (render `.j2`) → select-command → validate-secrets →
+bootstrap → run-command → start → finalize. A bare `docker run img <cmd>` is
+CLAIMED at 2000 (`ENTRYPOINT_COMMAND_EXECUTED=Y`) and RUN at 4000, so it passes
+the same secret validation and bootstrap as a service; the debug escape hatches
+are `B19_SECRETS_ENABLED=false`, `B19_BOOTSTRAP_ENABLED=false` or `--entrypoint
+bash`. A `<cmd>` the image does NOT carry fails closed with `127`
 at 2000 instead of falling through to bootstrap/start and finishing green. An
 image wrapping ONE program takes its SUBCOMMAND as argv (`docker run img
 validate`), so that first arg is expected not to be a command: it sets

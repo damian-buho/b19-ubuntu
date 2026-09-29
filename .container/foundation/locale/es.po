@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-28 22:21+0000\n"
+"POT-Creation-Date: 2026-09-29 17:31+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -720,6 +720,7 @@ msgid "Already done: %s"
 msgstr "Ya completado: %s"
 
 #: .container/user/tools.d/bootstrap.d:53
+#: .container/user/entrypoint.d/4000-run-command.sh:10
 msgid "Running: %s"
 msgstr "Ejecutando: %s"
 
@@ -1046,19 +1047,19 @@ msgstr "Eliminar directorio de overlays"
 msgid "B19_IMMUTABLE=Y, skipping overlays"
 msgstr "B19_IMMUTABLE=Y, omitiendo superposiciones"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:9
+#: .container/user/entrypoint.d/2000-select-command.sh:9
 msgid "Treating %s as command"
 msgstr "Tratando %s como comando"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:14
+#: .container/user/entrypoint.d/2000-select-command.sh:14
 msgid "Empty command, continue"
 msgstr "Comando vacío, continuar"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:22
+#: .container/user/entrypoint.d/2000-select-command.sh:22
 msgid "Single-command image: %s left for the start hook"
 msgstr "Imagen de comando único: %s se deja para el hook de arranque"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:28
+#: .container/user/entrypoint.d/2000-select-command.sh:28
 msgid "%s is not a command"
 msgstr "%s no es un comando"
 
@@ -1066,35 +1067,35 @@ msgstr "%s no es un comando"
 msgid "Secrets validation disabled (B19_SECRETS_ENABLED=false)"
 msgstr "Validación de secretos deshabilitada (B19_SECRETS_ENABLED=false)"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:33
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:28
 msgid "No required secrets defined, skipping validation"
 msgstr "No hay secretos requeridos definidos, se omite la validación"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:37
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:32
 msgid "Validating required secrets..."
 msgstr "Validando secretos requeridos..."
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:65
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:60
 msgid "Loaded:%s"
 msgstr "Cargado:%s"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:70
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:65
 msgid "Missing required secrets:%s"
 msgstr "Faltan secretos requeridos:%s"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:71
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:66
 msgid "Provide secrets via:"
 msgstr "Proporcionar secretos mediante:"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:72
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:67
 msgid "  - Environment variables (%s format)"
 msgstr "  - Variables de entorno (formato %s)"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:73
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:68
 msgid "  - Docker secrets files (%s/b19.* format)"
 msgstr "  - Archivos de secretos de Docker (formato %s/b19.*)"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:77
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:72
 msgid "All %d required secrets validated"
 msgstr "Todos los %d secretos requeridos validados"
 
@@ -1613,6 +1614,11 @@ msgstr "Prueba %s: el puerto alto seguro pasa"
 #: .container/user/test.d/0310-check-ports.sh:70
 #: .container/user/test.d/0310-check-ports.sh:78
 #: .container/user/test.d/0310-check-ports.sh:84
+#: .container/user/test.d/0320-entrypoint-command-path.sh:40
+#: .container/user/test.d/0320-entrypoint-command-path.sh:48
+#: .container/user/test.d/0320-entrypoint-command-path.sh:57
+#: .container/user/test.d/0320-entrypoint-command-path.sh:65
+#: .container/user/test.d/0320-entrypoint-command-path.sh:71
 msgid "Test %s passed"
 msgstr "Prueba %s superada"
 
@@ -1656,6 +1662,50 @@ msgstr "La verificación desactivada aún rechazó el puerto"
 #: .container/user/test.d/0310-check-ports.sh:89
 msgid "All check-ports tests passed"
 msgstr "Todas las pruebas de check-ports superadas"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:38
+msgid "Test %s: explicit command runs after bootstrap"
+msgstr "Prueba %s: el comando explícito se ejecuta tras el bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:42
+msgid "Explicit command ran before bootstrap"
+msgstr "El comando explícito se ejecutó antes del bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:45
+msgid "Test %s: single-command subcommand reaches bootstrap"
+msgstr "Prueba %s: el subcomando de imagen de un solo comando llega al bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:50
+msgid "Single-command subcommand skipped bootstrap"
+msgstr "El subcomando de imagen de un solo comando omitió el bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:53
+msgid "Test %s: missing secret fails the explicit command"
+msgstr "Prueba %s: un secreto ausente hace fallar el comando explícito"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:55
+msgid "Explicit command ran without a required secret"
+msgstr "El comando explícito se ejecutó sin un secreto obligatorio"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:60
+msgid "Test %s: missing secret fails the single-command subcommand"
+msgstr "Prueba %s: un secreto ausente hace fallar el subcomando de imagen de un solo comando"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:63
+msgid "Single-command subcommand reached bootstrap without a required secret"
+msgstr "El subcomando de imagen de un solo comando llegó al bootstrap sin un secreto obligatorio"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:68
+msgid "Test %s: unknown command fails before bootstrap"
+msgstr "Prueba %s: un comando desconocido falla antes del bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:73
+msgid "Unknown command exited %s or reached bootstrap"
+msgstr "El comando desconocido terminó con %s o llegó al bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:77
+msgid "All command-path tests passed"
+msgstr "Todas las pruebas de la ruta de comandos superadas"
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
 msgid ""

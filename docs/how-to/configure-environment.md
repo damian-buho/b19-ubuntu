@@ -226,14 +226,14 @@ All runners discover scripts in these directories.
 Set automatically at runtime by the entrypoint system. Not intended for user
 configuration, but useful in downstream scripts.
 
-| Variable                      | Set by                  | Purpose                                                                                                                                                    |
-| ----------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ENTRYPOINT_COMMAND_EXECUTED` | `2000-run-command.sh`   | `Y`/`N` — gates secret validation, bootstrap, and service start                                                                                            |
-| `PAYLOAD_PID`                 | `b19-exec`              | PID of the main service process — published to `${B19_HOME}/.payload.pid` for signal forwarding (the subprocess `export` can’t reach the entrypoint shell) |
-| `RETURN_CODE`                 | `b19-exec`              | Exit code of the main service                                                                                                                              |
-| `NUMPROCS`                    | `0200-set-cpu-count.sh` | Detected CPU count (K8S > cgroups v2 > nproc)                                                                                                              |
-| `STAGE`                       | `build-stage`           | Current build stage name (foundation, user, etc.)                                                                                                          |
-| `_B19_I18N_MODE`              | `b19-i18n`              | Current i18n mode: `gettext`, `passthrough`, `disabled`                                                                                                    |
+| Variable                      | Set by                   | Purpose                                                                                                                                                    |
+| ----------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ENTRYPOINT_COMMAND_EXECUTED` | `2000-select-command.sh` | `Y`/`N` — `Y` when argv is a command `4000-run-command.sh` runs; gates service start                                                                       |
+| `PAYLOAD_PID`                 | `b19-exec`               | PID of the main service process — published to `${B19_HOME}/.payload.pid` for signal forwarding (the subprocess `export` can’t reach the entrypoint shell) |
+| `RETURN_CODE`                 | `b19-exec`               | Exit code of the main service                                                                                                                              |
+| `NUMPROCS`                    | `0200-set-cpu-count.sh`  | Detected CPU count (K8S > cgroups v2 > nproc)                                                                                                              |
+| `STAGE`                       | `build-stage`            | Current build stage name (foundation, user, etc.)                                                                                                          |
+| `_B19_I18N_MODE`              | `b19-i18n`               | Current i18n mode: `gettext`, `passthrough`, `disabled`                                                                                                    |
 
 ## Telemetry opt-out
 

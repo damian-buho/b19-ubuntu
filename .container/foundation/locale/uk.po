@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-28 22:21+0000\n"
+"POT-Creation-Date: 2026-09-29 17:31+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -719,6 +719,7 @@ msgid "Already done: %s"
 msgstr "Вже виконано: %s"
 
 #: .container/user/tools.d/bootstrap.d:53
+#: .container/user/entrypoint.d/4000-run-command.sh:10
 msgid "Running: %s"
 msgstr "Виконання: %s"
 
@@ -1045,19 +1046,19 @@ msgstr "Видалити каталог оверлеїв"
 msgid "B19_IMMUTABLE=Y, skipping overlays"
 msgstr "B19_IMMUTABLE=Y, пропускаємо накладки"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:9
+#: .container/user/entrypoint.d/2000-select-command.sh:9
 msgid "Treating %s as command"
 msgstr "Розглядаємо %s як команду"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:14
+#: .container/user/entrypoint.d/2000-select-command.sh:14
 msgid "Empty command, continue"
 msgstr "Порожня команда, продовжуємо"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:22
+#: .container/user/entrypoint.d/2000-select-command.sh:22
 msgid "Single-command image: %s left for the start hook"
 msgstr "Образ з однією командою: %s залишено для хука запуску"
 
-#: .container/user/entrypoint.d/2000-run-command.sh:28
+#: .container/user/entrypoint.d/2000-select-command.sh:28
 msgid "%s is not a command"
 msgstr "%s не є командою"
 
@@ -1065,35 +1066,35 @@ msgstr "%s не є командою"
 msgid "Secrets validation disabled (B19_SECRETS_ENABLED=false)"
 msgstr "Перевірку секретів вимкнено (B19_SECRETS_ENABLED=false)"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:33
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:28
 msgid "No required secrets defined, skipping validation"
 msgstr "Необхідні секрети не визначено, перевірку пропущено"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:37
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:32
 msgid "Validating required secrets..."
 msgstr "Перевірка необхідних секретів..."
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:65
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:60
 msgid "Loaded:%s"
 msgstr "Завантажено:%s"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:70
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:65
 msgid "Missing required secrets:%s"
 msgstr "Відсутні необхідні секрети:%s"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:71
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:66
 msgid "Provide secrets via:"
 msgstr "Надати секрети через:"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:72
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:67
 msgid "  - Environment variables (%s format)"
 msgstr "  - Змінні середовища (формат %s)"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:73
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:68
 msgid "  - Docker secrets files (%s/b19.* format)"
 msgstr "  - Файли секретів Docker (формат %s/b19.*)"
 
-#: .container/user/entrypoint.d/2100-validate-secrets.sh:77
+#: .container/user/entrypoint.d/2100-validate-secrets.sh:72
 msgid "All %d required secrets validated"
 msgstr "Усі %d необхідних секретів підтверджено"
 
@@ -1604,6 +1605,11 @@ msgstr "Тест %s: безпечний високий порт проходит
 #: .container/user/test.d/0310-check-ports.sh:70
 #: .container/user/test.d/0310-check-ports.sh:78
 #: .container/user/test.d/0310-check-ports.sh:84
+#: .container/user/test.d/0320-entrypoint-command-path.sh:40
+#: .container/user/test.d/0320-entrypoint-command-path.sh:48
+#: .container/user/test.d/0320-entrypoint-command-path.sh:57
+#: .container/user/test.d/0320-entrypoint-command-path.sh:65
+#: .container/user/test.d/0320-entrypoint-command-path.sh:71
 msgid "Test %s passed"
 msgstr "Тест %s пройдено"
 
@@ -1647,6 +1653,50 @@ msgstr "Вимкнена перевірка все одно відхилила �
 #: .container/user/test.d/0310-check-ports.sh:89
 msgid "All check-ports tests passed"
 msgstr "Усі тести check-ports пройдено"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:38
+msgid "Test %s: explicit command runs after bootstrap"
+msgstr "Тест %s: явна команда виконується після bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:42
+msgid "Explicit command ran before bootstrap"
+msgstr "Явна команда виконалася до bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:45
+msgid "Test %s: single-command subcommand reaches bootstrap"
+msgstr "Тест %s: підкоманда образу однієї команди доходить до bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:50
+msgid "Single-command subcommand skipped bootstrap"
+msgstr "Підкоманда образу однієї команди пропустила bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:53
+msgid "Test %s: missing secret fails the explicit command"
+msgstr "Тест %s: відсутній секрет зупиняє явну команду"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:55
+msgid "Explicit command ran without a required secret"
+msgstr "Явна команда виконалася без обов’язкового секрету"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:60
+msgid "Test %s: missing secret fails the single-command subcommand"
+msgstr "Тест %s: відсутній секрет зупиняє підкоманду образу однієї команди"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:63
+msgid "Single-command subcommand reached bootstrap without a required secret"
+msgstr "Підкоманда образу однієї команди дійшла до bootstrap без обов’язкового секрету"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:68
+msgid "Test %s: unknown command fails before bootstrap"
+msgstr "Тест %s: невідома команда завершується помилкою до bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:73
+msgid "Unknown command exited %s or reached bootstrap"
+msgstr "Невідома команда завершилася з кодом %s або дійшла до bootstrap"
+
+#: .container/user/test.d/0320-entrypoint-command-path.sh:77
+msgid "All command-path tests passed"
+msgstr "Усі тести шляху команди пройдено"
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
 msgid ""

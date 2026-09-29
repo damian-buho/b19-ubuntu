@@ -4,7 +4,4 @@
 #
 # SPDX-License-Identifier: MIT
 
-  if [ "${ENTRYPOINT_COMMAND_EXECUTED:-N}" = "N" ]
-  then
-      bootstrap.d
-  fi
+  bootstrap.d

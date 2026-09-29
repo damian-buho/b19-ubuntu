@@ -55,9 +55,10 @@ tini -g (PID 1)
 | 0400 | `print-lineage.sh`    | Log the image lineage chain (base → current)                                                                             |
 | 0500 | `copy-overlay.sh`     | Copy files from `$B19_OVERLAYS_PATH/$B19_OVERLAY/` to `/` if `B19_OVERLAY` is set                                        |
 | 1000 | `parallel-j2.sh`      | Render all `.j2` templates in `$B19_HOME` via minijinja-cli + `xargs -P`                                                 |
-| 2000 | `run-command.sh`      | Run a valid first arg and set `ENTRYPOINT_COMMAND_EXECUTED=Y`; otherwise exit 127                                        |
+| 2000 | `select-command.sh`   | Claim a valid first arg (`ENTRYPOINT_COMMAND_EXECUTED=Y`); otherwise exit 127                                            |
 | 2100 | `validate-secrets.sh` | Validate all secrets in `B19_REQUIRED_SECRETS` exist (env or file); exit 1 if missing                                    |
 | 3000 | `bootstrap.sh`        | Run `/bootstrap.d/` scripts with lockfile idempotency                                                                    |
+| 4000 | `run-command.sh`      | Run the claimed command and record its `RETURN_CODE`                                                                     |
 | 5000 | `start.sh`            | Default: `sleep infinity` (downstream projects **always** override this)                                                 |
 | 9000 | `finalize.sh`         | Log the final `RETURN_CODE`; exit 127 when nothing ever ran the argv                                                     |
 
@@ -72,7 +73,7 @@ tini -g (PID 1)
 **Ad-hoc command** (`docker run img some-command`):
 
 ```text
-0000 → 0100 → … → 2000 (executes command, ENTRYPOINT_COMMAND_EXECUTED=Y) → 2100 (skips) → 3000 (skips) → 5000 (skips) → 9000
+0000 → 0100 → … → 2000 (ENTRYPOINT_COMMAND_EXECUTED=Y) → 2100 (validates secrets) → 3000 (bootstrap) → 4000 (runs command) → 5000 (skips) → 9000
 ```
 
 **Unknown command** (`docker run img typo`):
@@ -89,7 +90,7 @@ success for a run that executed nothing.
 **Single-command image** (`docker run img validate`, `B19_SINGLE_COMMAND_IMAGE=Y`):
 
 ```text
-0000 → 0100 → … → 2000 (not a command, left for the start hook) → 2100 → 3000 → 5000 (runs it) → 9000
+0000 → 0100 → … → 2000 (not a command, left for the start hook) → 2100 (validates secrets) → 3000 (bootstrap) → 5000 (runs it) → 9000
 ```
 
 An image that wraps exactly ONE program takes the subcommand as argv — `docker
@@ -109,24 +110,32 @@ exit code, and an argv that reaches `9000-finalize` with no exit code at all was
 consumed by nobody, so the run exits `127` there instead of `0`. Declaring the
 mode without writing the start hook therefore fails loudly.
 
-`B19_ENTRYPOINT_SKIP_RUN_COMMAND=true` skips the hook entirely if a lineage
-really needs the argv ignored.
+`B19_ENTRYPOINT_SKIP_SELECT_COMMAND=true` skips the classification entirely if a
+lineage really needs the argv ignored.
 
-The `ENTRYPOINT_COMMAND_EXECUTED` flag gates secret validation, bootstrap and service start — ad-hoc commands like `docker run img mysqldump` bypass the full startup sequence.
+Both spellings of a command — `docker run img tool args` and, in a single-command image, `docker run img args` — pass the same secret validation and bootstrap before anything runs; they differ only in who runs it (slot 4000 or the image’s start hook). `ENTRYPOINT_COMMAND_EXECUTED=Y` means the argv is already claimed, so downstream hooks use it to skip service-only work (migrations, daemons).
+
+To debug an image whose secrets or bootstrap are broken, opt out explicitly:
+
+| Escape hatch                                      | Effect                                  |
+| ------------------------------------------------- | --------------------------------------- |
+| `docker run -e B19_SECRETS_ENABLED=false img cmd` | Skip secret loading and validation      |
+| `docker run -e B19_BOOTSTRAP_ENABLED=false img …` | Skip bootstrap                          |
+| `docker run --entrypoint bash img`                | Bypass `entrypoint.d` altogether        |
 
 ### Numbering convention
 
-| Range     | Purpose                       | Reserved by                                |
-| --------- | ----------------------------- | ------------------------------------------ |
-| 0000-0099 | System fundamentals           | b19/Ubuntu (signals)                       |
-| 0100-0199 | Environment setup             | b19/Ubuntu (secrets, CPU)                  |
-| 0200-0499 | Validation and checks         | shared (ports, lineage, autotune)          |
-| 0500-0999 | File/overlay operations       | b19/Ubuntu (overlay)                       |
-| 1000-1999 | Rendering and preparation     | shared (TLS, SSH, j2)                      |
-| 2000-2999 | Command execution and secrets | b19/Ubuntu (run-command, validate-secrets) |
-| 3000-4999 | Bootstrap and post-init       | b19/Ubuntu (bootstrap.d), downstream       |
-| 5000-8999 | Start the main service        | downstream project                         |
-| 9000-9999 | Finalization                  | b19/Ubuntu                                 |
+| Range     | Purpose                       | Reserved by                                       |
+| --------- | ----------------------------- | ------------------------------------------------- |
+| 0000-0099 | System fundamentals           | b19/Ubuntu (signals)                              |
+| 0100-0199 | Environment setup             | b19/Ubuntu (secrets, CPU)                         |
+| 0200-0499 | Validation and checks         | shared (ports, lineage, autotune)                 |
+| 0500-0999 | File/overlay operations       | b19/Ubuntu (overlay)                              |
+| 1000-1999 | Rendering and preparation     | shared (TLS, SSH, j2)                             |
+| 2000-2999 | Command selection and secrets | b19/Ubuntu (select-command, secrets)              |
+| 3000-4999 | Bootstrap and post-init       | b19/Ubuntu (bootstrap.d, run-command), downstream |
+| 5000-8999 | Start the main service        | downstream project                                |
+| 9000-9999 | Finalization                  | b19/Ubuntu                                        |
 
 When creating hooks for a downstream project, pick a slot in the appropriate range. The same numbered-hook pattern powers seven more lifecycle runners — see [use the runner family](use-runner-family.md) for the full family and how entrypoint.d differs (sourced hooks, fail-fast).
 
@@ -162,12 +171,12 @@ Slot 3000 hands off to [bootstrap.d](use-bootstrap.d.md) (run-once-per-volume in
 
 ### Set at runtime by the system
 
-| Variable                      | Set by                  | Purpose                                     |
-| ----------------------------- | ----------------------- | ------------------------------------------- |
-| `ENTRYPOINT_COMMAND_EXECUTED` | `2000-run-command.sh`   | `Y`/`N` — gates bootstrap and service start |
-| `PAYLOAD_PID`                 | `b19-exec`              | PID of the main service process             |
-| `RETURN_CODE`                 | `b19-exec`              | Exit code of the main service               |
-| `NUMPROCS`                    | `0200-set-cpu-count.sh` | Detected CPU count                          |
+| Variable                      | Set by                   | Purpose                                                   |
+| ----------------------------- | ------------------------ | --------------------------------------------------------- |
+| `ENTRYPOINT_COMMAND_EXECUTED` | `2000-select-command.sh` | `Y`/`N` — `Y` when argv is a command; gates service start |
+| `PAYLOAD_PID`                 | `b19-exec`               | PID of the main service process                           |
+| `RETURN_CODE`                 | `b19-exec`               | Exit code of the main service                             |
+| `NUMPROCS`                    | `0200-set-cpu-count.sh`  | Detected CPU count                                        |
 
 Path and behavior variables (`B19_HOME`, `B19_VERBOSITY`, `B19_OVERLAY`, `B19_REQUIRED_SECRETS`, …) are indexed in [configure-environment](configure-environment.md).
 

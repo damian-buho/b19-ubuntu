@@ -19,7 +19,7 @@
   # Propagate the executed command's exit code as the CONTAINER's exit code.
   # The orchestrator (tools.d/entrypoint.d) SOURCES this hook last and never
   # exits itself, so without this the command.d path always reported success:
-  # 2000-run-command captures RETURN_CODE via `… || RETURN_CODE=$?` (so set -e
+  # 4000-run-command captures RETURN_CODE via `… || RETURN_CODE=$?` (so set -e
   # does not abort the remaining hooks), but only the b19-exec/test.d path ever
   # re-asserted it. A failing tool (e.g. yamllint) must fail the run.
   # RETURN_CODE is unset only on the empty-argv path (the service path exits

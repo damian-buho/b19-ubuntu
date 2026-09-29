@@ -32,22 +32,17 @@ b19-run "BOOTSTRAP" "$(_p "Run schema migrations for %s" "${NS_PROJECT}")" -- \
 
 ```text
 Container start (tini → entrypoint.d)
-  ├─ 2000-run-command.sh        ← detects CMD vs long-run
+  ├─ 2000-select-command.sh     ← detects CMD vs long-run
   ├─ 2100-validate-secrets.sh
   ├─ 3000-bootstrap.sh          ← calls the bootstrap.d runner
   │    └─ /tools.d/bootstrap.d
   │         └─ executes /bootstrap.d/*.sh (ascending, per-script locks)
+  ├─ 4000-run-command.sh        ← runs an explicit CMD
   ├─ 5000-start.sh
   └─ 9000-finalize.sh
 ```
 
-The entrypoint hook invokes the runner only when no explicit command was passed — `docker run myimage some-command` executes the command directly and skips bootstrap:
-
-```bash
-if [ "${ENTRYPOINT_COMMAND_EXECUTED}" = "N" ]; then
-    bootstrap.d
-fi
-```
+Bootstrap runs on every start, whatever the argv: `docker run myimage some-command` runs the command at slot 4000, after bootstrap, exactly like a service started at 5000. `B19_BOOTSTRAP_ENABLED=false` skips it for a one-off debug run.
 
 ### Runner lifecycle
 
@@ -213,7 +208,7 @@ In-image path:     /bootstrap.d (B19_BOOTSTRAP_PATH)
 Lock directory:    $B19_HOME/.bootstrap (B19_BOOTSTRAP_LOCK_PATH, VOLUME)
 Runner:            /tools.d/bootstrap.d
 Triggered by:      entrypoint.d/3000-bootstrap.sh
-Condition:         ENTRYPOINT_COMMAND_EXECUTED=N (no explicit CMD)
+Condition:         every start, explicit CMD or not
 Sort order:        Forward numerical (ascending)
 Fail behavior:     Abort on first failure (stop chain)
 Idempotency:       Per-script lock files in B19_BOOTSTRAP_LOCK_PATH
