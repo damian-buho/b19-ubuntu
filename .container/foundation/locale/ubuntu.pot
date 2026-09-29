@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-29 17:31+0000\n"
+"POT-Creation-Date: 2026-09-29 17:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -693,7 +693,7 @@ msgstr ""
 
 #: .container/user/tools.d/bootstrap.d:42
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:97
+#: .container/user/tools.d/healthcheck.d:69
 msgid "Skipped: %s (via %s)"
 msgstr ""
 
@@ -752,39 +752,57 @@ msgstr ""
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:76
-msgid "Check passed:"
+#: .container/user/tools.d/healthcheck.d:98
+msgid "No verdict yet for %s, running it in the background"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:78
-msgid "Check failed:"
+#: .container/user/tools.d/healthcheck.d:109
+msgid "Stale verdict for %s (%s s old, due every %s s), re-running"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:78
-msgid "with exit code"
-msgstr ""
-
-#: .container/user/tools.d/healthcheck.d:85
-msgid "Checks directory found"
-msgstr ""
-
-#: .container/user/tools.d/healthcheck.d:101
-msgid "Executing check:"
-msgstr ""
-
-#: .container/user/tools.d/healthcheck.d:123
-msgid "No health checks found in"
-msgstr ""
-
-#: .container/user/tools.d/healthcheck.d:126
-msgid "Checks directory not found at"
+#: .container/user/tools.d/healthcheck.d:113
+msgid "Cached verdict for %s (%s s old): %s"
 msgstr ""
 
 #: .container/user/tools.d/healthcheck.d:138
-msgid "%d of %d checks failed: %s"
+#: .container/user/tools.d/healthcheck.d:194
+msgid "Check passed:"
 msgstr ""
 
 #: .container/user/tools.d/healthcheck.d:140
+#: .container/user/tools.d/healthcheck.d:196
+msgid "Check failed:"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:140
+msgid "with exit code"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:147
+msgid "Checks directory found"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:159
+msgid "Executing check:"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:183
+msgid "Ignoring tier %s: %s is not set"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:205
+msgid "No health checks found in"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:208
+msgid "Checks directory not found at"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:220
+msgid "%d of %d checks failed: %s"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d:222
 msgid "All %d checks passed."
 msgstr ""
 
@@ -1575,6 +1593,9 @@ msgstr ""
 #: .container/user/test.d/0320-entrypoint-command-path.sh:57
 #: .container/user/test.d/0320-entrypoint-command-path.sh:65
 #: .container/user/test.d/0320-entrypoint-command-path.sh:71
+#: .container/user/test.d/0330-healthcheck-tiers.sh:43
+#: .container/user/test.d/0330-healthcheck-tiers.sh:53
+#: .container/user/test.d/0330-healthcheck-tiers.sh:65
 msgid "Test %s passed"
 msgstr ""
 
@@ -1661,6 +1682,47 @@ msgstr ""
 
 #: .container/user/test.d/0320-entrypoint-command-path.sh:77
 msgid "All command-path tests passed"
+msgstr ""
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:38
+msgid "No verdict for %s after %s attempts"
+msgstr ""
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:41
+msgid "Test %s: first probe passes while the verdict is pending"
+msgstr ""
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:45
+#: .container/user/test.d/0330-healthcheck-tiers.sh:60
+msgid "Pending tier check failed the probe"
+msgstr ""
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:49
+msgid "Test %s: fresh verdict is reused, not re-run"
+msgstr ""
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:50
+msgid "Cached passing verdict failed the probe"
+msgstr ""
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:55
+msgid "Tier check ran %s times in two probes"
+msgstr ""
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:58
+msgid "Test %s: failing verdict fails the probe"
+msgstr ""
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:63
+msgid "Failing tier verdict passed the probe"
+msgstr ""
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:67
+msgid "Probe failed without naming the tier check"
+msgstr ""
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:71
+msgid "All healthcheck tier tests passed"
 msgstr ""
 
 #: .container/user/test.d/0900-memory-consumption.sh:17

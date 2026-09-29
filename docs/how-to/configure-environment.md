@@ -109,6 +109,10 @@ checks test connectivity. Network checks respect `B19_OFFGRID_MODE`.
 | `B19_HEALTH_MEMORY_THRESHOLD`   | (unset)                                       | MB threshold for memory consumption test. Only runs when set. Reads cgroups v2 `memory.current`. |
 | `B19_HEALTH_EGRESS`             | `false`                                       | `true` runs the egress checks (HTTPS, DNS, reachability); they stand down otherwise              |
 | `B19_HEALTH_DRAIN_FILE`         | `/tmp/b19-draining`                           | Present → the runner reports not ready before running any check                                  |
+| `B19_HEALTH_HOURLY_INTERVAL`    | `3600`                                        | Seconds a passing verdict of an `hourly/` tier check is reused                                   |
+| `B19_HEALTH_RETRY_INTERVAL`     | `60`                                          | Seconds before a failing tier verdict is re-run                                                  |
+| `B19_HEALTH_TIER_TIMEOUT`       | `300`                                         | Seconds a detached tier check may run before it counts as failed                                 |
+| `B19_HEALTH_INTERVAL_<NAME>`    | (unset)                                       | Per-check interval override for a tier check                                                     |
 | `B19_READY_PORT`                | (unset)                                       | Port `check-listen.sh` TCP-connects on `127.0.0.1`; empty skips it                               |
 
 The egress checks are opt-in because most containers never reach the public
@@ -306,13 +310,17 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_HEALTH_EGRESS`             | runtime         | Health           |
 | `B19_HEALTH_ENABLED`            | runtime         | Feature Toggles  |
 | `B19_HEALTH_HOME_MIN_SPACE_KB`  | runtime         | Health           |
+| `B19_HEALTH_HOURLY_INTERVAL`    | runtime         | Health           |
+| `B19_HEALTH_INTERVAL_<NAME>`    | runtime         | Health           |
 | `B19_HEALTH_LOCK_TIMEOUT`       | runtime         | Health           |
 | `B19_HEALTH_MEMORY_THRESHOLD`   | runtime         | Health           |
 | `B19_HEALTH_NETWORK_URL`        | runtime         | Health           |
 | `B19_HEALTH_PATH`               | runtime         | Hook Directories |
 | `B19_HEALTH_PING_TARGETS`       | runtime         | Health           |
 | `B19_HEALTH_REACH_PORT_SAFE`    | runtime         | Health           |
+| `B19_HEALTH_RETRY_INTERVAL`     | runtime         | Health           |
 | `B19_HEALTH_TEMP_MIN_SPACE_KB`  | runtime         | Health           |
+| `B19_HEALTH_TIER_TIMEOUT`       | runtime         | Health           |
 | `B19_HOME`                      | build + runtime | User Identity    |
 | `B19_I18N_ENABLED`              | build + runtime | Feature Toggles  |
 | `B19_IMMUTABLE`                 | runtime         | Behavior         |

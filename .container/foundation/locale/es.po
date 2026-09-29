@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-29 17:31+0000\n"
+"POT-Creation-Date: 2026-09-29 17:43+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -710,10 +710,9 @@ msgstr "Crear directorio de bloqueo %s"
 
 #: .container/user/tools.d/bootstrap.d:42
 #: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:97
-#, fuzzy
+#: .container/user/tools.d/healthcheck.d:69
 msgid "Skipped: %s (via %s)"
-msgstr "Fallido: %s (código de salida %s)"
+msgstr "Omitido: %s (mediante %s)"
 
 #: .container/user/tools.d/bootstrap.d:49
 msgid "Already done: %s"
@@ -770,39 +769,59 @@ msgstr "En drenaje mediante %s: notificando no disponible"
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:76
+#: .container/user/tools.d/healthcheck.d:98
+msgid "No verdict yet for %s, running it in the background"
+msgstr "Aún no hay veredicto para %s, se ejecuta en segundo plano"
+
+#: .container/user/tools.d/healthcheck.d:109
+msgid "Stale verdict for %s (%s s old, due every %s s), re-running"
+msgstr ""
+"Veredicto caducado para %s (%s s de antigüedad, cada %s s), se vuelve a "
+"ejecutar"
+
+#: .container/user/tools.d/healthcheck.d:113
+msgid "Cached verdict for %s (%s s old): %s"
+msgstr "Veredicto en caché para %s (%s s de antigüedad): %s"
+
+#: .container/user/tools.d/healthcheck.d:138
+#: .container/user/tools.d/healthcheck.d:194
 msgid "Check passed:"
 msgstr "Verificación exitosa:"
 
-#: .container/user/tools.d/healthcheck.d:78
+#: .container/user/tools.d/healthcheck.d:140
+#: .container/user/tools.d/healthcheck.d:196
 msgid "Check failed:"
 msgstr "Verificación fallida:"
 
-#: .container/user/tools.d/healthcheck.d:78
+#: .container/user/tools.d/healthcheck.d:140
 msgid "with exit code"
 msgstr "con código de salida"
 
-#: .container/user/tools.d/healthcheck.d:85
+#: .container/user/tools.d/healthcheck.d:147
 msgid "Checks directory found"
 msgstr "Directorio de verificaciones encontrado"
 
-#: .container/user/tools.d/healthcheck.d:101
+#: .container/user/tools.d/healthcheck.d:159
 msgid "Executing check:"
 msgstr "Ejecutando verificación:"
 
-#: .container/user/tools.d/healthcheck.d:123
+#: .container/user/tools.d/healthcheck.d:183
+msgid "Ignoring tier %s: %s is not set"
+msgstr "Se ignora el nivel %s: %s no está definida"
+
+#: .container/user/tools.d/healthcheck.d:205
 msgid "No health checks found in"
 msgstr "No se encontraron verificaciones de salud en"
 
-#: .container/user/tools.d/healthcheck.d:126
+#: .container/user/tools.d/healthcheck.d:208
 msgid "Checks directory not found at"
 msgstr "Directorio de verificaciones no encontrado en"
 
-#: .container/user/tools.d/healthcheck.d:138
+#: .container/user/tools.d/healthcheck.d:220
 msgid "%d of %d checks failed: %s"
 msgstr "%d de %d verificaciones fallaron: %s"
 
-#: .container/user/tools.d/healthcheck.d:140
+#: .container/user/tools.d/healthcheck.d:222
 msgid "All %d checks passed."
 msgstr "Todas las %d verificaciones pasaron."
 
@@ -1619,6 +1638,9 @@ msgstr "Prueba %s: el puerto alto seguro pasa"
 #: .container/user/test.d/0320-entrypoint-command-path.sh:57
 #: .container/user/test.d/0320-entrypoint-command-path.sh:65
 #: .container/user/test.d/0320-entrypoint-command-path.sh:71
+#: .container/user/test.d/0330-healthcheck-tiers.sh:43
+#: .container/user/test.d/0330-healthcheck-tiers.sh:53
+#: .container/user/test.d/0330-healthcheck-tiers.sh:65
 msgid "Test %s passed"
 msgstr "Prueba %s superada"
 
@@ -1673,7 +1695,8 @@ msgstr "El comando explícito se ejecutó antes del bootstrap"
 
 #: .container/user/test.d/0320-entrypoint-command-path.sh:45
 msgid "Test %s: single-command subcommand reaches bootstrap"
-msgstr "Prueba %s: el subcomando de imagen de un solo comando llega al bootstrap"
+msgstr ""
+"Prueba %s: el subcomando de imagen de un solo comando llega al bootstrap"
 
 #: .container/user/test.d/0320-entrypoint-command-path.sh:50
 msgid "Single-command subcommand skipped bootstrap"
@@ -1689,11 +1712,15 @@ msgstr "El comando explícito se ejecutó sin un secreto obligatorio"
 
 #: .container/user/test.d/0320-entrypoint-command-path.sh:60
 msgid "Test %s: missing secret fails the single-command subcommand"
-msgstr "Prueba %s: un secreto ausente hace fallar el subcomando de imagen de un solo comando"
+msgstr ""
+"Prueba %s: un secreto ausente hace fallar el subcomando de imagen de un solo "
+"comando"
 
 #: .container/user/test.d/0320-entrypoint-command-path.sh:63
 msgid "Single-command subcommand reached bootstrap without a required secret"
-msgstr "El subcomando de imagen de un solo comando llegó al bootstrap sin un secreto obligatorio"
+msgstr ""
+"El subcomando de imagen de un solo comando llegó al bootstrap sin un secreto "
+"obligatorio"
 
 #: .container/user/test.d/0320-entrypoint-command-path.sh:68
 msgid "Test %s: unknown command fails before bootstrap"
@@ -1706,6 +1733,47 @@ msgstr "El comando desconocido terminó con %s o llegó al bootstrap"
 #: .container/user/test.d/0320-entrypoint-command-path.sh:77
 msgid "All command-path tests passed"
 msgstr "Todas las pruebas de la ruta de comandos superadas"
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:38
+msgid "No verdict for %s after %s attempts"
+msgstr "Sin veredicto para %s tras %s intentos"
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:41
+msgid "Test %s: first probe passes while the verdict is pending"
+msgstr "Prueba %s: la primera sonda pasa mientras el veredicto está pendiente"
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:45
+#: .container/user/test.d/0330-healthcheck-tiers.sh:60
+msgid "Pending tier check failed the probe"
+msgstr "Una comprobación de nivel pendiente hizo fallar la sonda"
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:49
+msgid "Test %s: fresh verdict is reused, not re-run"
+msgstr "Prueba %s: un veredicto reciente se reutiliza sin volver a ejecutarse"
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:50
+msgid "Cached passing verdict failed the probe"
+msgstr "Un veredicto correcto en caché hizo fallar la sonda"
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:55
+msgid "Tier check ran %s times in two probes"
+msgstr "La comprobación de nivel se ejecutó %s veces en dos sondas"
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:58
+msgid "Test %s: failing verdict fails the probe"
+msgstr "Prueba %s: un veredicto fallido hace fallar la sonda"
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:63
+msgid "Failing tier verdict passed the probe"
+msgstr "Un veredicto de nivel fallido dejó pasar la sonda"
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:67
+msgid "Probe failed without naming the tier check"
+msgstr "La sonda falló sin nombrar la comprobación de nivel"
+
+#: .container/user/test.d/0330-healthcheck-tiers.sh:71
+msgid "All healthcheck tier tests passed"
+msgstr "Todas las pruebas de niveles del healthcheck superadas"
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
 msgid ""

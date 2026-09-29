@@ -41,7 +41,7 @@
       exit 1
     fi
 
-    CHECKS_PATH="/healthcheck.d"
+    CHECKS_PATH="${B19_HEALTH_PATH:-/healthcheck.d}"
     FINAL_EXIT_CODE=0  # Tracks the number of failed checks
     FAILED_NAMES=""    # Space-separated basenames of failed checks, for callers
 
@@ -52,6 +52,68 @@
     # shellcheck source=.container/foundation/tools.d/detect-cpu-count
     . detect-cpu-count
     b19-log debug "HEALTH.D" "$(_p "Parallel check cap (NUMPROCS): %s" "${NUMPROCS}")"
+
+    # Upper-snake key of a check name, as used by B19_HEALTH_SKIP_<KEY> and B19_HEALTH_INTERVAL_<KEY>
+    check_key() {
+      local _name
+      _name=$(basename "$1" .sh)
+      _name="${_name#*[0-9]-}"
+      echo "${_name}" | tr '[:lower:]-' '[:upper:]_'
+    }
+
+    # Logs and succeeds when B19_HEALTH_SKIP_<KEY>=true mutes this check
+    check_skipped() {
+      local _var
+      _var="B19_HEALTH_SKIP_$(check_key "$1")"
+      if [ "${!_var:-}" = "true" ]; then
+        b19-log note "HEALTH.D" "$(_p "Skipped: %s (via %s)" "$(basename "$1")" "${_var}")"
+        return 0
+      fi
+      return 1
+    }
+
+    TIER_STATE_PATH="${B19_TEMP_PATH:-/tmp}/healthcheck.d"
+
+    # Runs a tier check detached from the probe, then swaps in its verdict atomically
+    refresh_tier_check() {
+      local _check="$1" _state="$2" _code=0
+      exec 8>"${_state}.lock"
+      flock --nonblock 8 || return 0
+      # shellcheck disable=SC2016 # the child bash sources the check with its own helpers loaded
+      timeout --kill-after=5 "${B19_HEALTH_TIER_TIMEOUT}" \
+        bash -c 'set -euo pipefail; . b19-i18n; . b19-load-secrets; . detect-cpu-count; . "$1"' healthcheck.d "${_check}" \
+        >"${_state}.log" 2>&1 || _code=$?
+      printf '%s %s\n%s\n' "$(date +%s)" "${_code}" "$(tail --lines=1 "${_state}.log")" >"${_state}.verdict.${BASHPID}"
+      mv --force "${_state}.verdict.${BASHPID}" "${_state}.verdict"
+    }
+
+    # Answers a tier check from its last verdict and refreshes it in the background once due
+    report_tier_check() {
+      local _check="$1" _interval="$2" _state _at="" _code="" _log="" _age _due
+      _state="${TIER_STATE_PATH}/$(basename "${_check}")"
+      if [ -f "${_state}.verdict" ]; then
+        { read -r _at _code; IFS= read -r _log || true; } <"${_state}.verdict"
+      fi
+      if ! [[ "${_at}" =~ ^[0-9]+$ && "${_code}" =~ ^[0-9]+$ ]]; then
+        b19-log info "HEALTH.D" "$(_p "No verdict yet for %s, running it in the background" "$(basename "${_check}")")"
+        ( refresh_tier_check "${_check}" "${_state}" ) </dev/null >/dev/null 2>&1 9>&- &
+        disown
+        return 0
+      fi
+      _age=$(( $(date +%s) - _at ))
+      _due="${_interval}"
+      if [ "${_code}" -ne 0 ] && [ "${B19_HEALTH_RETRY_INTERVAL}" -lt "${_due}" ]; then
+        _due="${B19_HEALTH_RETRY_INTERVAL}"
+      fi
+      if [ "${_age}" -ge "${_due}" ]; then
+        b19-log info "HEALTH.D" "$(_p "Stale verdict for %s (%s s old, due every %s s), re-running" "$(basename "${_check}")" "${_age}" "${_due}")"
+        ( refresh_tier_check "${_check}" "${_state}" ) </dev/null >/dev/null 2>&1 9>&- &
+        disown
+      else
+        b19-log info "HEALTH.D" "$(_p "Cached verdict for %s (%s s old): %s" "$(basename "${_check}")" "${_age}" "${_log}")"
+      fi
+      return "${_code}"
+    }
 
     declare -A PID_NAMES=()
     # Stop checks still running when we exit, so none outlives its probe
@@ -90,11 +152,7 @@
         CHECK_BASENAME=$(basename "${CHECK}")
         CHECKS_COUNT=$((CHECKS_COUNT + 1))
 
-        SKIP_NAME=$(basename "${CHECK}" .sh)
-        SKIP_NAME="${SKIP_NAME#*[0-9]-}"
-        SKIP_VAR="B19_HEALTH_SKIP_$(echo "${SKIP_NAME}" | tr '[:lower:]-' '[:upper:]_')"
-        if [ "${!SKIP_VAR:-}" = "true" ]; then
-          b19-log note "HEALTH.D" "$(_p "Skipped: %s (via %s)" "${SKIP_NAME}" "${SKIP_VAR}")"
+        if check_skipped "${CHECK}"; then
           continue
         fi
 
@@ -112,11 +170,35 @@
         if [ "${RUNNING}" -ge "${NUMPROCS}" ]; then
           reap_one_check
         fi
-      done < <(fd --print0 --hidden --type file --extension sh . "${CHECKS_PATH}" | sort --zero-terminated --numeric-sort)
+      done < <(fd --print0 --hidden --type file --extension sh --max-depth 1 . "${CHECKS_PATH}" | sort --zero-terminated --numeric-sort)
 
       while [ "${RUNNING}" -gt 0 ]; do
         reap_one_check
       done
+
+      # Each subdirectory is a tier whose checks run at most once per B19_HEALTH_<TIER>_INTERVAL
+      while IFS= read -r -d '' TIER_DIR; do
+        TIER_VAR="B19_HEALTH_$(basename "${TIER_DIR}" | tr '[:lower:]-' '[:upper:]_')_INTERVAL"
+        if [ -z "${!TIER_VAR:-}" ]; then
+          b19-log warn "HEALTH.D" "$(_p "Ignoring tier %s: %s is not set" "${TIER_DIR}" "${TIER_VAR}")"
+          continue
+        fi
+        mkdir --parents "${TIER_STATE_PATH}"
+        while IFS= read -r -d '' CHECK; do
+          CHECKS_COUNT=$((CHECKS_COUNT + 1))
+          if check_skipped "${CHECK}"; then
+            continue
+          fi
+          INTERVAL_VAR="B19_HEALTH_INTERVAL_$(check_key "${CHECK}")"
+          if report_tier_check "${CHECK}" "${!INTERVAL_VAR:-${!TIER_VAR}}"; then
+            b19-log good "HEALTH.D" "$(_ "Check passed:") $(basename "${CHECK}")"
+          else
+            b19-log bad "HEALTH.D" "$(_ "Check failed:") $(basename "${CHECK}")"
+            FINAL_EXIT_CODE=$((FINAL_EXIT_CODE + 1))
+            FAILED_LIST+=("$(basename "${CHECK}")")
+          fi
+        done < <(fd --print0 --hidden --type file --extension sh --max-depth 1 . "${TIER_DIR}" | sort --zero-terminated --numeric-sort)
+      done < <(fd --print0 --hidden --type directory --max-depth 1 . "${CHECKS_PATH}" | sort --zero-terminated)
 
       # Handle the case where no scripts are found
       if [ "${CHECKS_COUNT}" -eq 0 ]; then

@@ -85,6 +85,7 @@ SPDX-License-Identifier: MIT
 - Las comprobaciones de salida son opcionales: un contenedor que nunca llega a internet no lleva ninguna comprobación que un tercero pueda hacer fallar, mientras que uno cuyo trabajo es internet se marca como no disponible en cuanto el exterior desaparece.
 - Funciona igual sin conexión que en línea: las comprobaciones de salida se retiran automáticamente en modo offgrid.
 - Añadir una comprobación es dejar caer un script en un directorio, no escribir configuración de Docker.
+- Las comprobaciones pesadas o con límite de peticiones se ejecutan cada hora en segundo plano, de modo que un escaneo lento nunca agota el tiempo del healthcheck ni consume un límite de peticiones.
 
 Consulte [use-healthcheck.d](../how-to/use-healthcheck.d.md) para la lista de comprobaciones, la numeración de slots y la configuración.
 

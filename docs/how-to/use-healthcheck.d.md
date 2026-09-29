@@ -44,7 +44,8 @@ Docker daemon (periodic HEALTHCHECK interval)
        ├─ flock (prevent overlapping runs)
        ├─ load secrets (runs outside entrypoint context)
        ├─ drain gate ($B19_HEALTH_DRAIN_FILE present → not ready)
-       └─ execute /healthcheck.d/*.sh in background, capped at NUMPROCS
+       ├─ execute /healthcheck.d/*.sh in background, capped at NUMPROCS
+       └─ answer /healthcheck.d/<tier>/*.sh from their last verdict
 ```
 
 Runner lifecycle:
@@ -54,7 +55,7 @@ Runner lifecycle:
 1. Sets `B19_COLOR=auto` — color only on a TTY; `docker inspect` and file redirects get plain text automatically
 1. Sources `b19-i18n` and `b19-load-secrets` — healthchecks run outside entrypoint context, so secrets are loaded explicitly
 1. Checks `B19_HEALTH_DRAIN_FILE` — exits 1 unconditionally if present (a deploy marks the outgoing container not-ready so Traefik routes around it while it keeps serving in-flight requests)
-1. Finds all `*.sh` in `$B19_HEALTH_PATH` and sorts them ascending
+1. Finds all `*.sh` directly in `$B19_HEALTH_PATH` (not in subdirectories — those are [tiers](#interval-tiers)) and sorts them ascending
 1. Runs each surviving check **in the background**, `</dev/null` so a check reading stdin cannot drain the process-substitution pipe the outer loop still reads paths from. `NUMPROCS` is unset inside a healthcheck (a fresh daemon-spawned process, not the entrypoint tree that exports it), so the runner sources `detect-cpu-count` itself and reaps with `wait -n -p` once concurrency hits that cap. Failures are isolated per check; completion order is non-deterministic, so the failed-name list is sorted before it is printed
 1. Exits with the **count** of failed checks (not a boolean): `N of M checks failed.` / `All N checks passed.`
 
@@ -95,6 +96,22 @@ A check therefore sorts after every check of the image it inherits from.
 | 2xxx      | Service-specific checks   | an image built on that one   |
 
 Downstream checks merge via Docker layer overlay — the runner finds all `*.sh` regardless of which layer added them. Permissions are set by the foundation build hook `post/200-permissions.sh`, which creates `$B19_HEALTH_PATH` owned by `$B19_UID:0`.
+
+### Interval tiers
+
+A heavy or rate-limited check — a compliance scan, a probe against a public rate limit — must not run on every 10 s probe. Put it in a tier subdirectory instead of throttling it by hand:
+
+```text
+/healthcheck.d/0100-check-listen.sh        every probe
+/healthcheck.d/hourly/0900-check-audit.sh  at most once per B19_HEALTH_HOURLY_INTERVAL (3600 s)
+```
+
+- The check script stays unaware of its cadence; the runner owns scheduling, locking and logging. A subdirectory merges across image layers like every other `*.d`.
+- A tier check runs **detached** from the probe, so a run longer than the `HEALTHCHECK` `--timeout` never fails it. The probe only reads the last verdict — exit code, age and last log line, written atomically under `${B19_TEMP_PATH}/healthcheck.d/`.
+- No verdict yet → the probe starts the check and passes. `B19_HEALTH_TIER_TIMEOUT` bounds a run, so a hung check turns into a failing verdict instead of a pass that never ends.
+- A passing verdict is reused for the tier interval; a failing one is retried after `B19_HEALTH_RETRY_INTERVAL` (when shorter), so an outage clears fast without re-running a heavy check on every probe. The stale verdict keeps answering while the re-run is in flight.
+- `B19_HEALTH_INTERVAL_<NAME>` overrides the interval of one check (`B19_HEALTH_INTERVAL_CHECK_AUDIT=900`); `B19_HEALTH_SKIP_<NAME>` mutes it as usual.
+- A tier needs its interval variable: a subdirectory with no `B19_HEALTH_<TIER>_INTERVAL` is ignored with a warning. `hourly` is the only tier the base declares.
 
 ### Egress checks
 
@@ -260,6 +277,10 @@ esac
 | `B19_HEALTH_DRAIN_FILE`         | `/tmp/b19-draining`                           | Present → reports not ready                                        |
 | `B19_READY_PORT`                | (unset)                                       | Port `check-listen.sh` TCP-connects on `127.0.0.1`                 |
 | `B19_HEALTH_PATH`               | `/healthcheck.d`                              | Directory containing check scripts                                 |
+| `B19_HEALTH_HOURLY_INTERVAL`    | `3600`                                        | Seconds a passing verdict of an `hourly/` check is reused          |
+| `B19_HEALTH_RETRY_INTERVAL`     | `60`                                          | Seconds before a failing tier verdict is re-run                    |
+| `B19_HEALTH_TIER_TIMEOUT`       | `300`                                         | Seconds a detached tier check may run before it counts as failed   |
+| `B19_HEALTH_INTERVAL_<NAME>`    | (unset)                                       | Per-check interval override for a tier check                       |
 | `B19_HEALTH_HOME_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_HOME` before failing                          |
 | `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768`                                       | Min free KB in `$XDG_CACHE_HOME` before failing                    |
 | `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_TEMP_PATH` before failing                     |
@@ -332,6 +353,7 @@ Colors:           Auto (B19_COLOR=auto — plain text without a TTY)
 Secrets:          Loaded explicitly (b19-load-secrets)
 Disable all:      B19_HEALTH_ENABLED=false
 Disable single:   B19_HEALTH_SKIP_<NAME>=true (or rename to *.disabled)
+Tiers:            /healthcheck.d/hourly/ (B19_HEALTH_HOURLY_INTERVAL, detached)
 Offgrid:          B19_OFFGRID_MODE=Y (skips egress checks)
 Egress:           B19_HEALTH_EGRESS=true (opt in to the egress checks)
 Drain:            touch $B19_HEALTH_DRAIN_FILE (default /tmp/b19-draining)
