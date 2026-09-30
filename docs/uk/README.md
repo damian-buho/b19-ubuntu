@@ -10,7 +10,7 @@ pf-cli-managed: yes
 
 # B19 / Ubuntu
 
-Базовий образ Ubuntu з підтримкою спільноти для флоту B19
+Базовий образ Ubuntu з підтримкою спільноти для флоту B19. Цей репозиторій містить лише пакування — Dockerfile, скрипти початкового налаштування та конфігурацію, усе під ліцензією MIT; вихідний rootfs Ubuntu отримують під час збирання, і він зберігає власну ліцензію.
 
 [![Stand with Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://damian-buho.github.io/support-ukraine/) [![Projectfile inside](https://badges.kiota.ch/static/v1?label=projectfile&message=inside&labelColor=0d0d0d&color=8c6723&style=flat-square)](https://projectfile.org) [![License](https://badges.kiota.ch/static/v1?label=license&message=MIT&color=1e5913&style=flat-square)](LICENSE) [![Commit style](https://badges.kiota.ch/static/v1?label=commits&message=conventional%20v1.0.0&color=1877aa&style=flat-square)](https://www.conventionalcommits.org/uk/v1.0.0/) ![Workflow](https://badges.kiota.ch/static/v1?label=workflow&message=git-flow&color=1877aa&style=flat-square) [![Versioning](https://badges.kiota.ch/static/v1?label=versioning&message=semantic%20v2.0.0&color=1877aa&style=flat-square)](https://semver.org/lang/uk/) [![PRs welcome](https://badges.kiota.ch/static/v1?label=PRs&message=welcome&color=1e5913&style=flat-square)](CONTRIBUTING.md) [![Citation](https://badges.kiota.ch/static/v1?label=citation&message=cff&color=1877aa&style=flat-square)](CITATION.cff) [![REUSE compliance](https://api.reuse.software/badge/codeberg.org/b19/ubuntu)](https://api.reuse.software/info/codeberg.org/b19/ubuntu)
 
@@ -47,6 +47,7 @@ pf-cli-managed: yes
 - Плавна обробка сигналів
 - Шаблони конфігурації Jinja2 (minijinja-cli)
 - Вбудований тестовий фреймворк (test.d)
+- Ніщо не зависає назавжди
 - Попередньо встановлені службові інструменти
 - Шляхи XDG Base Directory
 
@@ -56,43 +57,38 @@ pf-cli-managed: yes
 
 - **Образ контейнера** `ghcr.io/damian-buho/b19/ubuntu/resolute:latest`
 - **Образ контейнера** `ghcr.io/damian-buho/b19/ubuntu/noble:latest`
-- **Образ контейнера** `docker.io/damianbuho/b19-ubuntu-resolute:latest`
-- **Образ контейнера** `docker.io/damianbuho/b19-ubuntu-noble:latest`
-
-## Підтримувані платформи
-
-- `linux/amd64`
-- `linux/arm64`
-- `linux/riscv64`
+- **Образ контейнера** `damianbuho/b19-ubuntu-resolute:latest`
+- **Образ контейнера** `damianbuho/b19-ubuntu-noble:latest`
 
 ## Встановлення
 
 Завантажте опублікований образ контейнера:
 
-### Завантажити з GHCR
+### Завантажити з GHCR — linux/amd64, linux/arm64, linux/riscv64
 
 ```sh
 docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
-docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
-### Завантажити з DockerHub
+### Завантажити з DockerHub — linux/amd64
 
 ```sh
-docker pull docker.io/damianbuho/b19-ubuntu-resolute:latest
-docker pull docker.io/damianbuho/b19-ubuntu-noble:latest
+docker pull damianbuho/b19-ubuntu-resolute:latest
 ```
+
+Серія: `resolute` | `noble`
 
 Стабільні випуски також публікують теґи `X.Y.Z`, `X.Y` і `X` — завантажте той рівень точності, який хочете зафіксувати.
 
 Якщо наведені вище реєстри недоступні, завантажте з джерела:
 
-### Завантажити з Kiota
+### Завантажити з Kiota — linux/amd64
 
 ```sh
 docker pull kiota.ch/b19/ubuntu/resolute:latest
-docker pull kiota.ch/b19/ubuntu/noble:latest
 ```
+
+Серія: `resolute` | `noble`
 
 ## Використання
 
@@ -102,19 +98,31 @@ docker pull kiota.ch/b19/ubuntu/noble:latest
 
 ```dockerfile
 FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
-FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
 ### З DockerHub
 
 ```dockerfile
-FROM docker.io/damianbuho/b19-ubuntu-resolute:latest
-FROM docker.io/damianbuho/b19-ubuntu-noble:latest
+FROM damianbuho/b19-ubuntu-resolute:latest
 ```
+
+Серія: `resolute` | `noble`
 
 Для рекомендованого багатоетапного шаблону та системи хуків збірки (build.d) створіть похідний проєкт за допомогою `b19/scripts/scaffold.sh` з [m6e/b19](https://kiota.ch/m6e/b19).
 
 ## Збирання
+
+Клонуйте репозиторій разом із підмодулями:
+
+```sh
+git clone --recurse-submodules https://codeberg.org/b19/ubuntu ubuntu && cd ubuntu
+```
+
+Зберіть образ контейнера локально:
+
+```sh
+make container-build
+```
 
 - [Довідник із Makefile](../how-to/MAKEFILE.md)
 
@@ -124,10 +132,10 @@ FROM docker.io/damianbuho/b19-ubuntu-noble:latest
 
 Точки входу конвеєра:
 
-- `make analyze` — Run the heavy analysis sweep (mutation testing, benchmarks)
-- `make audited` — Re-scan the pinned dependencies and published artifacts for new vulnerabilities
-- `make check-outdated` — Report every pinned dependency that lags upstream
-- `make ready-to-publish` — Run the pseudo-CI pipeline locally — build, test and scan, without publishing
+- `make analyze` — Запускає важкий аналіз (мутаційне тестування, бенчмарки)
+- `make audited` — Повторно сканує закріплені залежності й опубліковані артефакти на нові вразливості
+- `make check-outdated` — Звітує про кожну закріплену залежність, що відстає від upstream
+- `make ready-to-publish` — Запускає псевдо-CI локально — збирає, тестує й сканує без публікації
 
 ## Документація
 
@@ -156,6 +164,7 @@ FROM docker.io/damianbuho/b19-ubuntu-noble:latest
 - [Handle signals gracefully](../how-to/use-signals.md)
 - [Render templates with minijinja](../how-to/use-templating.md)
 - [Test images with test.d](../how-to/use-test.d.md)
+- [Bound every step with timeouts](../how-to/use-timeouts.md)
 - [Use the tools](../how-to/use-tools.md)
 - [Use the XDG paths](../how-to/use-xdg-paths.md)
 

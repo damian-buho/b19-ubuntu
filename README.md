@@ -8,7 +8,7 @@ pf-cli-managed: yes
 
 # B19 / Ubuntu
 
-Community-maintained Ubuntu base image for the B19 fleet
+Community-maintained Ubuntu base image for the B19 fleet. This repository holds only the packaging — Dockerfile, bootstrap scripts, and configuration, all MIT-licensed; the upstream Ubuntu rootfs is fetched at build time and retains its own licensing.
 
 [![Stand with Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://damian-buho.github.io/support-ukraine/) [![Projectfile inside](https://badges.kiota.ch/static/v1?label=projectfile&message=inside&labelColor=0d0d0d&color=8c6723&style=flat-square)](https://projectfile.org) [![License](https://badges.kiota.ch/static/v1?label=license&message=MIT&color=1e5913&style=flat-square)](LICENSE) [![Commit style](https://badges.kiota.ch/static/v1?label=commits&message=conventional%20v1.0.0&color=1877aa&style=flat-square)](https://www.conventionalcommits.org/en/v1.0.0/) ![Workflow](https://badges.kiota.ch/static/v1?label=workflow&message=git-flow&color=1877aa&style=flat-square) [![Versioning](https://badges.kiota.ch/static/v1?label=versioning&message=semantic%20v2.0.0&color=1877aa&style=flat-square)](https://semver.org/) [![PRs welcome](https://badges.kiota.ch/static/v1?label=PRs&message=welcome&color=1e5913&style=flat-square)](CONTRIBUTING.md) [![Citation](https://badges.kiota.ch/static/v1?label=citation&message=cff&color=1877aa&style=flat-square)](CITATION.cff) [![REUSE compliance](https://api.reuse.software/badge/codeberg.org/b19/ubuntu)](https://api.reuse.software/info/codeberg.org/b19/ubuntu)
 
@@ -45,6 +45,7 @@ Community-maintained Ubuntu base image for the B19 fleet
 - Graceful signal handling
 - Jinja2 configuration templates (minijinja-cli)
 - Built-in test framework (test.d)
+- Nothing hangs forever
 - Pre-installed utility tools
 - XDG Base Directory paths
 
@@ -54,43 +55,38 @@ See [FEATURES.md](FEATURES.md) for the full list.
 
 - **Container image** `ghcr.io/damian-buho/b19/ubuntu/resolute:latest`
 - **Container image** `ghcr.io/damian-buho/b19/ubuntu/noble:latest`
-- **Container image** `docker.io/damianbuho/b19-ubuntu-resolute:latest`
-- **Container image** `docker.io/damianbuho/b19-ubuntu-noble:latest`
-
-## Supported platforms
-
-- `linux/amd64`
-- `linux/arm64`
-- `linux/riscv64`
+- **Container image** `damianbuho/b19-ubuntu-resolute:latest`
+- **Container image** `damianbuho/b19-ubuntu-noble:latest`
 
 ## Installation
 
 Pull the published container image:
 
-### Pull from GHCR
+### Pull from GHCR — linux/amd64, linux/arm64, linux/riscv64
 
 ```sh
 docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
-docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
-### Pull from DockerHub
+### Pull from DockerHub — linux/amd64
 
 ```sh
-docker pull docker.io/damianbuho/b19-ubuntu-resolute:latest
-docker pull docker.io/damianbuho/b19-ubuntu-noble:latest
+docker pull damianbuho/b19-ubuntu-resolute:latest
 ```
+
+Series: `resolute` | `noble`
 
 Stable releases also publish `X.Y.Z`, `X.Y` and `X` tags — pull the precision you want to pin.
 
 If the registries above are unreachable, pull from the origin instead:
 
-### Pull from Kiota
+### Pull from Kiota — linux/amd64
 
 ```sh
 docker pull kiota.ch/b19/ubuntu/resolute:latest
-docker pull kiota.ch/b19/ubuntu/noble:latest
 ```
+
+Series: `resolute` | `noble`
 
 ## Usage
 
@@ -100,19 +96,31 @@ Build on top of this image:
 
 ```dockerfile
 FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
-FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
 ### From DockerHub
 
 ```dockerfile
-FROM docker.io/damianbuho/b19-ubuntu-resolute:latest
-FROM docker.io/damianbuho/b19-ubuntu-noble:latest
+FROM damianbuho/b19-ubuntu-resolute:latest
 ```
+
+Series: `resolute` | `noble`
 
 For the recommended multi-stage pattern and the build-hook system (build.d), scaffold a derivative with `b19/scripts/scaffold.sh` from [m6e/b19](https://kiota.ch/m6e/b19).
 
 ## Building
+
+Clone the repository with its submodules:
+
+```sh
+git clone --recurse-submodules https://codeberg.org/b19/ubuntu ubuntu && cd ubuntu
+```
+
+Build the container image locally:
+
+```sh
+make container-build
+```
 
 - [Makefile reference](docs/how-to/MAKEFILE.md)
 
@@ -154,6 +162,7 @@ Pipeline entry points:
 - [Handle signals gracefully](docs/how-to/use-signals.md)
 - [Render templates with minijinja](docs/how-to/use-templating.md)
 - [Test images with test.d](docs/how-to/use-test.d.md)
+- [Bound every step with timeouts](docs/how-to/use-timeouts.md)
 - [Use the tools](docs/how-to/use-tools.md)
 - [Use the XDG paths](docs/how-to/use-xdg-paths.md)
 

@@ -10,7 +10,7 @@ pf-cli-managed: yes
 
 # B19 / Ubuntu
 
-Imagen base Ubuntu mantenida por la comunidad para la flota B19
+Imagen base Ubuntu mantenida por la comunidad para la flota B19. Este repositorio contiene únicamente el empaquetado — Dockerfile, scripts de arranque y configuración, todo con licencia MIT; el rootfs original de Ubuntu se obtiene en tiempo de compilación y conserva su propia licencia.
 
 [![Stand with Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://damian-buho.github.io/support-ukraine/) [![Projectfile inside](https://badges.kiota.ch/static/v1?label=projectfile&message=inside&labelColor=0d0d0d&color=8c6723&style=flat-square)](https://projectfile.org) [![License](https://badges.kiota.ch/static/v1?label=license&message=MIT&color=1e5913&style=flat-square)](LICENSE) [![Commit style](https://badges.kiota.ch/static/v1?label=commits&message=conventional%20v1.0.0&color=1877aa&style=flat-square)](https://www.conventionalcommits.org/es/v1.0.0/) ![Workflow](https://badges.kiota.ch/static/v1?label=workflow&message=git-flow&color=1877aa&style=flat-square) [![Versioning](https://badges.kiota.ch/static/v1?label=versioning&message=semantic%20v2.0.0&color=1877aa&style=flat-square)](https://semver.org/lang/es/) [![PRs welcome](https://badges.kiota.ch/static/v1?label=PRs&message=welcome&color=1e5913&style=flat-square)](CONTRIBUTING.md) [![Citation](https://badges.kiota.ch/static/v1?label=citation&message=cff&color=1877aa&style=flat-square)](CITATION.cff) [![REUSE compliance](https://api.reuse.software/badge/codeberg.org/b19/ubuntu)](https://api.reuse.software/info/codeberg.org/b19/ubuntu)
 
@@ -47,6 +47,7 @@ Imagen base Ubuntu mantenida por la comunidad para la flota B19
 - Gestión elegante de señales
 - Plantillas de configuración Jinja2 (minijinja-cli)
 - Framework de tests integrado (test.d)
+- Nada se cuelga para siempre
 - Herramientas de utilidad preinstaladas
 - Rutas XDG Base Directory
 
@@ -56,43 +57,38 @@ Consulta [FEATURES.md](FEATURES.md) para ver la lista completa.
 
 - **Imagen de contenedor** `ghcr.io/damian-buho/b19/ubuntu/resolute:latest`
 - **Imagen de contenedor** `ghcr.io/damian-buho/b19/ubuntu/noble:latest`
-- **Imagen de contenedor** `docker.io/damianbuho/b19-ubuntu-resolute:latest`
-- **Imagen de contenedor** `docker.io/damianbuho/b19-ubuntu-noble:latest`
-
-## Plataformas admitidas
-
-- `linux/amd64`
-- `linux/arm64`
-- `linux/riscv64`
+- **Imagen de contenedor** `damianbuho/b19-ubuntu-resolute:latest`
+- **Imagen de contenedor** `damianbuho/b19-ubuntu-noble:latest`
 
 ## Instalación
 
 Descarga la imagen de contenedor publicada:
 
-### Descargar de GHCR
+### Descargar de GHCR — linux/amd64, linux/arm64, linux/riscv64
 
 ```sh
 docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
-docker pull ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
-### Descargar de DockerHub
+### Descargar de DockerHub — linux/amd64
 
 ```sh
-docker pull docker.io/damianbuho/b19-ubuntu-resolute:latest
-docker pull docker.io/damianbuho/b19-ubuntu-noble:latest
+docker pull damianbuho/b19-ubuntu-resolute:latest
 ```
+
+Serie: `resolute` | `noble`
 
 Las versiones estables también publican las etiquetas `X.Y.Z`, `X.Y` y `X`: descarga el nivel de precisión que quieras fijar.
 
 Si los registros anteriores no están disponibles, descarga desde el origen:
 
-### Descargar de Kiota
+### Descargar de Kiota — linux/amd64
 
 ```sh
 docker pull kiota.ch/b19/ubuntu/resolute:latest
-docker pull kiota.ch/b19/ubuntu/noble:latest
 ```
+
+Serie: `resolute` | `noble`
 
 ## Uso
 
@@ -102,19 +98,31 @@ Construye sobre esta imagen:
 
 ```dockerfile
 FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
-FROM ghcr.io/damian-buho/b19/ubuntu/noble:latest
 ```
 
 ### Desde DockerHub
 
 ```dockerfile
-FROM docker.io/damianbuho/b19-ubuntu-resolute:latest
-FROM docker.io/damianbuho/b19-ubuntu-noble:latest
+FROM damianbuho/b19-ubuntu-resolute:latest
 ```
+
+Serie: `resolute` | `noble`
 
 Para el patrón multietapa recomendado y el sistema de hooks de compilación (build.d), genera un derivado con `b19/scripts/scaffold.sh` de [m6e/b19](https://kiota.ch/m6e/b19).
 
 ## Compilación
+
+Clona el repositorio con sus submódulos:
+
+```sh
+git clone --recurse-submodules https://codeberg.org/b19/ubuntu ubuntu && cd ubuntu
+```
+
+Construye la imagen de contenedor en local:
+
+```sh
+make container-build
+```
 
 - [Referencia del Makefile](../how-to/MAKEFILE.md)
 
@@ -124,10 +132,10 @@ Para el bucle de desarrollo local, `make dev-container` levanta el dev-container
 
 Puntos de entrada de la canalización:
 
-- `make analyze` — Run the heavy analysis sweep (mutation testing, benchmarks)
-- `make audited` — Re-scan the pinned dependencies and published artifacts for new vulnerabilities
-- `make check-outdated` — Report every pinned dependency that lags upstream
-- `make ready-to-publish` — Run the pseudo-CI pipeline locally — build, test and scan, without publishing
+- `make analyze` — Ejecuta el análisis pesado (pruebas de mutación, benchmarks)
+- `make audited` — Vuelve a escanear las dependencias fijadas y los artefactos publicados en busca de vulnerabilidades nuevas
+- `make check-outdated` — Informa de cada dependencia fijada que va por detrás de su versión upstream
+- `make ready-to-publish` — Ejecuta localmente el pipeline pseudo-CI — compila, prueba y escanea, sin publicar
 
 ## Documentación
 
@@ -156,6 +164,7 @@ Puntos de entrada de la canalización:
 - [Handle signals gracefully](../how-to/use-signals.md)
 - [Render templates with minijinja](../how-to/use-templating.md)
 - [Test images with test.d](../how-to/use-test.d.md)
+- [Bound every step with timeouts](../how-to/use-timeouts.md)
 - [Use the tools](../how-to/use-tools.md)
 - [Use the XDG paths](../how-to/use-xdg-paths.md)
 
