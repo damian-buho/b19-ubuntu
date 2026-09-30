@@ -53,10 +53,10 @@ See [Features](docs/FEATURES.md) for the full list.
 
 ## What this provides
 
-- **Container image** `ghcr.io/damian-buho/b19/ubuntu/resolute:latest`
-- **Container image** `ghcr.io/damian-buho/b19/ubuntu/noble:latest`
-- **Container image** `damianbuho/b19-ubuntu-resolute:latest`
-- **Container image** `damianbuho/b19-ubuntu-noble:latest`
+- **Container image** `ghcr.io/damian-buho/b19/ubuntu:resolute`
+- **Container image** `ghcr.io/damian-buho/b19/ubuntu:noble`
+- **Container image** `damianbuho/b19-ubuntu:resolute`
+- **Container image** `damianbuho/b19-ubuntu:noble`
 
 ## Installation
 
@@ -65,13 +65,13 @@ Pull the published container image:
 ### Pull from GHCR — linux/amd64, linux/arm64, linux/riscv64
 
 ```sh
-docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+docker pull ghcr.io/damian-buho/b19/ubuntu:resolute
 ```
 
 ### Pull from DockerHub — linux/amd64
 
 ```sh
-docker pull damianbuho/b19-ubuntu-resolute:latest
+docker pull damianbuho/b19-ubuntu:resolute
 ```
 
 Series: `resolute` | `noble`
@@ -83,7 +83,7 @@ If the registries above are unreachable, pull from the origin instead:
 ### Pull from Kiota — linux/amd64
 
 ```sh
-docker pull kiota.ch/b19/ubuntu/resolute:latest
+docker pull kiota.ch/b19/ubuntu:resolute
 ```
 
 Series: `resolute` | `noble`
@@ -95,13 +95,13 @@ Build on top of this image:
 ### From GHCR
 
 ```dockerfile
-FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+FROM ghcr.io/damian-buho/b19/ubuntu:resolute
 ```
 
 ### From DockerHub
 
 ```dockerfile
-FROM damianbuho/b19-ubuntu-resolute:latest
+FROM damianbuho/b19-ubuntu:resolute
 ```
 
 Series: `resolute` | `noble`

@@ -55,10 +55,10 @@ Consulta [Características](FEATURES.md) para ver la lista completa.
 
 ## Qué entrega este proyecto
 
-- **Imagen de contenedor** `ghcr.io/damian-buho/b19/ubuntu/resolute:latest`
-- **Imagen de contenedor** `ghcr.io/damian-buho/b19/ubuntu/noble:latest`
-- **Imagen de contenedor** `damianbuho/b19-ubuntu-resolute:latest`
-- **Imagen de contenedor** `damianbuho/b19-ubuntu-noble:latest`
+- **Imagen de contenedor** `ghcr.io/damian-buho/b19/ubuntu:resolute`
+- **Imagen de contenedor** `ghcr.io/damian-buho/b19/ubuntu:noble`
+- **Imagen de contenedor** `damianbuho/b19-ubuntu:resolute`
+- **Imagen de contenedor** `damianbuho/b19-ubuntu:noble`
 
 ## Instalación
 
@@ -67,13 +67,13 @@ Descarga la imagen de contenedor publicada:
 ### Descargar de GHCR — linux/amd64, linux/arm64, linux/riscv64
 
 ```sh
-docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+docker pull ghcr.io/damian-buho/b19/ubuntu:resolute
 ```
 
 ### Descargar de DockerHub — linux/amd64
 
 ```sh
-docker pull damianbuho/b19-ubuntu-resolute:latest
+docker pull damianbuho/b19-ubuntu:resolute
 ```
 
 Serie: `resolute` | `noble`
@@ -85,7 +85,7 @@ Si los registros anteriores no están disponibles, descarga desde el origen:
 ### Descargar de Kiota — linux/amd64
 
 ```sh
-docker pull kiota.ch/b19/ubuntu/resolute:latest
+docker pull kiota.ch/b19/ubuntu:resolute
 ```
 
 Serie: `resolute` | `noble`
@@ -97,13 +97,13 @@ Construye sobre esta imagen:
 ### Desde GHCR
 
 ```dockerfile
-FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+FROM ghcr.io/damian-buho/b19/ubuntu:resolute
 ```
 
 ### Desde DockerHub
 
 ```dockerfile
-FROM damianbuho/b19-ubuntu-resolute:latest
+FROM damianbuho/b19-ubuntu:resolute
 ```
 
 Serie: `resolute` | `noble`

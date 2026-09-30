@@ -55,10 +55,10 @@ pf-cli-managed: yes
 
 ## Що надає цей проєкт
 
-- **Образ контейнера** `ghcr.io/damian-buho/b19/ubuntu/resolute:latest`
-- **Образ контейнера** `ghcr.io/damian-buho/b19/ubuntu/noble:latest`
-- **Образ контейнера** `damianbuho/b19-ubuntu-resolute:latest`
-- **Образ контейнера** `damianbuho/b19-ubuntu-noble:latest`
+- **Образ контейнера** `ghcr.io/damian-buho/b19/ubuntu:resolute`
+- **Образ контейнера** `ghcr.io/damian-buho/b19/ubuntu:noble`
+- **Образ контейнера** `damianbuho/b19-ubuntu:resolute`
+- **Образ контейнера** `damianbuho/b19-ubuntu:noble`
 
 ## Встановлення
 
@@ -67,13 +67,13 @@ pf-cli-managed: yes
 ### Завантажити з GHCR — linux/amd64, linux/arm64, linux/riscv64
 
 ```sh
-docker pull ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+docker pull ghcr.io/damian-buho/b19/ubuntu:resolute
 ```
 
 ### Завантажити з DockerHub — linux/amd64
 
 ```sh
-docker pull damianbuho/b19-ubuntu-resolute:latest
+docker pull damianbuho/b19-ubuntu:resolute
 ```
 
 Серія: `resolute` | `noble`
@@ -85,7 +85,7 @@ docker pull damianbuho/b19-ubuntu-resolute:latest
 ### Завантажити з Kiota — linux/amd64
 
 ```sh
-docker pull kiota.ch/b19/ubuntu/resolute:latest
+docker pull kiota.ch/b19/ubuntu:resolute
 ```
 
 Серія: `resolute` | `noble`
@@ -97,13 +97,13 @@ docker pull kiota.ch/b19/ubuntu/resolute:latest
 ### З GHCR
 
 ```dockerfile
-FROM ghcr.io/damian-buho/b19/ubuntu/resolute:latest
+FROM ghcr.io/damian-buho/b19/ubuntu:resolute
 ```
 
 ### З DockerHub
 
 ```dockerfile
-FROM damianbuho/b19-ubuntu-resolute:latest
+FROM damianbuho/b19-ubuntu:resolute
 ```
 
 Серія: `resolute` | `noble`
