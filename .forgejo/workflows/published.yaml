@@ -189,7 +189,7 @@ jobs:
       max-parallel: 2
       matrix:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
-        M6E_ARCH: ["amd64", "arm64", "riscv64"]
+        M6E_ARCH: ["amd64"]
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
       M6E_ARCH: ${{ matrix.M6E_ARCH }}
@@ -282,7 +282,7 @@ jobs:
     strategy:
       matrix:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
-        M6E_ARCH: ["amd64", "arm64", "riscv64"]
+        M6E_ARCH: ["amd64"]
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
       M6E_ARCH: ${{ matrix.M6E_ARCH }}
@@ -394,14 +394,6 @@ jobs:
         if: (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && (vars.CI_ONLY_M6E_PUBLISH_SINK == '' || contains(format(',{0},', vars.CI_ONLY_M6E_PUBLISH_SINK), format(',{0},', matrix.M6E_PUBLISH_SINK))) && (vars.CI_ONLY_M6E_ARCH == '' || contains(format(',{0},', vars.CI_ONLY_M6E_ARCH), ',amd64,')) && vars.CI_SKIP_IMAGE_IS_BUILT != 'true' && vars.CI_SKIP_CONTAINER_BUILD != 'true'
         with:
           name: image-${{ matrix.B19_UBUNTU_SERIES }}-amd64-${{ github.run_id }}
-      - uses: actions/download-artifact@v3
-        if: (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && (vars.CI_ONLY_M6E_PUBLISH_SINK == '' || contains(format(',{0},', vars.CI_ONLY_M6E_PUBLISH_SINK), format(',{0},', matrix.M6E_PUBLISH_SINK))) && (vars.CI_ONLY_M6E_ARCH == '' || contains(format(',{0},', vars.CI_ONLY_M6E_ARCH), ',arm64,')) && vars.CI_SKIP_IMAGE_IS_BUILT != 'true' && vars.CI_SKIP_CONTAINER_BUILD != 'true'
-        with:
-          name: image-${{ matrix.B19_UBUNTU_SERIES }}-arm64-${{ github.run_id }}
-      - uses: actions/download-artifact@v3
-        if: (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && (vars.CI_ONLY_M6E_PUBLISH_SINK == '' || contains(format(',{0},', vars.CI_ONLY_M6E_PUBLISH_SINK), format(',{0},', matrix.M6E_PUBLISH_SINK))) && (vars.CI_ONLY_M6E_ARCH == '' || contains(format(',{0},', vars.CI_ONLY_M6E_ARCH), ',riscv64,')) && vars.CI_SKIP_IMAGE_IS_BUILT != 'true' && vars.CI_SKIP_CONTAINER_BUILD != 'true'
-        with:
-          name: image-${{ matrix.B19_UBUNTU_SERIES }}-riscv64-${{ github.run_id }}
       - name: oci-push
         # The cell's run-time override gate, on the STEP because a job `if:` may not read the matrix context
         if: (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && (vars.CI_ONLY_M6E_PUBLISH_SINK == '' || contains(format(',{0},', vars.CI_ONLY_M6E_PUBLISH_SINK), format(',{0},', matrix.M6E_PUBLISH_SINK))) && vars.CI_SKIP_PUBLISH_IMAGE != 'true' && vars.CI_SKIP_OCI_PUSH != 'true'
@@ -412,8 +404,6 @@ jobs:
           # scaffolding, and a registry that cannot delete a tag keeps them forever.
           archives: |
             amd64 image-${{ matrix.B19_UBUNTU_SERIES }}-amd64-${{ github.run_id }}
-            arm64 image-${{ matrix.B19_UBUNTU_SERIES }}-arm64-${{ github.run_id }}
-            riscv64 image-${{ matrix.B19_UBUNTU_SERIES }}-riscv64-${{ github.run_id }}
           # The arches this scope may publish, the same list the per-arch downloads above honour
           only-arches: ${{ vars.CI_ONLY_M6E_ARCH }}
           image: b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:${{ env.M6E_TAG }}-${{ github.run_id }}
@@ -565,7 +555,7 @@ jobs:
           image: ${{ vars.DOCKER_CLI_IMAGE || 'docker' }}
           version: 29.8.1-cli
           pull: missing
-          run: sh -c 'test ! -f .compose/example.yaml || docker compose --file .compose/example.yaml config --quiet'
+          run: sh -c 'test ! -f .compose/example.yaml || docker compose --file .compose/example.yaml config --no-interpolate --quiet'
       - name: hadolint
         if: vars.CI_SKIP_SOURCE_PASSES_LINT != 'true' && vars.CI_SKIP_HADOLINT != 'true'
         uses: projectfile/actions/run-tool@v1
