@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-29 17:52+0000\n"
+"POT-Creation-Date: 2026-09-30 01:33+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -780,75 +780,83 @@ msgstr "En drenaje mediante %s: notificando no disponible"
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:98
+#: .container/user/tools.d/healthcheck.d:102
 msgid "No verdict yet for %s, running it in the background"
 msgstr "Aún no hay veredicto para %s, se ejecuta en segundo plano"
 
-#: .container/user/tools.d/healthcheck.d:109
+#: .container/user/tools.d/healthcheck.d:113
 msgid "Stale verdict for %s (%s s old, due every %s s), re-running"
 msgstr ""
 "Veredicto caducado para %s (%s s de antigüedad, cada %s s), se vuelve a "
 "ejecutar"
 
-#: .container/user/tools.d/healthcheck.d:113
+#: .container/user/tools.d/healthcheck.d:117
 msgid "Cached verdict for %s (%s s old): %s"
 msgstr "Veredicto en caché para %s (%s s de antigüedad): %s"
 
-#: .container/user/tools.d/healthcheck.d:138
-#: .container/user/tools.d/healthcheck.d:194
+#: .container/user/tools.d/healthcheck.d:142
+#: .container/user/tools.d/healthcheck.d:206
 msgid "Check passed:"
 msgstr "Verificación exitosa:"
 
-#: .container/user/tools.d/healthcheck.d:140
-#: .container/user/tools.d/healthcheck.d:196
+#: .container/user/tools.d/healthcheck.d:144
+msgid "Check timed out: %s (probe deadline %s s)"
+msgstr "Comprobación agotada: %s (plazo del sondeo %s s)"
+
+#: .container/user/tools.d/healthcheck.d:148
+#: .container/user/tools.d/healthcheck.d:208
 msgid "Check failed:"
 msgstr "Verificación fallida:"
 
-#: .container/user/tools.d/healthcheck.d:140
+#: .container/user/tools.d/healthcheck.d:148
 msgid "with exit code"
 msgstr "con código de salida"
 
-#: .container/user/tools.d/healthcheck.d:147
+#: .container/user/tools.d/healthcheck.d:155
 msgid "Checks directory found"
 msgstr "Directorio de verificaciones encontrado"
 
-#: .container/user/tools.d/healthcheck.d:159
+#: .container/user/tools.d/healthcheck.d:169
 msgid "Executing check:"
 msgstr "Ejecutando verificación:"
 
-#: .container/user/tools.d/healthcheck.d:183
+#: .container/user/tools.d/healthcheck.d:176
+msgid "Time budget for %s: %s s"
+msgstr "Tiempo disponible para %s: %s s"
+
+#: .container/user/tools.d/healthcheck.d:195
 msgid "Ignoring tier %s: %s is not set"
 msgstr "Se ignora el nivel %s: %s no está definida"
 
-#: .container/user/tools.d/healthcheck.d:205
+#: .container/user/tools.d/healthcheck.d:217
 msgid "No health checks found in"
 msgstr "No se encontraron verificaciones de salud en"
 
-#: .container/user/tools.d/healthcheck.d:208
+#: .container/user/tools.d/healthcheck.d:220
 msgid "Checks directory not found at"
 msgstr "Directorio de verificaciones no encontrado en"
 
-#: .container/user/tools.d/healthcheck.d:220
+#: .container/user/tools.d/healthcheck.d:232
 msgid "%d of %d checks failed: %s"
 msgstr "%d de %d verificaciones fallaron: %s"
 
-#: .container/user/tools.d/healthcheck.d:222
+#: .container/user/tools.d/healthcheck.d:234
 msgid "All %d checks passed."
 msgstr "Todas las %d verificaciones pasaron."
 
-#: .container/user/tools.d/healthcheck.d:236
+#: .container/user/tools.d/healthcheck.d:248
 msgid "Ignoring B19_HEALTH_EXIT_AFTER=%s: not a positive integer"
 msgstr "Se ignora B19_HEALTH_EXIT_AFTER=%s: no es un entero positivo"
 
-#: .container/user/tools.d/healthcheck.d:249
+#: .container/user/tools.d/healthcheck.d:261
 msgid "Consecutive failed probes: %s of %s (PID 1 age %s s)"
 msgstr "Sondeos fallidos consecutivos: %s de %s (edad del PID 1: %s s)"
 
-#: .container/user/tools.d/healthcheck.d:251
+#: .container/user/tools.d/healthcheck.d:263
 msgid "%s consecutive failed probes, sending TERM to PID 1"
 msgstr "%s sondeos fallidos consecutivos, enviando TERM al PID 1"
 
-#: .container/user/tools.d/healthcheck.d:252
+#: .container/user/tools.d/healthcheck.d:264
 msgid "Cannot signal PID 1 as UID %s"
 msgstr "No se puede enviar una señal al PID 1 como UID %s"
 
@@ -1830,9 +1838,17 @@ msgstr "Se esperaban 2 fallos, se contaron %s"
 msgid "A passing probe left %s failures"
 msgstr "Un sondeo exitoso dejó %s fallos"
 
-#: .container/user/test.d/0340-healthcheck-exit-after.sh:37
-msgid "Consecutive failures counted and reset"
-msgstr "Fallos consecutivos contados y reiniciados"
+#: .container/user/test.d/0340-healthcheck-exit-after.sh:41
+msgid "A hung check left %s failures"
+msgstr "Una comprobación colgada dejó %s fallos"
+
+#: .container/user/test.d/0340-healthcheck-exit-after.sh:42
+msgid "A hung check held the probe for %s s"
+msgstr "Una comprobación colgada retuvo el sondeo %s s"
+
+#: .container/user/test.d/0340-healthcheck-exit-after.sh:45
+msgid "Consecutive failures counted, reset and bounded"
+msgstr "Fallos consecutivos contados, reiniciados y acotados"
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
 msgid ""

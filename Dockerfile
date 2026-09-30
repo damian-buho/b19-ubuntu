@@ -84,6 +84,7 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_GID="${B19_GID}"                                                          \
     B19_GROUP="${B19_GROUP}"                                                      \
     B19_HEALTH_CACHE_MIN_SPACE_KB=32768                                           \
+    B19_HEALTH_CHECK_TIMEOUT=3                                                    \
     B19_HEALTH_CURL_TIMEOUT=8                                                     \
     B19_HEALTH_DRAIN_FILE=/tmp/b19-draining                                       \
     B19_HEALTH_EGRESS=false                                                       \

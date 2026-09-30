@@ -57,6 +57,7 @@ Runner lifecycle:
 1. Checks `B19_HEALTH_DRAIN_FILE` — exits 1 unconditionally if present (a deploy marks the outgoing container not-ready so Traefik routes around it while it keeps serving in-flight requests)
 1. Finds all `*.sh` directly in `$B19_HEALTH_PATH` (not in subdirectories — those are [tiers](#interval-tiers)) and sorts them ascending
 1. Runs each surviving check **in the background**, `</dev/null` so a check reading stdin cannot drain the process-substitution pipe the outer loop still reads paths from. `NUMPROCS` is unset inside a healthcheck (a fresh daemon-spawned process, not the entrypoint tree that exports it), so the runner sources `detect-cpu-count` itself and reaps with `wait -n -p` once concurrency hits that cap. Failures are isolated per check; completion order is non-deterministic, so the failed-name list is sorted before it is printed
+1. Bounds the inline checks with one shared deadline, `B19_HEALTH_CHECK_TIMEOUT` seconds from the first launch: each check gets the time left, and `timeout(1)` kills a hung one with its children, so it counts as a failure instead of letting Docker kill the whole probe. Keep a check’s own timeouts below it
 1. Exits with the **count** of failed checks (not a boolean): `N of M checks failed.` / `All N checks passed.`
 
 The continue-and-count failure mode is the runner’s defining difference from the fail-fast runners — see [use the runner family](use-runner-family.md).
@@ -286,6 +287,7 @@ esac
 | `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_TEMP_PATH` before failing                     |
 | `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Timeout in seconds for curl-based checks                           |
 | `B19_HEALTH_LOCK_TIMEOUT`       | `4`                                           | Seconds to wait for an overlapping run before failing              |
+| `B19_HEALTH_CHECK_TIMEOUT`      | `3`                                           | Seconds all inline checks of one probe may take together           |
 | `B19_HEALTH_NETWORK_URL`        | `"https://www.w3.org https://www.google.com"` | Space-separated URLs for HTTPS and DNS checks                      |
 | `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for the TCP reachability probe                 |
 | `B19_HEALTH_REACH_PORT_SAFE`    | `443`                                         | TCP port probed by the reachability check                          |

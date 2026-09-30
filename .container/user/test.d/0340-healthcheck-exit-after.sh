@@ -17,7 +17,7 @@ printf '%s\n' 'exit 3' >/tmp/b19-test-health-exit/checks/0100-check-failing.sh
 # Probes an isolated check tree with a threshold no test run reaches
 probe() {
     env "B19_HEALTH_PATH=/tmp/b19-test-health-exit/checks" "B19_TEMP_PATH=/tmp/b19-test-health-exit/state" \
-        "B19_HEALTH_EXIT_AFTER=1000" "B19_HEALTH_EXIT_GRACE=0" healthcheck.d >/dev/null 2>&1 || true
+        "B19_HEALTH_EXIT_AFTER=1000" "B19_HEALTH_EXIT_GRACE=0" "B19_HEALTH_CHECK_TIMEOUT=1" healthcheck.d >/dev/null 2>&1 || true
 }
 
 # Prints the stored consecutive-failure count
@@ -33,5 +33,13 @@ rm --force /tmp/b19-test-health-exit/checks/0100-check-failing.sh
 probe
 [ "$(count)" -eq 0 ] || { b19-log error "HEALTH-EXIT-TEST" "$(_p "A passing probe left %s failures" "$(count)")"; exit 1; }
 
+# A hung check is killed at the probe deadline and still counts
+printf '%s\n' 'sleep 30' >/tmp/b19-test-health-exit/checks/0100-check-hung.sh
+STARTED=$(date +%s)
+probe
+ELAPSED=$(( $(date +%s) - STARTED ))
+[ "$(count)" -eq 1 ] || { b19-log error "HEALTH-EXIT-TEST" "$(_p "A hung check left %s failures" "$(count)")"; exit 1; }
+[ "${ELAPSED}" -lt 5 ] || { b19-log error "HEALTH-EXIT-TEST" "$(_p "A hung check held the probe for %s s" "${ELAPSED}")"; exit 1; }
+
 rm --recursive --force /tmp/b19-test-health-exit
-b19-log good "HEALTH-EXIT-TEST" "$(_ "Consecutive failures counted and reset")"
+b19-log good "HEALTH-EXIT-TEST" "$(_ "Consecutive failures counted, reset and bounded")"

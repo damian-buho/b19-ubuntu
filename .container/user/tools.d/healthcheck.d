@@ -74,15 +74,19 @@
 
     TIER_STATE_PATH="${B19_TEMP_PATH:-/tmp}/healthcheck.d"
 
+    # Runs one check in a fresh bash that timeout(1) kills, with its process group, after $2 seconds
+    run_check() {
+      # shellcheck disable=SC2016 # the child bash sources the check with its own helpers loaded
+      timeout --kill-after=1 "$2" \
+        bash -c 'set -euo pipefail; . b19-i18n; . b19-load-secrets; . detect-cpu-count; . "$1"' healthcheck.d "$1"
+    }
+
     # Runs a tier check detached from the probe, then swaps in its verdict atomically
     refresh_tier_check() {
       local _check="$1" _state="$2" _code=0
       exec 8>"${_state}.lock"
       flock --nonblock 8 || return 0
-      # shellcheck disable=SC2016 # the child bash sources the check with its own helpers loaded
-      timeout --kill-after=5 "${B19_HEALTH_TIER_TIMEOUT}" \
-        bash -c 'set -euo pipefail; . b19-i18n; . b19-load-secrets; . detect-cpu-count; . "$1"' healthcheck.d "${_check}" \
-        >"${_state}.log" 2>&1 || _code=$?
+      run_check "${_check}" "${B19_HEALTH_TIER_TIMEOUT}" >"${_state}.log" 2>&1 || _code=$?
       printf '%s %s\n%s\n' "$(date +%s)" "${_code}" "$(tail --lines=1 "${_state}.log")" >"${_state}.verdict.${BASHPID}"
       mv --force "${_state}.verdict.${BASHPID}" "${_state}.verdict"
     }
@@ -136,6 +140,10 @@
       RUNNING=$((RUNNING - 1))
       if [ "${CHECK_EXIT}" -eq 0 ]; then
         b19-log good "HEALTH.D" "$(_ "Check passed:") ${CHECK_NAME}"
+      elif [ "${CHECK_EXIT}" -eq 124 ]; then
+        b19-log bad "HEALTH.D" "$(_p "Check timed out: %s (probe deadline %s s)" "${CHECK_NAME}" "${B19_HEALTH_CHECK_TIMEOUT}")"
+        FINAL_EXIT_CODE=$((FINAL_EXIT_CODE + 1))
+        FAILED_LIST+=("${CHECK_NAME}")
       else
         b19-log bad "HEALTH.D" "$(_ "Check failed:") ${CHECK_NAME} $(_ "with exit code") ${CHECK_EXIT}"
         FINAL_EXIT_CODE=$((FINAL_EXIT_CODE + 1))  # Increment failed checks counter
@@ -148,6 +156,8 @@
 
       # Find and sort scripts in the CHECKS_PATH directory
       CHECKS_COUNT=0
+      # All inline checks share one deadline, so a queue of slow checks still ends inside Docker's probe timeout
+      CHECKS_DEADLINE=$(( $(date +%s) + B19_HEALTH_CHECK_TIMEOUT ))
       while IFS= read -r -d '' CHECK; do
         CHECK_BASENAME=$(basename "${CHECK}")
         CHECKS_COUNT=$((CHECKS_COUNT + 1))
@@ -161,8 +171,10 @@
         # Launch in the background, </dev/null so a check that reads stdin
         # cannot drain the process-substitution pipe the outer loop still
         # reads its remaining paths from (same trap as process-hooks).
-        # shellcheck disable=SC1090
-        ( . "${CHECK}" ) </dev/null 9>&- &
+        CHECK_BUDGET=$(( CHECKS_DEADLINE - $(date +%s) ))
+        [ "${CHECK_BUDGET}" -ge 1 ] || CHECK_BUDGET=1
+        b19-log debug "HEALTH.D" "$(_p "Time budget for %s: %s s" "${CHECK_BASENAME}" "${CHECK_BUDGET}")"
+        run_check "${CHECK}" "${CHECK_BUDGET}" </dev/null 9>&- &
         CHECK_PID=$!
         PID_NAMES[${CHECK_PID}]="${CHECK_BASENAME}"
         RUNNING=$((RUNNING + 1))

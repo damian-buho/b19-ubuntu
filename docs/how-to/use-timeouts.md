@@ -67,6 +67,7 @@ Compose and plain Docker never act on `unhealthy`. With `B19_HEALTH_EXIT_AFTER=N
 
 - Probes during the first `B19_HEALTH_EXIT_GRACE` seconds after start never count, so a slow start is not a crash loop.
 - A passing probe resets the count; a draining container never counts.
+- A hung check counts too: `B19_HEALTH_CHECK_TIMEOUT` ends it inside Docker’s probe timeout.
 - The readiness wait inside `test.d` never counts either.
 
 ## Configuration
