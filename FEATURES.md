@@ -180,6 +180,15 @@ See [use-healthcheck.d](../how-to/use-healthcheck.d.md) for the check list, slot
 - Supports Jinja2 templates in tests, useful for asserting build-time values at runtime.
 - Continues on failure and reports the total count; never hides partial results.
 
+### Nothing hangs forever
+
+- Every startup, test and one-shot step has a time bound, so a wedged tool fails loudly instead of blocking a deploy or a CI run.
+- Stalled downloads are aborted, while slow ones of any size still complete.
+- A flaky call can be retried with backoff in one flag, without a hand-written loop.
+- An opt-in restart turns a service stuck unhealthy into a container the restart policy recovers.
+
+See [use-timeouts](../how-to/use-timeouts.md) for the options, defaults and overrides.
+
 ### Pre-installed utility tools
 
 - `mold` as default linker (opt-out available).

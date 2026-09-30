@@ -83,6 +83,10 @@ the next hook.
 | `B19_OVERLAY`              | (unset)          | directory name             | Name of an overlay directory under `B19_OVERLAYS_PATH/` to apply at startup. Contents are recursively copied to `/`.                                                                                           |
 | `B19_REQUIRED_SECRETS`     | (empty)          | space-separated names      | Dot-notation secret names that must exist (env var or file). Container exits 1 if any are missing. Skipped when `B19_SECRETS_ENABLED=false` or ad-hoc command mode.                                            |
 
+## Timeouts
+
+`B19_RUN_TIMEOUT`, `B19_RUN_BACKOFF_MAX`, `B19_BOOTSTRAP_TIMEOUT`, `B19_TEST_SCRIPT_TIMEOUT`, `B19_COMMAND_TIMEOUT`, `B19_HEALTH_EXIT_AFTER` and `B19_HEALTH_EXIT_GRACE` are described in [Bound every step with timeouts](use-timeouts.md).
+
 ## Secrets
 
 | Variable           | Default        | Controls                                                                                                                                                                                                        |
@@ -273,20 +277,22 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_BOOTSTRAP_LOCK_TIMEOUT`    | runtime         | Hook Directories |
 | `B19_BOOTSTRAP_PATH`            | runtime         | Hook Directories |
 | `B19_BOOTSTRAP_SKIP_*`          | runtime         | Per-script Skip  |
+| `B19_BOOTSTRAP_TIMEOUT`         | runtime         | Timeouts         |
 | `B19_BUILD_ALWAYS_ENABLED`      | build           | Feature Toggles  |
-| `B19_BUILD_DISABLE_MOLD`        | build           | Build-time Only  |
-| `B19_BUILD_PATH`                | runtime         | Hook Directories |
-| `B19_COLOR`                     | build + runtime | Logging          |
-| `B19_COMMAND_PATH`              | runtime         | Hook Directories |
-| `B19_DEPS_PATH`                 | runtime         | Hook Directories |
 | `B19_BUILD_CA_ANCHOR`           | build           | Download         |
 | `B19_BUILD_CA_FILE`             | build           | Download         |
+| `B19_BUILD_DISABLE_MOLD`        | build           | Build-time Only  |
+| `B19_BUILD_PATH`                | runtime         | Hook Directories |
 | `B19_CACHE_CHECK_ENABLED`       | build           | Feature Toggles  |
+| `B19_CACHE_CHECK_TIMEOUT`       | build           | Download         |
 | `B19_CACHE_GUARD_ENABLED`       | build           | Feature Toggles  |
 | `B19_CACHE_GUARD_STAMP`         | build           | Download         |
 | `B19_CACHE_GUARD_TIMEOUT`       | build           | Download         |
-| `B19_CACHE_CHECK_TIMEOUT`       | build           | Download         |
 | `B19_CACHE_PATH`                | build + runtime | Download         |
+| `B19_COLOR`                     | build + runtime | Logging          |
+| `B19_COMMAND_PATH`              | runtime         | Hook Directories |
+| `B19_COMMAND_TIMEOUT`           | runtime         | Timeouts         |
+| `B19_DEPS_PATH`                 | runtime         | Hook Directories |
 | `B19_DOCKER_GID`                | build + runtime | System Paths     |
 | `B19_DOWNLOAD_ATTEMPTS`         | build           | Download         |
 | `B19_DOWNLOAD_DISK_CACHE`       | build           | Download         |
@@ -309,6 +315,8 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_HEALTH_DRAIN_FILE`         | runtime         | Health           |
 | `B19_HEALTH_EGRESS`             | runtime         | Health           |
 | `B19_HEALTH_ENABLED`            | runtime         | Feature Toggles  |
+| `B19_HEALTH_EXIT_AFTER`         | runtime         | Timeouts         |
+| `B19_HEALTH_EXIT_GRACE`         | runtime         | Timeouts         |
 | `B19_HEALTH_HOME_MIN_SPACE_KB`  | runtime         | Health           |
 | `B19_HEALTH_HOURLY_INTERVAL`    | runtime         | Health           |
 | `B19_HEALTH_INTERVAL_<NAME>`    | runtime         | Health           |
@@ -338,6 +346,8 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_READY_PORT`                | runtime         | Health           |
 | `B19_REPORTD_FAT_FILES_AMOUNT`  | runtime         | Report           |
 | `B19_REQUIRED_SECRETS`          | runtime         | Behavior         |
+| `B19_RUN_BACKOFF_MAX`           | runtime         | Timeouts         |
+| `B19_RUN_TIMEOUT`               | runtime         | Timeouts         |
 | `B19_RUN_TIMING_PRECISION`      | runtime         | Logging          |
 | `B19_SECRETS_ENABLED`           | runtime         | Feature Toggles  |
 | `B19_SECRETS_PATH`              | runtime         | Secrets          |
@@ -349,9 +359,11 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_TEST_ENABLED`              | runtime         | Feature Toggles  |
 | `B19_TEST_PATH`                 | runtime         | Hook Directories |
 | `B19_TEST_RESULTS_PATH`         | runtime         | Hook Directories |
+| `B19_TEST_SCRIPT_TIMEOUT`       | runtime         | Timeouts         |
 | `B19_TEST_TIMEOUT`              | runtime         | Behavior         |
 | `B19_TOOLS_PATH`                | runtime         | Hook Directories |
 | `B19_UBUNTU_HASH`               | build           | Build-time Only  |
+
 | `B19_UBUNTU_MIRROR_AMD64`       | build           | Build-time Only  |
 | `B19_UBUNTU_MIRROR_ARM64`       | build           | Build-time Only  |
 | `B19_UBUNTU_MIRROR_RISCV64`     | build           | Build-time Only  |

@@ -24,8 +24,10 @@ B19_VERBOSITY=debug b19-run "TEST" "Running tests" -- make test
 ## How it works
 
 ```bash
-b19-run <tag> <message> -- <command> [args...]
+b19-run [--timeout S] [--retries N] [--backoff S] <tag> <message> -- <command> [args...]
 ```
+
+The options go before the tag; retries and backoff are described in [Bound every step with timeouts](use-timeouts.md).
 
 The `--` separator is a readability convention and is consumed automatically. The command runs via `"$@"`, so arguments pass through untouched.
 
@@ -42,9 +44,9 @@ Hiding green output keeps a `make` sheet short, but exit-0 *warnings* (line-leng
 
 > Under `m6e-run` the container runs at `debug`, so b19-run streams live and the reveal path is not reached — it applies to the standalone / build-hook case where b19-run is the sole runner.
 
-### Wall-clock guard (`B19_RUN_TIMEOUT`)
+### Wall-clock guard (`--timeout`, `B19_RUN_TIMEOUT`)
 
-Optional ceiling, off by default: build and compile callers (Erlang, LLVM, Scala, GCC, …) run legitimately long, and a blanket bound there would be wrong. Lint and validation runners set `B19_RUN_TIMEOUT=<seconds>` so a wedged tool dies loudly instead of hanging the whole tool-execution chain (command.d → entrypoint → `m6e-run` → `make`), which has no timeout of its own.
+Optional ceiling, off by default: build and compile callers (Erlang, LLVM, Scala, GCC, …) run legitimately long, and a blanket bound there would be wrong. Lint and validation runners pass `--timeout <seconds>` or set `B19_RUN_TIMEOUT=<seconds>` so a wedged tool dies loudly instead of hanging the whole tool-execution chain (command.d → entrypoint → `m6e-run` → `make`), which has no timeout of its own.
 
 When the bound is reached, `timeout(1)` sends `SIGTERM`, then `SIGKILL` after a 5s grace period, and exits `124` — reported by b19-run as a normal failure. When unset, no `timeout` is spawned.
 
@@ -80,5 +82,6 @@ B19_RUN_TIMEOUT=120 b19-run "LINT" "Linting shell scripts" -- shellcheck scripts
 
 ## See also
 
+- [Bound every step with timeouts](use-timeouts.md) — retries, backoff and per-phase bounds
 - [Log with b19-log](use-b19-log.md) — the reporter these lines flow through
 - [Manage long-running processes with b19-exec](use-b19-exec.md) — for daemons, not one-shot commands

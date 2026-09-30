@@ -112,7 +112,7 @@ These are on `PATH` (`/tools.d`) in this and every downstream image. Prefer them
 over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 
 - `b19-log <level> <tag> [msg]` — leveled (error/warn/info/debug), color-aware, honors `NO_COLOR`. Piped input (how `b19-exec` routes process output) skips level filtering — the level only picks the color, so payload output always reaches the console. A colored line encodes the level as its COLOUR, which a captured log drops on the floor — so the plain (`NO_COLOR`) path prints the level as its own column. That is what makes a warn findable in `reports/*.log` and quotable by m6e-run’s warning reveal; payload passthrough keeps the bare shape. [docs](docs/how-to/use-b19-log.md)
-- `b19-run <tag> <msg> -- <cmd>` — timed wrapper; success output hidden unless verbose, failure always shown. [docs](docs/how-to/use-b19-run.md)
+- `b19-run [--timeout S] [--retries N] [--backoff S] <tag> <msg> -- <cmd>` — timed wrapper with opt-in timeout and jittered retries; success output hidden unless verbose, failure always shown. [timeouts](docs/how-to/use-timeouts.md) [docs](docs/how-to/use-b19-run.md)
 - `b19-exec [opts] -- <cmd>` — long-running services; routes stdout/stderr through the logger, tracks PID for signal forwarding. [docs](docs/how-to/use-b19-exec.md)
 - `b19-fetch <tag> <url> <file> [sha512]` — three-tier cached download (`.fetch/` → BuildKit cache → aria2c), SHA-512 verified, offgrid-aware. [docs](docs/how-to/use-b19-fetch.md)
 - `b19-i18n` — sourced to get `_()` / `_p()` gettext helpers (TEXTDOMAIN `b19`).
@@ -155,7 +155,7 @@ the fragment is the pitch, the article is the guide (fragment stem `x.md` pairs
 with `docs/how-to/use-x.md`). Read the matching one before touching a subsystem:
 
 - Build time: [use-build.d](docs/how-to/use-build.d.md) · [use-dependencies](docs/how-to/use-dependencies.md) · [use-apt-cache](docs/how-to/use-apt-cache.md) · [use-pinned-base](docs/how-to/use-pinned-base.md)
-- Runtime: [use-entrypoint.d](docs/how-to/use-entrypoint.d.md) · [use-bootstrap.d](docs/how-to/use-bootstrap.d.md) · [use-healthcheck.d](docs/how-to/use-healthcheck.d.md) · [use-test.d](docs/how-to/use-test.d.md)
+- Runtime: [use-entrypoint.d](docs/how-to/use-entrypoint.d.md) · [use-timeouts](docs/how-to/use-timeouts.md) · [use-bootstrap.d](docs/how-to/use-bootstrap.d.md) · [use-healthcheck.d](docs/how-to/use-healthcheck.d.md) · [use-test.d](docs/how-to/use-test.d.md)
 - Command-line tools: [use-b19-log](docs/how-to/use-b19-log.md) · [use-b19-run](docs/how-to/use-b19-run.md) · [use-b19-exec](docs/how-to/use-b19-exec.md) · [use-b19-fetch](docs/how-to/use-b19-fetch.md) · [use-tools](docs/how-to/use-tools.md)
 - Platform: [configure-environment](docs/how-to/configure-environment.md) — every `B19_*` var, start here · [use-runner-family](docs/how-to/use-runner-family.md) · [use-signals](docs/how-to/use-signals.md) · [use-secrets](docs/how-to/use-secrets.md) · [use-cpu-detection](docs/how-to/use-cpu-detection.md) · [use-lineage](docs/how-to/use-lineage.md) · [use-xdg-paths](docs/how-to/use-xdg-paths.md) · [use-non-root](docs/how-to/use-non-root.md)
 - Configuration: [use-templating](docs/how-to/use-templating.md) · [use-overlays](docs/how-to/use-overlays.md) · [use-i18n](docs/how-to/use-i18n.md) · [use-offgrid](docs/how-to/use-offgrid.md) · [use-port-validation](docs/how-to/use-port-validation.md) · [use-shell-hooks](docs/how-to/use-shell-hooks.md)
