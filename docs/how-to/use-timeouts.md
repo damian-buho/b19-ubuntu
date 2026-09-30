@@ -43,6 +43,8 @@ Options go before the tag, so every existing call keeps working unchanged.
 
 Retries are per call only, never an environment default: only the call site knows whether its command is safe to repeat.
 
+A piped stdin is consumed by the first attempt, so a retried command must produce its own input: `b19-run --retries 2 … -- bash -c 'printf "%s" "${TOKEN}" | docker login … --password-stdin'`.
+
 ### Per-phase bounds
 
 | Phase                     | Variable                  | Default | Bound                                                    |
