@@ -31,7 +31,8 @@ jobs:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
-      M6E_IMAGE_PUBLISHED: kiota.ch/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
+      M6E_IMAGE_PUBLISHED: kiota.ch/b19/ubuntu:${{ matrix.B19_UBUNTU_SERIES }}
+      CI_IGNORE_VULNERABILITIES: ${{ vars.CI_IGNORE_VULNERABILITIES }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -46,7 +47,8 @@ jobs:
           run: auto-grype image
           env: |-
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
-            M6E_IMAGE_PUBLISHED=kiota.ch/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
+            M6E_IMAGE_PUBLISHED=kiota.ch/b19/ubuntu:${{ matrix.B19_UBUNTU_SERIES }}
+            CI_IGNORE_VULNERABILITIES=${{ vars.CI_IGNORE_VULNERABILITIES }}
             M6E_SHARED_CACHE=Y
           mounts: /app/data/ci-cache/grype-db:/app/.cache/grype:rw
       - name: trivy-scan-registry
@@ -58,7 +60,8 @@ jobs:
           run: auto-trivy image
           env: |-
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
-            M6E_IMAGE_PUBLISHED=kiota.ch/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
+            M6E_IMAGE_PUBLISHED=kiota.ch/b19/ubuntu:${{ matrix.B19_UBUNTU_SERIES }}
+            CI_IGNORE_VULNERABILITIES=${{ vars.CI_IGNORE_VULNERABILITIES }}
             M6E_SHARED_CACHE=Y
             TRIVY_CACHE_BACKEND
           mounts: /app/data/ci-cache/trivy-db:/app/.cache/trivy:rw
@@ -76,6 +79,8 @@ jobs:
       - run: echo source-is-audited
   source-is-secure:
     runs-on: docker
+    env:
+      CI_IGNORE_VULNERABILITIES: ${{ vars.CI_IGNORE_VULNERABILITIES }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -89,6 +94,7 @@ jobs:
           version: ${{ env.M6E_TAG }}
           run: auto-grype
           env: |-
+            CI_IGNORE_VULNERABILITIES=${{ vars.CI_IGNORE_VULNERABILITIES }}
             M6E_SHARED_CACHE=Y
           mounts: /app/data/ci-cache/grype-db:/app/.cache/grype:rw
       - name: trivy-scan-source
@@ -99,6 +105,7 @@ jobs:
           version: ${{ env.M6E_TAG }}
           run: auto-trivy fs
           env: |-
+            CI_IGNORE_VULNERABILITIES=${{ vars.CI_IGNORE_VULNERABILITIES }}
             M6E_SHARED_CACHE=Y
             TRIVY_CACHE_BACKEND
           mounts: /app/data/ci-cache/trivy-db:/app/.cache/trivy:rw

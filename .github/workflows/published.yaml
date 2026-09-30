@@ -307,6 +307,7 @@ jobs:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
       M6E_ARCH: ${{ matrix.M6E_ARCH }}
       M6E_IMAGE_ARCHIVE: image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}.tar
+      CI_IGNORE_VULNERABILITIES: ${{ vars.CI_IGNORE_VULNERABILITIES }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -335,6 +336,7 @@ jobs:
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
             M6E_ARCH=${{ matrix.M6E_ARCH }}
             M6E_IMAGE_ARCHIVE=image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}.tar
+            CI_IGNORE_VULNERABILITIES=${{ vars.CI_IGNORE_VULNERABILITIES }}
             M6E_SHARED_CACHE=N
           mounts: ${{ runner.temp }}/ci-cache/grype-db:/app/.cache/grype:rw
       - name: save grype-db
@@ -362,6 +364,7 @@ jobs:
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
             M6E_ARCH=${{ matrix.M6E_ARCH }}
             M6E_IMAGE_ARCHIVE=image-${{ matrix.B19_UBUNTU_SERIES }}-${{ matrix.M6E_ARCH }}-${{ github.run_id }}.tar
+            CI_IGNORE_VULNERABILITIES=${{ vars.CI_IGNORE_VULNERABILITIES }}
             M6E_SHARED_CACHE=N
             TRIVY_CACHE_BACKEND
           mounts: ${{ runner.temp }}/ci-cache/trivy-db:/app/.cache/trivy:rw
@@ -476,6 +479,23 @@ jobs:
           # one `latest-<branch>` tag on the primary sink, so a branch build is testable
           # without a tag and without moving anything a consumer floats on.
           preview: ${{ github.ref_type == 'branch' && github.ref_name || '' }}
+          # Head templates per build kind, as org.projectfile.image.heads declares them
+          heads: |
+            release ${version} ${major}.${minor} ${major} latest
+            prerelease ${version}
+            trunk edge
+            branch latest-${branch}
+          # This cell’s variant parts in declared order, each `<value> <default>`
+          variant: |
+            ${{ matrix.B19_UBUNTU_SERIES }} resolute
+          # Every cell of this publish, so two cells deriving one tag are refused before any push
+          variant-cells: |
+            resolute
+            noble
+          variant-join: "-"
+          variant-aliases: "defaults"
+          variant-tag: "${head}-${variant}"
+          variant-bare: "latest"
           # OUTPUT_REGISTRY: the forge-dependent PUSH target (kiota.ch / ghcr.io / …),
           # always threaded — empty => Docker Hub. NOT the per-namespace INPUT registries
           # (B19_DOCKER_REGISTRY & friends answer "where base images come FROM"); this
@@ -486,7 +506,7 @@ jobs:
           # the sink that declared it — so one archive lands under whatever path grammar
           # each registry wants. Credentials key on the SINK name.
           refs: |
-            ghcr ghcr.io/damian-buho/b19/ubuntu/${{ matrix.B19_UBUNTU_SERIES }}:latest
+            ghcr ghcr.io/damian-buho/b19/ubuntu:${{ matrix.B19_UBUNTU_SERIES }}
           # This CELL's destination, off the publish axis: the job runs one cell per
           # place the archive goes, so a registry refusing a push fails only its own.
           sink: ${{ matrix.M6E_PUBLISH_SINK }}
@@ -533,6 +553,8 @@ jobs:
       - run: echo source-is-ok
   source-is-secure:
     runs-on: ubuntu-26.04
+    env:
+      CI_IGNORE_VULNERABILITIES: ${{ vars.CI_IGNORE_VULNERABILITIES }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -554,6 +576,7 @@ jobs:
           version: ${{ env.M6E_TAG }}
           run: auto-grype
           env: |-
+            CI_IGNORE_VULNERABILITIES=${{ vars.CI_IGNORE_VULNERABILITIES }}
             M6E_SHARED_CACHE=N
           mounts: ${{ runner.temp }}/ci-cache/grype-db:/app/.cache/grype:rw
       - name: save grype-db
@@ -578,6 +601,7 @@ jobs:
           version: ${{ env.M6E_TAG }}
           run: auto-trivy fs
           env: |-
+            CI_IGNORE_VULNERABILITIES=${{ vars.CI_IGNORE_VULNERABILITIES }}
             M6E_SHARED_CACHE=N
             TRIVY_CACHE_BACKEND
           mounts: ${{ runner.temp }}/ci-cache/trivy-db:/app/.cache/trivy:rw

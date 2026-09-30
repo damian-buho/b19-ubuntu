@@ -22,6 +22,7 @@ includes:
   - .makefile/b19/images/fd.yaml
   - .makefile/b19/images/minijinja.yaml
   - .makefile/b19/traits/release.yaml
+  - .makefile/container/traits/image-variant.yaml
   - https://kiota.ch/b19/metadata/raw/branch/main/include.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/forge/codeberg.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/forge/github.yaml
@@ -88,25 +89,13 @@ links:
       es: Paquetes en Docker Hub
       uk: Пакунки на Docker Hub
     type: package-registry
-    url: https://hub.docker.com/r/damianbuho/b19-ubuntu-resolute
-  - label:
-      en: Packages on Docker Hub
-      es: Paquetes en Docker Hub
-      uk: Пакунки на Docker Hub
-    type: package-registry
-    url: https://hub.docker.com/r/damianbuho/b19-ubuntu-noble
+    url: https://hub.docker.com/r/damianbuho/b19-ubuntu
   - label:
       en: Packages on GHCR
       es: Paquetes en GHCR
       uk: Пакунки на GHCR
     type: package-registry
-    url: https://github.com/damian-buho/b19-ubuntu/pkgs/container/b19%2Fubuntu%2Fresolute
-  - label:
-      en: Packages on GHCR
-      es: Paquetes en GHCR
-      uk: Пакунки на GHCR
-    type: package-registry
-    url: https://github.com/damian-buho/b19-ubuntu/pkgs/container/b19%2Fubuntu%2Fnoble
+    url: https://github.com/damian-buho/b19-ubuntu/pkgs/container/b19%2Fubuntu
 org:
   b19:
     scaffold:
@@ -127,8 +116,10 @@ org:
         B19_UBUNTU_SERIES: resolute
     image:
       series: "{B19_UBUNTU_SERIES}"
-      path: ${org}/${name}/${series}
-      flatpath: ${org}-${name}-${series}
+      tag: ${series}
+      variant:
+        parts:
+          - series
     ci:
       image: b19/ubuntu/{B19_UBUNTU_SERIES}
       matrix:

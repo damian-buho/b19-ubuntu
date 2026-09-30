@@ -7,7 +7,6 @@
 # Image naming (series-specific)
 
 M6E_CONTAINER_NAME    = $(subst /,-,$(NAMESPACE))-$(PROJECT)-$(B19_UBUNTU_SERIES)
-M6E_IMAGE_BASENAME    = $(NAMESPACE)/$(PROJECT)/$(B19_UBUNTU_SERIES)
 
 # Generated make-target reference lives with the rest of the documentation
 M6E_DOCS_PATH         = docs/how-to
