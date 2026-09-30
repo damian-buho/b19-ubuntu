@@ -13,6 +13,7 @@
 .fetch
 .makefile/bootstrap
 .secrets/
+.worktrees/
 reports/
 # <<< user-patterns
 
