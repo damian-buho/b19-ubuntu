@@ -222,6 +222,37 @@
       b19-log good "HEALTH.D" "$(_p "All %d checks passed." "${CHECKS_COUNT}")"
     fi
 
+    # Seconds since PID 1 started, read from /proc since procps is absent
+    pid1_age() {
+      local _up _stat _fields
+      read -r _up _ </proc/uptime
+      _stat=$(</proc/1/stat)
+      read -ra _fields <<<"${_stat##*) }"
+      echo $(( ${_up%.*} - _fields[19] / $(getconf CLK_TCK) ))
+    }
+
+    # Stops PID 1 after B19_HEALTH_EXIT_AFTER consecutive failed probes, so the restart policy acts
+    if [ -n "${B19_HEALTH_EXIT_AFTER:-}" ] && ! [[ "${B19_HEALTH_EXIT_AFTER}" =~ ^[1-9][0-9]*$ ]]; then
+      b19-log warn "HEALTH.D" "$(_p "Ignoring B19_HEALTH_EXIT_AFTER=%s: not a positive integer" "${B19_HEALTH_EXIT_AFTER}")"
+    elif [ -n "${B19_HEALTH_EXIT_AFTER:-}" ]; then
+      FAILURES_FILE="${TIER_STATE_PATH}/consecutive-failures"
+      mkdir --parents "${TIER_STATE_PATH}"
+      FAILURES=$(cat "${FAILURES_FILE}" 2>/dev/null || true)
+      [[ "${FAILURES}" =~ ^[0-9]+$ ]] || FAILURES=0
+      PID1_AGE=$(pid1_age)
+      if [ "${FINAL_EXIT_CODE}" -eq 0 ] || [ "${PID1_AGE}" -lt "${B19_HEALTH_EXIT_GRACE:-90}" ]; then
+        FAILURES=0
+      else
+        FAILURES=$((FAILURES + 1))
+      fi
+      echo "${FAILURES}" >"${FAILURES_FILE}"
+      b19-log debug "HEALTH.D" "$(_p "Consecutive failed probes: %s of %s (PID 1 age %s s)" "${FAILURES}" "${B19_HEALTH_EXIT_AFTER}" "${PID1_AGE}")"
+      if [ "${FAILURES}" -ge "${B19_HEALTH_EXIT_AFTER}" ]; then
+        b19-log error "HEALTH.D" "$(_p "%s consecutive failed probes, sending TERM to PID 1" "${FAILURES}")"
+        kill -TERM 1 || b19-log warn "HEALTH.D" "$(_p "Cannot signal PID 1 as UID %s" "$(id --user)")"
+      fi
+    fi
+
     # Compact, unfiltered, locale-independent verdict on STDOUT (b19-log writes to
     # stderr): the space-separated names of the checks that failed. A caller such
     # as test.d can surface *what* is unhealthy even though the per-check "Check

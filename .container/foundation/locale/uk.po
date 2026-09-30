@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-29 17:43+0000\n"
+"POT-Creation-Date: 2026-09-29 17:52+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -324,21 +324,28 @@ msgstr "Хеш:       %s"
 msgid "Filename:  %s"
 msgstr "Файл:      %s"
 
-#: .container/foundation/tools.d/b19-run:72
-msgid "Usage: b19-run <tag> <message> [--] <command> [args...]"
+#: .container/foundation/tools.d/b19-run:46
+msgid ""
+"Usage: b19-run [--timeout S] [--retries N] [--backoff S] <tag> <message> "
+"[--] <command> [args...]"
 msgstr ""
-"Використання: b19-run <мітка> <повідомлення> [--] <команда> [аргументи...]"
+"Використання: b19-run [--timeout S] [--retries N] [--backoff S] <мітка> "
+"<повідомлення> [--] <команда> [аргументи...]"
 
-#: .container/foundation/tools.d/b19-run:108
-#: .container/foundation/tools.d/b19-run:110
+#: .container/foundation/tools.d/b19-run:124
+msgid "Attempt %s/%s failed (exit code %s), retrying in %s s"
+msgstr "Спроба %s/%s не вдалася (код виходу %s), повтор через %s с"
+
+#: .container/foundation/tools.d/b19-run:134
+#: .container/foundation/tools.d/b19-run:136
 msgid "success [%s]"
 msgstr "успіх [%s]"
 
-#: .container/foundation/tools.d/b19-run:131
+#: .container/foundation/tools.d/b19-run:157
 msgid "failure (exit code %s), [%s]"
 msgstr "помилка (код виходу %s), [%s]"
 
-#: .container/foundation/tools.d/b19-run:142
+#: .container/foundation/tools.d/b19-run:168
 msgid "failure (exit code %s) [%s]"
 msgstr "помилка (код виходу %s) [%s]"
 
@@ -718,28 +725,31 @@ msgid "Already done: %s"
 msgstr "Вже виконано: %s"
 
 #: .container/user/tools.d/bootstrap.d:53
-#: .container/user/entrypoint.d/4000-run-command.sh:10
 msgid "Running: %s"
 msgstr "Виконання: %s"
 
 #: .container/user/tools.d/bootstrap.d:54
+msgid "Timeout for %s: %s s"
+msgstr "Тайм-аут для %s: %s с"
+
+#: .container/user/tools.d/bootstrap.d:55
 msgid "Execute: %s"
 msgstr "Виконати: %s"
 
-#: .container/user/tools.d/bootstrap.d:55
+#: .container/user/tools.d/bootstrap.d:56
 msgid "Lock: %s"
 msgstr "Блокування: %s"
 
-#: .container/user/tools.d/bootstrap.d:56
+#: .container/user/tools.d/bootstrap.d:57
 msgid "Completed: %s"
 msgstr "Завершено: %s"
 
-#: .container/user/tools.d/bootstrap.d:60
+#: .container/user/tools.d/bootstrap.d:61
 msgid "No scripts found in %s"
 msgstr "Скрипти не знайдено в %s"
 
 #: .container/user/tools.d/entrypoint.d:26 .container/user/tools.d/report.d:26
-#: .container/user/tools.d/test.d:47
+#: .container/user/tools.d/test.d:48
 msgid "Directory found:"
 msgstr "Каталог знайдено:"
 
@@ -756,7 +766,7 @@ msgid "No entrypoint scripts found in"
 msgstr "Скриптів точки входу не знайдено в"
 
 #: .container/user/tools.d/entrypoint.d:55 .container/user/tools.d/report.d:52
-#: .container/user/tools.d/test.d:69
+#: .container/user/tools.d/test.d:70
 msgid "Directory not found:"
 msgstr "Каталог не знайдено:"
 
@@ -822,6 +832,22 @@ msgstr "%d з %d перевірок не пройдено: %s"
 msgid "All %d checks passed."
 msgstr "Усі %d перевірок пройдено."
 
+#: .container/user/tools.d/healthcheck.d:236
+msgid "Ignoring B19_HEALTH_EXIT_AFTER=%s: not a positive integer"
+msgstr "Ігнорується B19_HEALTH_EXIT_AFTER=%s: не додатне ціле число"
+
+#: .container/user/tools.d/healthcheck.d:249
+msgid "Consecutive failed probes: %s of %s (PID 1 age %s s)"
+msgstr "Послідовних невдалих перевірок: %s з %s (вік PID 1: %s с)"
+
+#: .container/user/tools.d/healthcheck.d:251
+msgid "%s consecutive failed probes, sending TERM to PID 1"
+msgstr "%s послідовних невдалих перевірок, надсилаємо TERM до PID 1"
+
+#: .container/user/tools.d/healthcheck.d:252
+msgid "Cannot signal PID 1 as UID %s"
+msgstr "Неможливо надіслати сигнал PID 1 від UID %s"
+
 #: .container/user/tools.d/report.d:18 .container/user/tools.d/test.d:23
 msgid "Reading from:"
 msgstr "Читання з:"
@@ -838,35 +864,35 @@ msgstr "Скриптів звітів не знайдено в"
 msgid "Tests disabled"
 msgstr "Тести вимкнено"
 
-#: .container/user/tools.d/test.d:35
+#: .container/user/tools.d/test.d:36
 msgid "Healthcheck did not pass within %s seconds"
 msgstr "Перевірка стану не пройшла протягом %s секунд"
 
-#: .container/user/tools.d/test.d:36
+#: .container/user/tools.d/test.d:37
 msgid "Unhealthy checks: %s"
 msgstr "Перевірки, що не пройшли: %s"
 
-#: .container/user/tools.d/test.d:39
+#: .container/user/tools.d/test.d:40
 msgid "Waiting for healthcheck... %ss elapsed"
 msgstr "Очікування перевірки стану... минуло %ss"
 
-#: .container/user/tools.d/test.d:43
+#: .container/user/tools.d/test.d:44
 msgid "Healthcheck passed. Starting tests."
 msgstr "Перевірка стану пройдена. Запуск тестів."
 
-#: .container/user/tools.d/test.d:54
+#: .container/user/tools.d/test.d:55
 msgid "Executing:"
 msgstr "Виконання:"
 
-#: .container/user/tools.d/test.d:66
+#: .container/user/tools.d/test.d:67
 msgid "No test scripts found in"
 msgstr "Тестових скриптів не знайдено в"
 
-#: .container/user/tools.d/test.d:74
+#: .container/user/tools.d/test.d:75
 msgid "%d of %d tests failed. Final exit code: %d"
 msgstr "%d з %d тестів не пройдено. Код виходу: %d"
 
-#: .container/user/tools.d/test.d:76
+#: .container/user/tools.d/test.d:77
 msgid "All %d tests passed."
 msgstr "Усі %d тестів пройдено."
 
@@ -1114,6 +1140,10 @@ msgstr "  - Файли секретів Docker (формат %s/b19.*)"
 #: .container/user/entrypoint.d/2100-validate-secrets.sh:72
 msgid "All %d required secrets validated"
 msgstr "Усі %d необхідних секретів підтверджено"
+
+#: .container/user/entrypoint.d/4000-run-command.sh:10
+msgid "Running: %s (timeout: %s)"
+msgstr "Виконання: %s (тайм-аут: %s)"
 
 #: .container/user/entrypoint.d/5000-start.sh:11
 msgid "No command provided, will sleep"
@@ -1458,6 +1488,22 @@ msgstr ""
 msgid "All b19-exec tests passed"
 msgstr "Усі %d тестів пройдено."
 
+#: .container/user/test.d/0200-b19-run-retries.sh:15
+msgid "Retry a flaky command"
+msgstr "Повторити нестабільну команду"
+
+#: .container/user/test.d/0200-b19-run-retries.sh:19
+msgid "Expected 3 attempts, got %s"
+msgstr "Очікувалося 3 спроби, отримано %s"
+
+#: .container/user/test.d/0200-b19-run-retries.sh:23
+msgid "Time out a hung command"
+msgstr "Перервати за тайм-аутом завислу команду"
+
+#: .container/user/test.d/0200-b19-run-retries.sh:24
+msgid "Expected exit code 124, got %s"
+msgstr "Очікувався код виходу 124, отримано %s"
+
 #: .container/user/test.d/0200-b19-run.sh:13
 #, fuzzy
 msgid "Touch /tmp/test"
@@ -1760,6 +1806,18 @@ msgstr "Проба не вдалася, не назвавши перевірку
 #: .container/user/test.d/0330-healthcheck-tiers.sh:71
 msgid "All healthcheck tier tests passed"
 msgstr "Усі тести рівнів перевірки стану пройдено"
+
+#: .container/user/test.d/0340-healthcheck-exit-after.sh:30
+msgid "Expected 2 failures, counted %s"
+msgstr "Очікувалося 2 невдачі, пораховано %s"
+
+#: .container/user/test.d/0340-healthcheck-exit-after.sh:34
+msgid "A passing probe left %s failures"
+msgstr "Успішна перевірка залишила %s невдач"
+
+#: .container/user/test.d/0340-healthcheck-exit-after.sh:37
+msgid "Consecutive failures counted and reset"
+msgstr "Послідовні невдачі пораховано та скинуто"
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
 msgid ""

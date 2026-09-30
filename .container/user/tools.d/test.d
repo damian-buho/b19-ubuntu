@@ -30,7 +30,8 @@
     # is dropped here anyway. Reported at `error` so the verdict clears the default
     # threshold and actually prints.
     UNHEALTHY=""
-    while ! UNHEALTHY="$(healthcheck.d 2>/dev/null)"; do
+    # The wait probes must never count toward B19_HEALTH_EXIT_AFTER
+    while ! UNHEALTHY="$(B19_HEALTH_EXIT_AFTER="" healthcheck.d 2>/dev/null)"; do
       if [ "${ELAPSED}" -ge "${B19_TEST_TIMEOUT}" ]; then
         b19-log error "TEST.D" "$(_p "Healthcheck did not pass within %s seconds" "${B19_TEST_TIMEOUT}")"
         b19-log error "TEST.D" "$(_p "Unhealthy checks: %s" "${UNHEALTHY:-unknown}")"
@@ -51,7 +52,7 @@
       while IFS= read -r -d '' TEST; do
         TESTS_COUNT=$((TESTS_COUNT + 1))
         BASENAME=$(basename "${TEST}")
-        b19-run "TEST.D" "$(_ "Executing:") ${BASENAME}" -- "${TEST}"
+        b19-run --timeout "${B19_TEST_SCRIPT_TIMEOUT:-600}" "TEST.D" "$(_ "Executing:") ${BASENAME} (${B19_TEST_SCRIPT_TIMEOUT:-600} s)" -- "${TEST}"
 
         # Capture the exit code of the test
         EXIT_CODE=$?

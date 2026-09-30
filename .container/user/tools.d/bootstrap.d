@@ -51,7 +51,8 @@
       fi
 
       b19-log info "BOOTSTRAP" "$(_p "Running: %s" "${BASENAME}")"
-      b19-run "BOOTSTRAP" "$(_p "Execute: %s" "${BASENAME}")" --  "${SCRIPT}" 9>&-
+      b19-log debug "BOOTSTRAP" "$(_p "Timeout for %s: %s s" "${BASENAME}" "${B19_BOOTSTRAP_TIMEOUT:-3600}")"
+      b19-run --timeout "${B19_BOOTSTRAP_TIMEOUT:-3600}" "BOOTSTRAP" "$(_p "Execute: %s" "${BASENAME}")" --  "${SCRIPT}" 9>&-
       b19-run "BOOTSTRAP" "$(_p "Lock: %s" "${BASENAME}")" --    touch "${LOCK_FILE}"
       b19-log good "BOOTSTRAP" "$(_p "Completed: %s" "${BASENAME}")"
     done < <(fd --print0 --hidden --type file --extension sh . "${BOOTSTRAP_PATH}" | sort --zero-terminated --numeric-sort)
