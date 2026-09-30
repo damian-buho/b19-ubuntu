@@ -137,6 +137,10 @@ Analyze Docker image layer efficiency with dive
 
 Install the lefthook Git hooks from the committed config (dev machines only)
 
+### `matrix-%`
+
+Run one target in every matrix cell, e.g. make matrix-container-build (no gates, no join)
+
 ### `matrix-sweep`
 
 Run the whole CI pipeline — one DAG pass without a matrix, or once per matrix cell then the join
@@ -205,6 +209,22 @@ Continuously refresh the compose service list (watch dc-ps)
 
 ## Container
 
+### `compose-example-check`
+
+Validate the README’s example compose file
+
+`sh -c 'test ! -f .compose/example.yaml || docker compose --file .compose/example.yaml config --quiet'`
+
+> Image: DOCKER_CLI_IMAGE
+
+### `configuration-capture`
+
+Table every environment variable the image sets into docs/configuration.d
+
+`.makefile/container/scripts/configuration-capture.sh --default-lang=${org.projectfile.i18n.default-language} ${org.projectfile.i18n.languages[]}`
+
+> Image: host runner
+
 ### `container-exec`
 
 Open a shell in the running Docker container
@@ -260,6 +280,14 @@ Generate .dockerignore from the projectfile
 `pf-bridge ignore .dockerignore --force`
 
 > Image: PF_BRIDGE_IMAGE
+
+### `usage-capture`
+
+Capture each declared --help from the built image into docs/usage.d
+
+`.makefile/container/scripts/usage-capture.sh --default-lang=${org.projectfile.i18n.default-language} ${org.projectfile.i18n.languages[]}`
+
+> Image: host runner
 
 ## Dependencies
 
@@ -559,15 +587,15 @@ Import Git metadata into the projectfile
 
 ### `help`
 
-List every target by category — the terminal view of docs/MAKEFILE.md
+List every target by category — the terminal view of docs/how-to/MAKEFILE.md
 
 ### `m6e-commit-docs`
 
-Regenerate docs/MAKEFILE.md and commit the result
+Regenerate docs/how-to/MAKEFILE.md and commit the result
 
 ### `m6e-generate-docs`
 
-Regenerate docs/MAKEFILE.md from the #@ help annotations
+Regenerate docs/how-to/MAKEFILE.md from the #@ help annotations
 
 ## I18n
 
@@ -632,6 +660,10 @@ List local Docker images matching this project
 ### `image-remove`
 
 Remove the locally built Docker image
+
+### `usage-check`
+
+Verify the committed --help captures in docs/usage.d match the built image
 
 ## License
 
@@ -877,6 +909,10 @@ Format shell scripts with shfmt
 
 > Image: D9T_GO_TOOLS_IMAGE
 
+### `spiderlint-%`
+
+Crawl and lint one site org.spiderlint.sites names, as spiderlint-SITE
+
 ### `vacuum`
 
 Lint the OpenAPI specification
@@ -919,7 +955,7 @@ Commit bumped .makefile/ submodule pointers
 
 ### `m6e-update`
 
-Update the .makefile/ submodules, then regenerate docs/MAKEFILE.md
+Update the .makefile/ submodules, then regenerate docs/how-to/MAKEFILE.md
 
 ### `m6e-update-and-commit`
 
@@ -1065,7 +1101,7 @@ Generate CONTRIBUTING.md from the projectfile
 
 ### `pf-bridge-fragments-check`
 
-Verify FEATURES.md/ROADMAP.md still match the docs/*.d fragments
+Verify FEATURES.md, ROADMAP.md and USAGE.md still match the docs/*.d fragments
 
 `pf-bridge fragments --check`
 
@@ -1073,9 +1109,9 @@ Verify FEATURES.md/ROADMAP.md still match the docs/*.d fragments
 
 ### `pf-bridge-fragments-generate`
 
-Assemble FEATURES.md/ROADMAP.md from docs/*.d fragments
+Assemble FEATURES.md, ROADMAP.md and USAGE.md from docs/*.d fragments
 
-`pf-bridge fragments`
+`pf-bridge fragments --create-all`
 
 > Image: PF_BRIDGE_IMAGE
 
@@ -1205,7 +1241,7 @@ Show the next minor version
 
 Show the next version the commits since the last tag imply
 
-`svu next --tag.prefix=${org.projectfile.release.tag-prefix}`
+`svu next --v0 --tag.prefix=${org.projectfile.release.tag-prefix}`
 
 > Image: D9T_GO_TOOLS_IMAGE
 
