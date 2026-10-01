@@ -126,7 +126,7 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 ## Non-obvious facts / gotchas
 
 - **CLAUDE.md → AGENTS.md.** `CLAUDE.md` is just `@AGENTS.md`; edit this file.
-- **Multi-series matrix.** Builds across `B19_UBUNTU_SERIES` ∈ {`resolute`, `noble`} (`projectfile.yaml` → `org.projectfile.ci.matrix`). Image name is series-qualified: `b19/ubuntu/<series>`. Anything series-specific belongs in
+- **Multi-series matrix.** Builds across `B19_UBUNTU_SERIES` ∈ {`resolute`, `noble`} (`projectfile.yaml` → `org.projectfile.ci.matrix`). Image name is series-qualified: `b19/ubuntu:<series>`. Anything series-specific belongs in
     `deps/ubuntu/<series>.*` or `.j2` templates, never hardcoded.
 - **deps are declarative.** Add a `*.deps` file under the right `deps/` path and the m6e build auto-discovers it (URL/version/SHA-512, arch-aware) — no Makefile edit. A `git+<url>#<ref>` `url.deps` declares a repository the build clones instead of a file it downloads: no `hash.deps`, `M6E_UPSTREAM__REF` carries the tag. [docs/how-to/use-dependencies.md](docs/how-to/use-dependencies.md).
 - **`b19-resolve-dep` clobbers.** It always writes the same `M6E_UPSTREAM_VERSION` / `M6E_UPSTREAM__*` names, and hooks are SOURCED in one shell, so the last `eval` in the stage wins. A hook that reads those values MUST `eval "$(b19-resolve-dep <name>)"` itself — an earlier hook’s resolve is not yours. Silent when the value only feeds a `-X` ldflag: the linker drops an unknown target and the binary keeps its default.

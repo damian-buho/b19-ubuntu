@@ -32,7 +32,7 @@ M6E_AI=Y make build
 
 The projectfile maps the file to the `B19_UBUNTU_HASH` build arg (`file:` key), CI injects it via file-args, and the Dockerfile consumes `FROM ubuntu@${B19_UBUNTU_HASH}`. The deps files are the source of truth; the `ARG` inline default in the Dockerfile is a stale fallback that real builds always override.
 
-The series axis (`B19_UBUNTU_SERIES`, default `resolute`; CI builds `resolute` + `noble`) fans out to series-qualified images `b19/ubuntu/<series>` — anything series-specific belongs in `deps/ubuntu/<series>.*` or `.j2` templates, never hardcoded.
+The series axis (`B19_UBUNTU_SERIES`, default `resolute`; CI builds `resolute` + `noble`) fans out to series-qualified images `b19/ubuntu:<series>` — anything series-specific belongs in `deps/ubuntu/<series>.*` or `.j2` templates, never hardcoded.
 
 Downstream images do not pin by digest themselves: they `FROM` the published series tag of this image, so the fleet pins exactly once, here.
 
