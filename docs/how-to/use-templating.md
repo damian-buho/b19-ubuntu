@@ -36,7 +36,7 @@ That is the whole integration: the inheritable `820-save-j2.i.sh` hook discovers
 | Item         | Value                                                                                      |
 | ------------ | ------------------------------------------------------------------------------------------ |
 | Binary       | `/usr/local/bin/minijinja-cli`                                                             |
-| Source image | `b19/minijinja` (built on `b19/rust-musl`, statically linked)                              |
+| Source image | `b19/minijinja` (built on `b19/rust:musl`, statically linked)                              |
 | Version      | Pinned in `b19/minijinja/.container/compile-rust/deps/cargo.deps`                          |
 | Bootstrap    | `ubuntu` COPY’s it from `b19/minijinja`; initial bootstrap: `B19_MINIJINJA_VERSION=latest` |
 
