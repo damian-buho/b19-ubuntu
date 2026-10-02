@@ -51,6 +51,7 @@ The `PATH` includes `/tools.d` and `/command.d`; the tree is assembled from `.co
 - `detect-apt-cacher install|remove` — write/remove the LAN APT proxy config from `M6E_APT_CACHE_HOST`; root-only, no-ops otherwise
 - `check-reachable <tag> <url> [timeout]` — cURL connect probe used by `detect-apt-cacher` and `b19-fetch` to skip a stuck LAN cache instead of failing
 - `b19-generate-locales` / `b19-ensure-locale` — compile/validate locales
+- `b19-assert equals|matches <tag> <expected> <actual>` — one-line test check that logs what it expected and what it found
 - `decomment` — strip `#` comments from a stream
 - `ansi`, `hr` — ANSI escapes and horizontal rules for pretty output
 - `setup-docker-sources`, `setup-pass-with-docker`, `add-user-to-docker` — Docker-in-Docker conveniences

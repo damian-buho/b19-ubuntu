@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-02 18:53+0000\n"
+"POT-Creation-Date: 2026-10-02 19:02+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -24,6 +24,28 @@ msgstr "Створити групу %s з ID %s"
 #: .container/foundation/tools.d/add-user-to-docker:17
 msgid "Add user %s to group %s"
 msgstr "Додати користувача %s до групи %s"
+
+#: .container/foundation/tools.d/b19-assert:13
+msgid ""
+"Usage: b19-assert <equals|matches> <tag> <expected|regex> <actual> (got %s "
+"arguments)"
+msgstr "Використання: b19-assert <equals|matches> <мітка> <очікуване|regex> <фактичне> (отримано аргументів: %s)"
+
+#: .container/foundation/tools.d/b19-assert:25
+msgid "Expected %s, found %s"
+msgstr "Очікувалось %s, знайдено %s"
+
+#: .container/foundation/tools.d/b19-assert:29
+msgid "Expected a match for %s, found %s"
+msgstr "Очікувався збіг із %s, знайдено %s"
+
+#: .container/foundation/tools.d/b19-assert:32
+msgid "Unknown assertion %s, expected equals or matches"
+msgstr "Невідома перевірка %s, очікувалось equals або matches"
+
+#: .container/foundation/tools.d/b19-assert:42
+msgid "Found %s as expected"
+msgstr "Знайдено %s, як і очікувалось"
 
 #: .container/foundation/tools.d/b19-cache-guard:20
 msgid "Usage: b19-cache-guard <tag> <dir> <ttl-seconds> -- <refresh-command…>"
@@ -1329,17 +1351,17 @@ msgstr "%s необхідний, але недоступний"
 msgid "%s uses DISTRIB_CODENAME without sourcing /etc/lsb-release"
 msgstr "%s використовує DISTRIB_CODENAME без підключення /etc/lsb-release"
 
-#: .container/user/test.d/0100-check-ubuntu-series.sh:15
-msgid "Ubuntu series mismatch: expected %s, found %s"
-msgstr "Серія Ubuntu не збігається: очікувалось %s, знайдено %s"
-
-#: .container/user/test.d/0100-check-ubuntu-series.sh:19
-msgid "Ubuntu series is %s"
-msgstr "Серія Ubuntu — %s"
-
 #: .container/user/test.d/0100-get-apt-versions.sh:12
 msgid "--version"
 msgstr ""
+
+#: .container/user/test.d/0200-b19-assert.sh:20
+msgid "Case %s: expected exit %s with %s, got exit %s with %s"
+msgstr "Випадок %s: очікувався вихід %s з %s, отримано вихід %s з %s"
+
+#: .container/user/test.d/0200-b19-assert.sh:34
+msgid "All b19-assert cases passed"
+msgstr "Усі випадки b19-assert пройдено"
 
 #: .container/user/test.d/0200-b19-exec.sh:14
 msgid "Starting b19-exec tests"
@@ -1871,6 +1893,12 @@ msgstr "Загальне використання пам'яті (%s МБ) пер
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "Загальне використання пам'яті в межах порогу (%s МБ)"
+
+#~ msgid "Ubuntu series mismatch: expected %s, found %s"
+#~ msgstr "Серія Ubuntu не збігається: очікувалось %s, знайдено %s"
+
+#~ msgid "Ubuntu series is %s"
+#~ msgstr "Серія Ubuntu — %s"
 
 #~ msgid "Remove /home"
 #~ msgstr "Видалити /home"

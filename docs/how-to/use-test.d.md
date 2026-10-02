@@ -62,8 +62,9 @@ Because the hook is `.i.`, downstream images process their own J2 test templates
 Rules:
 
 1. `#!/usr/bin/env bash` and `set -eo pipefail` always.
-1. Exit 0 = pass, non-zero = fail — no assertion library.
-1. Self-contained: no shared helpers beyond `b19-i18n` and `b19-log`.
+1. Exit 0 = pass, non-zero = fail.
+1. Compare with `b19-assert equals|matches <tag> <expected> <actual>`, never a bare `[ … ]`: a failure then logs what it expected and what it found.
+1. Self-contained: no shared helpers beyond `b19-i18n`, `b19-log` and `b19-assert`.
 1. Clean up: `mktemp -d` + `trap 'rm -rf "${WORK_DIR}"' EXIT`.
 1. Source `b19-i18n` and wrap user-facing strings in `_()` / `_p()`.
 1. Skip gracefully when optional: `command -v` the tool, `b19-log warn` + `exit 0` if absent.
@@ -95,8 +96,7 @@ main = putStrLn "Hello, Haskell!"
 EOF
 
 ghc -outputdir "${WORK_DIR}" -o "${WORK_DIR}/hello" "${WORK_DIR}/hello.hs"
-OUTPUT=$("${WORK_DIR}/hello")
-[ "${OUTPUT}" = "Hello, Haskell!" ]
+b19-assert equals "HELLO" "Hello, Haskell!" "$("${WORK_DIR}/hello")"
 ```
 
 #### Tool presence (tool containers)

@@ -116,6 +116,7 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 - `b19-run [--timeout S] [--retries N] [--backoff S] <tag> <msg> -- <cmd>` — timed wrapper with opt-in timeout and jittered retries; success output hidden unless verbose, failure always shown. [timeouts](docs/how-to/use-timeouts.md) [docs](docs/how-to/use-b19-run.md)
 - `b19-exec [opts] -- <cmd>` — long-running services; routes stdout/stderr through the logger, tracks PID for signal forwarding. [docs](docs/how-to/use-b19-exec.md)
 - `b19-fetch <tag> <url> <file> [sha512]` — three-tier cached download (`.fetch/` → BuildKit cache → aria2c), SHA-512 verified, offgrid-aware. [docs](docs/how-to/use-b19-fetch.md)
+- `b19-assert <equals|matches> <tag> <expected|regex> <actual>` — one-line test check; logs expected and found values, exits `1` on a mismatch and `2` on misuse.
 - `b19-i18n` — sourced to get `_()` / `_p()` gettext helpers (TEXTDOMAIN `b19`).
 - `b19-cache-guard <tag> <dir> <ttl> -- <cmd>` — refreshes a cache dir when it is empty or older than `<ttl>`, under `flock`; `M6E_SHARED_CACHE=Y` leaves staleness to the cache’s external writer, and an unwritable dir degrades to a warning.
 - `build-stage`, `process-hooks` — the build hook engine described above.

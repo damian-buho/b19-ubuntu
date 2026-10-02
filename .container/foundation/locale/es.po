@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-02 18:53+0000\n"
+"POT-Creation-Date: 2026-10-02 19:02+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -23,6 +23,28 @@ msgstr "Crear grupo %s con ID %s"
 #: .container/foundation/tools.d/add-user-to-docker:17
 msgid "Add user %s to group %s"
 msgstr "Agregar usuario %s al grupo %s"
+
+#: .container/foundation/tools.d/b19-assert:13
+msgid ""
+"Usage: b19-assert <equals|matches> <tag> <expected|regex> <actual> (got %s "
+"arguments)"
+msgstr "Uso: b19-assert <equals|matches> <etiqueta> <esperado|regex> <real> (se recibieron %s argumentos)"
+
+#: .container/foundation/tools.d/b19-assert:25
+msgid "Expected %s, found %s"
+msgstr "Se esperaba %s, se encontró %s"
+
+#: .container/foundation/tools.d/b19-assert:29
+msgid "Expected a match for %s, found %s"
+msgstr "Se esperaba una coincidencia con %s, se encontró %s"
+
+#: .container/foundation/tools.d/b19-assert:32
+msgid "Unknown assertion %s, expected equals or matches"
+msgstr "Aserción desconocida %s, se esperaba equals o matches"
+
+#: .container/foundation/tools.d/b19-assert:42
+msgid "Found %s as expected"
+msgstr "Se encontró %s, como se esperaba"
 
 #: .container/foundation/tools.d/b19-cache-guard:20
 msgid "Usage: b19-cache-guard <tag> <dir> <ttl-seconds> -- <refresh-command…>"
@@ -1340,17 +1362,17 @@ msgstr "%s es obligatorio pero no está disponible"
 msgid "%s uses DISTRIB_CODENAME without sourcing /etc/lsb-release"
 msgstr "%s usa DISTRIB_CODENAME sin importar /etc/lsb-release"
 
-#: .container/user/test.d/0100-check-ubuntu-series.sh:15
-msgid "Ubuntu series mismatch: expected %s, found %s"
-msgstr "La serie de Ubuntu no coincide: se esperaba %s, se encontró %s"
-
-#: .container/user/test.d/0100-check-ubuntu-series.sh:19
-msgid "Ubuntu series is %s"
-msgstr "La serie de Ubuntu es %s"
-
 #: .container/user/test.d/0100-get-apt-versions.sh:12
 msgid "--version"
 msgstr ""
+
+#: .container/user/test.d/0200-b19-assert.sh:20
+msgid "Case %s: expected exit %s with %s, got exit %s with %s"
+msgstr "Caso %s: se esperaba salida %s con %s, se obtuvo salida %s con %s"
+
+#: .container/user/test.d/0200-b19-assert.sh:34
+msgid "All b19-assert cases passed"
+msgstr "Todos los casos de b19-assert pasaron"
 
 #: .container/user/test.d/0200-b19-exec.sh:14
 msgid "Starting b19-exec tests"
@@ -1885,6 +1907,12 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
+
+#~ msgid "Ubuntu series mismatch: expected %s, found %s"
+#~ msgstr "La serie de Ubuntu no coincide: se esperaba %s, se encontró %s"
+
+#~ msgid "Ubuntu series is %s"
+#~ msgstr "La serie de Ubuntu es %s"
 
 #~ msgid "Remove /home"
 #~ msgstr "Eliminar /home"

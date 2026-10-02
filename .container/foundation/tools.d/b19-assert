@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  if [ $# -ne 4 ]; then
+    b19-log error "ASSERT" "$(_p "Usage: b19-assert <equals|matches> <tag> <expected|regex> <actual> (got %s arguments)" "$#")"
+    exit 2
+  fi
+
+  KIND="$1"
+  TAG="$2"
+  EXPECTED="$3"
+  ACTUAL="$4"
+
+  case "${KIND}" in
+    equals)
+      [ "${ACTUAL}" = "${EXPECTED}" ] && PASSED=1 || PASSED=0
+      FAILURE="$(_p "Expected %s, found %s" "${EXPECTED}" "${ACTUAL}")"
+      ;;
+    matches)
+      [[ "${ACTUAL}" =~ ${EXPECTED} ]] && PASSED=1 || PASSED=0
+      FAILURE="$(_p "Expected a match for %s, found %s" "${EXPECTED}" "${ACTUAL}")"
+      ;;
+    *)
+      b19-log error "ASSERT" "$(_p "Unknown assertion %s, expected equals or matches" "${KIND}")"
+      exit 2
+      ;;
+  esac
+
+  if [ "${PASSED}" -eq 0 ]; then
+    b19-log error "${TAG}" "${FAILURE}"
+    exit 1
+  fi
+
+  b19-log good "${TAG}" "$(_p "Found %s as expected" "${ACTUAL}")"
