@@ -175,20 +175,11 @@ RUN --mount=type=bind,from=fetch,source=.,target=/fetch                         
     --mount=type=tmpfs,target=${B19_TEMP_PATH}                                                      \
     build-stage user
 
-FROM assembled AS flattened
-
-# hadolint ignore=DL3002 # never shipped, tar needs root to keep ownership
-USER 0
-
-RUN --mount=type=bind,from=assembled,target=/src                                \
-    --mount=type=bind,source=.container/flatten.exclude,target=/flatten.exclude \
-    --mount=type=tmpfs,target=${B19_TEMP_PATH}                                  \
-    b19-flatten /src /flat /flatten.exclude
-
-# One layer: apt upgrades and the exclude list leave no shadowed copies behind
+# One layer: apt upgrades and the prune hook leave no shadowed copies behind
 FROM environment AS final
 
-COPY --from=flattened /flat/ /
+# hadolint ignore=DL3067 # the pruned assembly is the whole single-layer image
+COPY --from=assembled / /
 
 # Per-series value, set after the per-series COPY (AGENTS.md, buildah cache)
 ENV B19_UBUNTU_SERIES=${B19_UBUNTU_SERIES}

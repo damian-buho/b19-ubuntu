@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-02 19:02+0000\n"
+"POT-Creation-Date: 2026-10-02 19:50+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -28,7 +28,9 @@ msgstr "Agregar usuario %s al grupo %s"
 msgid ""
 "Usage: b19-assert <equals|matches> <tag> <expected|regex> <actual> (got %s "
 "arguments)"
-msgstr "Uso: b19-assert <equals|matches> <etiqueta> <esperado|regex> <real> (se recibieron %s argumentos)"
+msgstr ""
+"Uso: b19-assert <equals|matches> <etiqueta> <esperado|regex> <real> (se "
+"recibieron %s argumentos)"
 
 #: .container/foundation/tools.d/b19-assert:25
 msgid "Expected %s, found %s"
@@ -243,22 +245,6 @@ msgstr "Transitorio %s en %s, intento %s en %ss"
 #: .container/foundation/tools.d/b19-fetch:221
 msgid "No need to download %s"
 msgstr "No es necesario descargar %s"
-
-#: .container/foundation/tools.d/b19-flatten:18
-msgid "Usage: b19-flatten <source-root> <destination> <exclude-list>"
-msgstr "Uso: b19-flatten <raíz-origen> <destino> <lista-de-exclusión>"
-
-#: .container/foundation/tools.d/b19-flatten:28
-msgid "Exclude %s"
-msgstr "Excluir %s"
-
-#: .container/foundation/tools.d/b19-flatten:33
-msgid "Not an absolute path in %s: %s"
-msgstr "No es una ruta absoluta en %s: %s"
-
-#: .container/foundation/tools.d/b19-flatten:39
-msgid "Copying %s to %s, %s exclusions"
-msgstr "Copiando %s a %s, %s exclusiones"
 
 #: .container/foundation/tools.d/b19-generate-locales:26
 #, fuzzy
@@ -1035,6 +1021,10 @@ msgstr "Configurando shell hooks en %s"
 #: .container/foundation/build.d/foundation/post/650-setup-shell-hooks.sh:30
 msgid "Shell hooks configured in /etc/bash.bashrc"
 msgstr "Shell hooks configurados en /etc/bash.bashrc"
+
+#: .container/foundation/build.d/foundation/post/990-prune-image.sh:27
+msgid "Pruned %s entries from the image"
+msgstr "Se eliminaron %s entradas de la imagen"
 
 #: .container/foundation/build.d/foundation/pre/050-restore-translations.sh:20
 msgid "Remove Ubuntu .mo-stripping excludes: %s"
@@ -1907,6 +1897,18 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
+
+#~ msgid "Usage: b19-flatten <source-root> <destination> <exclude-list>"
+#~ msgstr "Uso: b19-flatten <raíz-origen> <destino> <lista-de-exclusión>"
+
+#~ msgid "Exclude %s"
+#~ msgstr "Excluir %s"
+
+#~ msgid "Not an absolute path in %s: %s"
+#~ msgstr "No es una ruta absoluta en %s: %s"
+
+#~ msgid "Copying %s to %s, %s exclusions"
+#~ msgstr "Copiando %s a %s, %s exclusiones"
 
 #~ msgid "Ubuntu series mismatch: expected %s, found %s"
 #~ msgstr "La serie de Ubuntu no coincide: se esperaba %s, se encontró %s"

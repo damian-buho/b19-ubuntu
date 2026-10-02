@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-02 19:02+0000\n"
+"POT-Creation-Date: 2026-10-02 19:50+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -29,7 +29,9 @@ msgstr "Додати користувача %s до групи %s"
 msgid ""
 "Usage: b19-assert <equals|matches> <tag> <expected|regex> <actual> (got %s "
 "arguments)"
-msgstr "Використання: b19-assert <equals|matches> <мітка> <очікуване|regex> <фактичне> (отримано аргументів: %s)"
+msgstr ""
+"Використання: b19-assert <equals|matches> <мітка> <очікуване|regex> "
+"<фактичне> (отримано аргументів: %s)"
 
 #: .container/foundation/tools.d/b19-assert:25
 msgid "Expected %s, found %s"
@@ -243,23 +245,6 @@ msgstr "Тимчасовий %s для %s, спроба %s через %s с"
 #: .container/foundation/tools.d/b19-fetch:221
 msgid "No need to download %s"
 msgstr "Завантаження %s не потрібне"
-
-#: .container/foundation/tools.d/b19-flatten:18
-msgid "Usage: b19-flatten <source-root> <destination> <exclude-list>"
-msgstr ""
-"Використання: b19-flatten <корінь-джерела> <призначення> <список-виключень>"
-
-#: .container/foundation/tools.d/b19-flatten:28
-msgid "Exclude %s"
-msgstr "Виключити %s"
-
-#: .container/foundation/tools.d/b19-flatten:33
-msgid "Not an absolute path in %s: %s"
-msgstr "Не абсолютний шлях у %s: %s"
-
-#: .container/foundation/tools.d/b19-flatten:39
-msgid "Copying %s to %s, %s exclusions"
-msgstr "Копіювання %s до %s, виключень: %s"
 
 #: .container/foundation/tools.d/b19-generate-locales:26
 #, fuzzy
@@ -1032,6 +1017,10 @@ msgstr "Налаштування оболонкових хуків у %s"
 #: .container/foundation/build.d/foundation/post/650-setup-shell-hooks.sh:30
 msgid "Shell hooks configured in /etc/bash.bashrc"
 msgstr "Оболонкові хуки налаштовано в /etc/bash.bashrc"
+
+#: .container/foundation/build.d/foundation/post/990-prune-image.sh:27
+msgid "Pruned %s entries from the image"
+msgstr "Вилучено з образу записів: %s"
 
 #: .container/foundation/build.d/foundation/pre/050-restore-translations.sh:20
 msgid "Remove Ubuntu .mo-stripping excludes: %s"
@@ -1893,6 +1882,20 @@ msgstr "Загальне використання пам'яті (%s МБ) пер
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "Загальне використання пам'яті в межах порогу (%s МБ)"
+
+#~ msgid "Usage: b19-flatten <source-root> <destination> <exclude-list>"
+#~ msgstr ""
+#~ "Використання: b19-flatten <корінь-джерела> <призначення> <список-"
+#~ "виключень>"
+
+#~ msgid "Exclude %s"
+#~ msgstr "Виключити %s"
+
+#~ msgid "Not an absolute path in %s: %s"
+#~ msgstr "Не абсолютний шлях у %s: %s"
+
+#~ msgid "Copying %s to %s, %s exclusions"
+#~ msgstr "Копіювання %s до %s, виключень: %s"
 
 #~ msgid "Ubuntu series mismatch: expected %s, found %s"
 #~ msgstr "Серія Ubuntu не збігається: очікувалось %s, знайдено %s"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-02 19:02+0000\n"
+"POT-Creation-Date: 2026-10-02 19:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -232,22 +232,6 @@ msgstr ""
 
 #: .container/foundation/tools.d/b19-fetch:221
 msgid "No need to download %s"
-msgstr ""
-
-#: .container/foundation/tools.d/b19-flatten:18
-msgid "Usage: b19-flatten <source-root> <destination> <exclude-list>"
-msgstr ""
-
-#: .container/foundation/tools.d/b19-flatten:28
-msgid "Exclude %s"
-msgstr ""
-
-#: .container/foundation/tools.d/b19-flatten:33
-msgid "Not an absolute path in %s: %s"
-msgstr ""
-
-#: .container/foundation/tools.d/b19-flatten:39
-msgid "Copying %s to %s, %s exclusions"
 msgstr ""
 
 #: .container/foundation/tools.d/b19-generate-locales:26
@@ -1012,6 +996,10 @@ msgstr ""
 
 #: .container/foundation/build.d/foundation/post/650-setup-shell-hooks.sh:30
 msgid "Shell hooks configured in /etc/bash.bashrc"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/990-prune-image.sh:27
+msgid "Pruned %s entries from the image"
 msgstr ""
 
 #: .container/foundation/build.d/foundation/pre/050-restore-translations.sh:20
