@@ -131,7 +131,6 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_TEST_SCRIPT_TIMEOUT=600                                                   \
     B19_TEST_TIMEOUT=60                                                           \
     B19_TOOLS_PATH=/tools.d                                                       \
-    B19_UBUNTU_SERIES=${B19_UBUNTU_SERIES}                                        \
     B19_UID="${B19_UID}"                                                          \
     B19_USER="${B19_USER}"                                                        \
     DEBIAN_FRONTEND=noninteractive                                                \
@@ -190,6 +189,9 @@ RUN --mount=type=bind,from=assembled,target=/src                                
 FROM environment AS final
 
 COPY --from=flattened /flat/ /
+
+# Per-series value, set after the per-series COPY (AGENTS.md, buildah cache)
+ENV B19_UBUNTU_SERIES=${B19_UBUNTU_SERIES}
 
 # hadolint ignore=DL3066 # B19_UID comes from the root
 USER ${B19_UID}
