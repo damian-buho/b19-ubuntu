@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-30 01:33+0000\n"
+"POT-Creation-Date: 2026-10-02 00:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -982,6 +982,10 @@ msgstr ""
 
 #: .container/foundation/build.d/foundation/post/900-cleanup.sh:10
 msgid "Remove /var/log files"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/post/900-cleanup.sh:11
+msgid "Remove shell completions"
 msgstr ""
 
 #: .container/foundation/build.d/foundation/pre/050-restore-translations.sh:20

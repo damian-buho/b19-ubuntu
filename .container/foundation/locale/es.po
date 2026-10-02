@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-09-30 01:33+0000\n"
+"POT-Creation-Date: 2026-10-02 00:14+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -1005,6 +1005,10 @@ msgstr "Eliminar /home"
 #: .container/foundation/build.d/foundation/post/900-cleanup.sh:10
 msgid "Remove /var/log files"
 msgstr "Eliminar archivos /var/log"
+
+#: .container/foundation/build.d/foundation/post/900-cleanup.sh:11
+msgid "Remove shell completions"
+msgstr "Eliminar autocompletados del shell"
 
 #: .container/foundation/build.d/foundation/pre/050-restore-translations.sh:20
 msgid "Remove Ubuntu .mo-stripping excludes: %s"

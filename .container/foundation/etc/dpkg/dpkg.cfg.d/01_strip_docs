@@ -8,3 +8,7 @@ path-exclude /usr/share/groff/*
 path-exclude /usr/share/info/*
 path-exclude /usr/share/lintian/*
 path-exclude /usr/share/linda/*
+path-exclude /usr/share/bash-completion/completions/*
+path-exclude /usr/share/fish/vendor_completions.d/*
+path-exclude /usr/share/zsh/site-functions/*
+path-exclude /usr/share/zsh/vendor-completions/*
