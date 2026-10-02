@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=/dev/null
+  . b19-i18n
+
+  SOURCE=${1:-}
+  DESTINATION=${2:-}
+  EXCLUDE_LIST=${3:-}
+
+  if [ -z "${SOURCE}" ] || [ -z "${DESTINATION}" ] || [ ! -f "${EXCLUDE_LIST}" ]
+  then
+    printf '%s\n' "$(_ 'Usage: b19-flatten <source-root> <destination> <exclude-list>')" >&2
+    exit 64
+  fi
+
+  EXCLUDES=()
+  while IFS= read -r ENTRY
+  do
+    [ -z "${ENTRY}" ] && continue
+    case "${ENTRY}" in
+      /*)
+        b19-log debug "FLATTEN" "$(_p "Exclude %s" "${ENTRY}")"
+        # Archive members are named ./path, so the pattern is anchored the same way
+        EXCLUDES+=("--exclude=.${ENTRY}")
+        ;;
+      *)
+        b19-log error "FLATTEN" "$(_p "Not an absolute path in %s: %s" "${EXCLUDE_LIST}" "${ENTRY}")"
+        exit 65
+        ;;
+    esac
+  done < <(decomment < "${EXCLUDE_LIST}")
+
+  b19-log info "FLATTEN" "$(_p "Copying %s to %s, %s exclusions" "${SOURCE}" "${DESTINATION}" "${#EXCLUDES[@]}")"
+  mkdir --parents "${DESTINATION}"
+  tar --create --directory="${SOURCE}" --anchored "${EXCLUDES[@]}" --numeric-owner --xattrs --xattrs-include='*' --acls . \
+    | tar --extract --directory="${DESTINATION}" --numeric-owner --same-owner --preserve-permissions --xattrs --xattrs-include='*' --acls

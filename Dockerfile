@@ -176,11 +176,20 @@ RUN --mount=type=bind,from=fetch,source=.,target=/fetch                         
     --mount=type=tmpfs,target=${B19_TEMP_PATH}                                                      \
     build-stage user
 
-# One layer: apt upgrades and cleanups no longer leave shadowed copies behind
+FROM assembled AS flattened
+
+# hadolint ignore=DL3002 # never shipped, tar needs root to keep ownership
+USER 0
+
+RUN --mount=type=bind,from=assembled,target=/src                                \
+    --mount=type=bind,source=.container/flatten.exclude,target=/flatten.exclude \
+    --mount=type=tmpfs,target=${B19_TEMP_PATH}                                  \
+    b19-flatten /src /flat /flatten.exclude
+
+# One layer: apt upgrades and the exclude list leave no shadowed copies behind
 FROM environment AS final
 
-# hadolint ignore=DL3067 # flattening is the point of this stage
-COPY --from=assembled / /
+COPY --from=flattened /flat/ /
 
 # hadolint ignore=DL3066 # B19_UID comes from the root
 USER ${B19_UID}

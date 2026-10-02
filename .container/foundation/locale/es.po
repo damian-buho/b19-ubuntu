@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-02 00:14+0000\n"
+"POT-Creation-Date: 2026-10-02 00:50+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -221,6 +221,22 @@ msgstr "Transitorio %s en %s, intento %s en %ss"
 #: .container/foundation/tools.d/b19-fetch:221
 msgid "No need to download %s"
 msgstr "No es necesario descargar %s"
+
+#: .container/foundation/tools.d/b19-flatten:18
+msgid "Usage: b19-flatten <source-root> <destination> <exclude-list>"
+msgstr "Uso: b19-flatten <raíz-origen> <destino> <lista-de-exclusión>"
+
+#: .container/foundation/tools.d/b19-flatten:28
+msgid "Exclude %s"
+msgstr "Excluir %s"
+
+#: .container/foundation/tools.d/b19-flatten:33
+msgid "Not an absolute path in %s: %s"
+msgstr "No es una ruta absoluta en %s: %s"
+
+#: .container/foundation/tools.d/b19-flatten:39
+msgid "Copying %s to %s, %s exclusions"
+msgstr "Copiando %s a %s, %s exclusiones"
 
 #: .container/foundation/tools.d/b19-generate-locales:26
 #, fuzzy
@@ -997,18 +1013,6 @@ msgstr "Configurando shell hooks en %s"
 #: .container/foundation/build.d/foundation/post/650-setup-shell-hooks.sh:30
 msgid "Shell hooks configured in /etc/bash.bashrc"
 msgstr "Shell hooks configurados en /etc/bash.bashrc"
-
-#: .container/foundation/build.d/foundation/post/900-cleanup.sh:9
-msgid "Remove /home"
-msgstr "Eliminar /home"
-
-#: .container/foundation/build.d/foundation/post/900-cleanup.sh:10
-msgid "Remove /var/log files"
-msgstr "Eliminar archivos /var/log"
-
-#: .container/foundation/build.d/foundation/post/900-cleanup.sh:11
-msgid "Remove shell completions"
-msgstr "Eliminar autocompletados del shell"
 
 #: .container/foundation/build.d/foundation/pre/050-restore-translations.sh:20
 msgid "Remove Ubuntu .mo-stripping excludes: %s"
@@ -1873,6 +1877,15 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
+
+#~ msgid "Remove /home"
+#~ msgstr "Eliminar /home"
+
+#~ msgid "Remove /var/log files"
+#~ msgstr "Eliminar archivos /var/log"
+
+#~ msgid "Remove shell completions"
+#~ msgstr "Eliminar autocompletados del shell"
 
 #~ msgid "Another healthcheck still holds %s after %ss"
 #~ msgstr "Otra comprobación de salud aún retiene %s después de %ss"
