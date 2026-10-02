@@ -10,7 +10,10 @@ ARG BASE_ARCH=amd64
 FROM --platform=${BASE_ARCH} ${B19_FD_IMAGE} AS b19-fd
 FROM --platform=${BASE_ARCH} ${B19_MINIJINJA_IMAGE} AS b19-minijinja
 
-FROM ubuntu@${B19_UBUNTU_HASH} AS final
+FROM ubuntu@${B19_UBUNTU_HASH} AS upstream
+
+# Config only, no filesystem: shared by the assembly stage and the flat final image
+FROM scratch AS environment
 
 ARG B19_CACHE_PATH=/var/cache/b19
 ARG B19_COLOR
@@ -142,6 +145,11 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     TZ=UTC                                                                        \
     USER=${B19_USER}
 
+FROM environment AS assembled
+
+# hadolint ignore=DL3067 # the upstream rootfs is the base of the assembly
+COPY --from=upstream / /
+
 USER 0
 
 WORKDIR ${B19_HOME}
@@ -167,6 +175,17 @@ RUN --mount=type=bind,from=fetch,source=.,target=/fetch                         
     --mount=type=cache,target=${B19_DOWNLOAD_PATH},sharing=shared,uid=${B19_UID},gid=${B19_GID}     \
     --mount=type=tmpfs,target=${B19_TEMP_PATH}                                                      \
     build-stage user
+
+# One layer: apt upgrades and cleanups no longer leave shadowed copies behind
+FROM environment AS final
+
+# hadolint ignore=DL3067 # flattening is the point of this stage
+COPY --from=assembled / /
+
+# hadolint ignore=DL3066 # B19_UID comes from the root
+USER ${B19_UID}
+
+WORKDIR ${B19_HOME}
 
 ENV B19_VERBOSITY=warn
 

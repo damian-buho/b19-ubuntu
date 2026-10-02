@@ -17,8 +17,9 @@ just what the docs claim. Root conventions live in [../../AGENTS.md](../../AGENT
 
 ## What this image actually is
 
-- `Dockerfile` `final` stage = `ubuntu@${B19_UBUNTU_HASH}` (pinned by **digest**, not tag → reproducible). The digest comes from
+- `Dockerfile` `upstream` stage = `ubuntu@${B19_UBUNTU_HASH}` (pinned by **digest**, not tag → reproducible). The digest comes from
     `.container/foundation/deps/ubuntu/{series}.sha256.deps`.
+- The image ships as **one layer**. `assembled` copies `upstream` and runs both build stages; `final` is `COPY --from=assembled / /` on `scratch`. A file `dist-upgrade` rewrites or a hook deletes (pebble, shell completions) therefore costs nothing, where a layered image keeps the shadowed copy. All `ARG`/`ENV` sit in the filesystem-less `environment` stage that both inherit, so they are declared once; only `USER`, `WORKDIR`, `ENTRYPOINT`, `HEALTHCHECK` and the runtime `B19_VERBOSITY` are restated on `final`. Children still build on top in layers as before.
 - Binaries `fd`, `minijinja-cli` are **copied from sibling b19 images** (`b19/fd`, `b19/minijinja`) via multi-stage `FROM`, not apt. Those images must build first (tier ordering). `mold` comes via a pinned GitHub-release download (`b19-fetch`), not apt — see `deps/mold/`.
 - Runs as `ubuntu` UID/GID **1000**, home `/app`. Root is only used during the
     `foundation` build stage. The one runtime exception is opt-in: `--user 0` plus `B19_PUID` makes `0010-remap-user` move the account to that UID/GID and `setpriv` back down before secrets load or anything starts. [use-non-root](docs/how-to/use-non-root.md)
