@@ -71,7 +71,7 @@ Docker daemon (every --interval)
 Runner lifecycle:
 
 1. Checks `B19_HEALTH_ENABLED` — exits 0 immediately if `false`
-1. Acquires `flock` on `/tmp/healthcheck.d.lock` — waits up to `B19_HEALTH_LOCK_TIMEOUT` seconds for a run still in progress, then reports unhealthy, so an overlapping caller never reads a pass nobody checked
+1. Acquires `flock` on `${B19_TEMP_PATH}/healthcheck.d.lock` — waits up to `B19_HEALTH_LOCK_TIMEOUT` seconds for a run still in progress, then reports unhealthy, so an overlapping caller never reads a pass nobody checked
 1. Sets `B19_COLOR=auto` — color only on a TTY; `docker inspect` and file redirects get plain text automatically
 1. Sources `b19-i18n` and `b19-load-secrets` — healthchecks run outside entrypoint context, so secrets are loaded explicitly
 1. Checks `B19_HEALTH_DRAIN_FILE` — exits 1 unconditionally if present
@@ -417,7 +417,7 @@ Sort order:       Forward numerical (ascending)
 Execution:        Parallel, capped at NUMPROCS, one fresh bash per check
 Fail behavior:    Continue (counts failures, exits with count)
 Deadline:         B19_HEALTH_CHECK_TIMEOUT for all inline checks (3 s, inside Docker’s 5 s)
-Concurrency:      flock on /tmp/healthcheck.d.lock
+Concurrency:      flock on ${B19_TEMP_PATH}/healthcheck.d.lock
 Colors:           Auto (B19_COLOR=auto — plain text without a TTY)
 Secrets:          Loaded explicitly (b19-load-secrets)
 Disable all:      B19_HEALTH_ENABLED=false

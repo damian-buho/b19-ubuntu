@@ -23,7 +23,7 @@
     # Wait for an overlapping run instead of answering for it
     # shellcheck source=.container/foundation/tools.d/b19-lock
     . b19-lock
-    if ! b19_lock "HEALTH.D" "/tmp/healthcheck.d.lock" "${B19_HEALTH_LOCK_TIMEOUT:-4}"; then
+    if ! b19_lock "HEALTH.D" "${B19_TEMP_PATH:-/tmp}/healthcheck.d.lock" "${B19_HEALTH_LOCK_TIMEOUT:-4}"; then
       echo "healthcheck.d.lock"
       exit 1
     fi
