@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-02 00:50+0000\n"
+"POT-Creation-Date: 2026-10-02 18:53+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -1339,6 +1339,14 @@ msgstr "%s es obligatorio pero no está disponible"
 #: .container/user/test.d/0100-check-lsb-release-sourced.sh:30
 msgid "%s uses DISTRIB_CODENAME without sourcing /etc/lsb-release"
 msgstr "%s usa DISTRIB_CODENAME sin importar /etc/lsb-release"
+
+#: .container/user/test.d/0100-check-ubuntu-series.sh:15
+msgid "Ubuntu series mismatch: expected %s, found %s"
+msgstr "La serie de Ubuntu no coincide: se esperaba %s, se encontró %s"
+
+#: .container/user/test.d/0100-check-ubuntu-series.sh:19
+msgid "Ubuntu series is %s"
+msgstr "La serie de Ubuntu es %s"
 
 #: .container/user/test.d/0100-get-apt-versions.sh:12
 msgid "--version"

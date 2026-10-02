@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu development\n"
+"Project-Id-Version: ubuntu 0.22.0\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-02 00:50+0000\n"
+"POT-Creation-Date: 2026-10-02 18:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1297,6 +1297,14 @@ msgstr ""
 
 #: .container/user/test.d/0100-check-lsb-release-sourced.sh:30
 msgid "%s uses DISTRIB_CODENAME without sourcing /etc/lsb-release"
+msgstr ""
+
+#: .container/user/test.d/0100-check-ubuntu-series.sh:15
+msgid "Ubuntu series mismatch: expected %s, found %s"
+msgstr ""
+
+#: .container/user/test.d/0100-check-ubuntu-series.sh:19
+msgid "Ubuntu series is %s"
 msgstr ""
 
 #: .container/user/test.d/0100-get-apt-versions.sh:12

@@ -55,7 +55,7 @@ Files named `*.sh.j2` are rendered at build time by the inheritable hook `user/p
 chmod +x "${B19_TEST_PATH}"/*.sh
 ```
 
-Because the hook is `.i.`, downstream images process their own J2 test templates automatically. Example: this image’s `0100-check-ubuntu-series.sh.j2` asserts the running series against `{{ ENV.B19_UBUNTU_SERIES }}`.
+Because the hook is `.i.`, downstream images process their own J2 test templates automatically. A value already in the container environment needs no template: read it as a plain variable.
 
 ## Writing a test
 

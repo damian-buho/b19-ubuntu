@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-02 00:50+0000\n"
+"POT-Creation-Date: 2026-10-02 18:53+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -224,7 +224,8 @@ msgstr "Завантаження %s не потрібне"
 
 #: .container/foundation/tools.d/b19-flatten:18
 msgid "Usage: b19-flatten <source-root> <destination> <exclude-list>"
-msgstr "Використання: b19-flatten <корінь-джерела> <призначення> <список-виключень>"
+msgstr ""
+"Використання: b19-flatten <корінь-джерела> <призначення> <список-виключень>"
 
 #: .container/foundation/tools.d/b19-flatten:28
 msgid "Exclude %s"
@@ -1327,6 +1328,14 @@ msgstr "%s необхідний, але недоступний"
 #: .container/user/test.d/0100-check-lsb-release-sourced.sh:30
 msgid "%s uses DISTRIB_CODENAME without sourcing /etc/lsb-release"
 msgstr "%s використовує DISTRIB_CODENAME без підключення /etc/lsb-release"
+
+#: .container/user/test.d/0100-check-ubuntu-series.sh:15
+msgid "Ubuntu series mismatch: expected %s, found %s"
+msgstr "Серія Ubuntu не збігається: очікувалось %s, знайдено %s"
+
+#: .container/user/test.d/0100-check-ubuntu-series.sh:19
+msgid "Ubuntu series is %s"
+msgstr "Серія Ubuntu — %s"
 
 #: .container/user/test.d/0100-get-apt-versions.sh:12
 msgid "--version"
