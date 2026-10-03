@@ -23,6 +23,12 @@
       exit 0
     fi
 
+    # An image without bootstrap scripts touches nothing, not even the lock directory
+    if [ -z "$(fd --hidden --type file --extension sh --max-results 1 . "${BOOTSTRAP_PATH}")" ]; then
+      b19-log note "BOOTSTRAP" "$(_p "No scripts found in %s" "${BOOTSTRAP_PATH}")"
+      exit 0
+    fi
+
     # Ensure lock directory exists
     b19-run "BOOTSTRAP" "$(_p "Create lock directory %s" "${LOCK_PATH}")" --  mkdir -p "${LOCK_PATH}"
 
@@ -31,10 +37,7 @@
     . b19-lock
     b19_lock "BOOTSTRAP" "${LOCK_PATH}/.lock" "${B19_BOOTSTRAP_LOCK_TIMEOUT:-600}" || exit 1
 
-    SCRIPT_COUNT=0
-
     while IFS= read -r -d '' SCRIPT; do
-      SCRIPT_COUNT=$((SCRIPT_COUNT + 1))
       BASENAME=$(basename "${SCRIPT}" .sh)
       SKIP_NAME="${BASENAME#*[0-9]-}"
       SKIP_VAR="B19_BOOTSTRAP_SKIP_$(echo "${SKIP_NAME}" | tr '[:lower:]-' '[:upper:]_')"
@@ -56,9 +59,5 @@
       b19-run "BOOTSTRAP" "$(_p "Lock: %s" "${BASENAME}")" --    touch "${LOCK_FILE}"
       b19-log good "BOOTSTRAP" "$(_p "Completed: %s" "${BASENAME}")"
     done < <(fd --print0 --hidden --type file --extension sh . "${BOOTSTRAP_PATH}" | sort --zero-terminated --numeric-sort)
-
-    if [ "${SCRIPT_COUNT}" -eq 0 ]; then
-      b19-log note "BOOTSTRAP" "$(_p "No scripts found in %s" "${BOOTSTRAP_PATH}")"
-    fi
 
     exit 0

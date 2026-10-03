@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-02 19:50+0000\n"
+"POT-Creation-Date: 2026-10-03 01:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -715,42 +715,42 @@ msgstr ""
 msgid "Directory not found: %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:27
+#: .container/user/tools.d/bootstrap.d:28
+msgid "No scripts found in %s"
+msgstr ""
+
+#: .container/user/tools.d/bootstrap.d:33
 msgid "Create lock directory %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:42
+#: .container/user/tools.d/bootstrap.d:45
 #: .container/user/tools.d/entrypoint.d:39
 #: .container/user/tools.d/healthcheck.d:69
 msgid "Skipped: %s (via %s)"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:49
+#: .container/user/tools.d/bootstrap.d:52
 msgid "Already done: %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:53
+#: .container/user/tools.d/bootstrap.d:56
 msgid "Running: %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:54
+#: .container/user/tools.d/bootstrap.d:57
 msgid "Timeout for %s: %s s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:55
+#: .container/user/tools.d/bootstrap.d:58
 msgid "Execute: %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:56
+#: .container/user/tools.d/bootstrap.d:59
 msgid "Lock: %s"
 msgstr ""
 
-#: .container/user/tools.d/bootstrap.d:57
+#: .container/user/tools.d/bootstrap.d:60
 msgid "Completed: %s"
-msgstr ""
-
-#: .container/user/tools.d/bootstrap.d:61
-msgid "No scripts found in %s"
 msgstr ""
 
 #: .container/user/tools.d/entrypoint.d:26 .container/user/tools.d/report.d:26
@@ -1271,10 +1271,6 @@ msgstr ""
 msgid "Not listening on 127.0.0.1:%s"
 msgstr ""
 
-#: .container/user/bootstrap.d/100-smoke-test.sh:11
-msgid "Create smoke-test marker"
-msgstr ""
-
 #: .container/user/benchmark.d/0400-disk-rand-io/setup.sh:10
 #: .container/user/benchmark.d/0800-process-fork/setup.sh:10
 msgid "Installing: %s"
@@ -1667,14 +1663,19 @@ msgstr ""
 #: .container/user/test.d/0310-check-ports.sh:70
 #: .container/user/test.d/0310-check-ports.sh:78
 #: .container/user/test.d/0310-check-ports.sh:84
-#: .container/user/test.d/0320-entrypoint-command-path.sh:40
-#: .container/user/test.d/0320-entrypoint-command-path.sh:48
-#: .container/user/test.d/0320-entrypoint-command-path.sh:57
-#: .container/user/test.d/0320-entrypoint-command-path.sh:65
-#: .container/user/test.d/0320-entrypoint-command-path.sh:71
+#: .container/user/test.d/0320-entrypoint-command-path.sh:43
+#: .container/user/test.d/0320-entrypoint-command-path.sh:51
+#: .container/user/test.d/0320-entrypoint-command-path.sh:60
+#: .container/user/test.d/0320-entrypoint-command-path.sh:68
+#: .container/user/test.d/0320-entrypoint-command-path.sh:74
 #: .container/user/test.d/0330-healthcheck-tiers.sh:43
 #: .container/user/test.d/0330-healthcheck-tiers.sh:53
 #: .container/user/test.d/0330-healthcheck-tiers.sh:65
+#: .container/user/test.d/0350-bootstrap-runner.sh:36
+#: .container/user/test.d/0350-bootstrap-runner.sh:41
+#: .container/user/test.d/0350-bootstrap-runner.sh:47
+#: .container/user/test.d/0350-bootstrap-runner.sh:53
+#: .container/user/test.d/0350-bootstrap-runner.sh:62
 msgid "Test %s passed"
 msgstr ""
 
@@ -1719,47 +1720,47 @@ msgstr ""
 msgid "All check-ports tests passed"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:38
+#: .container/user/test.d/0320-entrypoint-command-path.sh:41
 msgid "Test %s: explicit command runs after bootstrap"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:42
+#: .container/user/test.d/0320-entrypoint-command-path.sh:45
 msgid "Explicit command ran before bootstrap"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:45
+#: .container/user/test.d/0320-entrypoint-command-path.sh:48
 msgid "Test %s: single-command subcommand reaches bootstrap"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:50
+#: .container/user/test.d/0320-entrypoint-command-path.sh:53
 msgid "Single-command subcommand skipped bootstrap"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:53
+#: .container/user/test.d/0320-entrypoint-command-path.sh:56
 msgid "Test %s: missing secret fails the explicit command"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:55
+#: .container/user/test.d/0320-entrypoint-command-path.sh:58
 msgid "Explicit command ran without a required secret"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:60
+#: .container/user/test.d/0320-entrypoint-command-path.sh:63
 msgid "Test %s: missing secret fails the single-command subcommand"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:63
+#: .container/user/test.d/0320-entrypoint-command-path.sh:66
 msgid "Single-command subcommand reached bootstrap without a required secret"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:68
+#: .container/user/test.d/0320-entrypoint-command-path.sh:71
 msgid "Test %s: unknown command fails before bootstrap"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:73
+#: .container/user/test.d/0320-entrypoint-command-path.sh:76
 msgid "Unknown command exited %s or reached bootstrap"
 msgstr ""
 
-#: .container/user/test.d/0320-entrypoint-command-path.sh:77
+#: .container/user/test.d/0320-entrypoint-command-path.sh:80
 msgid "All command-path tests passed"
 msgstr ""
 
@@ -1822,6 +1823,74 @@ msgstr ""
 
 #: .container/user/test.d/0340-healthcheck-exit-after.sh:45
 msgid "Consecutive failures counted, reset and bounded"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:33
+msgid "Test %s: empty directory creates no lock"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:34
+msgid "Empty bootstrap directory failed"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:35
+msgid "Empty bootstrap directory created a lock directory"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:38
+msgid "Test %s: skip flag leaves the script unrun"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:39
+msgid "Skipped bootstrap failed"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:40
+msgid "Skipped bootstrap script ran"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:43
+msgid "Test %s: script runs and is locked"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:44
+msgid "Bootstrap failed"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:45
+msgid "Bootstrap script did not run"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:46
+msgid "Bootstrap script was not locked"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:49
+msgid "Test %s: locked script does not run again"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:51
+msgid "Repeated bootstrap failed"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:52
+msgid "Locked bootstrap script ran again"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:55
+msgid "Test %s: failing script fails the runner unlocked"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:59
+msgid "Failing bootstrap script passed"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:61
+msgid "Failing bootstrap script was locked"
+msgstr ""
+
+#: .container/user/test.d/0350-bootstrap-runner.sh:65
+msgid "All bootstrap tests passed"
 msgstr ""
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
