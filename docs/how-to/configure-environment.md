@@ -64,6 +64,7 @@ the next hook.
 | Variable                   | Default | Accepted values                                | Controls                                                                                                                                                                             |
 | -------------------------- | ------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `B19_VERBOSITY`            | `warn`  | `error`, `warn`, `info`, `debug`               | Log level threshold (error=40, warn=30, info=20, debug=10). Messages below threshold are discarded. `debug` streams `b19-run` command output live.                                   |
+| `B19_ENTRYPOINT_VERBOSITY` | empty   | empty, `error`, `warn`, `info`, `debug`        | Level for entrypoint hooks before slot 4000; the command and start hook keep `B19_VERBOSITY`. Empty: one level for both.                                                             |
 | `B19_COLOR`                | `1`     | `1`, `0`, `auto`                               | ANSI color in `b19-log` output. `auto` checks if stderr is a TTY. Forced `0` in healthchecks and when `M6E_AI=Y`. Overridden by `NO_COLOR=1` ([no-color.org](https://no-color.org)). |
 | `B19_RUN_TIMING_PRECISION` | `3`     | integer (decimal places)                       | Precision of elapsed time in `b19-run` output. `0` = seconds, `3` = milliseconds, `6` = microseconds.                                                                                |
 | `B19_EXEC_STDOUT_LEVEL`    | `info`  | `error`, `bad`, `warn`, `good`, `info`, `note` | Default `b19-log` level for stdout lines in `b19-exec`.                                                                                                                              |
@@ -304,6 +305,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_ENTRYPOINT_ENABLED`        | runtime         | Feature Toggles  |
 | `B19_ENTRYPOINT_PATH`           | runtime         | Hook Directories |
 | `B19_ENTRYPOINT_SKIP_*`         | runtime         | Per-script Skip  |
+| `B19_ENTRYPOINT_VERBOSITY`      | runtime         | Logging          |
 | `B19_EXEC_STDERR_LEVEL`         | runtime         | Logging          |
 | `B19_EXEC_STDOUT_LEVEL`         | runtime         | Logging          |
 | `B19_FETCH_DOCKER_CACHE`        | build           | Download         |

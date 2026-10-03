@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-03 01:08+0000\n"
+"POT-Creation-Date: 2026-10-03 01:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1042,6 +1042,10 @@ msgstr ""
 msgid "%s trapped"
 msgstr ""
 
+#: .container/user/entrypoint.d/0005-set-verbosity.sh:14
+msgid "Lifecycle verbosity %s, payload verbosity %s"
+msgstr ""
+
 #: .container/user/entrypoint.d/0010-remap-user.sh:10
 msgid "B19_PUID unset, keeping uid %s"
 msgstr ""
@@ -1676,6 +1680,9 @@ msgstr ""
 #: .container/user/test.d/0350-bootstrap-runner.sh:47
 #: .container/user/test.d/0350-bootstrap-runner.sh:53
 #: .container/user/test.d/0350-bootstrap-runner.sh:62
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:40
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:47
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:55
 msgid "Test %s passed"
 msgstr ""
 
@@ -1891,6 +1898,50 @@ msgstr ""
 
 #: .container/user/test.d/0350-bootstrap-runner.sh:65
 msgid "All bootstrap tests passed"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:31
+msgid "Test %s: lifecycle quiet, command keeps its level"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:34
+msgid "Command failed under a lifecycle verbosity"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:36
+msgid "Command output hidden under a lifecycle verbosity"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:38
+msgid "Lifecycle line shown under a lifecycle verbosity"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:42
+msgid "Test %s: unset keeps one level for both"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:44
+msgid "Command failed without a lifecycle verbosity"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:46
+msgid "Lifecycle line hidden without a lifecycle verbosity"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:49
+msgid "Test %s: a re-run keeps the first payload level"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:53
+msgid "Repeated verbosity hook failed"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:54
+msgid "Payload level became %s after a re-run"
+msgstr ""
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:57
+msgid "All entrypoint verbosity tests passed"
 msgstr ""
 
 #: .container/user/test.d/0900-memory-consumption.sh:17

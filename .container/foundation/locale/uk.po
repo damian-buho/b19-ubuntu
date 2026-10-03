@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-03 01:08+0000\n"
+"POT-Creation-Date: 2026-10-03 01:35+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -1062,6 +1062,10 @@ msgstr "%s не знайдено, сигнали не перехоплюютьс
 msgid "%s trapped"
 msgstr "%s перехоплено"
 
+#: .container/user/entrypoint.d/0005-set-verbosity.sh:14
+msgid "Lifecycle verbosity %s, payload verbosity %s"
+msgstr "Докладність життєвого циклу %s, докладність навантаження %s"
+
 #: .container/user/entrypoint.d/0010-remap-user.sh:10
 msgid "B19_PUID unset, keeping uid %s"
 msgstr "B19_PUID не задано, залишається uid %s"
@@ -1713,6 +1717,9 @@ msgstr "Тест %s: безпечний високий порт проходит
 #: .container/user/test.d/0350-bootstrap-runner.sh:47
 #: .container/user/test.d/0350-bootstrap-runner.sh:53
 #: .container/user/test.d/0350-bootstrap-runner.sh:62
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:40
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:47
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:55
 msgid "Test %s passed"
 msgstr "Тест %s пройдено"
 
@@ -1931,6 +1938,50 @@ msgstr "Невдалий скрипт початкового налаштува�
 #: .container/user/test.d/0350-bootstrap-runner.sh:65
 msgid "All bootstrap tests passed"
 msgstr "Усі тести початкового налаштування пройдено"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:31
+msgid "Test %s: lifecycle quiet, command keeps its level"
+msgstr "Тест %s: життєвий цикл тихий, команда зберігає свій рівень"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:34
+msgid "Command failed under a lifecycle verbosity"
+msgstr "Команда завершилася з помилкою за докладності життєвого циклу"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:36
+msgid "Command output hidden under a lifecycle verbosity"
+msgstr "Вивід команди приховано за докладності життєвого циклу"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:38
+msgid "Lifecycle line shown under a lifecycle verbosity"
+msgstr "Рядок життєвого циклу показано за докладності життєвого циклу"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:42
+msgid "Test %s: unset keeps one level for both"
+msgstr "Тест %s: без значення зберігається один рівень для обох"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:44
+msgid "Command failed without a lifecycle verbosity"
+msgstr "Команда завершилася з помилкою без докладності життєвого циклу"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:46
+msgid "Lifecycle line hidden without a lifecycle verbosity"
+msgstr "Рядок життєвого циклу приховано без докладності життєвого циклу"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:49
+msgid "Test %s: a re-run keeps the first payload level"
+msgstr "Тест %s: повторний запуск зберігає перший рівень навантаження"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:53
+msgid "Repeated verbosity hook failed"
+msgstr "Повторний хук докладності завершився з помилкою"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:54
+msgid "Payload level became %s after a re-run"
+msgstr "Рівень навантаження став %s після повторного запуску"
+
+#: .container/user/test.d/0360-entrypoint-verbosity.sh:57
+msgid "All entrypoint verbosity tests passed"
+msgstr "Усі тести докладності точки входу пройдено"
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
 msgid ""

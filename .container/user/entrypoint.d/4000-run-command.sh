@@ -11,6 +11,12 @@
     COMMAND_TIMEOUT_ARGS=()
     # --foreground keeps the command in tini's process group, so docker stop still reaches it
     [ -n "${B19_COMMAND_TIMEOUT:-}" ] && COMMAND_TIMEOUT_ARGS=(timeout --foreground --kill-after=5s "${B19_COMMAND_TIMEOUT}")
-    "${COMMAND_TIMEOUT_ARGS[@]}" "$@" && RETURN_CODE=0 || RETURN_CODE=$?
+    B19_VERBOSITY="${ENTRYPOINT_PAYLOAD_VERBOSITY:-${B19_VERBOSITY:-warn}}" "${COMMAND_TIMEOUT_ARGS[@]}" "$@" && RETURN_CODE=0 || RETURN_CODE=$?
     export RETURN_CODE
+  fi
+
+  # Hand the payload level back to the start hook and finalize
+  if [ -n "${ENTRYPOINT_PAYLOAD_VERBOSITY:-}" ];
+  then
+    export B19_VERBOSITY="${ENTRYPOINT_PAYLOAD_VERBOSITY}"
   fi

@@ -82,6 +82,7 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_DOWNLOAD_RETRY_CODES="1 2 6 22 29"                                        \
     B19_DOWNLOAD_RETRY_WAIT=16                                                    \
     B19_ENTRYPOINT_PATH=/entrypoint.d                                             \
+    B19_ENTRYPOINT_VERBOSITY=                                                     \
     B19_FETCH_DOCKER_CACHE=${B19_FETCH_DOCKER_CACHE}                              \
     B19_FETCH_LOCAL_CACHE=${B19_FETCH_LOCAL_CACHE}                                \
     B19_GID="${B19_GID}"                                                          \

@@ -61,7 +61,7 @@ foundation.
 ## Runtime lifecycle
 
 `tini -g` → `entrypoint.d` runs numbered hooks from `.container/user/entrypoint.d/`:
-set-signals → remap-user → load-secrets → set-cpu-count → check-ports → print-lineage →
+set-signals → set-verbosity → remap-user → load-secrets → set-cpu-count → check-ports → print-lineage →
 copy-overlay → parallel-j2 (render `.j2`) → select-command → validate-secrets →
 bootstrap → run-command → start → finalize. A bare `docker run img <cmd>` is
 CLAIMED at 2000 (`ENTRYPOINT_COMMAND_EXECUTED=Y`) and RUN at 4000, so it passes
@@ -73,7 +73,9 @@ image wrapping ONE program takes its SUBCOMMAND as argv (`docker run img
 validate`), so that first arg is expected not to be a command: it sets
 `B19_SINGLE_COMMAND_IMAGE=Y` and consumes `"$@"` in its own `5000-start.sh`.
 9000-finalize still exits `127` when nothing ran the argv, so the mode cannot
-resurrect the silent green. Every
+resurrect the silent green. `B19_ENTRYPOINT_VERBOSITY` lowers the hooks up to 3000 and
+4000 restores `B19_VERBOSITY` for the payload, so a tool runner keeps `b19-run`
+output at `info` without the lifecycle lines. Every
 stage and hook is toggleable at runtime via `B19_*` env (no rebuild) — see
 [docs/features.d/feature-toggles.md](docs/features.d/feature-toggles.md).
 

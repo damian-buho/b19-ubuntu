@@ -48,6 +48,7 @@ tini -g (PID 1)
 | Slot | Script                | Purpose                                                                                                                  |
 | ---- | --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | 0000 | `set-signals.sh`      | Trap Unix signals (ALRM, HUP, ILL, INT, QUIT, TERM, USR1, USR2), define `signalHandler()` that forwards to `PAYLOAD_PID` |
+| 0005 | `set-verbosity.sh`    | Lower `B19_VERBOSITY` to `B19_ENTRYPOINT_VERBOSITY` until slot 4000, if set                                              |
 | 0050 | `ensure-locale.sh`    | Make the compiled locale available to the shell                                                                          |
 | 0100 | `load-secrets.sh`     | Source `b19-load-secrets` → env vars from `/run/secrets/*.*`                                                             |
 | 0200 | `set-cpu-count.sh`    | Detect `NUMPROCS`: K8s downward API > cgroups v2 > nproc                                                                 |
@@ -58,7 +59,7 @@ tini -g (PID 1)
 | 2000 | `select-command.sh`   | Claim a valid first arg (`ENTRYPOINT_COMMAND_EXECUTED=Y`); otherwise exit 127                                            |
 | 2100 | `validate-secrets.sh` | Validate all secrets in `B19_REQUIRED_SECRETS` exist (env or file); exit 1 if missing                                    |
 | 3000 | `bootstrap.sh`        | Run `/bootstrap.d/` scripts with lockfile idempotency                                                                    |
-| 4000 | `run-command.sh`      | Run the claimed command and record its `RETURN_CODE`                                                                     |
+| 4000 | `run-command.sh`      | Run the claimed command at the payload `B19_VERBOSITY` and record its `RETURN_CODE`                                      |
 | 5000 | `start.sh`            | Default: `sleep infinity` (downstream projects **always** override this)                                                 |
 | 9000 | `finalize.sh`         | Log the final `RETURN_CODE`; exit 127 when nothing ever ran the argv                                                     |
 
