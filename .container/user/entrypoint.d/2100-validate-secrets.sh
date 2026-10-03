@@ -25,7 +25,7 @@ SECRET_COUNT=0
 
 # Skip validation if no secrets are required
 if [[ -z "${B19_REQUIRED_SECRETS:-}" ]]; then
-  b19-log info "SECRETS" "$(_ "No required secrets defined, skipping validation")"
+  b19-log note "SECRETS" "$(_ "No required secrets defined, skipping validation")"
   return 0
 fi
 
