@@ -53,7 +53,7 @@ Two runners support per-script skip toggles at runtime, no rebuild:
 
 ```bash
 B19_ENTRYPOINT_SKIP_CHECK_PORTS=true   # skips 0300-check-ports.sh
-B19_BOOTSTRAP_SKIP_SMOKE_TEST=true     # skips 100-smoke-test.sh
+B19_BOOTSTRAP_SKIP_INIT_DATABASE=true  # skips 500-init-database.sh
 ```
 
 The name is derived from the filename: strip `.sh`, strip through the first digit-dash (`${NAME#*[0-9]-}`), uppercase, `-` → `_`. Whole-subsystem toggles (`B19_ENTRYPOINT_ENABLED`, `B19_HEALTH_ENABLED`, …) are indexed in [configure-environment](configure-environment.md).

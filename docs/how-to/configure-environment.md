@@ -53,7 +53,7 @@ first dash, convert `-` to `_`, uppercase.
 | `0100-load-secrets.sh`             | `load-secrets`             | `B19_ENTRYPOINT_SKIP_LOAD_SECRETS=true`         |
 | `0300-check-ports.sh`              | `check-ports`              | `B19_ENTRYPOINT_SKIP_CHECK_PORTS=true`          |
 | `1000-parallel-j2.sh`              | `parallel-j2`              | `B19_ENTRYPOINT_SKIP_PARALLEL_J2=true`          |
-| `100-smoke-test.sh`                | `smoke-test`               | `B19_BOOTSTRAP_SKIP_SMOKE_TEST=true`            |
+| `500-init-database.sh`             | `init-database`            | `B19_BOOTSTRAP_SKIP_INIT_DATABASE=true`         |
 | `0400-check-https-connectivity.sh` | `check-https-connectivity` | `B19_HEALTH_SKIP_CHECK_HTTPS_CONNECTIVITY=true` |
 
 Skipped scripts log `"Skipped: <name> (via B19_*_SKIP_<NAME>)"` and continue to

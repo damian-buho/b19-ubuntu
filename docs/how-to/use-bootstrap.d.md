@@ -67,19 +67,19 @@ The per-script lockfiles make the runner uniquely idempotent among the [runner f
 
 | Range   | Purpose                | Reserved by             |
 | ------- | ---------------------- | ----------------------- |
-| 100-499 | First-time setup tasks | b19/Ubuntu (smoke test) |
+| 100-499 | First-time setup tasks | downstream project      |
 | 500-999 | Service initialization | downstream project      |
 | 1000+   | Multi-component setup  | downstream project      |
 
-Use gaps of 100 between scripts to allow future insertions. The base image ships one script — `100-smoke-test.sh` creates a marker file at `$B19_HOME/.bootstrap-smoke`, proving the runner works and the home is writable. Downstream scripts merge via Docker layer overlay:
+Use gaps of 100 between scripts to allow future insertions. The base image ships no script, so an image without one never touches the lock directory and logs nothing at `info`. Downstream scripts merge via Docker layer overlay:
 
 ```text
 /bootstrap.d/                        # B19_BOOTSTRAP_PATH
-  100-smoke-test.sh                  # from b19/ubuntu
+  100-generate-keys.sh               # from a parent image
   500-init-database.sh               # from downstream image (layered on top)
 
 /app/.bootstrap/                     # B19_BOOTSTRAP_LOCK_PATH (VOLUME)
-  .100-smoke-test.bootstrap          # created after 100 runs
+  .100-generate-keys.bootstrap       # created after 100 runs
   .500-init-database.bootstrap       # created after 500 runs
 ```
 
@@ -162,7 +162,7 @@ docker exec <container> ls -la /app/.bootstrap/
 Each `.NNN-name.bootstrap` is a completed script; an absent file has not run (or failed before locking). Successful startup logs:
 
 ```text
- NOTE  BOOTSTRAP  Already done: 100-smoke-test
+ NOTE  BOOTSTRAP  Already done: 100-generate-keys
  INFO  BOOTSTRAP  Running: 500-init-database
  BOOTSTRAP  Initialize database… success [0.342s]
   GOOD  BOOTSTRAP  Completed: 500-init-database
