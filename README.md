@@ -14,7 +14,7 @@ Community-maintained Ubuntu base image for the B19 fleet. This repository holds 
 
 ![Project status](https://badges.kiota.ch/static/v1?label=status&message=maintained&color=1d63ed&style=flat-square) [![Last commit on kiota.ch](https://badges.kiota.ch/gitea/last-commit/b19/ubuntu?gitea_url=https://kiota.ch&label=last%20commit%20on%20kiota.ch&style=flat-square)](https://kiota.ch/b19/ubuntu) [![Last commit on Codeberg](https://badges.kiota.ch/gitea/last-commit/b19/ubuntu?gitea_url=https://codeberg.org&label=last%20commit%20on%20Codeberg&style=flat-square)](https://codeberg.org/b19/ubuntu) [![Last commit on GitHub](https://badges.kiota.ch/github/last-commit/damian-buho/b19-ubuntu?label=last%20commit%20on%20GitHub&style=flat-square)](https://github.com/damian-buho/b19-ubuntu)
 
-[![Publish pipeline on GitHub](https://github.com/damian-buho/b19-ubuntu/actions/workflows/published.yaml/badge.svg?style=flat-square)](https://github.com/damian-buho/b19-ubuntu/actions) [![Vulnerability audit on GitHub](https://github.com/damian-buho/b19-ubuntu/actions/workflows/audited.yaml/badge.svg?style=flat-square)](https://github.com/damian-buho/b19-ubuntu/actions) [![Dependency freshness on GitHub](https://github.com/damian-buho/b19-ubuntu/actions/workflows/check-outdated.yaml/badge.svg?style=flat-square)](https://github.com/damian-buho/b19-ubuntu/actions) [![Analysis sweep on GitHub](https://github.com/damian-buho/b19-ubuntu/actions/workflows/analyze.yaml/badge.svg?style=flat-square)](https://github.com/damian-buho/b19-ubuntu/actions)
+[![Publish pipeline on GitHub](https://github.com/damian-buho/b19-ubuntu/actions/workflows/published.yaml/badge.svg?style=flat-square)](https://github.com/damian-buho/b19-ubuntu/actions) [![Vulnerability audit on GitHub](https://github.com/damian-buho/b19-ubuntu/actions/workflows/audited.yaml/badge.svg?style=flat-square)](https://github.com/damian-buho/b19-ubuntu/actions) [![Dependency freshness on GitHub](https://github.com/damian-buho/b19-ubuntu/actions/workflows/check-outdated.yaml/badge.svg?style=flat-square)](https://github.com/damian-buho/b19-ubuntu/actions) [![Analysis sweep on GitHub](https://github.com/damian-buho/b19-ubuntu/actions/workflows/analyzed.yaml/badge.svg?style=flat-square)](https://github.com/damian-buho/b19-ubuntu/actions)
 
 [![Publish pipeline on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/published.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Vulnerability audit on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/audited.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Dependency freshness on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/check-outdated.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Analysis sweep on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/analyze.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions)
 
@@ -130,7 +130,7 @@ For the local dev loop, `make dev-container` brings up the dev-container.
 
 Pipeline entry points:
 
-- `make analyze` — Run the heavy analysis sweep (mutation testing, benchmarks)
+- `make analyzed` — Run the heavy analysis sweep (mutation testing, benchmarks)
 - `make audited` — Re-scan the pinned dependencies and published artifacts for new vulnerabilities
 - `make check-outdated` — Report every pinned dependency that lags upstream
 - `make ready-to-publish` — Run the pseudo-CI pipeline locally — build, test and scan, without publishing
