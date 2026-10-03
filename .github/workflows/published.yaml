@@ -70,6 +70,11 @@ jobs:
     needs: ["image-is-ready", "inputs-are-ok"]
     steps:
       - run: echo artifacts-are-ok
+  container-is-diagnosed:
+    runs-on: ubuntu-26.04
+    needs: ["container-ready-to-test"]
+    steps:
+      - run: echo container-is-diagnosed
   container-is-ok:
     runs-on: ubuntu-26.04
     needs: ["images-are-ok"]
@@ -77,7 +82,7 @@ jobs:
       - run: echo container-is-ok
   container-is-verified:
     runs-on: ubuntu-26.04
-    needs: ["container-ready-to-test"]
+    needs: ["container-is-diagnosed"]
     strategy:
       matrix:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
@@ -135,6 +140,9 @@ jobs:
       - name: usage-check
         if: (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && (vars.CI_ONLY_M6E_ARCH == '' || contains(format(',{0},', vars.CI_ONLY_M6E_ARCH), format(',{0},', matrix.M6E_ARCH))) && vars.CI_SKIP_CONTAINER_READY_TO_TEST != 'true' && vars.CI_SKIP_USAGE_CHECK != 'true'
         run: .makefile/container/scripts/usage-capture.sh --check --default-lang= es uk
+      - name: dc-diagnose
+        if: ${{ always() }}
+        run: .makefile/container/scripts/compose-diagnose.sh
       - name: dc-down
         if: ${{ always() }}
         run: docker compose --project-name "$M6E_COMPOSE_PROJECT_NAME" --file .compose/pipeline.yaml down --volumes </dev/null
