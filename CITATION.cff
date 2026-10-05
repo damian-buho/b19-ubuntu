@@ -31,5 +31,5 @@ keywords:
   - linux
   - os
   - docker
-version: 0.23.0
-date-released: "2026-10-03"
+version: 0.23.1
+date-released: "2026-10-05"
