@@ -33,12 +33,12 @@ TEST_OUTPUT=$(B19_VERBOSITY=error bash -c '
   b19-log note TEST "note message" 2>&1
 ')
 
-if echo "${TEST_OUTPUT}" | grep -q "error message" &&       \
-   ! echo "${TEST_OUTPUT}" | grep -q "bad message" &&       \
-   ! echo "${TEST_OUTPUT}" | grep -q "warn message" &&      \
-   ! echo "${TEST_OUTPUT}" | grep -q "good message" &&      \
-   ! echo "${TEST_OUTPUT}" | grep -q "info message" &&      \
-   ! echo "${TEST_OUTPUT}" | grep -q "note message"; then
+if grep -q "error message" <<<"${TEST_OUTPUT}" &&       \
+   ! grep -q "bad message" <<<"${TEST_OUTPUT}" &&       \
+   ! grep -q "warn message" <<<"${TEST_OUTPUT}" &&      \
+   ! grep -q "good message" <<<"${TEST_OUTPUT}" &&      \
+   ! grep -q "info message" <<<"${TEST_OUTPUT}" &&      \
+   ! grep -q "note message" <<<"${TEST_OUTPUT}"; then
   b19-log good "b19-verbosity" "$(_ "Test 1 passed: error level shows only error")"
 else
   fail "$(_ "Test 1 failed: error level filtering incorrect")"
@@ -55,12 +55,12 @@ TEST_OUTPUT=$(B19_VERBOSITY=warn bash -c '
   b19-log note TEST "note message" 2>&1
 ')
 
-if echo "${TEST_OUTPUT}" | grep -q "error message" &&       \
-   ! echo "${TEST_OUTPUT}" | grep -q "bad message" &&       \
-   echo "${TEST_OUTPUT}" | grep -q "warn message" &&        \
-   ! echo "${TEST_OUTPUT}" | grep -q "good message" &&      \
-   ! echo "${TEST_OUTPUT}" | grep -q "info message" &&      \
-   ! echo "${TEST_OUTPUT}" | grep -q "note message"; then
+if grep -q "error message" <<<"${TEST_OUTPUT}" &&       \
+   ! grep -q "bad message" <<<"${TEST_OUTPUT}" &&       \
+   grep -q "warn message" <<<"${TEST_OUTPUT}" &&        \
+   ! grep -q "good message" <<<"${TEST_OUTPUT}" &&      \
+   ! grep -q "info message" <<<"${TEST_OUTPUT}" &&      \
+   ! grep -q "note message" <<<"${TEST_OUTPUT}"; then
   b19-log good "b19-verbosity" "$(_ "Test 2 passed: warn level shows error/warn only")"
 else
   fail "$(_ "Test 2 failed: warn level filtering incorrect")"
@@ -77,12 +77,12 @@ TEST_OUTPUT=$(B19_VERBOSITY=info bash -c '
   b19-log note TEST "note message" 2>&1
 ')
 
-if echo "${TEST_OUTPUT}" | grep -q "error message" &&     \
-   echo "${TEST_OUTPUT}" | grep -q "bad message" &&       \
-   echo "${TEST_OUTPUT}" | grep -q "warn message" &&      \
-   echo "${TEST_OUTPUT}" | grep -q "good message" &&      \
-   echo "${TEST_OUTPUT}" | grep -q "info message" &&      \
-   ! echo "${TEST_OUTPUT}" | grep -q "note message"; then
+if grep -q "error message" <<<"${TEST_OUTPUT}" &&     \
+   grep -q "bad message" <<<"${TEST_OUTPUT}" &&       \
+   grep -q "warn message" <<<"${TEST_OUTPUT}" &&      \
+   grep -q "good message" <<<"${TEST_OUTPUT}" &&      \
+   grep -q "info message" <<<"${TEST_OUTPUT}" &&      \
+   ! grep -q "note message" <<<"${TEST_OUTPUT}"; then
   b19-log good "b19-verbosity" "$(_ "Test 3 passed: info level shows all except note")"
 else
   fail "$(_ "Test 3 failed: info level filtering incorrect")"
@@ -99,12 +99,12 @@ TEST_OUTPUT=$(B19_VERBOSITY=debug bash -c '
   b19-log note TEST "note message" 2>&1
 ')
 
-if echo "${TEST_OUTPUT}" | grep -q "error message" &&     \
-   echo "${TEST_OUTPUT}" | grep -q "bad message" &&       \
-   echo "${TEST_OUTPUT}" | grep -q "warn message" &&      \
-   echo "${TEST_OUTPUT}" | grep -q "good message" &&      \
-   echo "${TEST_OUTPUT}" | grep -q "info message" &&      \
-   echo "${TEST_OUTPUT}" | grep -q "note message"; then
+if grep -q "error message" <<<"${TEST_OUTPUT}" &&     \
+   grep -q "bad message" <<<"${TEST_OUTPUT}" &&       \
+   grep -q "warn message" <<<"${TEST_OUTPUT}" &&      \
+   grep -q "good message" <<<"${TEST_OUTPUT}" &&      \
+   grep -q "info message" <<<"${TEST_OUTPUT}" &&      \
+   grep -q "note message" <<<"${TEST_OUTPUT}"; then
   b19-log good "b19-verbosity" "$(_ "Test 4 passed: debug level shows all messages")"
 else
   fail "$(_ "Test 4 failed: debug level filtering incorrect")"
@@ -117,8 +117,8 @@ TEST_OUTPUT=$(B19_VERBOSITY=INVALID bash -c '
   b19-log good TEST "good message" 2>&1
 ')
 
-if echo "${TEST_OUTPUT}" | grep -q "warn message" &&      \
-   ! echo "${TEST_OUTPUT}" | grep -q "good message"; then
+if grep -q "warn message" <<<"${TEST_OUTPUT}" &&      \
+   ! grep -q "good message" <<<"${TEST_OUTPUT}"; then
   b19-log good "b19-verbosity" "$(_ "Test 5 passed: Invalid level defaults to warn")"
 else
   fail "$(_ "Test 5 failed: Invalid level did not default to warn")"
@@ -128,8 +128,8 @@ fi
 b19-log note "b19-verbosity" "$(_ "Test 6: Default behavior")"
 TEST_OUTPUT=$(bash -c 'unset B19_VERBOSITY; b19-log warn TEST "warn message" 2>&1; b19-log good TEST "good message" 2>&1')
 
-if echo "${TEST_OUTPUT}" | grep -q "warn message" &&      \
-   ! echo "${TEST_OUTPUT}" | grep -q "good message"; then
+if grep -q "warn message" <<<"${TEST_OUTPUT}" &&      \
+   ! grep -q "good message" <<<"${TEST_OUTPUT}"; then
   b19-log good "b19-verbosity" "$(_ "Test 6 passed: Default level is warn")"
 else
   fail "$(_ "Test 6 failed: Default level incorrect")"
@@ -144,9 +144,9 @@ TEST_OUTPUT=$(NO_COLOR=1 B19_VERBOSITY=debug bash -c '
   echo "payload line" | b19-log info TEST 2>&1
 ')
 
-if echo "${TEST_OUTPUT}" | grep -q "^ WARN .*warn message" &&       \
-   echo "${TEST_OUTPUT}" | grep -q "^ INFO .*info message" &&       \
-   ! echo "${TEST_OUTPUT}" | grep -q "INFO.*payload line"; then
+if grep -q "^ WARN .*warn message" <<<"${TEST_OUTPUT}" &&       \
+   grep -q "^ INFO .*info message" <<<"${TEST_OUTPUT}" &&       \
+   ! grep -q "INFO.*payload line" <<<"${TEST_OUTPUT}"; then
   b19-log good "b19-verbosity" "$(_ "Test 7 passed: plain output carries the level")"
 else
   fail "$(_ "Test 7 failed: plain output lost the level")"
