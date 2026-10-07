@@ -28,8 +28,10 @@
     _locale_exists() {
         # locale -a lists normalized names (es_ES.utf8). Match case-insensitive
         # across UTF-8 / utf8 spellings.
-        locale -a 2>/dev/null | grep -qix "${1%.UTF-8}\.\(UTF-8\|utf8\)" || \
-            locale -a 2>/dev/null | grep -qix "${1}"
+        local _locales
+        _locales="$(locale -a 2>/dev/null)" || _locales=""
+        grep -qix "${1%.UTF-8}\.\(UTF-8\|utf8\)" <<<"${_locales}" || \
+            grep -qix "${1}" <<<"${_locales}"
     }
 
     _requested="${LANG:-}"
