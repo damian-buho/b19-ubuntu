@@ -155,7 +155,6 @@ ARG M6E_NEAR_CACHE_HOST=""
 ARG M6E_NEAR_CACHE_PORT=""
 ARG M6E_NEAR_CACHE_SCHEME=""
 ARG M6E_PROJECT
-ARG M6E_VERSION
 ARG TARGETARCH
 
 # hadolint ignore=DL3067 # the upstream rootfs is the base of the assembly
@@ -182,6 +181,7 @@ USER ${B19_UID}
 
 COPY --chown="${B19_UID}:${B19_GID}"                             .container/user/        /
 
+ARG M6E_VERSION
 RUN --mount=type=bind,from=fetch,source=.,target=/fetch                                             \
     --mount=type=cache,target=${B19_DOWNLOAD_PATH},sharing=shared,uid=${B19_UID},gid=${B19_GID}     \
     --mount=type=tmpfs,target=${B19_TEMP_PATH}                                                      \
