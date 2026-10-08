@@ -23,6 +23,7 @@ includes:
   - .makefile/b19/images/fd.yaml
   - .makefile/b19/images/minijinja.yaml
   - .makefile/b19/traits/release.yaml
+  - .makefile/b19/traits/signed-images.yaml
   - .makefile/container/traits/image-variant.yaml
   - https://kiota.ch/b19/metadata/raw/branch/main/include.yaml
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/forge/codeberg.yaml
