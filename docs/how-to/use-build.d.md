@@ -67,6 +67,17 @@ build-stage (tools.d/build-stage)
 
 Because they are `*.i.sh`, they survive the prune and ride the image lineage: `b19/ubuntu` seeds them, `b19/go` inherits them, and a project’s `RUN build-stage compile-go` runs them without either image knowing. Set `B19_BUILD_ALWAYS_ENABLED=false` to skip them for a stage that must not touch, say, the trust store — the stage’s own hooks still run. Use `always/` only for what genuinely applies everywhere: it runs on every stage of every downstream image, including `user` stages that are not root.
 
+### Export hooks (`export/`)
+
+`export` is also a **reserved stage name**: it hands a builder’s output to a lighter image built on `b19/ubuntu`. A builder stage runs `RUN build-stage export` as root, every base under it may ship `*.i.sh` hooks in `/build.d/export/` that write what the final image needs into `/export`, and the final stage takes it with `COPY --from=<builder> /export/ /`:
+
+```text
+/build.d/export/post/100-….i.sh    <- a base: its runtime
+/build.d/export/post/500-….sh      <- the project: its application
+```
+
+Bases take low numbers with gaps (`100`, `200`, …), so two bases in one chain and the project each keep a slot. Nothing calls `export` on its own: an image that never runs `build-stage export` is unaffected.
+
 ### Inheritable hooks (`*.i.sh`)
 
 The `.i.` suffix survives the post-execution cleanup:
@@ -103,6 +114,7 @@ Common stage names across the fleet:
 | `base`           | gcc, llvm, node, go, Java, crystal, php, rust   | Language/tool install from apt or tarball             |
 | `root`           | scala, node                                     | Alternative to `base` when inheriting from non-ubuntu |
 | `user`           | all projects                                    | Non-root final stage, runtime setup                   |
+| `export`         | Java                                            | Builder output for a final stage on Ubuntu            |
 | `compile-gcc`    | node, python, ruby, php, erlang, haskell, nginx | Compile-from-source using GCC                         |
 | `compile-rust`   | rust, gleam, nginx (ACME)                       | Compile-from-source using Rust/Cargo                  |
 | `compile-go`     | go                                              | Compile Go programs                                   |

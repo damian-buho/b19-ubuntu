@@ -47,6 +47,13 @@ lives there once instead of being copied per stage; `*.i.sh` makes it ride the
 whole lineage. `B19_BUILD_ALWAYS_ENABLED=false` opts a stage out. `${STAGE}` is
 the real stage inside these hooks, `${SCOPE}` the directory being run.
 
+**`export` is reserved too.** A builder stage runs `build-stage export` as root;
+each base under it may ship `build.d/export/post/<low number>-*.i.sh` writing
+its runtime into `/export`, the project adds `500-*.sh` for its application, and
+the final `FROM b19/ubuntu` stage does `COPY --from=<builder> /export/ /`. `ENV`
+does not cross that `COPY`, so a base ships its defaults as an `entrypoint.d`
+hook. [use-build.d](docs/how-to/use-build.d.md#export-hooks-export)
+
 **The inheritance rule (most important fact in this repository):** after running a
 phase, `process-hooks` *deletes* every `*.sh` **except** `*.i.sh`. So:
 
