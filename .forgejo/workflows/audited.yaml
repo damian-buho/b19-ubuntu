@@ -42,8 +42,8 @@ jobs:
           submodules: true
           persist-credentials: false
       - name: grype-scan-registry
-        if: (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_GRYPE_SCAN_REGISTRY != 'true'
-        uses: projectfile/actions/run-tool@643052a02d1358d0f5a078a7f434166011d36d64 # v1
+        if: (!cancelled()) && (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_GRYPE_SCAN_REGISTRY != 'true'
+        uses: projectfile/actions/run-tool@ffe2de775b8b50b564f401adc488fce3df2fd607 # v1
         with:
           image: ${{ vars.D9T_GO_TOOLS_IMAGE || format('{0}/d9t/go-tools', vars.SOURCE_DOCKER_REGISTRY || 'kiota.ch') }}
           version: ${{ env.M6E_TAG }}
@@ -55,8 +55,8 @@ jobs:
             M6E_SHARED_CACHE=Y
           mounts: /app/data/ci-cache/grype-db:/app/.cache/grype:rw
       - name: trivy-scan-registry
-        if: (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_TRIVY_SCAN_REGISTRY != 'true'
-        uses: projectfile/actions/run-tool@643052a02d1358d0f5a078a7f434166011d36d64 # v1
+        if: (!cancelled()) && (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_TRIVY_SCAN_REGISTRY != 'true'
+        uses: projectfile/actions/run-tool@ffe2de775b8b50b564f401adc488fce3df2fd607 # v1
         with:
           image: ${{ vars.D9T_GO_TOOLS_IMAGE || format('{0}/d9t/go-tools', vars.SOURCE_DOCKER_REGISTRY || 'kiota.ch') }}
           version: ${{ env.M6E_TAG }}
@@ -90,8 +90,8 @@ jobs:
           submodules: true
           persist-credentials: false
       - name: grype-scan-source
-        if: vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_GRYPE_SCAN_SOURCE != 'true'
-        uses: projectfile/actions/run-tool@643052a02d1358d0f5a078a7f434166011d36d64 # v1
+        if: (!cancelled()) && vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_GRYPE_SCAN_SOURCE != 'true'
+        uses: projectfile/actions/run-tool@ffe2de775b8b50b564f401adc488fce3df2fd607 # v1
         with:
           image: ${{ vars.D9T_GO_TOOLS_IMAGE || format('{0}/d9t/go-tools', vars.SOURCE_DOCKER_REGISTRY || 'kiota.ch') }}
           version: ${{ env.M6E_TAG }}
@@ -101,8 +101,8 @@ jobs:
             M6E_SHARED_CACHE=Y
           mounts: /app/data/ci-cache/grype-db:/app/.cache/grype:rw
       - name: trivy-scan-source
-        if: vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_TRIVY_SCAN_SOURCE != 'true'
-        uses: projectfile/actions/run-tool@643052a02d1358d0f5a078a7f434166011d36d64 # v1
+        if: (!cancelled()) && vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_TRIVY_SCAN_SOURCE != 'true'
+        uses: projectfile/actions/run-tool@ffe2de775b8b50b564f401adc488fce3df2fd607 # v1
         with:
           image: ${{ vars.D9T_GO_TOOLS_IMAGE || format('{0}/d9t/go-tools', vars.SOURCE_DOCKER_REGISTRY || 'kiota.ch') }}
           version: ${{ env.M6E_TAG }}
