@@ -20,7 +20,7 @@ SPDX-License-Identifier: MIT
 COPY --chown="${B19_UID}:${B19_GID}" .container/foundation/  /
 
 RUN --mount=type=bind,from=fetch,source=.,target=/fetch  \
-    --mount=type=cache,target=${B19_DOWNLOAD_PATH}        \
+    --mount=type=cache,target=${B19_DOWNLOAD_PATH},sharing=shared,uid=${B19_UID},gid=${B19_GID} \
     --mount=type=cache,id=apt-cache-${SERIES},target=/var/cache/apt \
     --mount=type=tmpfs,target=${B19_TEMP_PATH}            \
     build-stage foundation
