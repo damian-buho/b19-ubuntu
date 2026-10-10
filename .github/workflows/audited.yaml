@@ -43,12 +43,17 @@ jobs:
         with:
           submodules: true
           persist-credentials: false
+      - name: stamp grype-db
+        id: stamp-grype-db
+        if: (!cancelled()) && (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_GRYPE_SCAN_REGISTRY != 'true'
+        run: echo "stamp=$(( $(date -u +%s) / 28800 ))" >> "$GITHUB_OUTPUT"
       - name: restore grype-db
+        id: restore-grype-db
         uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         if: (!cancelled()) && (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_GRYPE_SCAN_REGISTRY != 'true'
         with:
           path: ${{ runner.temp }}/ci-cache/grype-db
-          key: ci-cache-grype-db-
+          key: ci-cache-grype-db-${{ steps.stamp-grype-db.outputs.stamp }}
           restore-keys: |
             ci-cache-grype-db-
       - name: grype-scan-registry
@@ -66,16 +71,21 @@ jobs:
           mounts: ${{ runner.temp }}/ci-cache/grype-db:/app/.cache/grype:rw
       - name: save grype-db
         uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
-        if: (!cancelled()) && (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_GRYPE_SCAN_REGISTRY != 'true'
+        if: ((!cancelled()) && (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_GRYPE_SCAN_REGISTRY != 'true') && steps.restore-grype-db.outputs.cache-hit != 'true'
         with:
           path: ${{ runner.temp }}/ci-cache/grype-db
-          key: ci-cache-grype-db-${{ github.run_id }}
+          key: ci-cache-grype-db-${{ steps.stamp-grype-db.outputs.stamp }}
+      - name: stamp trivy-db
+        id: stamp-trivy-db
+        if: (!cancelled()) && (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_TRIVY_SCAN_REGISTRY != 'true'
+        run: echo "stamp=$(( $(date -u +%s) / 28800 ))" >> "$GITHUB_OUTPUT"
       - name: restore trivy-db
+        id: restore-trivy-db
         uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         if: (!cancelled()) && (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_TRIVY_SCAN_REGISTRY != 'true'
         with:
           path: ${{ runner.temp }}/ci-cache/trivy-db
-          key: ci-cache-trivy-db-
+          key: ci-cache-trivy-db-${{ steps.stamp-trivy-db.outputs.stamp }}
           restore-keys: |
             ci-cache-trivy-db-
       - name: trivy-scan-registry
@@ -94,10 +104,10 @@ jobs:
           mounts: ${{ runner.temp }}/ci-cache/trivy-db:/app/.cache/trivy:rw
       - name: save trivy-db
         uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
-        if: (!cancelled()) && (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_TRIVY_SCAN_REGISTRY != 'true'
+        if: ((!cancelled()) && (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && vars.CI_SKIP_IMAGE_IS_AUDITED != 'true' && vars.CI_SKIP_TRIVY_SCAN_REGISTRY != 'true') && steps.restore-trivy-db.outputs.cache-hit != 'true'
         with:
           path: ${{ runner.temp }}/ci-cache/trivy-db
-          key: ci-cache-trivy-db-${{ github.run_id }}
+          key: ci-cache-trivy-db-${{ steps.stamp-trivy-db.outputs.stamp }}
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: ${{ always() }}
         with:
@@ -120,12 +130,17 @@ jobs:
         with:
           submodules: true
           persist-credentials: false
+      - name: stamp grype-db
+        id: stamp-grype-db
+        if: (!cancelled()) && vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_GRYPE_SCAN_SOURCE != 'true'
+        run: echo "stamp=$(( $(date -u +%s) / 28800 ))" >> "$GITHUB_OUTPUT"
       - name: restore grype-db
+        id: restore-grype-db
         uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         if: (!cancelled()) && vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_GRYPE_SCAN_SOURCE != 'true'
         with:
           path: ${{ runner.temp }}/ci-cache/grype-db
-          key: ci-cache-grype-db-
+          key: ci-cache-grype-db-${{ steps.stamp-grype-db.outputs.stamp }}
           restore-keys: |
             ci-cache-grype-db-
       - name: grype-scan-source
@@ -141,16 +156,21 @@ jobs:
           mounts: ${{ runner.temp }}/ci-cache/grype-db:/app/.cache/grype:rw
       - name: save grype-db
         uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
-        if: (!cancelled()) && vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_GRYPE_SCAN_SOURCE != 'true'
+        if: ((!cancelled()) && vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_GRYPE_SCAN_SOURCE != 'true') && steps.restore-grype-db.outputs.cache-hit != 'true'
         with:
           path: ${{ runner.temp }}/ci-cache/grype-db
-          key: ci-cache-grype-db-${{ github.run_id }}
+          key: ci-cache-grype-db-${{ steps.stamp-grype-db.outputs.stamp }}
+      - name: stamp trivy-db
+        id: stamp-trivy-db
+        if: (!cancelled()) && vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_TRIVY_SCAN_SOURCE != 'true'
+        run: echo "stamp=$(( $(date -u +%s) / 28800 ))" >> "$GITHUB_OUTPUT"
       - name: restore trivy-db
+        id: restore-trivy-db
         uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         if: (!cancelled()) && vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_TRIVY_SCAN_SOURCE != 'true'
         with:
           path: ${{ runner.temp }}/ci-cache/trivy-db
-          key: ci-cache-trivy-db-
+          key: ci-cache-trivy-db-${{ steps.stamp-trivy-db.outputs.stamp }}
           restore-keys: |
             ci-cache-trivy-db-
       - name: trivy-scan-source
@@ -167,10 +187,10 @@ jobs:
           mounts: ${{ runner.temp }}/ci-cache/trivy-db:/app/.cache/trivy:rw
       - name: save trivy-db
         uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
-        if: (!cancelled()) && vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_TRIVY_SCAN_SOURCE != 'true'
+        if: ((!cancelled()) && vars.CI_SKIP_SOURCE_IS_SECURE != 'true' && vars.CI_SKIP_TRIVY_SCAN_SOURCE != 'true') && steps.restore-trivy-db.outputs.cache-hit != 'true'
         with:
           path: ${{ runner.temp }}/ci-cache/trivy-db
-          key: ci-cache-trivy-db-${{ github.run_id }}
+          key: ci-cache-trivy-db-${{ steps.stamp-trivy-db.outputs.stamp }}
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: ${{ always() }}
         with:
