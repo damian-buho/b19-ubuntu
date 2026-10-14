@@ -289,6 +289,22 @@ Lint the Dockerfile for best practices
 
 > Image: HADOLINT_IMAGE
 
+### `pf-bridge-containerignore-check`
+
+Verify .containerignore still matches the projectfile
+
+`pf-bridge ignore .containerignore --check`
+
+> Image: PF_BRIDGE_IMAGE
+
+### `pf-bridge-containerignore-generate`
+
+Generate .containerignore from the projectfile
+
+`pf-bridge ignore .containerignore --force`
+
+> Image: PF_BRIDGE_IMAGE
+
 ### `pf-bridge-dockerignore-check`
 
 Verify .dockerignore still matches the projectfile
@@ -691,7 +707,7 @@ Pre-pull the base, tool and frontend images the projectfile names, so a later bu
 
 ### `usage-check`
 
-Verify the committed --help captures in docs/usage.d match the built image
+Verify the committed --help captures in docs/usage.d match the declared executable, else the built image
 
 ## License
 
@@ -1018,16 +1034,6 @@ Ensure the shared dev Docker network exists (no-op in the CI scenario)
 ### `remove-docker-network`
 
 Remove the Docker network
-
-## Observability
-
-### `gonzo`
-
-Analyze log streams in a terminal UI
-
-`gonzo`
-
-> Image: D9T_GO_TOOLS_IMAGE
 
 ## Projectfile
 
