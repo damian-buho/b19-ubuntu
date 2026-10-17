@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+    set -euo pipefail
+
+    # shellcheck source=.container/foundation/tools.d/b19-i18n
+    . b19-i18n
+
+    if [ "${B19_SKIP_MOUNT_CHECK:-N}" = "Y" ] || [ "${B19_SKIP_MOUNT_CHECK:-N}" = "true" ]; then
+        b19-log info "MOUNT-CHECK" "$(_ "Mount check disabled (B19_SKIP_MOUNT_CHECK=Y)")"
+        exit 0
+    fi
+
+    REQUIRE="${B19_REQUIRE_MOUNTS:-N}"
+
+    # Collect declared volume files (expanded at build time).
+    declare -A SEEN_FILES=()
+    FILES=()
+    add_file() {
+        [ -f "$1" ] || return 0
+        [ -n "${SEEN_FILES[$1]:-}" ] && return 0
+        SEEN_FILES[$1]=1
+        FILES+=("$1")
+    }
+    add_file "/deps/volumes.deps"
+    add_file "/build.d/volumes.deps"
+    add_file "/deps/volumes.mounts"
+    add_file "/build.d/volumes.mounts"
+    add_file "/etc/b19/volumes.deps"
+    if [ -n "${B19_MOUNT_CHECK_FILE:-}" ]; then
+        add_file "${B19_MOUNT_CHECK_FILE}"
+    fi
+    while IFS= read -r _f; do
+        add_file "${_f}"
+    done < <(find /deps /build.d -type f \( -name 'volumes.deps' -o -name 'volumes.mounts' \) 2>/dev/null || true)
+
+    if [ "${#FILES[@]}" -eq 0 ]; then
+        b19-log debug "MOUNT-CHECK" "$(_ "No volume declarations found")"
+        exit 0
+    fi
+
+    FAILED=0
+    while IFS= read -r _file; do
+        [ -f "${_file}" ] || continue
+        while IFS= read -r LINE || [ -n "${LINE}" ]; do
+            case "${LINE}" in ''|\#*) continue ;; esac
+            # Expand just in case a file still carries build-time variables.
+            EXPANDED_LINE=$(printf '%s' "${LINE}" | envsubst)
+            read -r DIR MARKER <<< "${EXPANDED_LINE}"
+            [ -z "${DIR}" ] && continue
+            if mountpoint --quiet "${DIR}"; then
+                continue
+            fi
+            required=0
+            case "${MARKER:-}" in
+                required|REQUIRED|required=true|true|yes|YES) required=1 ;;
+            esac
+            if [ "${required}" -eq 1 ]; then
+                if [ "${REQUIRE}" = "Y" ] || [ "${REQUIRE}" = "true" ]; then
+                    b19-log error "MOUNT-CHECK" "$(_p "%s is not a mount point" "${DIR}")"
+                    FAILED=1
+                else
+                    b19-log warn "MOUNT-CHECK" "$(_p "%s is not a mount point" "${DIR}")"
+                fi
+            else
+                b19-log info "MOUNT-CHECK" "$(_p "%s is not a mount point" "${DIR}")"
+            fi
+        done < "${_file}"
+    done < <(printf '%s\n' "${FILES[@]}")
+
+    if [ "${FAILED}" -ne 0 ]; then
+        exit 1
+    fi
+    exit 0

@@ -16,13 +16,28 @@
     IS_ROOT=false
     [ "$(id -u)" -eq 0 ] && IS_ROOT=true
 
+    # Rewrite the file with envsubst-expanded paths so the runtime mount check
+    # needs no build-time variables.
+    TMP_FILE="$(mktemp)"
     while IFS= read -r LINE || [ -n "${LINE}" ]; do
         case "${LINE}" in ''|\#*) continue ;; esac
-        DIR=$(printf '%s' "${LINE}" | envsubst)
+        EXPANDED_LINE=$(printf '%s' "${LINE}" | envsubst)
+        read -r DIR MARKER <<< "${EXPANDED_LINE}"
+        [ -z "${DIR}" ] && continue
         b19-run "VOLUMES" "$(_p "Make %s directory" "${DIR}")" --  \
             mkdir -p "${DIR}"
         if "${IS_ROOT}"; then
             b19-run "VOLUMES" "$(_p "Chown %s to %s:%s" "${DIR}" "${B19_UID}" "${B19_GID}")" --  \
                 chown -R "${B19_UID}:${B19_GID}" "${DIR}"
         fi
+        if [ -n "${MARKER}" ]; then
+            printf '%s %s\n' "${DIR}" "${MARKER}" >> "${TMP_FILE}"
+        else
+            printf '%s\n' "${DIR}" >> "${TMP_FILE}"
+        fi
     done < "${VOLUMES_FILE}"
+
+    mv "${TMP_FILE}" "${VOLUMES_FILE}"
+    if "${IS_ROOT}"; then
+        chown "${B19_UID}:${B19_GID}" "${VOLUMES_FILE}" 2>/dev/null || true
+    fi
