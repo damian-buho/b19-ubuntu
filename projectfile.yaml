@@ -12,12 +12,13 @@ identity:
     uk: Базовий образ Ubuntu з підтримкою спільноти для флоту B19
   title: B19 / Ubuntu
   description:
-    en: Community-maintained Ubuntu base image for the B19 fleet. This repository holds only the packaging — Dockerfile, bootstrap scripts, and configuration, all MIT-licensed; the upstream Ubuntu rootfs is fetched at build time and retains its own licensing.
-    es: Imagen base Ubuntu mantenida por la comunidad para la flota B19. Este repositorio contiene únicamente el empaquetado — Dockerfile, scripts de arranque y configuración, todo con licencia MIT; el rootfs original de Ubuntu se obtiene en tiempo de compilación y conserva su propia licencia.
-    uk: Базовий образ Ubuntu з підтримкою спільноти для флоту B19. Цей репозиторій містить лише пакування — Dockerfile, скрипти початкового налаштування та конфігурацію, усе під ліцензією MIT; вихідний rootfs Ubuntu отримують під час збирання, і він зберігає власну ліцензію.
+    en: Reproducible, single-layer, non-root Ubuntu base image — digest-pinned, multi-series and multi-arch, with the hook library downstream images inherit.
+    es: Imagen base Ubuntu reproducible, de una capa y sin root — fijada por digest, multiserie y multiarquitectura, con la biblioteca de hooks que heredan las imágenes derivadas.
+    uk: Відтворюваний одношаровий образ Ubuntu без root — зафіксований за digest, мультисерійний і мультиархітектурний, з бібліотекою хуків для похідних образів.
   version: 0.23.9
   modified: "2026-09-14"
   released: "2026-10-15"
+  visibility: public
 includes:
   - .makefile/b19/ci.yaml
   - .makefile/b19/images/fd.yaml
@@ -33,15 +34,15 @@ includes:
 keywords:
   - ubuntu
   - base-image
-  - linux
-  - os
-  - docker
+  - container-image
+  - multiarch
+  - reproducible
 kind: SoftwareSourceCode
 links:
   - label:
-      en: B19 / Ubuntu on GitHub
-      es: B19 / Ubuntu en GitHub
-      uk: B19 / Ubuntu на GitHub
+      en: Repository on GitHub
+      es: Repositorio en GitHub
+      uk: Репозиторій на GitHub
     priority: 80
     tags:
       - public
@@ -59,17 +60,17 @@ links:
     type: bugs
     url: https://github.com/damian-buho/b19-ubuntu/issues
   - label:
-      en: B19 / Ubuntu on kiota.ch
-      es: B19 / Ubuntu en kiota.ch
-      uk: B19 / Ubuntu на kiota.ch
+      en: Repository on kiota.ch
+      es: Repositorio en kiota.ch
+      uk: Репозиторій на kiota.ch
     preferred: true
     priority: 10
     type: source-code
     url: https://kiota.ch/b19/ubuntu
   - label:
-      en: B19 / Ubuntu on Codeberg
-      es: B19 / Ubuntu en Codeberg
-      uk: B19 / Ubuntu на Codeberg
+      en: Repository on Codeberg
+      es: Repositorio en Codeberg
+      uk: Репозиторій на Codeberg
     priority: 90
     tags:
       - public
