@@ -28,8 +28,8 @@ repository-code: https://kiota.ch/b19/ubuntu
 keywords:
   - ubuntu
   - base-image
-  - linux
-  - os
-  - docker
+  - container-image
+  - multiarch
+  - reproducible
 version: 0.23.9
 date-released: "2026-10-15"
