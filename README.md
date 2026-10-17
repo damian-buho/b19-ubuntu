@@ -8,7 +8,7 @@ pf-cli-managed: yes
 
 # B19 / Ubuntu
 
-Community-maintained Ubuntu base image for the B19 fleet. This repository holds only the packaging — Dockerfile, bootstrap scripts, and configuration, all MIT-licensed; the upstream Ubuntu rootfs is fetched at build time and retains its own licensing.
+Reproducible, single-layer, non-root Ubuntu base image — digest-pinned, multi-series and multi-arch, with the hook library downstream images inherit.
 
 [![Stand with Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://damian-buho.github.io/support-ukraine/) [![Projectfile inside](https://badges.kiota.ch/static/v1?label=projectfile&message=inside&labelColor=0d0d0d&color=8c6723&style=flat-square)](https://projectfile.org) [![License](https://badges.kiota.ch/static/v1?label=license&message=MIT&color=1e5913&style=flat-square)](LICENSE) [![Cosign](https://badges.kiota.ch/static/v1?label=cosign&message=enabled&color=1e5913&style=flat-square)](https://docs.sigstore.dev/cosign/verifying/verify/) [![PRs welcome](https://badges.kiota.ch/static/v1?label=PRs&message=welcome&color=1e5913&style=flat-square)](CONTRIBUTING.md) [![REUSE compliance](https://api.reuse.software/badge/codeberg.org/b19/ubuntu)](https://api.reuse.software/info/codeberg.org/b19/ubuntu)
 

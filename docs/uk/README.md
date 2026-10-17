@@ -10,7 +10,7 @@ pf-cli-managed: yes
 
 # B19 / Ubuntu
 
-Базовий образ Ubuntu з підтримкою спільноти для флоту B19. Цей репозиторій містить лише пакування — Dockerfile, скрипти початкового налаштування та конфігурацію, усе під ліцензією MIT; вихідний rootfs Ubuntu отримують під час збирання, і він зберігає власну ліцензію.
+Відтворюваний одношаровий образ Ubuntu без root — зафіксований за digest, мультисерійний і мультиархітектурний, з бібліотекою хуків для похідних образів.
 
 [![Stand with Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://damian-buho.github.io/support-ukraine/) [![Projectfile inside](https://badges.kiota.ch/static/v1?label=projectfile&message=inside&labelColor=0d0d0d&color=8c6723&style=flat-square)](https://projectfile.org) [![License](https://badges.kiota.ch/static/v1?label=license&message=MIT&color=1e5913&style=flat-square)](LICENSE) [![Cosign](https://badges.kiota.ch/static/v1?label=cosign&message=enabled&color=1e5913&style=flat-square)](https://docs.sigstore.dev/cosign/verifying/verify/) [![PRs welcome](https://badges.kiota.ch/static/v1?label=PRs&message=welcome&color=1e5913&style=flat-square)](CONTRIBUTING.md) [![REUSE compliance](https://api.reuse.software/badge/codeberg.org/b19/ubuntu)](https://api.reuse.software/info/codeberg.org/b19/ubuntu)
 
