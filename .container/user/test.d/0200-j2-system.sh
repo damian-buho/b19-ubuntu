@@ -72,6 +72,17 @@
   j2-render "${T}/svc.conf.j2"
   assert_content "${T}/svc.conf" "port=8080"
 
+  # Unwritable directory keeps the build-time render and exits 0
+  mkdir -p "${T}/ro"
+  echo '{{ ENV.RO }}' > "${T}/ro/kept.j2"
+  echo 'build' > "${T}/ro/kept"
+  chmod 0555 "${T}/ro"
+  if [ ! -w "${T}/ro" ]; then
+    RO=runtime j2-render "${T}/ro/kept.j2" || { b19-log error "TEST" "$(_p "j2-render failed on read-only %s" "${T}/ro")"; FAIL=$((FAIL + 1)); }
+    assert_content "${T}/ro/kept" "build"
+  fi
+  chmod 0755 "${T}/ro"
+
   # ═══════════════════════════════════════════════════════════════════
   # save-j2
   # ═══════════════════════════════════════════════════════════════════

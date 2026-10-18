@@ -432,6 +432,9 @@ msgstr "Пропуск проксі для %s, apt завантажить нап
 msgid "Skipping unreadable %s (uid %s)"
 msgstr "Пропуск недоступного для читання %s (uid %s)"
 
+msgid "Keeping build-time %s, directory not writable by uid %s"
+msgstr "Залишено %s зі збирання, каталог недоступний для запису uid %s"
+
 #: .container/foundation/tools.d/detect-apt-cacher:42
 msgid "APT Cache not enabled"
 msgstr "Кеш APT не увімкнено"

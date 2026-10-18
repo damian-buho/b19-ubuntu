@@ -434,6 +434,9 @@ msgstr "Omitiendo proxy para %s, apt descargará directamente"
 msgid "Skipping unreadable %s (uid %s)"
 msgstr "Omitiendo %s ilegible (uid %s)"
 
+msgid "Keeping build-time %s, directory not writable by uid %s"
+msgstr "Se mantiene %s de la construcción, el directorio no es escribible por el uid %s"
+
 #: .container/foundation/tools.d/detect-apt-cacher:42
 msgid "APT Cache not enabled"
 msgstr "Caché APT no habilitado"

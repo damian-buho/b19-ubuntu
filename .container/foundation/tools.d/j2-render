@@ -11,8 +11,16 @@
 
 set -euo pipefail
 
+# shellcheck source=.container/foundation/tools.d/b19-i18n
+. b19-i18n
+
 TEMPLATE="$1"
 OUTPUT="$(dirname "${TEMPLATE}")/$(basename --suffix .j2 "${TEMPLATE}")"
+
+if [ ! -w "$(dirname "${OUTPUT}")" ]; then
+  b19-log warn "J2" "$(_p "Keeping build-time %s, directory not writable by uid %s" "${OUTPUT}" "$(id -u)")"
+  exit 0
+fi
 
 # Find the first matching companion data file in supported formats.
 DATA_FILE=""
