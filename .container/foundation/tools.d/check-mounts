@@ -23,6 +23,10 @@
         [ -f "$1" ] || return 0
         [ -n "${SEEN_FILES[$1]:-}" ] && return 0
         SEEN_FILES[$1]=1
+        if [ ! -r "$1" ]; then
+            b19-log warn "MOUNT-CHECK" "$(_p "Skipping unreadable %s (uid %s)" "$1" "$(id -u)")"
+            return 0
+        fi
         FILES+=("$1")
     }
     add_file "/deps/volumes.deps"

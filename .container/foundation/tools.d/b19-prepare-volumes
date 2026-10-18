@@ -37,6 +37,7 @@
         fi
     done < "${VOLUMES_FILE}"
 
+    chmod 0644 "${TMP_FILE}"
     mv "${TMP_FILE}" "${VOLUMES_FILE}"
     if "${IS_ROOT}"; then
         chown "${B19_UID}:${B19_GID}" "${VOLUMES_FILE}" 2>/dev/null || true

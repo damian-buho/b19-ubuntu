@@ -51,5 +51,25 @@ if printf '%s\n' "${TEST_OUTPUT}" | grep --quiet --fixed-strings "${UNMOUNTED}";
 fi
 b19-log good "MOUNT-CHECK-TEST" "$(_p "Test %s passed" "4")"
 
+b19-log note "MOUNT-CHECK-TEST" "$(_p "Test %s: b19-prepare-volumes leaves the file world-readable" "5")"
+printf '%s\n' "${XDG_CACHE_HOME}/b19-mount-check-test.dir" > "${VOLFILE}"
+b19-prepare-volumes "${VOLFILE}" || fail "$(_ "b19-prepare-volumes failed")"
+b19-assert equals "MOUNT-CHECK-TEST" "644" "$(stat --format '%a' "${VOLFILE}")"
+b19-log good "MOUNT-CHECK-TEST" "$(_p "Test %s passed" "5")"
+
+b19-log note "MOUNT-CHECK-TEST" "$(_p "Test %s: an unreadable declaration is skipped, not fatal" "6")"
+printf '%s required\n' "${UNMOUNTED}" > "${VOLFILE}"
+chmod 0000 "${VOLFILE}"
+if [ -r "${VOLFILE}" ]; then
+    b19-log info "MOUNT-CHECK-TEST" "$(_p "Test %s skipped: uid %s reads mode 000" "6" "$(id -u)")"
+else
+    TEST_OUTPUT="$(B19_MOUNT_CHECK_FILE="${VOLFILE}" B19_REQUIRE_MOUNTS=Y check-mounts 2>&1)" \
+        || fail "$(_ "Unreadable declaration failed the check")"
+    grep --quiet --fixed-strings "${VOLFILE}" <<<"${TEST_OUTPUT}" \
+        || fail "$(_ "Unreadable declaration was not logged")"
+    b19-log good "MOUNT-CHECK-TEST" "$(_p "Test %s passed" "6")"
+fi
+
 rm -f "${VOLFILE}"
+rmdir "${XDG_CACHE_HOME}/b19-mount-check-test.dir"
 b19-log good "MOUNT-CHECK-TEST" "$(_ "All mount-check tests passed")"

@@ -429,6 +429,9 @@ msgstr "Кеш APT увімкнено на ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE
 msgid "Skipping proxy for %s, apt will fetch directly"
 msgstr "Пропуск проксі для %s, apt завантажить напряму"
 
+msgid "Skipping unreadable %s (uid %s)"
+msgstr "Пропуск недоступного для читання %s (uid %s)"
+
 #: .container/foundation/tools.d/detect-apt-cacher:42
 msgid "APT Cache not enabled"
 msgstr "Кеш APT не увімкнено"
