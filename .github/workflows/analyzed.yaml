@@ -23,9 +23,28 @@ jobs:
   analyzed:
     runs-on: ubuntu-26.04
     needs: ["image-is-analyzed"]
-    if: ${{ !cancelled() && needs.image-is-analyzed.result == 'success' && (github.event_name == 'workflow_dispatch') }}
+    if: ${{ always() && (github.event_name == 'workflow_dispatch') }}
     steps:
-      - run: echo analyzed
+      - name: analyzed verdict
+        run: |
+          passed=0 skipped=0 failed=0
+          for pair in \
+            "image-is-analyzed=${{ needs.image-is-analyzed.result }}"; do
+            echo "verdict need=${pair%%=*} result=${pair#*=}"
+            case "${pair#*=}" in
+              success) passed=$((passed + 1)) ;;
+              skipped) skipped=$((skipped + 1)) ;;
+              *) failed=$((failed + 1)) ;;
+            esac
+          done
+          status=success; event=goal.succeeded
+          if [ "${failed}" -gt 0 ]; then
+            status=failure; event=goal.failed
+          elif [ "${passed}" -eq 0 ]; then
+            status=skipped; event=goal.skipped
+          fi
+          echo "verdict goal=analyzed status=${status} passed=${passed} skipped=${skipped} failed=${failed}"
+          [ "${failed}" -eq 0 ]
   image-is-analyzed:
     runs-on: ubuntu-26.04
     if: github.event_name == 'workflow_dispatch'
