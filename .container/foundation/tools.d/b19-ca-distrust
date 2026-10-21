@@ -58,6 +58,7 @@
     done
     printf '%s' "${_cd_pending}" >> "${_cd_tmp}"
     chmod --reference="${_cd_file}" "${_cd_tmp}"
+    [ "$(id --user)" -ne 0 ] || chown --reference="${_cd_file}" "${_cd_tmp}"
     mv "${_cd_tmp}" "${_cd_file}"
     exec {_cd_lock}<&-
     b19-log "$([ "${_cd_dropped}" -eq 0 ] && echo info || echo warn)" "SECURITY" "$(_p "%s distrusted certificates dropped from %s" "${_cd_dropped}" "${_cd_file}")"
