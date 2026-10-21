@@ -28,6 +28,7 @@ Imagen base Ubuntu reproducible, de una capa y sin root — fijada por digest, m
 - Ejecución de comandos temporizada con informe de fallos (b19-run)
 - Inicialización de una sola vez (bootstrap.d)
 - Hooks de compilación modulares (build.d)
+- Autoridades de certificación comprometidas desconfiadas antes que upstream
 - Detección automática del número de CPUs (NUMPROCS)
 - Gestión declarativa de dependencias (b19-deps)
 - Sistema de arranque conectable (entrypoint.d)
@@ -147,6 +148,7 @@ Puntos de entrada de la canalización:
 - [Run commands with b19-run](../how-to/use-b19-run.md)
 - [Initialize state once with bootstrap.d](../how-to/use-bootstrap.d.md)
 - [Build images with build.d hooks](../how-to/use-build.d.md)
+- [Distrust compromised certificate authorities](../how-to/use-ca-distrust.md)
 - [Use NUMPROCS CPU detection](../how-to/use-cpu-detection.md)
 - [Declare dependencies](../how-to/use-dependencies.md)
 - [Start containers with entrypoint.d](../how-to/use-entrypoint.d.md)

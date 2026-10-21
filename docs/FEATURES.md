@@ -50,6 +50,13 @@ SPDX-License-Identifier: MIT
 - Downstream images inherit parent build logic through the layer overlay — no duplication needed.
 - Non-inheritable one-off setup is cleaned up after execution to avoid leaking into later stages.
 
+### Compromised certificate authorities distrusted ahead of upstream
+
+- Certificates listed by SHA-256 fingerprint are removed from the system trust store at build time, before the distribution ships its own fix.
+- One list serves the whole image lineage: each runtime’s own store is cut from it as well.
+- Ships distrusting the eMudhra intermediates whose private keys can be recovered (October 2026), together with their cross-signs and roots.
+- Downstream images add fingerprints with one variable or one file, and `B19_CA_DISTRUST_ENABLED=false` turns the cut off. [How-to](how-to/use-ca-distrust.md)
+
 ### Automatic CPU count detection
 
 - CPU count is detected automatically across Docker, Kubernetes, and CI environments without manual configuration.

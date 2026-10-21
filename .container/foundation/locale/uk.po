@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-03 01:35+0000\n"
+"POT-Creation-Date: 2026-10-20 23:58+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -48,6 +48,43 @@ msgstr "Невідома перевірка %s, очікувалось equals а
 #: .container/foundation/tools.d/b19-assert:42
 msgid "Found %s as expected"
 msgstr "Знайдено %s, як і очікувалось"
+
+#: .container/foundation/tools.d/b19-ca-distrust:20
+msgid "Certificate distrust disabled (B19_CA_DISTRUST_ENABLED=%s)"
+msgstr "Недовіру до сертифікатів вимкнено (B19_CA_DISTRUST_ENABLED=%s)"
+
+#: .container/foundation/tools.d/b19-ca-distrust:50
+msgid "Distrusted certificate %s dropped from %s"
+msgstr "Недовірений сертифікат %s вилучено з %s"
+
+#: .container/foundation/tools.d/b19-ca-distrust:63
+msgid "%s distrusted certificates dropped from %s"
+msgstr "Вилучено недовірених сертифікатів: %s з %s"
+
+#: .container/foundation/tools.d/b19-ca-distrust:70
+#: .container/foundation/tools.d/trust-ca-certificates:34
+msgid "Not root (uid %s), trust store left untouched"
+msgstr "Не root (uid %s), сховище довіри не змінено"
+
+#: .container/foundation/tools.d/b19-ca-distrust:74
+msgid "No %s, nothing to distrust"
+msgstr "Немає %s, нічого позначати недовіреним"
+
+#: .container/foundation/tools.d/b19-ca-distrust:87
+msgid "Distrusted anchor %s deselected"
+msgstr "Недовірений кореневий сертифікат %s вимкнено"
+
+#: .container/foundation/tools.d/b19-ca-distrust:92
+msgid "No distrusted anchor selected in %s"
+msgstr "У %s не вибрано жодного недовіреного кореневого сертифіката"
+
+#: .container/foundation/tools.d/b19-ca-distrust:95
+msgid "Rebuild trust store without %s distrusted anchors"
+msgstr "Перебудувати сховище довіри без недовірених кореневих сертифікатів: %s"
+
+#: .container/foundation/tools.d/b19-ca-distrust:122
+msgid "Unknown action %s, expected list, bundle or system"
+msgstr "Невідома дія %s, очікувалося list, bundle або system"
 
 #: .container/foundation/tools.d/b19-cache-guard:20
 msgid "Usage: b19-cache-guard <tag> <dir> <ttl-seconds> -- <refresh-command…>"
@@ -111,11 +148,11 @@ msgstr "Скомпільовано %s -> %s"
 msgid "Failed to compile %s"
 msgstr "Помилка компіляції %s"
 
-#: .container/foundation/tools.d/b19-ensure-locale:47
+#: .container/foundation/tools.d/b19-ensure-locale:49
 msgid "LANG %s not generated — using %s (same language)"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-ensure-locale:55
+#: .container/foundation/tools.d/b19-ensure-locale:57
 msgid "LANG %s not generated — falling back to C.UTF-8"
 msgstr ""
 
@@ -146,7 +183,7 @@ msgstr ""
 
 #: .container/foundation/tools.d/b19-fetch:45
 #: .container/foundation/tools.d/b19-fetch:49
-#: .container/foundation/tools.d/b19-prepare-volumes:22
+#: .container/foundation/tools.d/b19-prepare-volumes:27
 #: .container/foundation/tools.d/keyscan:18
 msgid "Make %s directory"
 msgstr "Створити каталог %s"
@@ -311,7 +348,7 @@ msgstr "Утримується блокування %s"
 msgid "Unknown log level: %s. Valid: error, warn, info, debug"
 msgstr "Невідомий рівень логу: %s. Дійсні: error, warn, info, debug"
 
-#: .container/foundation/tools.d/b19-prepare-volumes:25
+#: .container/foundation/tools.d/b19-prepare-volumes:30
 msgid "Chown %s to %s:%s"
 msgstr "Змінити власника %s на %s:%s"
 
@@ -377,6 +414,26 @@ msgstr "помилка (код виходу %s) [%s]"
 msgid "Stage-independent hooks for %s: %s"
 msgstr "Незалежні від етапу хуки для %s: %s"
 
+#: .container/foundation/tools.d/check-mounts:13
+#, fuzzy
+msgid "Mount check disabled (B19_SKIP_MOUNT_CHECK=Y)"
+msgstr "Перевірку портів вимкнено (B19_PORT_CHECK_ENABLED=false)"
+
+#: .container/foundation/tools.d/check-mounts:27
+msgid "Skipping unreadable %s (uid %s)"
+msgstr "Пропуск недоступного для читання %s (uid %s)"
+
+#: .container/foundation/tools.d/check-mounts:45
+msgid "No volume declarations found"
+msgstr ""
+
+#: .container/foundation/tools.d/check-mounts:67
+#: .container/foundation/tools.d/check-mounts:70
+#: .container/foundation/tools.d/check-mounts:73
+#, fuzzy
+msgid "%s is not a mount point"
+msgstr "%s не є командою"
+
 #: .container/foundation/tools.d/check-ports:13
 msgid "Port checking disabled (B19_PORT_CHECK_ENABLED=false)"
 msgstr "Перевірку портів вимкнено (B19_PORT_CHECK_ENABLED=false)"
@@ -428,12 +485,6 @@ msgstr "Кеш APT увімкнено на ${M6E_APT_CACHE_HOST}:${M6E_APT_CACHE
 #: .container/foundation/tools.d/detect-apt-cacher:39
 msgid "Skipping proxy for %s, apt will fetch directly"
 msgstr "Пропуск проксі для %s, apt завантажить напряму"
-
-msgid "Skipping unreadable %s (uid %s)"
-msgstr "Пропуск недоступного для читання %s (uid %s)"
-
-msgid "Keeping build-time %s, directory not writable by uid %s"
-msgstr "Залишено %s зі збирання, каталог недоступний для запису uid %s"
 
 #: .container/foundation/tools.d/detect-apt-cacher:42
 msgid "APT Cache not enabled"
@@ -499,6 +550,10 @@ msgstr "Встановити залежності (%s пакетів)"
 #: .container/foundation/tools.d/install-apt:90
 msgid "Dependencies list (%s) is not detected"
 msgstr "Список залежностей (%s) не виявлено"
+
+#: .container/foundation/tools.d/j2-render:21
+msgid "Keeping build-time %s, directory not writable by uid %s"
+msgstr "Залишено %s зі збирання, каталог недоступний для запису uid %s"
 
 #: .container/foundation/tools.d/keyscan:21
 msgid "Touch %s"
@@ -630,10 +685,6 @@ msgstr "ключів"
 #: .container/foundation/tools.d/setup-ssh:38
 msgid "No keys found at all"
 msgstr "Жодного ключа не знайдено"
-
-#: .container/foundation/tools.d/trust-ca-certificates:34
-msgid "Not root (uid %s), trust store left untouched"
-msgstr "Не root (uid %s), сховище довіри не змінено"
 
 #: .container/foundation/tools.d/trust-ca-certificates:47
 msgid "Build CA bundle trusted from %s"
@@ -1358,6 +1409,18 @@ msgstr "Випадок %s: очікувався вихід %s з %s, отрим�
 msgid "All b19-assert cases passed"
 msgstr "Усі випадки b19-assert пройдено"
 
+#: .container/user/test.d/0200-b19-ca-distrust.sh:20
+msgid "Case %s: expected %s, got %s"
+msgstr "Випадок %s: очікувалося %s, отримано %s"
+
+#: .container/user/test.d/0200-b19-ca-distrust.sh:38
+msgid "System bundle still trusts %s"
+msgstr "Системний набір досі довіряє %s"
+
+#: .container/user/test.d/0200-b19-ca-distrust.sh:56
+msgid "All %s distrusted fingerprints are absent from the system bundle"
+msgstr "Усі недовірені відбитки (%s) відсутні в системному наборі"
+
 #: .container/user/test.d/0200-b19-exec.sh:14
 msgid "Starting b19-exec tests"
 msgstr ""
@@ -1660,27 +1723,31 @@ msgstr ""
 msgid "Content mismatch in %s: expected '%s', got '%s'"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:91
+#: .container/user/test.d/0200-j2-system.sh:81
+msgid "j2-render failed on read-only %s"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:102
 msgid "Expected 3 templates in .j2.list, got %s"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:154
+#: .container/user/test.d/0200-j2-system.sh:165
 msgid "Expected 2 rendered files, got %s (skip filter broken?)"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:177
+#: .container/user/test.d/0200-j2-system.sh:188
 msgid "Expected 1 rendered file, got %s (skip filter broken?)"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:201
+#: .container/user/test.d/0200-j2-system.sh:212
 msgid "Expected 1 source .j2 remaining, got %s (--final delete broken?)"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:211
+#: .container/user/test.d/0200-j2-system.sh:222
 msgid "%s failed, %s passed"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:215
+#: .container/user/test.d/0200-j2-system.sh:226
 msgid "J2 system: %s assertions passed"
 msgstr ""
 
@@ -1710,6 +1777,12 @@ msgstr "Тест %s: безпечний високий порт проходит
 #: .container/user/test.d/0310-check-ports.sh:70
 #: .container/user/test.d/0310-check-ports.sh:78
 #: .container/user/test.d/0310-check-ports.sh:84
+#: .container/user/test.d/0315-check-mounts.sh:29
+#: .container/user/test.d/0315-check-mounts.sh:36
+#: .container/user/test.d/0315-check-mounts.sh:45
+#: .container/user/test.d/0315-check-mounts.sh:52
+#: .container/user/test.d/0315-check-mounts.sh:58
+#: .container/user/test.d/0315-check-mounts.sh:70
 #: .container/user/test.d/0320-entrypoint-command-path.sh:43
 #: .container/user/test.d/0320-entrypoint-command-path.sh:51
 #: .container/user/test.d/0320-entrypoint-command-path.sh:60
@@ -1768,6 +1841,85 @@ msgstr "Вимкнена перевірка все одно відхилила �
 
 #: .container/user/test.d/0310-check-ports.sh:89
 msgid "All check-ports tests passed"
+msgstr "Усі тести check-ports пройдено"
+
+#: .container/user/test.d/0315-check-mounts.sh:23
+#, fuzzy
+msgid "Test %s: mounted path produces no warning"
+msgstr "Тест %s: заблокований скрипт не запускається знову"
+
+#: .container/user/test.d/0315-check-mounts.sh:25
+msgid "Mounted path check failed"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:27
+msgid "Unexpected unmounted warning"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:31
+#, fuzzy
+msgid "Test %s: unmounted path is logged"
+msgstr "Тест %s: скрипт запускається і блокується"
+
+#: .container/user/test.d/0315-check-mounts.sh:33
+msgid "Unmounted path check failed unexpectedly"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:35
+#: .container/user/test.d/0315-check-mounts.sh:43
+#, fuzzy
+msgid "Unmounted path was not logged"
+msgstr "Скрипт початкового налаштування не заблоковано"
+
+#: .container/user/test.d/0315-check-mounts.sh:38
+msgid "Test %s: B19_REQUIRE_MOUNTS fails on required path"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:40
+msgid "Required mount check did not fail"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:47
+msgid "Test %s: B19_SKIP_MOUNT_CHECK disables the hook"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:48
+#, fuzzy
+msgid "Disabled check failed"
+msgstr "Перевірка не пройдена:"
+
+#: .container/user/test.d/0315-check-mounts.sh:50
+#, fuzzy
+msgid "Disabled check still logged the path"
+msgstr "Вимкнена перевірка все одно відхилила порт"
+
+#: .container/user/test.d/0315-check-mounts.sh:54
+msgid "Test %s: b19-prepare-volumes leaves the file world-readable"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:56
+msgid "b19-prepare-volumes failed"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:60
+msgid "Test %s: an unreadable declaration is skipped, not fatal"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:64
+msgid "Test %s skipped: uid %s reads mode 000"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:67
+msgid "Unreadable declaration failed the check"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:69
+msgid "Unreadable declaration was not logged"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:75
+#, fuzzy
+msgid "All mount-check tests passed"
 msgstr "Усі тести check-ports пройдено"
 
 #: .container/user/test.d/0320-entrypoint-command-path.sh:41

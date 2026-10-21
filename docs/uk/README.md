@@ -28,6 +28,7 @@ pf-cli-managed: yes
 - Вимірюване виконання команд зі звітуванням про збої (b19-run)
 - Одноразова ініціалізація (bootstrap.d)
 - Модульні хуки збирання (build.d)
+- Скомпрометовані центри сертифікації позбавлено довіри раніше за upstream
 - Автоматичне визначення кількості CPU (NUMPROCS)
 - Декларативне керування залежностями (b19-deps)
 - Підключована система запуску (entrypoint.d)
@@ -147,6 +148,7 @@ make container-build
 - [Run commands with b19-run](../how-to/use-b19-run.md)
 - [Initialize state once with bootstrap.d](../how-to/use-bootstrap.d.md)
 - [Build images with build.d hooks](../how-to/use-build.d.md)
+- [Distrust compromised certificate authorities](../how-to/use-ca-distrust.md)
 - [Use NUMPROCS CPU detection](../how-to/use-cpu-detection.md)
 - [Declare dependencies](../how-to/use-dependencies.md)
 - [Start containers with entrypoint.d](../how-to/use-entrypoint.d.md)

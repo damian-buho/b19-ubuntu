@@ -32,6 +32,7 @@ All default-enabled. Set to `false` to disable the corresponding subsystem.
 | `B19_PORT_CHECK_ENABLED`   | `true`  | runtime         | Skip WHATWG port blocklist validation              |
 | `B19_CACHE_CHECK_ENABLED`  | `true`  | build           | Skip the apt/near-cache reachability probe         |
 | `B19_CACHE_GUARD_ENABLED`  | `true`  | build           | Refresh a cache that is empty or past its TTL      |
+| `B19_CA_DISTRUST_ENABLED`  | `true`  | build           | Cut distrusted certificates from trust stores      |
 | `B19_I18N_ENABLED`         | `true`  | build + runtime | Disable gettext translations (English passthrough) |
 | `B19_SHELL_ENABLED`        | `true`  | build + runtime | Disable shell.d hooks in interactive sessions      |
 
@@ -154,6 +155,12 @@ see [b19-fetch.md](use-b19-fetch.md) for why a privately fronted near cache need
 them and why the anchor never survives the `RUN` that creates it.
 
 See [OFFGRID.md](use-offgrid.md) for the full three-tier model and interaction with offgrid mode.
+
+## Certificate Distrust (build-time)
+
+| Variable          | Default | Accepted values                              | Controls                                                                                     |
+| ----------------- | ------- | -------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `B19_CA_DISTRUST` | `""`    | SHA-256 fingerprints, space or comma divided | Added to `/etc/b19/ca-distrust.d/*.sha256`. [use-ca-distrust](use-ca-distrust.md)            |
 
 ## Report
 

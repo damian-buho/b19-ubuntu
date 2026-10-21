@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  B19_CA_DISTRUST_DIR="${B19_CA_DISTRUST_DIR:-/etc/b19/ca-distrust.d}"
+  B19_CA_DISTRUST_CONF="${B19_CA_DISTRUST_CONF:-/etc/ca-certificates.conf}"
+  B19_CA_DISTRUST_SOURCE="${B19_CA_DISTRUST_SOURCE:-/usr/share/ca-certificates}"
+
+  # Prints every distrusted SHA-256 fingerprint once: the shipped files, then B19_CA_DISTRUST
+  distrust_list() {
+    local _cd_files=()
+    if [ "${B19_CA_DISTRUST_ENABLED:-true}" != "true" ]; then
+      b19-log warn "SECURITY" "$(_p "Certificate distrust disabled (B19_CA_DISTRUST_ENABLED=%s)" "${B19_CA_DISTRUST_ENABLED}")"
+      return 0
+    fi
+    if [ -d "${B19_CA_DISTRUST_DIR}" ]; then
+      mapfile -t _cd_files < <(fd --hidden --no-ignore --type file --extension sha256 . "${B19_CA_DISTRUST_DIR}" | sort)
+    fi
+    {
+      [ "${#_cd_files[@]}" -eq 0 ] || sed --expression 's/#.*//' "${_cd_files[@]}" | awk '{ print $1 }'
+      tr ', ' '\n' <<<"${B19_CA_DISTRUST:-}"
+    } | tr --delete ':' | tr '[:lower:]' '[:upper:]' | grep --extended-regexp '^[0-9A-F]{64}$' | sort --unique
+  }
+
+  # Prints the SHA-256 fingerprint of the PEM certificate on stdin, colons dropped
+  fingerprint() {
+    openssl x509 -noout -fingerprint -sha256 2>/dev/null | sed --expression 's/.*=//' --expression 's/://g'
+  }
+
+  # Rewrites one PEM bundle without its distrusted certificates and their leading comments
+  distrust_bundle() {
+    local _cd_file="$1" _cd_list="$2" _cd_tmp _cd_lock _cd_line _cd_print _cd_pending="" _cd_cert="" _cd_dropped=0
+    exec {_cd_lock}<"${_cd_file}"
+    flock --timeout 60 "${_cd_lock}"
+    _cd_tmp="$(mktemp "${_cd_file}.XXXXXX")"
+    while IFS= read -r -u "${_cd_lock}" _cd_line || [ -n "${_cd_line}" ]; do
+      if [ -n "${_cd_cert}" ] || [[ "${_cd_line}" == "-----BEGIN CERTIFICATE-----" ]]; then
+        _cd_cert+="${_cd_line}"$'\n'
+        [[ "${_cd_line}" == "-----END CERTIFICATE-----" ]] || continue
+        _cd_print="$(fingerprint <<<"${_cd_cert}")"
+        if [ -n "${_cd_print}" ] && grep --quiet --fixed-strings --line-regexp "${_cd_print}" <<<"${_cd_list}"; then
+          _cd_dropped=$((_cd_dropped + 1))
+          b19-log info "SECURITY" "$(_p "Distrusted certificate %s dropped from %s" "${_cd_print}" "${_cd_file}")"
+        else
+          printf '%s%s' "${_cd_pending}" "${_cd_cert}" >> "${_cd_tmp}"
+        fi
+        _cd_pending="" _cd_cert=""
+      else
+        _cd_pending+="${_cd_line}"$'\n'
+      fi
+    done
+    printf '%s' "${_cd_pending}" >> "${_cd_tmp}"
+    chmod --reference="${_cd_file}" "${_cd_tmp}"
+    mv "${_cd_tmp}" "${_cd_file}"
+    exec {_cd_lock}<&-
+    b19-log "$([ "${_cd_dropped}" -eq 0 ] && echo info || echo warn)" "SECURITY" "$(_p "%s distrusted certificates dropped from %s" "${_cd_dropped}" "${_cd_file}")"
+  }
+
+  # Deselects every distrusted anchor in ca-certificates.conf, then rebuilds the system bundle
+  distrust_system() {
+    local _cd_list="$1" _cd_entry _cd_print _cd_lock _cd_changed=0
+    if [ "$(id --user)" -ne 0 ]; then
+      b19-log info "SECURITY" "$(_p "Not root (uid %s), trust store left untouched" "$(id --user)")"
+      return 0
+    fi
+    if [ ! -f "${B19_CA_DISTRUST_CONF}" ]; then
+      b19-log info "SECURITY" "$(_p "No %s, nothing to distrust" "${B19_CA_DISTRUST_CONF}")"
+      return 0
+    fi
+    exec {_cd_lock}<"${B19_CA_DISTRUST_CONF}"
+    flock --timeout 60 "${_cd_lock}"
+    while IFS= read -r _cd_entry; do
+      [ -f "${B19_CA_DISTRUST_SOURCE}/${_cd_entry}" ] || continue
+      _cd_print="$(fingerprint < "${B19_CA_DISTRUST_SOURCE}/${_cd_entry}")"
+      if [ -n "${_cd_print}" ] && grep --quiet --fixed-strings --line-regexp "${_cd_print}" <<<"${_cd_list}"; then
+        awk -v entry="${_cd_entry}" '$0 == entry { $0 = "!" $0 } { print }' "${B19_CA_DISTRUST_CONF}" > "${B19_CA_DISTRUST_CONF}.new"
+        chmod --reference="${B19_CA_DISTRUST_CONF}" "${B19_CA_DISTRUST_CONF}.new"
+        mv "${B19_CA_DISTRUST_CONF}.new" "${B19_CA_DISTRUST_CONF}"
+        _cd_changed=$((_cd_changed + 1))
+        b19-log warn "SECURITY" "$(_p "Distrusted anchor %s deselected" "${_cd_entry}")"
+      fi
+    done < <(grep --invert-match --extended-regexp '^(#|!|$)' "${B19_CA_DISTRUST_CONF}")
+    exec {_cd_lock}<&-
+    if [ "${_cd_changed}" -eq 0 ]; then
+      b19-log info "SECURITY" "$(_p "No distrusted anchor selected in %s" "${B19_CA_DISTRUST_CONF}")"
+      return 0
+    fi
+    b19-run "SECURITY" "$(_p "Rebuild trust store without %s distrusted anchors" "${_cd_changed}")" -- \
+      update-ca-certificates --fresh
+  }
+
+  ACTION="${1:-}"
+  [ "$#" -eq 0 ] || shift
+
+  case "${ACTION}" in
+    list)
+      distrust_list
+      ;;
+
+    bundle)
+      LIST="$(distrust_list)"
+      [ -n "${LIST}" ] || exit 0
+      for BUNDLE in "$@"; do
+        distrust_bundle "${BUNDLE}" "${LIST}"
+      done
+      ;;
+
+    system)
+      LIST="$(distrust_list)"
+      [ -n "${LIST}" ] || exit 0
+      distrust_system "${LIST}"
+      ;;
+
+    *)
+      b19-log error "SECURITY" "$(_p "Unknown action %s, expected list, bundle or system" "${ACTION}")"
+      exit 64
+      ;;
+  esac

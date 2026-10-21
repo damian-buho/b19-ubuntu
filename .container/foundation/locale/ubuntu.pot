@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-03 01:35+0000\n"
+"POT-Creation-Date: 2026-10-20 23:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,6 +43,43 @@ msgstr ""
 
 #: .container/foundation/tools.d/b19-assert:42
 msgid "Found %s as expected"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ca-distrust:20
+msgid "Certificate distrust disabled (B19_CA_DISTRUST_ENABLED=%s)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ca-distrust:50
+msgid "Distrusted certificate %s dropped from %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ca-distrust:63
+msgid "%s distrusted certificates dropped from %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ca-distrust:70
+#: .container/foundation/tools.d/trust-ca-certificates:34
+msgid "Not root (uid %s), trust store left untouched"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ca-distrust:74
+msgid "No %s, nothing to distrust"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ca-distrust:87
+msgid "Distrusted anchor %s deselected"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ca-distrust:92
+msgid "No distrusted anchor selected in %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ca-distrust:95
+msgid "Rebuild trust store without %s distrusted anchors"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-ca-distrust:122
+msgid "Unknown action %s, expected list, bundle or system"
 msgstr ""
 
 #: .container/foundation/tools.d/b19-cache-guard:20
@@ -105,11 +142,11 @@ msgstr ""
 msgid "Failed to compile %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-ensure-locale:47
+#: .container/foundation/tools.d/b19-ensure-locale:49
 msgid "LANG %s not generated — using %s (same language)"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-ensure-locale:55
+#: .container/foundation/tools.d/b19-ensure-locale:57
 msgid "LANG %s not generated — falling back to C.UTF-8"
 msgstr ""
 
@@ -135,7 +172,7 @@ msgstr ""
 
 #: .container/foundation/tools.d/b19-fetch:45
 #: .container/foundation/tools.d/b19-fetch:49
-#: .container/foundation/tools.d/b19-prepare-volumes:22
+#: .container/foundation/tools.d/b19-prepare-volumes:27
 #: .container/foundation/tools.d/keyscan:18
 msgid "Make %s directory"
 msgstr ""
@@ -296,7 +333,7 @@ msgstr ""
 msgid "Unknown log level: %s. Valid: error, warn, info, debug"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-prepare-volumes:25
+#: .container/foundation/tools.d/b19-prepare-volumes:30
 msgid "Chown %s to %s:%s"
 msgstr ""
 
@@ -357,6 +394,24 @@ msgstr ""
 
 #: .container/foundation/tools.d/build-stage:23
 msgid "Stage-independent hooks for %s: %s"
+msgstr ""
+
+#: .container/foundation/tools.d/check-mounts:13
+msgid "Mount check disabled (B19_SKIP_MOUNT_CHECK=Y)"
+msgstr ""
+
+#: .container/foundation/tools.d/check-mounts:27
+msgid "Skipping unreadable %s (uid %s)"
+msgstr ""
+
+#: .container/foundation/tools.d/check-mounts:45
+msgid "No volume declarations found"
+msgstr ""
+
+#: .container/foundation/tools.d/check-mounts:67
+#: .container/foundation/tools.d/check-mounts:70
+#: .container/foundation/tools.d/check-mounts:73
+msgid "%s is not a mount point"
 msgstr ""
 
 #: .container/foundation/tools.d/check-ports:13
@@ -474,6 +529,10 @@ msgstr ""
 
 #: .container/foundation/tools.d/install-apt:90
 msgid "Dependencies list (%s) is not detected"
+msgstr ""
+
+#: .container/foundation/tools.d/j2-render:21
+msgid "Keeping build-time %s, directory not writable by uid %s"
 msgstr ""
 
 #: .container/foundation/tools.d/keyscan:21
@@ -605,10 +664,6 @@ msgstr ""
 
 #: .container/foundation/tools.d/setup-ssh:38
 msgid "No keys found at all"
-msgstr ""
-
-#: .container/foundation/tools.d/trust-ca-certificates:34
-msgid "Not root (uid %s), trust store left untouched"
 msgstr ""
 
 #: .container/foundation/tools.d/trust-ca-certificates:47
@@ -1321,6 +1376,18 @@ msgstr ""
 msgid "All b19-assert cases passed"
 msgstr ""
 
+#: .container/user/test.d/0200-b19-ca-distrust.sh:20
+msgid "Case %s: expected %s, got %s"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-ca-distrust.sh:38
+msgid "System bundle still trusts %s"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-ca-distrust.sh:56
+msgid "All %s distrusted fingerprints are absent from the system bundle"
+msgstr ""
+
 #: .container/user/test.d/0200-b19-exec.sh:14
 msgid "Starting b19-exec tests"
 msgstr ""
@@ -1617,27 +1684,31 @@ msgstr ""
 msgid "Content mismatch in %s: expected '%s', got '%s'"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:91
+#: .container/user/test.d/0200-j2-system.sh:81
+msgid "j2-render failed on read-only %s"
+msgstr ""
+
+#: .container/user/test.d/0200-j2-system.sh:102
 msgid "Expected 3 templates in .j2.list, got %s"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:154
+#: .container/user/test.d/0200-j2-system.sh:165
 msgid "Expected 2 rendered files, got %s (skip filter broken?)"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:177
+#: .container/user/test.d/0200-j2-system.sh:188
 msgid "Expected 1 rendered file, got %s (skip filter broken?)"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:201
+#: .container/user/test.d/0200-j2-system.sh:212
 msgid "Expected 1 source .j2 remaining, got %s (--final delete broken?)"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:211
+#: .container/user/test.d/0200-j2-system.sh:222
 msgid "%s failed, %s passed"
 msgstr ""
 
-#: .container/user/test.d/0200-j2-system.sh:215
+#: .container/user/test.d/0200-j2-system.sh:226
 msgid "J2 system: %s assertions passed"
 msgstr ""
 
@@ -1667,6 +1738,12 @@ msgstr ""
 #: .container/user/test.d/0310-check-ports.sh:70
 #: .container/user/test.d/0310-check-ports.sh:78
 #: .container/user/test.d/0310-check-ports.sh:84
+#: .container/user/test.d/0315-check-mounts.sh:29
+#: .container/user/test.d/0315-check-mounts.sh:36
+#: .container/user/test.d/0315-check-mounts.sh:45
+#: .container/user/test.d/0315-check-mounts.sh:52
+#: .container/user/test.d/0315-check-mounts.sh:58
+#: .container/user/test.d/0315-check-mounts.sh:70
 #: .container/user/test.d/0320-entrypoint-command-path.sh:43
 #: .container/user/test.d/0320-entrypoint-command-path.sh:51
 #: .container/user/test.d/0320-entrypoint-command-path.sh:60
@@ -1725,6 +1802,79 @@ msgstr ""
 
 #: .container/user/test.d/0310-check-ports.sh:89
 msgid "All check-ports tests passed"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:23
+msgid "Test %s: mounted path produces no warning"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:25
+msgid "Mounted path check failed"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:27
+msgid "Unexpected unmounted warning"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:31
+msgid "Test %s: unmounted path is logged"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:33
+msgid "Unmounted path check failed unexpectedly"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:35
+#: .container/user/test.d/0315-check-mounts.sh:43
+msgid "Unmounted path was not logged"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:38
+msgid "Test %s: B19_REQUIRE_MOUNTS fails on required path"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:40
+msgid "Required mount check did not fail"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:47
+msgid "Test %s: B19_SKIP_MOUNT_CHECK disables the hook"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:48
+msgid "Disabled check failed"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:50
+msgid "Disabled check still logged the path"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:54
+msgid "Test %s: b19-prepare-volumes leaves the file world-readable"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:56
+msgid "b19-prepare-volumes failed"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:60
+msgid "Test %s: an unreadable declaration is skipped, not fatal"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:64
+msgid "Test %s skipped: uid %s reads mode 000"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:67
+msgid "Unreadable declaration failed the check"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:69
+msgid "Unreadable declaration was not logged"
+msgstr ""
+
+#: .container/user/test.d/0315-check-mounts.sh:75
+msgid "All mount-check tests passed"
 msgstr ""
 
 #: .container/user/test.d/0320-entrypoint-command-path.sh:41

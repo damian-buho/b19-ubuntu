@@ -26,6 +26,7 @@ Reproducible, single-layer, non-root Ubuntu base image — digest-pinned, multi-
 - Timed command execution with failure reporting (b19-run)
 - Run-once initialization (bootstrap.d)
 - Modular build hooks (build.d)
+- Compromised certificate authorities distrusted ahead of upstream
 - Automatic CPU count detection
 - Declarative dependency management (b19-deps)
 - Pluggable startup system (entrypoint.d)
@@ -145,6 +146,7 @@ Pipeline entry points:
 - [Run commands with b19-run](docs/how-to/use-b19-run.md)
 - [Initialize state once with bootstrap.d](docs/how-to/use-bootstrap.d.md)
 - [Build images with build.d hooks](docs/how-to/use-build.d.md)
+- [Distrust compromised certificate authorities](docs/how-to/use-ca-distrust.md)
 - [Use NUMPROCS CPU detection](docs/how-to/use-cpu-detection.md)
 - [Declare dependencies](docs/how-to/use-dependencies.md)
 - [Start containers with entrypoint.d](docs/how-to/use-entrypoint.d.md)
