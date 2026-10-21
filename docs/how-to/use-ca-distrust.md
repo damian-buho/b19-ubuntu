@@ -38,8 +38,8 @@ Deselection survives every later `update-ca-certificates`, `--fresh`
 included, and package upgrades keep a deselected entry deselected. The
 `foundation` stage applies it, and the inheritable `base/post` and `root/post`
 hooks apply it again in every downstream image, so fingerprints a child adds
-reach the system store too. Runtime images that keep a store of their own cut
-it from the same list in their own hooks.
+reach the system store too. A store of its own, such as a vendored PEM bundle,
+is cut from the same `list` by the image that ships it.
 
 Only a certificate that is present can be removed. An intermediate in the list
 is a no-op for a store of roots, so a store that cannot block intermediates
