@@ -84,11 +84,14 @@
         usage
     fi
 
+    # JSON mode sends every record through b19-log, one object per line
+    [ "${B19_LOG_FORMAT:-text}" = "json" ] && _JSON=1 || _JSON=0
+
     # Generate a unique temporary file for output (if needed)
     TEMP_FILE=$(mktemp)
 
     # Optional: Display the stage if defined (info/debug only)
-    if show_progress; then
+    if show_progress && [ "${_JSON}" = "0" ]; then
         if [ "${_USE_COLOR}" = "1" ]; then
             if [ -n "${STAGE:-}" ]; then
                 ansi -n --black --bg-white " ${STAGE^^} " >&2
@@ -110,7 +113,10 @@
     ATTEMPT=1
     DELAY="${RUN_BACKOFF}"
     while :; do
-        if [ "${B19_VERBOSITY:-warn}" = "debug" ]; then
+        if [ "${B19_VERBOSITY:-warn}" = "debug" ] && [ "${_JSON}" = "1" ]; then
+            "${TIMEOUT_ARGS[@]}" "$@" 2>&1 | b19-log debug "${TAG}"
+            CODE=${PIPESTATUS[0]}
+        elif [ "${B19_VERBOSITY:-warn}" = "debug" ]; then
             "${TIMEOUT_ARGS[@]}" "$@" 2>&1 >&2
             CODE=${PIPESTATUS[0]}
         else
@@ -128,7 +134,18 @@
     done
 
     # Handle success or failure
-    if [ "${CODE}" -eq 0 ]; then
+    if [ "${_JSON}" = "1" ] && [ "${CODE}" -eq 0 ]; then
+        b19-log info "${TAG}" "${LOG}… $(_p "success [%s]" "$(elapsed_seconds)s")"
+        if [ "${_REVEAL}" = "1" ]; then
+            b19-log info "${TAG}" < "${TEMP_FILE}"
+        fi
+    elif [ "${_JSON}" = "1" ]; then
+        b19-log error "${TAG}" "${LOG}… $(_p "failure (exit code %s) [%s]" "${CODE}" "$(elapsed_seconds)s")"
+        printf '%s\n' "${COMMAND}" | b19-log error "${TAG}"
+        if [ "${B19_VERBOSITY:-warn}" != "debug" ]; then
+            b19-log error "${TAG}" < "${TEMP_FILE}"
+        fi
+    elif [ "${CODE}" -eq 0 ]; then
         if show_progress; then
             if [ "${_USE_COLOR}" = "1" ]; then
                 ansi --green "$(_p "success [%s]" "$(elapsed_seconds)s")" >&2

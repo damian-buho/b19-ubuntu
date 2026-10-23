@@ -44,6 +44,10 @@ Hiding green output keeps a `make` sheet short, but exit-0 *warnings* (line-leng
 
 > Under `m6e-run` the container runs at `debug`, so b19-run streams live and the reveal path is not reached — it applies to the standalone / build-hook case where b19-run is the sole runner.
 
+### JSON lines (`B19_LOG_FORMAT=json`)
+
+Every line becomes a `b19-log` record, so a log pipeline never meets the two-part progress line or raw command output. Success is one `info` record (`message… success [0.234s]`), shown at `info` and `debug`. A failure is three `error` records: the result, the command, then the captured output with one record per line. The revealed and streamed output becomes records too, so a tool’s own escape codes arrive escaped.
+
 ### Wall-clock guard (`--timeout`, `B19_RUN_TIMEOUT`)
 
 Optional ceiling, off by default: build and compile callers (Erlang, LLVM, Scala, GCC, …) run legitimately long, and a blanket bound there would be wrong. Lint and validation runners pass `--timeout <seconds>` or set `B19_RUN_TIMEOUT=<seconds>` so a wedged tool dies loudly instead of hanging the whole tool-execution chain (command.d → entrypoint → `m6e-run` → `make`), which has no timeout of its own.

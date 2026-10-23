@@ -67,4 +67,24 @@ b19-assert equals "LOG-JSON" $'{"ClientHost":"192.0.2.1","DownstreamStatus":404}
 OUT="$(printf 'no newline at end' | b19-log info STDOUT 2>&1 | untimed)"
 b19-assert equals "LOG-JSON" '{"level":"info","tag":"STDOUT","msg":"no newline at end"}' "${OUT}"
 
+# b19-run: every record is an object, at every verbosity and outcome
+for VERBOSITY in warn info debug
+do
+  for OUTCOME in 0 3
+  do
+    # shellcheck disable=SC2016 # expanded by the payload shell
+    OUT="$(B19_VERBOSITY="${VERBOSITY}" b19-run RUN "step" -- bash -c 'printf "%s\n" "said\tthis"; exit "$0"' "${OUTCOME}" 2>&1 || true)"
+    while IFS= read -r LINE
+    do
+      [ -z "${LINE}" ] && continue
+      b19-assert matches "LOG-JSON" '^\{.*\}$' "${LINE}"
+    done <<<"${OUT}"
+    case "${VERBOSITY}/${OUTCOME}" in
+      warn/0) b19-assert equals "LOG-JSON" "" "${OUT}" ;;
+      info/0) b19-assert matches "LOG-JSON" '"msg":"step… [^"]+"\}.*"msg":"said\\\\tthis"' "${OUT//$'\n'/ }" ;;
+      */3) b19-assert matches "LOG-JSON" '"level":"error","tag":"RUN","msg":"step… .*"msg":"bash -c' "${OUT//$'\n'/ }" ;;
+    esac
+  done
+done
+
 b19-log good "LOG-JSON" "$(_p "%s escapes, maps levels, filters and passes payload objects through" "B19_LOG_FORMAT=json")"
