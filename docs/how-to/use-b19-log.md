@@ -60,12 +60,30 @@ and an info read identically in `reports/*.log`:
 Piped input keeps the bare shape: those lines are the wrapped process’s own
 output, not a b19 log record.
 
+### JSON lines (`B19_LOG_FORMAT=json`)
+
+For a log pipeline (Alloy, Loki, CrowdSec), every record becomes one JSON object
+per line, still on stderr and still filtered by `B19_VERBOSITY`:
+
+```json
+{"time":"2026-10-23T18:48:19.022Z","level":"warn","stage":"ENTRY","tag":"DB","msg":"Connection pool running low"}
+```
+
+- `time` is UTC with milliseconds, whatever the locale’s decimal separator
+- `level` is one of `error`, `warn`, `info`, `debug`: `good` and `bad` map to `info`, `note` to `debug`
+- `stage` appears only when `STAGE` is set
+- `msg` is escaped per RFC 8259: quotes, backslashes and every control byte (an ANSI `ESC` included) become escapes, other UTF-8 passes unchanged
+- A piped line that already is a JSON object (`{…}`) is written unchanged, so a payload logging JSON is never encoded twice
+
+The variable reaches every b19 tool and `b19-exec` payload through the environment, so one setting switches the whole container.
+
 ## Configuration
 
-| Variable        | Default | Effect                                                  |
-| --------------- | ------- | ------------------------------------------------------- |
-| `B19_VERBOSITY` | `warn`  | Threshold: error (40), warn (30), info (20), debug (10) |
-| `STAGE`         | (unset) | Prepended as a stage label when set                     |
+| Variable         | Default | Effect                                                          |
+| ---------------- | ------- | --------------------------------------------------------------- |
+| `B19_VERBOSITY`  | `warn`  | Threshold: error (40), warn (30), info (20), debug (10)         |
+| `STAGE`          | (unset) | Prepended as a stage label when set                             |
+| `B19_LOG_FORMAT` | `text`  | `json` writes one JSON object per line; anything else is `text` |
 
 The full variable index lives in [configure-environment](configure-environment.md).
 

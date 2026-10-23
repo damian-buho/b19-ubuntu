@@ -39,6 +39,10 @@ stdout: b19-log $LEVEL $TAG -> /proc/1/fd/1
 stderr: b19-log $LEVEL $TAG -> /proc/1/fd/2
 ```
 
+### Passthrough (`--passthrough`)
+
+The payload’s stdout and stderr go straight to the container’s, with no `b19-log` in between: every byte the daemon writes is what the log collector reads, and no logger process runs per line. Use it for a daemon whose own output is the log a parser expects verbatim — a JSON access log, nginx error lines, sshd. `B19_VERBOSITY`, levels and tags no longer apply to that output; the daemon’s own log level does. `B19_EXEC_PASSTHROUGH=true` sets it from the environment, so an operator can switch without an image change.
+
 ### Background mode (default)
 
 Runs the command in the background, waits for it, and exports `PAYLOAD_PID` and `RETURN_CODE`. Because `b19-exec` runs as a subprocess, its `export PAYLOAD_PID` cannot reach the entrypoint shell — so it also publishes the payload PID to `${B19_PAYLOAD_PID_FILE:-${B19_HOME}/.payload.pid}`, which the `0000-set-signals.sh` hook reads when forwarding signals. The file is removed when the command exits; a stale file (e.g. after `SIGKILL`) is harmless — the handler verifies the PID with `kill -0`.
@@ -56,11 +60,13 @@ Uses `exec` to replace the current process: the command becomes PID 1’s direct
 | `--stdout-tag`   | `STDOUT` | Tag for stdout messages               |
 | `--stderr-tag`   | `STDERR` | Tag for stderr messages               |
 | `--foreground`   | (off)    | Run via exec (replaces shell process) |
+| `--passthrough`  | (off)    | Payload output bypasses `b19-log`     |
 
 | Variable                | Default                    | Description                                              |
 | ----------------------- | -------------------------- | -------------------------------------------------------- |
 | `B19_EXEC_STDOUT_LEVEL` | `info`                     | Override default stdout level                            |
 | `B19_EXEC_STDERR_LEVEL` | `warn`                     | Override default stderr level                            |
+| `B19_EXEC_PASSTHROUGH`  | `false`                    | `true` defaults to `--passthrough`; another value fails  |
 | `B19_VERBOSITY`         | `warn`                     | Controls which messages are visible                      |
 | `B19_PAYLOAD_PID_FILE`  | `${B19_HOME}/.payload.pid` | Where the payload PID is published for signal forwarding |
 
@@ -74,6 +80,9 @@ b19-exec --stdout-tag "WORKER" --stderr-tag "WORKER" -- /app/worker.sh
 
 # Foreground mode (exec, no return)
 b19-exec --foreground -- /app/server
+
+# A daemon whose JSON access log must reach the collector byte for byte
+b19-exec --passthrough -- traefik --configfile /app/traefik.yaml
 
 # Override levels via environment
 export B19_EXEC_STDOUT_LEVEL=note

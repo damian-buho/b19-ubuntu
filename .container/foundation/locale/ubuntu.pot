@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-20 23:58+0000\n"
+"POT-Creation-Date: 2026-10-23 18:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,32 +53,32 @@ msgstr ""
 msgid "Distrusted certificate %s dropped from %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-ca-distrust:63
+#: .container/foundation/tools.d/b19-ca-distrust:64
 msgid "%s distrusted certificates dropped from %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-ca-distrust:70
+#: .container/foundation/tools.d/b19-ca-distrust:71
 #: .container/foundation/tools.d/trust-ca-certificates:34
 msgid "Not root (uid %s), trust store left untouched"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-ca-distrust:74
+#: .container/foundation/tools.d/b19-ca-distrust:75
 msgid "No %s, nothing to distrust"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-ca-distrust:87
+#: .container/foundation/tools.d/b19-ca-distrust:88
 msgid "Distrusted anchor %s deselected"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-ca-distrust:92
+#: .container/foundation/tools.d/b19-ca-distrust:93
 msgid "No distrusted anchor selected in %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-ca-distrust:95
+#: .container/foundation/tools.d/b19-ca-distrust:96
 msgid "Rebuild trust store without %s distrusted anchors"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-ca-distrust:122
+#: .container/foundation/tools.d/b19-ca-distrust:123
 msgid "Unknown action %s, expected list, bundle or system"
 msgstr ""
 
@@ -150,20 +150,28 @@ msgstr ""
 msgid "LANG %s not generated — falling back to C.UTF-8"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:78
+#: .container/foundation/tools.d/b19-exec:85
 msgid "Unknown option:"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:86
+#: .container/foundation/tools.d/b19-exec:93
 msgid "No command provided. Usage: b19-exec [OPTIONS] -- COMMAND [ARGS...]"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:97
+#: .container/foundation/tools.d/b19-exec:104
 msgid "Invalid log level:"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:97
+#: .container/foundation/tools.d/b19-exec:104
 msgid "Must be one of: error, bad, warn, good, info, note"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:118
+msgid "Passthrough: %s writes to the container directly"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:131
+msgid "%s must be true or false, got %s"
 msgstr ""
 
 #: .container/foundation/tools.d/b19-exec-with-secrets:33
@@ -329,7 +337,7 @@ msgid "Holding lock %s"
 msgstr ""
 
 #: .container/foundation/tools.d/b19-log:71
-#: .container/foundation/tools.d/b19-log:111
+#: .container/foundation/tools.d/b19-log:159
 msgid "Unknown log level: %s. Valid: error, warn, info, debug"
 msgstr ""
 
@@ -1552,8 +1560,24 @@ msgstr ""
 msgid "Test 13 passed: PID file published then cleaned up (pid=%s)"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:182
+#: .container/user/test.d/0200-b19-exec.sh:183
+msgid "Test 14: Passthrough bypasses b19-log"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:198
+msgid "Test 15: Invalid passthrough value"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:203
 msgid "All b19-exec tests passed"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-log-json.sh:40
+msgid "Skipping the decimal-comma case: no such locale among %s"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-log-json.sh:70
+msgid "%s escapes, maps levels, filters and passes payload objects through"
 msgstr ""
 
 #: .container/user/test.d/0200-b19-run-retries.sh:15

@@ -15,10 +15,12 @@
 #   --stdout-tag TAG        Tag for stdout (default: STDOUT)
 #   --stderr-tag TAG        Tag for stderr (default: STDERR)
 #   --foreground            Run in foreground (no backgrounding)
+#   --passthrough           Hand the payload output to the container unchanged, bypassing b19-log
 #
 # Environment Variables:
 #   B19_EXEC_STDOUT_LEVEL   Override default stdout level
 #   B19_EXEC_STDERR_LEVEL   Override default stderr level
+#   B19_EXEC_PASSTHROUGH    true to default to --passthrough
 #   B19_VERBOSITY           Verbosity level (error/warn/info/debug)
 #
 # Output:
@@ -46,6 +48,7 @@ STDERR_LEVEL="${B19_EXEC_STDERR_LEVEL:-warn}"
 STDOUT_TAG="STDOUT"
 STDERR_TAG="STDERR"
 FOREGROUND=0
+PASSTHROUGH="${B19_EXEC_PASSTHROUGH:-false}"
 
 # Parse options
 while [ $# -gt 0 ]; do
@@ -68,6 +71,10 @@ while [ $# -gt 0 ]; do
       ;;
     --foreground)
       FOREGROUND=1
+      shift
+      ;;
+    --passthrough)
+      PASSTHROUGH=true
       shift
       ;;
     --)
@@ -105,10 +112,26 @@ done
 # Capture each coprocess PID so we can wait on them by name — bare `wait` does
 # not reliably reap process-substitution subshells, causing lost output on fast
 # failures (e.g. dockerd exiting with code 1 before b19-log flushes).
-exec {STDOUT_LOG_FD}> >(b19-log "${STDOUT_LEVEL}" "${STDOUT_TAG}" > /proc/1/fd/1)
-STDOUT_LOG_PID=$!
-exec {STDERR_LOG_FD}> >(b19-log "${STDERR_LEVEL}" "${STDERR_TAG}" > /proc/1/fd/2)
-STDERR_LOG_PID=$!
+case "${PASSTHROUGH,,}" in
+  true|1|yes)
+    # Payload output reaches the container byte for byte, with no logger to drain
+    b19-log debug "b19-exec" "$(_p "Passthrough: %s writes to the container directly" "$1")"
+    exec {STDOUT_LOG_FD}>/proc/1/fd/1
+    STDOUT_LOG_PID=""
+    exec {STDERR_LOG_FD}>/proc/1/fd/2
+    STDERR_LOG_PID=""
+    ;;
+  false|0|no|"")
+    exec {STDOUT_LOG_FD}> >(b19-log "${STDOUT_LEVEL}" "${STDOUT_TAG}" > /proc/1/fd/1)
+    STDOUT_LOG_PID=$!
+    exec {STDERR_LOG_FD}> >(b19-log "${STDERR_LEVEL}" "${STDERR_TAG}" > /proc/1/fd/2)
+    STDERR_LOG_PID=$!
+    ;;
+  *)
+    b19-log error "b19-exec" "$(_p "%s must be true or false, got %s" "B19_EXEC_PASSTHROUGH" "${PASSTHROUGH}")"
+    exit 1
+    ;;
+esac
 
 # Execute command with process substitution
 if [ "${FOREGROUND}" -eq 1 ]; then
@@ -139,7 +162,7 @@ exec {STDOUT_LOG_FD}>&-
 exec {STDERR_LOG_FD}>&-
 # Wait for each b19-log coprocess by PID. `|| true` because the subshell may
 # have already been reaped (exit status 127) — we only care that it finished.
-wait "${STDOUT_LOG_PID}" 2>/dev/null || true
-wait "${STDERR_LOG_PID}" 2>/dev/null || true
+[ -z "${STDOUT_LOG_PID}" ] || wait "${STDOUT_LOG_PID}" 2>/dev/null || true
+[ -z "${STDERR_LOG_PID}" ] || wait "${STDERR_LOG_PID}" 2>/dev/null || true
 
 exit "${RETURN_CODE}"

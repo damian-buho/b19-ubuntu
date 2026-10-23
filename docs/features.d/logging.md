@@ -10,3 +10,4 @@ SPDX-License-Identifier: MIT
 - Messages below the configured verbosity are silently discarded, keeping production logs clean.
 - Colors auto-detect terminal support and respect `NO_COLOR=1`.
 - Pipable: command output can be routed through the logger to apply level filtering and tags.
+- `B19_LOG_FORMAT=json` turns every line into one JSON object a log pipeline reads without a parser; a service’s own JSON lines pass through untouched.

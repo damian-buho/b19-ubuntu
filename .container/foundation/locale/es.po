@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-20 23:58+0000\n"
+"POT-Creation-Date: 2026-10-23 18:50+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -56,32 +56,32 @@ msgstr "Desconfianza de certificados desactivada (B19_CA_DISTRUST_ENABLED=%s)"
 msgid "Distrusted certificate %s dropped from %s"
 msgstr "Certificado desconfiado %s eliminado de %s"
 
-#: .container/foundation/tools.d/b19-ca-distrust:63
+#: .container/foundation/tools.d/b19-ca-distrust:64
 msgid "%s distrusted certificates dropped from %s"
 msgstr "%s certificados desconfiados eliminados de %s"
 
-#: .container/foundation/tools.d/b19-ca-distrust:70
+#: .container/foundation/tools.d/b19-ca-distrust:71
 #: .container/foundation/tools.d/trust-ca-certificates:34
 msgid "Not root (uid %s), trust store left untouched"
 msgstr "No es root (uid %s), almacén de confianza sin cambios"
 
-#: .container/foundation/tools.d/b19-ca-distrust:74
+#: .container/foundation/tools.d/b19-ca-distrust:75
 msgid "No %s, nothing to distrust"
 msgstr "No existe %s, nada que desconfiar"
 
-#: .container/foundation/tools.d/b19-ca-distrust:87
+#: .container/foundation/tools.d/b19-ca-distrust:88
 msgid "Distrusted anchor %s deselected"
 msgstr "Ancla desconfiada %s deseleccionada"
 
-#: .container/foundation/tools.d/b19-ca-distrust:92
+#: .container/foundation/tools.d/b19-ca-distrust:93
 msgid "No distrusted anchor selected in %s"
 msgstr "Ninguna ancla desconfiada seleccionada en %s"
 
-#: .container/foundation/tools.d/b19-ca-distrust:95
+#: .container/foundation/tools.d/b19-ca-distrust:96
 msgid "Rebuild trust store without %s distrusted anchors"
 msgstr "Reconstruir el almacén de confianza sin %s anclas desconfiadas"
 
-#: .container/foundation/tools.d/b19-ca-distrust:122
+#: .container/foundation/tools.d/b19-ca-distrust:123
 msgid "Unknown action %s, expected list, bundle or system"
 msgstr "Acción desconocida %s, se esperaba list, bundle o system"
 
@@ -155,23 +155,31 @@ msgstr ""
 msgid "LANG %s not generated — falling back to C.UTF-8"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:78
+#: .container/foundation/tools.d/b19-exec:85
 msgid "Unknown option:"
 msgstr "Opción desconocida:"
 
-#: .container/foundation/tools.d/b19-exec:86
+#: .container/foundation/tools.d/b19-exec:93
 msgid "No command provided. Usage: b19-exec [OPTIONS] -- COMMAND [ARGS...]"
 msgstr ""
 "No se proporcionó ningún comando. Uso: b19-exec [OPCIONES] -- COMANDO "
 "[ARGS...]"
 
-#: .container/foundation/tools.d/b19-exec:97
+#: .container/foundation/tools.d/b19-exec:104
 msgid "Invalid log level:"
 msgstr "Nivel de log inválido:"
 
-#: .container/foundation/tools.d/b19-exec:97
+#: .container/foundation/tools.d/b19-exec:104
 msgid "Must be one of: error, bad, warn, good, info, note"
 msgstr "Debe ser uno de: error, bad, warn, good, info, note"
+
+#: .container/foundation/tools.d/b19-exec:118
+msgid "Passthrough: %s writes to the container directly"
+msgstr "Passthrough: %s escribe directamente en el contenedor"
+
+#: .container/foundation/tools.d/b19-exec:131
+msgid "%s must be true or false, got %s"
+msgstr "%s debe ser true o false, se recibió %s"
 
 #: .container/foundation/tools.d/b19-exec-with-secrets:33
 #, fuzzy
@@ -344,7 +352,7 @@ msgid "Holding lock %s"
 msgstr "Bloqueo %s adquirido"
 
 #: .container/foundation/tools.d/b19-log:71
-#: .container/foundation/tools.d/b19-log:111
+#: .container/foundation/tools.d/b19-log:159
 msgid "Unknown log level: %s. Valid: error, warn, info, debug"
 msgstr "Nivel de log desconocido: %s. Válidos: error, warn, info, debug"
 
@@ -1602,10 +1610,26 @@ msgstr ""
 msgid "Test 13 passed: PID file published then cleaned up (pid=%s)"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:182
+#: .container/user/test.d/0200-b19-exec.sh:183
+msgid "Test 14: Passthrough bypasses b19-log"
+msgstr "Prueba 14: passthrough evita b19-log"
+
+#: .container/user/test.d/0200-b19-exec.sh:198
+msgid "Test 15: Invalid passthrough value"
+msgstr "Prueba 15: valor de passthrough no válido"
+
+#: .container/user/test.d/0200-b19-exec.sh:203
 #, fuzzy
 msgid "All b19-exec tests passed"
 msgstr "Todas las %d pruebas pasaron."
+
+#: .container/user/test.d/0200-b19-log-json.sh:40
+msgid "Skipping the decimal-comma case: no such locale among %s"
+msgstr "Se omite el caso de coma decimal: no hay tal locale entre %s"
+
+#: .container/user/test.d/0200-b19-log-json.sh:70
+msgid "%s escapes, maps levels, filters and passes payload objects through"
+msgstr "%s escapa, asigna niveles, filtra y deja pasar los objetos del payload"
 
 #: .container/user/test.d/0200-b19-run-retries.sh:15
 msgid "Retry a flaky command"

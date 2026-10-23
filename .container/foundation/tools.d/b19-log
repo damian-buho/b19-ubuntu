@@ -79,6 +79,55 @@
       exit 0
     fi
 
+    # Escape $2 as a JSON string body into the variable named $1
+    json_string() {
+        local -n _json_out=$1
+        local _json_in=$2 _json_char _json_index _json_escaped=""
+        _json_in=${_json_in//\\/\\\\}
+        _json_in=${_json_in//\"/\\\"}
+        _json_in=${_json_in//$'\t'/\\t}
+        _json_in=${_json_in//$'\r'/\\r}
+        if [[ ${_json_in} == *[$'\x01'-$'\x1f']* ]]; then
+            for (( _json_index = 0; _json_index < ${#_json_in}; _json_index++ )); do
+                _json_char=${_json_in:_json_index:1}
+                [[ ${_json_char} == [$'\x01'-$'\x1f'] ]] && printf -v _json_char '\\u%04x' "'${_json_char}"
+                _json_escaped+=${_json_char}
+            done
+            _json_in=${_json_escaped}
+        fi
+        _json_out=${_json_in}
+    }
+
+    # One JSON object per line; a payload line that already is one passes unchanged
+    if [ "${B19_LOG_FORMAT:-text}" = "json" ]; then
+        TZ=UTC
+        JSON_TAG="" JSON_MSG=""
+        case "${LEVEL}" in
+          "bad"|"good") JSON_LEVEL=info ;;
+          "note") JSON_LEVEL=debug ;;
+          *) JSON_LEVEL=${LEVEL} ;;
+        esac
+        json_string JSON_TAG "${TAG}"
+        JSON_STAGE=""
+        if [ -n "${STAGE:-}" ]; then
+            json_string JSON_STAGE "${STAGE}"
+            JSON_STAGE="\"stage\":\"${JSON_STAGE}\","
+        fi
+        while IFS= read -r line || [ -n "$line" ]; do
+          if [ "${PIPE_MODE}" -eq 1 ] && [[ ${line} == \{*\} ]]; then
+            printf '%s\n' "${line}" >&2
+            continue
+          fi
+          json_string JSON_MSG "${line}"
+          # Locale-proof epoch: digits only, the last six are microseconds
+          JSON_EPOCH=${EPOCHREALTIME//[!0-9]/}
+          printf -v JSON_TIME '%(%Y-%m-%dT%H:%M:%S)T' "${JSON_EPOCH:0:-6}"
+          printf '{"time":"%s.%sZ","level":"%s",%s"tag":"%s","msg":"%s"}\n' \
+            "${JSON_TIME}" "${JSON_EPOCH: -6:3}" "${JSON_LEVEL}" "${JSON_STAGE}" "${JSON_TAG}" "${JSON_MSG}" >&2
+        done <&3
+        exit 0
+    fi
+
     # Suppress ANSI colors when color is disabled
     if [ "${_USE_COLOR}" = "0" ]; then
         COLOR=""

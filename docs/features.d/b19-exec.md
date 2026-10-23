@@ -10,3 +10,4 @@ SPDX-License-Identifier: MIT
 - The service PID is tracked for signal forwarding — Docker stop gracefully terminates the main process.
 - Log levels for stdout and stderr streams are independently configurable.
 - Exit code of the service is captured and available to downstream hooks.
+- Passthrough mode hands a service’s own log to the collector byte for byte, so parsers built for that daemon still match.

@@ -12,5 +12,6 @@ SPDX-License-Identifier: MIT
 - Se hace seguimiento del PID del servicio para el reenvío de señales: Docker stop termina de forma elegante el proceso principal.
 - Los niveles de log de los flujos stdout y stderr se configuran de forma independiente.
 - El código de salida del servicio se captura y queda disponible para los hooks posteriores.
+- El modo passthrough entrega el log propio del servicio al recolector byte a byte, así los parsers hechos para ese demonio siguen coincidiendo.
 
 <!-- textlint-enable -->

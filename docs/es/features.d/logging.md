@@ -12,5 +12,6 @@ SPDX-License-Identifier: MIT
 - Los mensajes por debajo de la verbosidad configurada se descartan silenciosamente, manteniendo limpios los logs de producción.
 - Los colores autodetectan el soporte del terminal y respetan `NO_COLOR=1`.
 - Encauzable: la salida de comandos puede enrutarse a través del logger para aplicar filtrado por nivel y tags.
+- `B19_LOG_FORMAT=json` convierte cada línea en un objeto JSON que una canalización de logs lee sin parser; las líneas JSON propias del servicio pasan intactas.
 
 <!-- textlint-enable -->

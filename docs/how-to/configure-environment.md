@@ -71,6 +71,8 @@ the next hook.
 | `B19_RUN_TIMING_PRECISION` | `3`     | integer (decimal places)                       | Precision of elapsed time in `b19-run` output. `0` = seconds, `3` = milliseconds, `6` = microseconds.                                                                                |
 | `B19_EXEC_STDOUT_LEVEL`    | `info`  | `error`, `bad`, `warn`, `good`, `info`, `note` | Default `b19-log` level for stdout lines in `b19-exec`.                                                                                                                              |
 | `B19_EXEC_STDERR_LEVEL`    | `warn`  | (same as above)                                | Default `b19-log` level for stderr lines in `b19-exec`.                                                                                                                              |
+| `B19_EXEC_PASSTHROUGH`     | `false` | `true`, `false`                                | `b19-exec` hands payload output to the container unchanged, bypassing `b19-log`.                                                                                                     |
+| `B19_LOG_FORMAT`           | `text`  | `text`, `json`                                 | `json`: `b19-log` writes one JSON object per line; a piped JSON line passes unchanged.                                                                                               |
 
 ## Behavior
 
@@ -314,6 +316,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_ENTRYPOINT_PATH`           | runtime         | Hook Directories |
 | `B19_ENTRYPOINT_SKIP_*`         | runtime         | Per-script Skip  |
 | `B19_ENTRYPOINT_VERBOSITY`      | runtime         | Logging          |
+| `B19_EXEC_PASSTHROUGH`          | runtime         | Logging          |
 | `B19_EXEC_STDERR_LEVEL`         | runtime         | Logging          |
 | `B19_EXEC_STDOUT_LEVEL`         | runtime         | Logging          |
 | `B19_FETCH_DOCKER_CACHE`        | build           | Download         |
@@ -348,6 +351,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_J2_SKIP_FILES`             | runtime         | Behavior         |
 | `B19_LINEAGE_FILE`              | build + runtime | System Paths     |
 | `B19_LOCALES`                   | build           | Build-time Only  |
+| `B19_LOG_FORMAT`                | runtime         | Logging          |
 | `B19_OFFGRID_MODE`              | build + runtime | Behavior         |
 | `B19_OVERLAY`                   | runtime         | Behavior         |
 | `B19_OVERLAYS_PATH`             | runtime         | Hook Directories |

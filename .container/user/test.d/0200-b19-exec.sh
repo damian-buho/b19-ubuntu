@@ -179,4 +179,26 @@ else
   b19-log good "b19-exec" "$(_p "Test 13 passed: PID file published then cleaned up (pid=%s)" "${_observed}")"
 fi
 
+# Test 14: Passthrough hands the payload PID 1's stdout, the default a logger pipe
+b19-log note "b19-exec" "$(_ "Test 14: Passthrough bypasses b19-log")"
+_fd_file="${B19_TEMP_PATH:-/tmp}/b19-exec-fd-$$"
+# shellcheck disable=SC2016 # expanded by the payload shell
+_fd_probe='printf "%s %s\n" "$(readlink /proc/$$/fd/1)" "$(readlink /proc/1/fd/1)" > "$0"'
+b19-exec --foreground --passthrough -- bash -c "${_fd_probe}" "${_fd_file}"
+read -r _payload_fd _pid1_fd < "${_fd_file}"
+b19-assert equals "b19-exec" "${_pid1_fd}" "${_payload_fd}"
+B19_EXEC_PASSTHROUGH=true b19-exec --foreground -- bash -c "${_fd_probe}" "${_fd_file}"
+read -r _payload_fd _pid1_fd < "${_fd_file}"
+b19-assert equals "b19-exec" "${_pid1_fd}" "${_payload_fd}"
+b19-exec --foreground -- bash -c "${_fd_probe}" "${_fd_file}"
+read -r _payload_fd _pid1_fd < "${_fd_file}"
+b19-assert matches "b19-exec" '^pipe:' "${_payload_fd}"
+rm -f "${_fd_file}"
+
+# Test 15: An unknown passthrough value refuses to run the payload
+b19-log note "b19-exec" "$(_ "Test 15: Invalid passthrough value")"
+EXIT_CODE=0
+B19_EXEC_PASSTHROUGH=maybe b19-exec -- true 2>/dev/null || EXIT_CODE=$?
+b19-assert equals "b19-exec" "1" "${EXIT_CODE}"
+
 b19-log good "b19-exec" "$(_ "All b19-exec tests passed")"
