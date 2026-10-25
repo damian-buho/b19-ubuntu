@@ -295,17 +295,29 @@ failed_code() {
   printf '%s\n' "${_code:-1}"
 }
 
-# Stops every other recorded command through its supervisor and waits until all are gone
+# Prints the names of NAME:SUPERVISOR pairs whose supervisor has not exited yet
+running_supervisors() {
+  local _entry _state
+  for _entry in "$@"; do
+    _state=$(proc_field "${_entry#*:}" 0) || continue
+    [ "${_state}" = Z ] || printf '%s\n' "${_entry%%:*}"
+  done
+}
+
+# Stops every other recorded command through its supervisor and waits until all and their supervisors are gone
 stop_others() {
-  local _name _pid _role _left _deadline _logged=""
+  local _name _pid _role _left _deadline _logged="" _supervisor
+  local -a _supervisors=()
   while read -r _name _pid _role; do
     [ "${_role}" != payload ] || continue
     b19-log info "b19-exec" "$(_p "Stopping %s (pid %s) after %s" "${_name}" "${_pid}" "${NAME}")"
-    kill -s TERM "$(proc_field "${_pid}" 1)" 2>/dev/null \
+    _supervisor=$(proc_field "${_pid}" 1) || _supervisor=""
+    [ -z "${_supervisor}" ] || _supervisors+=("${_name}:${_supervisor}")
+    kill -s TERM "${_supervisor}" 2>/dev/null \
       || b19-log debug "b19-exec" "$(_p "%s (pid %s) is already gone" "${_name}" "${_pid}")"
   done < <(list_records)
   _deadline=$(( SECONDS + STOP_TIMEOUT ))
-  while _left=$(list_records | cut --delimiter=' ' --fields=1 | paste --serial --delimiters=' ') && [ -n "${_left}" ]; do
+  while _left=$({ list_records | cut --delimiter=' ' --fields=1; running_supervisors "${_supervisors[@]}"; } | sort --unique | paste --serial --delimiters=' ') && [ -n "${_left}" ]; do
     if [ "${SECONDS}" -ge "${_deadline}" ]; then
       b19-log warn "b19-exec" "$(_p "Leaving after %ss although %s still runs" "${STOP_TIMEOUT}" "${_left}")"
       return 0
