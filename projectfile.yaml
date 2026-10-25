@@ -15,9 +15,9 @@ identity:
     en: Reproducible, single-layer, non-root Ubuntu base image — digest-pinned, multi-series and multi-arch, with the hook library downstream images inherit.
     es: Imagen base Ubuntu reproducible, de una capa y sin root — fijada por digest, multiserie y multiarquitectura, con la biblioteca de hooks que heredan las imágenes derivadas.
     uk: Відтворюваний одношаровий образ Ubuntu без root — зафіксований за digest, мультисерійний і мультиархітектурний, з бібліотекою хуків для похідних образів.
-  version: 0.26.0
+  version: 0.27.0
   modified: "2026-09-14"
-  released: "2026-10-23"
+  released: "2026-10-25"
   visibility: public
 includes:
   - .makefile/b19/ci.yaml
