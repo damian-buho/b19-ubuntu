@@ -40,7 +40,7 @@ Every runner discovers scripts the same way — `fd --print0 --hidden --type fil
 
 Two mechanism differences worth knowing:
 
-- **Sourced vs executed** — `entrypoint.d` sources its hooks into one shell, which is how `ENTRYPOINT_COMMAND_EXECUTED`, `PAYLOAD_PID` and `NUMPROCS` flow between hooks. `healthcheck.d` sources inside a subshell (isolated failures); `test.d` executes each test via `b19-run`.
+- **Sourced vs executed** — `entrypoint.d` sources its hooks into one shell, which is how `ENTRYPOINT_COMMAND_EXECUTED`, `RETURN_CODE` and `NUMPROCS` flow between hooks. `healthcheck.d` sources inside a subshell (isolated failures); `test.d` executes each test via `b19-run`.
 - **Suites vs scripts** — `benchmark.d` discovers **directories** (each holding `benchmark.sh` plus optional `setup.sh`/`teardown.sh`), not loose scripts.
 
 - **Locks** — `healthcheck.d`, `bootstrap.d`, `benchmark.d` and `b19-cache-guard` serialize through `b19-lock`. A busy lock is waited on for a bounded time (`B19_HEALTH_LOCK_TIMEOUT`, `B19_BOOTSTRAP_LOCK_TIMEOUT`, `B19_BENCHMARK_LOCK_TIMEOUT`, `B19_CACHE_GUARD_TIMEOUT`), and a timeout is a failure, never a pass. The lock is an `flock` on fd 9: it dies with the holder, an EXIT trap releases it even when an orphaned child still holds the descriptor, and every child starts with `9>&-` so none inherits it.

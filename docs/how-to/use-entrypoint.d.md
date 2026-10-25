@@ -40,28 +40,28 @@ tini -g (PID 1)
 ```
 
 - `tini -g` reaps zombies and forwards signals to the process group.
-- The runner finds all `*.sh` in `/entrypoint.d/`, sorts ascending and **sources** each one — shared shell state, no subshells, so variables (`NUMPROCS`, `ENTRYPOINT_COMMAND_EXECUTED`, `PAYLOAD_PID`) are visible to every subsequent hook.
+- The runner finds all `*.sh` in `/entrypoint.d/`, sorts ascending and **sources** each one — shared shell state, no subshells, so variables (`NUMPROCS`, `ENTRYPOINT_COMMAND_EXECUTED`, `RETURN_CODE`) are visible to every subsequent hook.
 - Two projects’ hooks merge by Docker layer overlay: the runner finds all `*.sh` regardless of which image layer added them.
 
 ### Base image hook chain
 
-| Slot | Script                | Purpose                                                                                                                  |
-| ---- | --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| 0000 | `set-signals.sh`      | Trap Unix signals (ALRM, HUP, ILL, INT, QUIT, TERM, USR1, USR2), define `signalHandler()` that forwards to `PAYLOAD_PID` |
-| 0005 | `set-verbosity.sh`    | Lower `B19_VERBOSITY` to `B19_ENTRYPOINT_VERBOSITY` until slot 4000, if set                                              |
-| 0050 | `ensure-locale.sh`    | Make the compiled locale available to the shell                                                                          |
-| 0100 | `load-secrets.sh`     | Source `b19-load-secrets` → env vars from `/run/secrets/*.*`                                                             |
-| 0200 | `set-cpu-count.sh`    | Detect `NUMPROCS`: K8s downward API > cgroups v2 > nproc                                                                 |
-| 0300 | `check-ports.sh`      | Validate PORT env vars against WHATWG blocklist + privileged ports (\<1024)                                              |
-| 0400 | `print-lineage.sh`    | Log the image lineage chain (base → current)                                                                             |
-| 0500 | `copy-overlay.sh`     | Copy files from `$B19_OVERLAYS_PATH/$B19_OVERLAY/` to `/` if `B19_OVERLAY` is set                                        |
-| 1000 | `parallel-j2.sh`      | Render all `.j2` templates in `$B19_HOME` via minijinja-cli + `xargs -P`                                                 |
-| 2000 | `select-command.sh`   | Claim a valid first arg (`ENTRYPOINT_COMMAND_EXECUTED=Y`); otherwise exit 127                                            |
-| 2100 | `validate-secrets.sh` | Validate all secrets in `B19_REQUIRED_SECRETS` exist (env or file); exit 1 if missing                                    |
-| 3000 | `bootstrap.sh`        | Run `/bootstrap.d/` scripts with lockfile idempotency                                                                    |
-| 4000 | `run-command.sh`      | Run the claimed command at the payload `B19_VERBOSITY` and record its `RETURN_CODE`                                      |
-| 5000 | `start.sh`            | Default: `sleep infinity` (downstream projects **always** override this)                                                 |
-| 9000 | `finalize.sh`         | Log the final `RETURN_CODE`; exit 127 when nothing ever ran the argv                                                     |
+| Slot | Script                | Purpose                                                                                                                                  |
+| ---- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 0000 | `set-signals.sh`      | Trap Unix signals (ALRM, HUP, ILL, INT, QUIT, TERM, USR1, USR2), define `signalHandler()` that logs them; clear stale `b19-exec` records |
+| 0005 | `set-verbosity.sh`    | Lower `B19_VERBOSITY` to `B19_ENTRYPOINT_VERBOSITY` until slot 4000, if set                                                              |
+| 0050 | `ensure-locale.sh`    | Make the compiled locale available to the shell                                                                                          |
+| 0100 | `load-secrets.sh`     | Source `b19-load-secrets` → env vars from `/run/secrets/*.*`                                                                             |
+| 0200 | `set-cpu-count.sh`    | Detect `NUMPROCS`: K8s downward API > cgroups v2 > nproc                                                                                 |
+| 0300 | `check-ports.sh`      | Validate PORT env vars against WHATWG blocklist + privileged ports (\<1024)                                                              |
+| 0400 | `print-lineage.sh`    | Log the image lineage chain (base → current)                                                                                             |
+| 0500 | `copy-overlay.sh`     | Copy files from `$B19_OVERLAYS_PATH/$B19_OVERLAY/` to `/` if `B19_OVERLAY` is set                                                        |
+| 1000 | `parallel-j2.sh`      | Render all `.j2` templates in `$B19_HOME` via minijinja-cli + `xargs -P`                                                                 |
+| 2000 | `select-command.sh`   | Claim a valid first arg (`ENTRYPOINT_COMMAND_EXECUTED=Y`); otherwise exit 127                                                            |
+| 2100 | `validate-secrets.sh` | Validate all secrets in `B19_REQUIRED_SECRETS` exist (env or file); exit 1 if missing                                                    |
+| 3000 | `bootstrap.sh`        | Run `/bootstrap.d/` scripts with lockfile idempotency                                                                                    |
+| 4000 | `run-command.sh`      | Run the claimed command at the payload `B19_VERBOSITY` and record its `RETURN_CODE`                                                      |
+| 5000 | `start.sh`            | Default: `sleep infinity` (downstream projects **always** override this)                                                                 |
+| 9000 | `finalize.sh`         | Log the final `RETURN_CODE`; exit 127 when nothing ever ran the argv                                                                     |
 
 ### Two execution paths
 
@@ -96,7 +96,7 @@ success for a run that executed nothing.
 
 An image that wraps exactly ONE program takes the subcommand as argv — `docker
 run kiota.ch/projectfile/cli validate` rather than `docker run
-kiota.ch/projectfile/cli pf-cli validate`. There the first arg is *expected* not
+kiota.ch/projectfile/cli pf-cli validate`. There the first arg is _expected_ not
 to be a command, so `B19_SINGLE_COMMAND_IMAGE=Y` restores the fall-through and
 the image’s own `5000-start.sh` consumes `"$@"`:
 
@@ -118,11 +118,11 @@ Both spellings of a command — `docker run img tool args` and, in a single-comm
 
 To debug an image whose secrets or bootstrap are broken, opt out explicitly:
 
-| Escape hatch                                      | Effect                                  |
-| ------------------------------------------------- | --------------------------------------- |
-| `docker run -e B19_SECRETS_ENABLED=false img cmd` | Skip secret loading and validation      |
-| `docker run -e B19_BOOTSTRAP_ENABLED=false img …` | Skip bootstrap                          |
-| `docker run --entrypoint bash img`                | Bypass `entrypoint.d` altogether        |
+| Escape hatch                                      | Effect                             |
+| ------------------------------------------------- | ---------------------------------- |
+| `docker run -e B19_SECRETS_ENABLED=false img cmd` | Skip secret loading and validation |
+| `docker run -e B19_BOOTSTRAP_ENABLED=false img …` | Skip bootstrap                     |
+| `docker run --entrypoint bash img`                | Bypass `entrypoint.d` altogether   |
 
 ### Numbering convention
 
@@ -144,13 +144,13 @@ When creating hooks for a downstream project, pick a slot in the appropriate ran
 
 ```text
 docker stop / kill
-  → tini (PID 1)
-    → signalHandler() (defined in 0000-set-signals.sh)
-      → kill -s $SIGNAL $payload_pid
-        → your service process
+  → tini -g (PID 1)
+    → b19-exec (one per daemon, see 5000-start.sh)
+      → kill -s $SIGNAL -- -$pid
+        → your service process, then each background daemon, newest first
 ```
 
-`0000-set-signals.sh` reads `/app/.signals` and traps each signal listed there. The handler resolves the payload PID from `${B19_HOME}/.payload.pid` (written by `b19-exec`), falling back to a `PAYLOAD_PID` set directly in the shell, verifies it is alive with `kill -0`, then forwards the signal. Under `tini -g` signals also reach the whole process group directly, so forwarding is belt-and-suspenders — it matters when `tini -g` is absent, e.g. some Kubernetes runtimes. Detail: [handle signals gracefully](use-signals.md).
+`0000-set-signals.sh` reads `/app/.signals` and traps each signal listed there, so the entrypoint shell survives a signal and only logs it; it also clears the `${B19_RUNTIME_PATH}/b19-exec/` records an earlier run left behind. Forwarding is the job of every `b19-exec`, which runs its command in its own session and signals it exactly once. Detail: [handle signals gracefully](use-signals.md).
 
 ### Delegated runners
 

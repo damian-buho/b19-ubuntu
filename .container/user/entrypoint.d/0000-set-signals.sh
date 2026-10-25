@@ -4,22 +4,18 @@
 #
 # SPDX-License-Identifier: MIT
 
-  # b19-exec publishes the payload PID to ${B19_HOME}/.payload.pid because it
-  # runs as a subprocess whose `export PAYLOAD_PID` cannot reach this shell.
-  # Fall back to a PAYLOAD_PID set directly in this shell (if any caller does).
+  # Logs a signal; every b19-exec forwards it to its own command
   function signalHandler() {
-      _signals_pid=""
-      if [ -f "${B19_HOME}/.payload.pid" ]; then
-        _signals_pid=$(tr -dc '0-9' < "${B19_HOME}/.payload.pid" 2>/dev/null)
-      fi
-      _signals_pid="${_signals_pid:-${PAYLOAD_PID:-}}"
-      if [ -n "${_signals_pid}" ] && kill -0 "${_signals_pid}" 2>/dev/null; then
-        b19-log info "SIGNALS" "$(_p "Caught %s, transferring to %s" "$1" "${_signals_pid}")"
-        kill -s "${1}" "${_signals_pid}"
-      else
-        b19-log warn "SIGNALS" "$(_p "Caught %s, no active payload process to signal" "$1")"
-      fi
+      b19-log info "SIGNALS" "$(_p "Caught %s, b19-exec forwards it to the commands it runs" "$1")"
   }
+
+  # Clears the b19-exec records an earlier run of this container left behind
+  _signals_state="${B19_RUNTIME_PATH:-/run/b19}/b19-exec"
+  if [ -d "${_signals_state}" ]; then
+    b19-log debug "SIGNALS" "$(_p "Clearing stale records in %s" "${_signals_state}")"
+    rm -f -- "${_signals_state}"/*.pid "${_signals_state}"/*.exit
+  fi
+  unset _signals_state
 
   SIGNALS_FILE="${B19_HOME}/.signals"
   if [ ! -f "${SIGNALS_FILE}" ]; then

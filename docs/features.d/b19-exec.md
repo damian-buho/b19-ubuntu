@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 # Service process management with log routing (b19-exec)
 
 - Long-running processes (daemons, servers) have stdout and stderr automatically routed through the structured logger.
-- The service PID is tracked for signal forwarding — Docker stop gracefully terminates the main process.
+- Every signal reaches the service exactly once, so `docker stop` ends it gracefully and its last log lines are kept.
 - Log levels for stdout and stderr streams are independently configurable.
-- Exit code of the service is captured and available to downstream hooks.
+- Several daemons share one container: each line is tagged with its daemon, they stop in reverse start order, and a crashed required daemon stops the container so the restart policy acts.
 - Passthrough mode hands a service’s own log to the collector byte for byte, so parsers built for that daemon still match.

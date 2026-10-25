@@ -16,6 +16,7 @@
       "${B19_HEALTH_PATH}"
       "${B19_HOME}"
       "${B19_OVERLAYS_PATH}"
+      "${B19_RUNTIME_PATH}"
       "${B19_SHELL_PATH}"
       "${B19_TEMP_PATH}"
       "${B19_TEST_PATH}"
@@ -34,6 +35,7 @@
     done
 
     b19-run "SECURITY" "$(_p "Set permissions of %s" "${B19_HOME}")" --  chmod -R g+rwX "${B19_HOME}"
+    b19-run "SECURITY" "$(_p "Set permissions of %s" "${B19_RUNTIME_PATH}")" --  chmod g+rwX "${B19_RUNTIME_PATH}"
 
     # ${B19_CACHE_PATH} is the parent of the build-time download cache mount.
     # b19-fetch creates ${B19_DOWNLOAD_PATH} below it, so uid ${B19_UID} needs

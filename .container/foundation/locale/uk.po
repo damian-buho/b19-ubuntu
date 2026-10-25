@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-23 18:50+0000\n"
+"POT-Creation-Date: 2026-10-25 05:43+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -156,31 +156,153 @@ msgstr ""
 msgid "LANG %s not generated — falling back to C.UTF-8"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:85
+#: .container/foundation/tools.d/b19-exec:71
 msgid "Unknown option:"
 msgstr "Невідома опція:"
 
-#: .container/foundation/tools.d/b19-exec:93
+#: .container/foundation/tools.d/b19-exec:78
 msgid "No command provided. Usage: b19-exec [OPTIONS] -- COMMAND [ARGS...]"
 msgstr ""
 "Команду не надано. Використання: b19-exec [ПАРАМЕТРИ] -- КОМАНДА "
 "[АРГУМЕНТИ...]"
 
-#: .container/foundation/tools.d/b19-exec:104
+#: .container/foundation/tools.d/b19-exec:87
 msgid "Invalid log level:"
 msgstr "Невірний рівень логування:"
 
-#: .container/foundation/tools.d/b19-exec:104
+#: .container/foundation/tools.d/b19-exec:87
 msgid "Must be one of: error, bad, warn, good, info, note"
 msgstr "Має бути одним з: error, bad, warn, good, info, note"
 
-#: .container/foundation/tools.d/b19-exec:118
+#: .container/foundation/tools.d/b19-exec:101
+msgid "%s must be true or false, got %s"
+msgstr "%s має бути true або false, отримано %s"
+
+#: .container/foundation/tools.d/b19-exec:107
+msgid "Invalid name %s: use letters, digits, dot, dash and underscore"
+msgstr "Неприпустима назва %s: використовуйте літери, цифри, крапку, дефіс і підкреслення"
+
+#: .container/foundation/tools.d/b19-exec:111
+#: .container/foundation/tools.d/b19-exec:119
+msgid "%s needs %s"
+msgstr "%s потребує %s"
+
+#: .container/foundation/tools.d/b19-exec:115
+msgid "%s and %s exclude each other"
+msgstr "%s і %s взаємно виключні"
+
+#: .container/foundation/tools.d/b19-exec:123
+msgid "%s must be a whole number of seconds, got %s"
+msgstr "%s має бути цілим числом секунд, отримано %s"
+
+#: .container/foundation/tools.d/b19-exec:139
 msgid "Passthrough: %s writes to the container directly"
 msgstr "Passthrough: %s пише безпосередньо в контейнер"
 
-#: .container/foundation/tools.d/b19-exec:131
-msgid "%s must be true or false, got %s"
-msgstr "%s має бути true або false, отримано %s"
+#: .container/foundation/tools.d/b19-exec:215
+msgid "Stopping %s after %ss although %s still runs"
+msgstr "Зупинка %s через %s с, хоча %s досі працює"
+
+#: .container/foundation/tools.d/b19-exec:219
+msgid "%s stops after %s"
+msgstr "%s зупиняється після %s"
+
+#: .container/foundation/tools.d/b19-exec:231
+msgid "%s is already stopping, %s not forwarded again"
+msgstr "%s уже зупиняється, %s повторно не переспрямовано"
+
+#: .container/foundation/tools.d/b19-exec:237
+msgid "Forwarding %s to %s (pid %s)"
+msgstr "Переспрямування %s до %s (pid %s)"
+
+#: .container/foundation/tools.d/b19-exec:239
+#: .container/foundation/tools.d/b19-exec:305
+msgid "%s (pid %s) is already gone"
+msgstr "%s (pid %s) уже немає"
+
+#: .container/foundation/tools.d/b19-exec:256
+msgid "Timed out waiting for %s, %s runs untracked"
+msgstr "Час очікування %s вичерпано, %s працює без запису"
+
+#: .container/foundation/tools.d/b19-exec:260
+msgid "%s is already running (pid %s)"
+msgstr "%s уже працює (pid %s)"
+
+#: .container/foundation/tools.d/b19-exec:264
+msgid "%s is already running (pid %s), this one runs untracked"
+msgstr "%s уже працює (pid %s), цей запуск працює без запису"
+
+#: .container/foundation/tools.d/b19-exec:274
+msgid "Recorded %s (pid %s, %s)"
+msgstr "Записано %s (pid %s, %s)"
+
+#: .container/foundation/tools.d/b19-exec:294
+msgid "No exit code recorded for %s after %s tries"
+msgstr "Для %s не записано коду виходу після %s спроб"
+
+#: .container/foundation/tools.d/b19-exec:303
+msgid "Stopping %s (pid %s) after %s"
+msgstr "Зупинка %s (pid %s) після %s"
+
+#: .container/foundation/tools.d/b19-exec:310
+msgid "Leaving after %ss although %s still runs"
+msgstr "Вихід через %s с, хоча %s досі працює"
+
+#: .container/foundation/tools.d/b19-exec:314
+msgid "Waiting for %s to stop"
+msgstr "Очікування зупинки %s"
+
+#: .container/foundation/tools.d/b19-exec:331
+msgid "Cannot write %s as uid %s, %s runs untracked"
+msgstr "Неможливо записати %s як uid %s, %s працює без запису"
+
+#: .container/foundation/tools.d/b19-exec:348
+msgid "Not starting %s: required %s exited with %s"
+msgstr "%s не запускається: обовʼязковий %s завершився з кодом %s"
+
+#: .container/foundation/tools.d/b19-exec:363
+msgid "%s fails fast when %s (pid %s) exits"
+msgstr "%s негайно зупиняється, коли завершується %s (pid %s)"
+
+#: .container/foundation/tools.d/b19-exec:371
+msgid "Wait for %s interrupted with %s"
+msgstr "Очікування %s перервано з кодом %s"
+
+#: .container/foundation/tools.d/b19-exec:381
+msgid "%s exited while %s stops"
+msgstr "%s завершився, поки %s зупиняється"
+
+#: .container/foundation/tools.d/b19-exec:386
+msgid "Stopping %s: required %s exited with %s"
+msgstr "Зупинка %s: обовʼязковий %s завершився з кодом %s"
+
+#: .container/foundation/tools.d/b19-exec:396
+msgid "%s (pid %s) exited with %s"
+msgstr "%s (pid %s) завершився з кодом %s"
+
+#: .container/foundation/tools.d/b19-exec:403
+msgid "%s (pid %s) stopped with %s"
+msgstr "%s (pid %s) зупинено з кодом %s"
+
+#: .container/foundation/tools.d/b19-exec:405
+msgid "Optional %s (pid %s) exited with %s, the container keeps running"
+msgstr "Необовʼязковий %s (pid %s) завершився з кодом %s, контейнер працює далі"
+
+#: .container/foundation/tools.d/b19-exec:407
+msgid "Required %s (pid %s) exited with %s"
+msgstr "Обовʼязковий %s (pid %s) завершився з кодом %s"
+
+#: .container/foundation/tools.d/b19-exec:426
+msgid "Started %s (pid %s, %s)"
+msgstr "Запущено %s (pid %s, %s)"
+
+#: .container/foundation/tools.d/b19-exec:430
+msgid "%s has no record after %ss, it runs untracked"
+msgstr "%s не має запису через %s с, працює без запису"
+
+#: .container/foundation/tools.d/b19-exec:436
+msgid "%s failed to start, exit code %s"
+msgstr "%s не вдалося запустити, код виходу %s"
 
 #: .container/foundation/tools.d/b19-exec-with-secrets:33
 #, fuzzy
@@ -352,7 +474,7 @@ msgid "Holding lock %s"
 msgstr "Утримується блокування %s"
 
 #: .container/foundation/tools.d/b19-log:71
-#: .container/foundation/tools.d/b19-log:159
+#: .container/foundation/tools.d/b19-log:160
 msgid "Unknown log level: %s. Valid: error, warn, info, debug"
 msgstr "Невідомий рівень логу: %s. Дійсні: error, warn, info, debug"
 
@@ -401,22 +523,24 @@ msgstr ""
 "Використання: b19-run [--timeout S] [--retries N] [--backoff S] <мітка> "
 "<повідомлення> [--] <команда> [аргументи...]"
 
-#: .container/foundation/tools.d/b19-run:124
+#: .container/foundation/tools.d/b19-run:130
 msgid "Attempt %s/%s failed (exit code %s), retrying in %s s"
 msgstr "Спроба %s/%s не вдалася (код виходу %s), повтор через %s с"
 
-#: .container/foundation/tools.d/b19-run:134
-#: .container/foundation/tools.d/b19-run:136
+#: .container/foundation/tools.d/b19-run:138
+#: .container/foundation/tools.d/b19-run:151
+#: .container/foundation/tools.d/b19-run:153
 msgid "success [%s]"
 msgstr "успіх [%s]"
 
-#: .container/foundation/tools.d/b19-run:157
-msgid "failure (exit code %s), [%s]"
-msgstr "помилка (код виходу %s), [%s]"
-
-#: .container/foundation/tools.d/b19-run:168
+#: .container/foundation/tools.d/b19-run:143
+#: .container/foundation/tools.d/b19-run:185
 msgid "failure (exit code %s) [%s]"
 msgstr "помилка (код виходу %s) [%s]"
+
+#: .container/foundation/tools.d/b19-run:174
+msgid "failure (exit code %s), [%s]"
+msgstr "помилка (код виходу %s), [%s]"
 
 #: .container/foundation/tools.d/build-stage:23
 msgid "Stage-independent hooks for %s: %s"
@@ -997,18 +1121,19 @@ msgstr "Усі %d тестів пройдено."
 msgid "Updating CA certificates"
 msgstr "Оновлення CA сертифікатів"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:30
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:43
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:31
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:45
 msgid "Ensure exists %s"
 msgstr "Перевірити наявність %s"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:32
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:45
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:33
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:47
 msgid "Set owner %s:0 %s"
 msgstr "Встановити власника %s:0 %s"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:36
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:47
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:37
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:38
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:49
 msgid "Set permissions of %s"
 msgstr "Встановити права для %s"
 
@@ -1111,19 +1236,19 @@ msgstr "Формат: %s"
 msgid "Render %s"
 msgstr "Рендерити %s"
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:17
-msgid "Caught %s, transferring to %s"
-msgstr "Перехоплено %s, передаємо до %s"
+#: .container/user/entrypoint.d/0000-set-signals.sh:9
+msgid "Caught %s, b19-exec forwards it to the commands it runs"
+msgstr "Перехоплено %s, b19-exec переспрямовує його командам, які запускає"
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:20
-msgid "Caught %s, no active payload process to signal"
-msgstr "Перехоплено %s, немає активного процесу навантаження для сигналізації"
+#: .container/user/entrypoint.d/0000-set-signals.sh:15
+msgid "Clearing stale records in %s"
+msgstr "Очищення застарілих записів у %s"
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:26
+#: .container/user/entrypoint.d/0000-set-signals.sh:22
 msgid "%s not found, no signals trapped"
 msgstr "%s не знайдено, сигнали не перехоплюються"
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:36
+#: .container/user/entrypoint.d/0000-set-signals.sh:32
 msgid "%s trapped"
 msgstr "%s перехоплено"
 
@@ -1165,12 +1290,12 @@ msgstr "B19_PGID=%s вже належить %s"
 msgid "Set gid of %s to %s"
 msgstr "Зберегти список .j2 %s у %s"
 
-#: .container/user/entrypoint.d/0010-remap-user.sh:57
+#: .container/user/entrypoint.d/0010-remap-user.sh:59
 #, fuzzy
 msgid "Set owner of %s to %s"
 msgstr "Встановити власника %s:0 %s"
 
-#: .container/user/entrypoint.d/0010-remap-user.sh:63
+#: .container/user/entrypoint.d/0010-remap-user.sh:66
 msgid "Dropping root, restarting entrypoint as %s:%s"
 msgstr "Відмова від root, перезапуск entrypoint як %s:%s"
 
@@ -1368,6 +1493,22 @@ msgstr "Прослуховується на 127.0.0.1:%s"
 #: .container/user/healthcheck.d/0800-check-listen.sh:29
 msgid "Not listening on 127.0.0.1:%s"
 msgstr "Не прослуховується на 127.0.0.1:%s"
+
+#: .container/user/healthcheck.d/0900-check-daemons.sh:18
+msgid "Required daemon %s exited with %s"
+msgstr "Обовʼязковий демон %s завершився з кодом %s"
+
+#: .container/user/healthcheck.d/0900-check-daemons.sh:28
+msgid "Skipping optional daemon %s (pid %s)"
+msgstr "Пропуск необовʼязкового демона %s (pid %s)"
+
+#: .container/user/healthcheck.d/0900-check-daemons.sh:32
+msgid "Daemon %s (pid %s) is gone"
+msgstr "Демона %s (pid %s) немає"
+
+#: .container/user/healthcheck.d/0900-check-daemons.sh:40
+msgid "%s required daemons running in %s"
+msgstr "%s обовʼязкових демонів працює в %s"
 
 #: .container/user/benchmark.d/0400-disk-rand-io/setup.sh:10
 #: .container/user/benchmark.d/0800-process-fork/setup.sh:10
@@ -1580,31 +1721,43 @@ msgstr ""
 msgid "Test 12 failed: Exit code %s (expected 7)"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:156
-msgid "Test 13: Payload PID file published and cleaned up"
-msgstr ""
+#: .container/user/test.d/0200-b19-exec.sh:152
+msgid "Test 13: Payload PID record published and cleaned up"
+msgstr "Тест 13: запис PID payload опубліковано й очищено"
 
-#: .container/user/test.d/0200-b19-exec.sh:173
-msgid "Test 13 failed: no live PID observed in the file during run"
-msgstr ""
-
-#: .container/user/test.d/0200-b19-exec.sh:176
-msgid "Test 13 failed: PID file not removed after run"
-msgstr ""
-
-#: .container/user/test.d/0200-b19-exec.sh:179
-msgid "Test 13 passed: PID file published then cleaned up (pid=%s)"
-msgstr ""
-
-#: .container/user/test.d/0200-b19-exec.sh:183
+#: .container/user/test.d/0200-b19-exec.sh:168
 msgid "Test 14: Passthrough bypasses b19-log"
 msgstr "Тест 14: passthrough оминає b19-log"
 
-#: .container/user/test.d/0200-b19-exec.sh:198
+#: .container/user/test.d/0200-b19-exec.sh:184
 msgid "Test 15: Invalid passthrough value"
 msgstr "Тест 15: некоректне значення passthrough"
 
-#: .container/user/test.d/0200-b19-exec.sh:203
+#: .container/user/test.d/0200-b19-exec.sh:205
+msgid "%s still recorded after %s tries"
+msgstr "%s досі записаний після %s спроб"
+
+#: .container/user/test.d/0200-b19-exec.sh:214
+msgid "Test 16: Background daemons stop in reverse start order"
+msgstr "Тест 16: фонові демони зупиняються у зворотному до запуску порядку"
+
+#: .container/user/test.d/0200-b19-exec.sh:230
+msgid "Test 17: Required daemon exit fails fast"
+msgstr "Тест 17: завершення обовʼязкового демона негайно зупиняє контейнер"
+
+#: .container/user/test.d/0200-b19-exec.sh:245
+msgid "Test 18: Optional daemon exit keeps the payload"
+msgstr "Тест 18: завершення необовʼязкового демона зберігає payload"
+
+#: .container/user/test.d/0200-b19-exec.sh:260
+msgid "Test 19: Health check and stop on payload exit"
+msgstr "Тест 19: перевірка стану й зупинка після виходу payload"
+
+#: .container/user/test.d/0200-b19-exec.sh:267
+msgid "Test 20: Invalid background calls"
+msgstr "Тест 20: неприпустимі фонові виклики"
+
+#: .container/user/test.d/0200-b19-exec.sh:283
 #, fuzzy
 msgid "All b19-exec tests passed"
 msgstr "Усі %d тестів пройдено."
@@ -1613,9 +1766,11 @@ msgstr "Усі %d тестів пройдено."
 msgid "Skipping the decimal-comma case: no such locale among %s"
 msgstr "Пропускаємо випадок десяткової коми: такої локалі немає серед %s"
 
-#: .container/user/test.d/0200-b19-log-json.sh:70
+#: .container/user/test.d/0200-b19-log-json.sh:90
 msgid "%s escapes, maps levels, filters and passes payload objects through"
-msgstr "%s екранує, зіставляє рівні, фільтрує й пропускає об’єкти корисного навантаження"
+msgstr ""
+"%s екранує, зіставляє рівні, фільтрує й пропускає об’єкти корисного "
+"навантаження"
 
 #: .container/user/test.d/0200-b19-run-retries.sh:15
 msgid "Retry a flaky command"
@@ -2184,6 +2339,13 @@ msgstr "Загальне використання пам'яті (%s МБ) пер
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "Загальне використання пам'яті в межах порогу (%s МБ)"
+
+#~ msgid "Caught %s, transferring to %s"
+#~ msgstr "Перехоплено %s, передаємо до %s"
+
+#~ msgid "Caught %s, no active payload process to signal"
+#~ msgstr ""
+#~ "Перехоплено %s, немає активного процесу навантаження для сигналізації"
 
 #~ msgid "Usage: b19-flatten <source-root> <destination> <exclude-list>"
 #~ msgstr ""

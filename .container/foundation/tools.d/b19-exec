@@ -4,53 +4,27 @@
 #
 # SPDX-License-Identifier: MIT
 
-# b19-exec - Execute long-running processes with stdout/stderr routed through b19-log
-#
-# Usage:
-#   b19-exec [OPTIONS] -- COMMAND [ARGS...]
-#
-# Options:
-#   --stdout-level LEVEL    Log level for stdout (default: info)
-#   --stderr-level LEVEL    Log level for stderr (default: warn)
-#   --stdout-tag TAG        Tag for stdout (default: STDOUT)
-#   --stderr-tag TAG        Tag for stderr (default: STDERR)
-#   --foreground            Run in foreground (no backgrounding)
-#   --passthrough           Hand the payload output to the container unchanged, bypassing b19-log
-#
-# Environment Variables:
-#   B19_EXEC_STDOUT_LEVEL   Override default stdout level
-#   B19_EXEC_STDERR_LEVEL   Override default stderr level
-#   B19_EXEC_PASSTHROUGH    true to default to --passthrough
-#   B19_VERBOSITY           Verbosity level (error/warn/info/debug)
-#
-# Output:
-#   PAYLOAD_PID             Process ID of executed command (for tini signal handling)
-#   RETURN_CODE             Exit code of executed command
-#
-# Examples:
-#   b19-exec -- php-fpm --fpm-config /etc/php-fpm.conf
-#   b19-exec --stdout-level warn -- nginx -g "daemon off;"
-#   b19-exec --foreground -- /app/worker.sh
-#
-# Process substitution routing:
-#   stdin:  /proc/1/fd/0
-#   stdout: >(b19-log $LEVEL $TAG > /proc/1/fd/1)
-#   stderr: >(b19-log $LEVEL $TAG > /proc/1/fd/2)
+# b19-exec [OPTIONS] -- COMMAND [ARGS...]: supervises a long-running command, see docs/how-to/use-b19-exec.md
 
+# shellcheck disable=SC2329 # on_signal and its helpers run from the signal traps
 set -euo pipefail
 
 # shellcheck source=.container/foundation/tools.d/b19-i18n
 . b19-i18n
 
-# Default values
 STDOUT_LEVEL="${B19_EXEC_STDOUT_LEVEL:-info}"
 STDERR_LEVEL="${B19_EXEC_STDERR_LEVEL:-warn}"
-STDOUT_TAG="STDOUT"
-STDERR_TAG="STDERR"
+STDOUT_TAG=""
+STDERR_TAG=""
 FOREGROUND=0
+BACKGROUND=0
+OPTIONAL=0
+NAME=""
 PASSTHROUGH="${B19_EXEC_PASSTHROUGH:-false}"
+STOP_TIMEOUT="${B19_EXEC_STOP_TIMEOUT:-30}"
+STATE_PATH="${B19_RUNTIME_PATH:-/run/b19}/b19-exec"
+STOP_SIGNALS=" INT QUIT TERM "
 
-# Parse options
 while [ $# -gt 0 ]; do
   case "$1" in
     --stdout-level)
@@ -73,6 +47,18 @@ while [ $# -gt 0 ]; do
       FOREGROUND=1
       shift
       ;;
+    --background)
+      BACKGROUND=1
+      shift
+      ;;
+    --name)
+      NAME="$2"
+      shift 2
+      ;;
+    --optional)
+      OPTIONAL=1
+      shift
+      ;;
     --passthrough)
       PASSTHROUGH=true
       shift
@@ -88,17 +74,14 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-# Validate command is provided
 if [ $# -eq 0 ]; then
   b19-log error "b19-exec" "$(_ "No command provided. Usage: b19-exec [OPTIONS] -- COMMAND [ARGS...]")"
   exit 1
 fi
 
-# Validate log levels
 for level in "${STDOUT_LEVEL}" "${STDERR_LEVEL}"; do
   case "${level}" in
     error|bad|warn|good|info|note)
-      # Valid level
       ;;
     *)
       b19-log error "b19-exec" "$(_ "Invalid log level:") ${level}. $(_ "Must be one of: error, bad, warn, good, info, note")"
@@ -107,25 +90,12 @@ for level in "${STDOUT_LEVEL}" "${STDERR_LEVEL}"; do
   esac
 done
 
-# Open explicit FDs for the log coprocesses so we can close them after the
-# command exits, signaling EOF and letting the coprocesses drain before exit.
-# Capture each coprocess PID so we can wait on them by name — bare `wait` does
-# not reliably reap process-substitution subshells, causing lost output on fast
-# failures (e.g. dockerd exiting with code 1 before b19-log flushes).
 case "${PASSTHROUGH,,}" in
   true|1|yes)
-    # Payload output reaches the container byte for byte, with no logger to drain
-    b19-log debug "b19-exec" "$(_p "Passthrough: %s writes to the container directly" "$1")"
-    exec {STDOUT_LOG_FD}>/proc/1/fd/1
-    STDOUT_LOG_PID=""
-    exec {STDERR_LOG_FD}>/proc/1/fd/2
-    STDERR_LOG_PID=""
+    PASSTHROUGH=true
     ;;
   false|0|no|"")
-    exec {STDOUT_LOG_FD}> >(b19-log "${STDOUT_LEVEL}" "${STDOUT_TAG}" > /proc/1/fd/1)
-    STDOUT_LOG_PID=$!
-    exec {STDERR_LOG_FD}> >(b19-log "${STDERR_LEVEL}" "${STDERR_TAG}" > /proc/1/fd/2)
-    STDERR_LOG_PID=$!
+    PASSTHROUGH=false
     ;;
   *)
     b19-log error "b19-exec" "$(_p "%s must be true or false, got %s" "B19_EXEC_PASSTHROUGH" "${PASSTHROUGH}")"
@@ -133,36 +103,344 @@ case "${PASSTHROUGH,,}" in
     ;;
 esac
 
-# Execute command with process substitution
+if [ -n "${NAME}" ] && ! [[ "${NAME}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+  b19-log error "b19-exec" "$(_p "Invalid name %s: use letters, digits, dot, dash and underscore" "${NAME}")"
+  exit 1
+fi
+if [ "${BACKGROUND}" -eq 1 ] && [ -z "${NAME}" ]; then
+  b19-log error "b19-exec" "$(_p "%s needs %s" "--background" "--name")"
+  exit 1
+fi
+if [ "${BACKGROUND}" -eq 1 ] && [ "${FOREGROUND}" -eq 1 ]; then
+  b19-log error "b19-exec" "$(_p "%s and %s exclude each other" "--background" "--foreground")"
+  exit 1
+fi
+if [ "${OPTIONAL}" -eq 1 ] && [ "${BACKGROUND}" -eq 0 ]; then
+  b19-log error "b19-exec" "$(_p "%s needs %s" "--optional" "--background")"
+  exit 1
+fi
+if ! [[ "${STOP_TIMEOUT}" =~ ^[0-9]+$ ]]; then
+  b19-log error "b19-exec" "$(_p "%s must be a whole number of seconds, got %s" "B19_EXEC_STOP_TIMEOUT" "${STOP_TIMEOUT}")"
+  exit 1
+fi
+
+# An explicit tag wins, then the name, then the historical stream tags
+STDOUT_TAG="${STDOUT_TAG:-${NAME:-STDOUT}}"
+STDERR_TAG="${STDERR_TAG:-${NAME:-STDERR}}"
+ROLE=payload
+[ "${BACKGROUND}" -eq 0 ] || ROLE=required
+[ "${OPTIONAL}" -eq 0 ] || ROLE=optional
+EXPLICIT_NAME="${NAME}"
+NAME="${NAME:-payload}"
+
+# Routes the command output through one b19-log per stream, or straight to the container
+open_loggers() {
+  if [ "${PASSTHROUGH}" = true ]; then
+    b19-log debug "b19-exec" "$(_p "Passthrough: %s writes to the container directly" "$1")"
+    exec {STDOUT_LOG_FD}>/proc/1/fd/1
+    STDOUT_LOG_PID=""
+    exec {STDERR_LOG_FD}>/proc/1/fd/2
+    STDERR_LOG_PID=""
+  else
+    exec {STDOUT_LOG_FD}> >(b19-log "${STDOUT_LEVEL}" "${STDOUT_TAG}" > /proc/1/fd/1)
+    STDOUT_LOG_PID=$!
+    exec {STDERR_LOG_FD}> >(b19-log "${STDERR_LEVEL}" "${STDERR_TAG}" > /proc/1/fd/2)
+    STDERR_LOG_PID=$!
+  fi
+}
+
+# Closes both pipes and waits for each logger by PID, so the last lines are never lost
+close_loggers() {
+  exec {STDOUT_LOG_FD}>&-
+  exec {STDERR_LOG_FD}>&-
+  [ -z "${STDOUT_LOG_PID}" ] || wait "${STDOUT_LOG_PID}" 2>/dev/null || true
+  [ -z "${STDERR_LOG_PID}" ] || wait "${STDERR_LOG_PID}" 2>/dev/null || true
+}
+
 if [ "${FOREGROUND}" -eq 1 ]; then
-  # Foreground mode: run command, then drain loggers before exiting.
-  # (exec would orphan the coprocesses and lose failure output.)
+  open_loggers "$1"
   "$@" < /proc/1/fd/0 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" \
     && RETURN_CODE=0 || RETURN_CODE=$?
-  else
-    # Background mode: standard entrypoint pattern
-    "$@" < /proc/1/fd/0 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" &
+  close_loggers
+  exit "${RETURN_CODE}"
+fi
 
-    PAYLOAD_PID=$!
-    # Publish the payload PID to a file so the entrypoint shell's signal trap
-    # (0000-set-signals.sh) can forward to it. b19-exec runs as a subprocess, so
-    # the `export PAYLOAD_PID` below never reaches the caller — this file bridges
-    # that boundary. Removed after wait so no stale PID is left behind; a stale
-    # file (e.g. SIGKILL) is harmless: the handler verifies the PID with kill -0.
-    B19_PAYLOAD_PID_FILE="${B19_PAYLOAD_PID_FILE:-${B19_HOME}/.payload.pid}"
-    printf '%s\n' "${PAYLOAD_PID}" > "${B19_PAYLOAD_PID_FILE}"
-    # && / || keeps set -e from exiting before we can drain the loggers
-    wait "${PAYLOAD_PID}" && RETURN_CODE=0 || RETURN_CODE=$?
-    rm -f "${B19_PAYLOAD_PID_FILE}"
-    export PAYLOAD_PID RETURN_CODE
+if [ -f "${B19_HOME:-/app}/.signals" ]; then
+  SIGNALS=$(decomment < "${B19_HOME:-/app}/.signals") || true
+else
+  SIGNALS="HUP INT QUIT TERM USR1 USR2"
+fi
+
+# Prints field N (0 = state) after the command name of /proc/PID/stat
+proc_field() {
+  local _stat _fields
+  { _stat=$(<"/proc/$1/stat"); } 2>/dev/null || return 1
+  read -ra _fields <<<"${_stat##*) }"
+  printf '%s\n' "${_fields[$2]}"
+}
+
+# Lists every record whose process still exists as "name pid role"
+list_records() {
+  local _file _name _pid _role
+  for _file in "${STATE_PATH}"/*.pid; do
+    [ -e "${_file}" ] || continue
+    _name="${_file##*/}"
+    _pid="" _role=""
+    read -r _pid _role 2>/dev/null < "${_file}" || true
+    [[ "${_pid}" =~ ^[0-9]+$ ]] && [ -e "/proc/${_pid}" ] || continue
+    printf '%s %s %s\n' "${_name%.pid}" "${_pid}" "${_role:-required}"
+  done
+}
+
+# Succeeds when PID started after our command, PID breaking a tie of clock ticks
+is_newer() {
+  local _ticks
+  _ticks=$(proc_field "$1" 19) || return 1
+  [ "${_ticks}" -gt "${CMD_TICKS}" ] || { [ "${_ticks}" -eq "${CMD_TICKS}" ] && [ "$1" -gt "${CMD_PID}" ]; }
+}
+
+# Holds a stop until every command started after ours is gone, so stops run newest first
+wait_newer() {
+  local _deadline _name _pid _role _waiting _logged=""
+  [ -n "${CMD_TICKS}" ] || return 0
+  _deadline=$(( SECONDS + STOP_TIMEOUT ))
+  while :; do
+    _waiting=""
+    while read -r _name _pid _role; do
+      [ "${_pid}" != "${CMD_PID}" ] || continue
+      if is_newer "${_pid}"; then _waiting="${_waiting:+${_waiting} }${_name}"; fi
+    done < <(list_records)
+    [ -n "${_waiting}" ] || return 0
+    if [ "${SECONDS}" -ge "${_deadline}" ]; then
+      b19-log warn "b19-exec" "$(_p "Stopping %s after %ss although %s still runs" "${NAME}" "${STOP_TIMEOUT}" "${_waiting}")"
+      return 0
+    fi
+    if [ "${_logged}" != "${_waiting}" ]; then
+      b19-log info "b19-exec" "$(_p "%s stops after %s" "${NAME}" "${_waiting}")"
+      _logged="${_waiting}"
+    fi
+    sleep 0.1
+  done
+}
+
+# Forwards SIGNAL to the command's process group; a stop waits for newer commands and is sent once
+on_signal() {
+  local _signal="$1"
+  if [[ "${STOP_SIGNALS}" == *" ${_signal} "* ]]; then
+    if [ "${STOPPING}" -eq 1 ]; then
+      b19-log debug "b19-exec" "$(_p "%s is already stopping, %s not forwarded again" "${NAME}" "${_signal}")"
+      return 0
+    fi
+    STOPPING=1
+    wait_newer
+  fi
+  b19-log info "b19-exec" "$(_p "Forwarding %s to %s (pid %s)" "${_signal}" "${NAME}" "${CMD_PID}")"
+  kill -s "${_signal}" -- "-${CMD_PID}" 2>/dev/null \
+    || b19-log debug "b19-exec" "$(_p "%s (pid %s) is already gone" "${NAME}" "${CMD_PID}")"
+}
+
+# Writes FILE atomically with CONTENT
+write_state() {
+  printf '%s\n' "$2" > "$1.$$"
+  mv --force "$1.$$" "$1"
+}
+
+# Claims NAME under the state lock, starts the command in its own session and records it
+start_command() {
+  local _lock _pid _role _stdin=/proc/1/fd/0
+  [ "${ROLE}" = payload ] || _stdin=/dev/null
+  exec {_lock}>/dev/null
+  if [ "${TRACKED}" -eq 1 ]; then
+    exec {_lock}>"${STATE_PATH}/.lock"
+    if ! flock --wait 5 "${_lock}"; then
+      b19-log warn "b19-exec" "$(_p "Timed out waiting for %s, %s runs untracked" "${STATE_PATH}/.lock" "${NAME}")"
+      TRACKED=0
+    elif read -r _pid _role 2>/dev/null < "${STATE_PATH}/${NAME}.pid" && [ -e "/proc/${_pid}" ]; then
+      if [ -n "${EXPLICIT_NAME}" ]; then
+        b19-log error "b19-exec" "$(_p "%s is already running (pid %s)" "${NAME}" "${_pid}")"
+        exec {_lock}>&-
+        return 1
+      fi
+      b19-log warn "b19-exec" "$(_p "%s is already running (pid %s), this one runs untracked" "${NAME}" "${_pid}")"
+      TRACKED=0
+    fi
+  fi
+  setsid "$@" < "${_stdin}" 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" {_lock}>&- &
+  CMD_PID=$!
+  CMD_TICKS=$(proc_field "${CMD_PID}" 19) || CMD_TICKS=""
+  if [ "${TRACKED}" -eq 1 ]; then
+    rm -f "${STATE_PATH}/${NAME}.exit"
+    write_state "${STATE_PATH}/${NAME}.pid" "${CMD_PID} ${ROLE}"
+    b19-log debug "b19-exec" "$(_p "Recorded %s (pid %s, %s)" "${NAME}" "${CMD_PID}" "${ROLE}")"
+  fi
+  exec {_lock}>&-
+}
+
+# Drops our record when it still names our command
+forget_command() {
+  local _pid _role
+  [ "${TRACKED}" -eq 1 ] || return 0
+  read -r _pid _role 2>/dev/null < "${STATE_PATH}/${NAME}.pid" || return 0
+  [ "${_pid}" != "${CMD_PID}" ] || rm -f "${STATE_PATH}/${NAME}.pid"
+}
+
+# Prints the exit code a failed required daemon left, waiting briefly for its supervisor to write it
+failed_code() {
+  local _code="" _try
+  for _try in $(seq 20); do
+    read -r _code 2>/dev/null < "${STATE_PATH}/$1.exit" && [ -n "${_code}" ] && break
+    sleep 0.1
+  done
+  [ -n "${_code}" ] || b19-log warn "b19-exec" "$(_p "No exit code recorded for %s after %s tries" "$1" "${_try}")"
+  printf '%s\n' "${_code:-1}"
+}
+
+# Stops every other recorded command through its supervisor and waits until all are gone
+stop_others() {
+  local _name _pid _role _left _deadline _logged=""
+  while read -r _name _pid _role; do
+    [ "${_role}" != payload ] || continue
+    b19-log info "b19-exec" "$(_p "Stopping %s (pid %s) after %s" "${_name}" "${_pid}" "${NAME}")"
+    kill -s TERM "$(proc_field "${_pid}" 1)" 2>/dev/null \
+      || b19-log debug "b19-exec" "$(_p "%s (pid %s) is already gone" "${_name}" "${_pid}")"
+  done < <(list_records)
+  _deadline=$(( SECONDS + STOP_TIMEOUT ))
+  while _left=$(list_records | cut --delimiter=' ' --fields=1 | paste --serial --delimiters=' ') && [ -n "${_left}" ]; do
+    if [ "${SECONDS}" -ge "${_deadline}" ]; then
+      b19-log warn "b19-exec" "$(_p "Leaving after %ss although %s still runs" "${STOP_TIMEOUT}" "${_left}")"
+      return 0
+    fi
+    if [ "${_logged}" != "${_left}" ]; then
+      b19-log debug "b19-exec" "$(_p "Waiting for %s to stop" "${_left}")"
+      _logged="${_left}"
+    fi
+    sleep 0.1
+  done
+}
+
+# Runs the command until it exits, forwarding signals; the payload also fails fast on a required daemon
+supervise() {
+  local _done _code _name _pid _role _watcher _signal
+  local -A _watchers=()
+  STOPPING=0
+  FAILED=""
+  CMD_PID=""
+  CMD_TICKS=""
+  TRACKED=1
+  if ! mkdir -p "${STATE_PATH}" 2>/dev/null || ! [ -w "${STATE_PATH}" ]; then
+    b19-log warn "b19-exec" "$(_p "Cannot write %s as uid %s, %s runs untracked" "${STATE_PATH}" "$(id --user)" "${NAME}")"
+    TRACKED=0
+  fi
+  # shellcheck disable=SC2086 # the signal list splits on purpose
+  trap '' ${SIGNALS}
+  open_loggers "$1"
+  for _signal in ${SIGNALS}; do
+    # shellcheck disable=SC2064 # bound per signal
+    trap "on_signal ${_signal}" "${_signal}"
+  done
+
+  if [ "${ROLE}" = payload ] && [ "${TRACKED}" -eq 1 ]; then
+    for _done in "${STATE_PATH}"/*.exit; do
+      [ -e "${_done}" ] || continue
+      _name="${_done##*/}"
+      FAILED="${_name%.exit}"
+      RETURN_CODE=$(failed_code "${FAILED}")
+      b19-log error "b19-exec" "$(_p "Not starting %s: required %s exited with %s" "${NAME}" "${FAILED}" "${RETURN_CODE}")"
+      stop_others
+      close_loggers
+      exit "$(( RETURN_CODE == 0 ? 1 : RETURN_CODE ))"
+    done
   fi
 
-# Close our ends of the pipes → coprocesses receive EOF → drain fully
-exec {STDOUT_LOG_FD}>&-
-exec {STDERR_LOG_FD}>&-
-# Wait for each b19-log coprocess by PID. `|| true` because the subshell may
-# have already been reaped (exit status 127) — we only care that it finished.
-[ -z "${STDOUT_LOG_PID}" ] || wait "${STDOUT_LOG_PID}" 2>/dev/null || true
-[ -z "${STDERR_LOG_PID}" ] || wait "${STDERR_LOG_PID}" 2>/dev/null || true
+  start_command "$@" || { close_loggers; exit 1; }
 
+  if [ "${ROLE}" = payload ] && [ "${TRACKED}" -eq 1 ]; then
+    while read -r _name _pid _role; do
+      [ "${_role}" = required ] || continue
+      # shellcheck disable=SC2086 # the signal list splits on purpose
+      ( trap '' ${SIGNALS}; exec tail --pid="${_pid}" --follow /dev/null ) &
+      _watchers[$!]="${_name}"
+      b19-log debug "b19-exec" "$(_p "%s fails fast when %s (pid %s) exits" "${NAME}" "${_name}" "${_pid}")"
+    done < <(list_records)
+  fi
+
+  while :; do
+    _done=""
+    wait -n -p _done "${CMD_PID}" "${!_watchers[@]}" 2>/dev/null && _code=0 || _code=$?
+    # Bash 5.2 reaps a child that exits during a trap, so wait -n names no PID: collect it by hand
+    if [ -z "${_done:-}" ] && ! [ -e "/proc/${CMD_PID}" ]; then
+      _done="${CMD_PID}"
+      wait "${CMD_PID}" 2>/dev/null && _code=0 || _code=$?
+    fi
+    for _watcher in "${!_watchers[@]}"; do
+      [ -z "${_done:-}" ] || break
+      [ -e "/proc/${_watcher}" ] || _done="${_watcher}"
+    done
+    if [ -z "${_done:-}" ]; then
+      b19-log debug "b19-exec" "$(_p "Wait for %s interrupted with %s" "${NAME}" "${_code}")"
+      continue
+    fi
+    if [ "${_done}" = "${CMD_PID}" ]; then
+      RETURN_CODE="${_code}"
+      break
+    fi
+    _name="${_watchers[${_done}]}"
+    unset "_watchers[${_done}]"
+    if [ "${STOPPING}" -eq 1 ] || [ -n "${FAILED}" ]; then
+      b19-log debug "b19-exec" "$(_p "%s exited while %s stops" "${_name}" "${NAME}")"
+      continue
+    fi
+    FAILED="${_name}"
+    FAILED_CODE=$(failed_code "${_name}")
+    b19-log error "b19-exec" "$(_p "Stopping %s: required %s exited with %s" "${NAME}" "${_name}" "${FAILED_CODE}")"
+    kill -s TERM -- "-${CMD_PID}" 2>/dev/null || true
+  done
+
+  for _watcher in "${!_watchers[@]}"; do
+    kill -s KILL "${_watcher}" 2>/dev/null || true
+    wait "${_watcher}" 2>/dev/null || true
+  done
+
+  if [ "${ROLE}" = payload ]; then
+    b19-log debug "b19-exec" "$(_p "%s (pid %s) exited with %s" "${NAME}" "${CMD_PID}" "${RETURN_CODE}")"
+    forget_command
+    [ "${TRACKED}" -eq 0 ] || stop_others
+    if [ -n "${FAILED}" ]; then
+      RETURN_CODE="$(( FAILED_CODE == 0 ? 1 : FAILED_CODE ))"
+    fi
+  elif [ "${STOPPING}" -eq 1 ]; then
+    b19-log info "b19-exec" "$(_p "%s (pid %s) stopped with %s" "${NAME}" "${CMD_PID}" "${RETURN_CODE}")"
+  elif [ "${ROLE}" = optional ]; then
+    b19-log warn "b19-exec" "$(_p "Optional %s (pid %s) exited with %s, the container keeps running" "${NAME}" "${CMD_PID}" "${RETURN_CODE}")"
+  else
+    b19-log error "b19-exec" "$(_p "Required %s (pid %s) exited with %s" "${NAME}" "${CMD_PID}" "${RETURN_CODE}")"
+    [ "${TRACKED}" -eq 0 ] || write_state "${STATE_PATH}/${NAME}.exit" "${RETURN_CODE}"
+  fi
+  forget_command
+
+  close_loggers
+  exit "${RETURN_CODE}"
+}
+
+if [ "${BACKGROUND}" -eq 0 ]; then
+  supervise "$@"
+fi
+
+( supervise "$@" ) < /dev/null > /proc/1/fd/1 2> /proc/1/fd/2 &
+SUPERVISOR_PID=$!
+DEADLINE=$(( SECONDS + 30 ))
+while [ -e "/proc/${SUPERVISOR_PID}" ] && [ "$(proc_field "${SUPERVISOR_PID}" 0 2>/dev/null)" != Z ]; do
+  if read -r DAEMON_PID _ 2>/dev/null < "${STATE_PATH}/${NAME}.pid" \
+    && [ "$(proc_field "${DAEMON_PID}" 1 2>/dev/null)" = "${SUPERVISOR_PID}" ]; then
+    b19-log info "b19-exec" "$(_p "Started %s (pid %s, %s)" "${NAME}" "${DAEMON_PID}" "${ROLE}")"
+    exit 0
+  fi
+  if [ "${SECONDS}" -ge "${DEADLINE}" ]; then
+    b19-log warn "b19-exec" "$(_p "%s has no record after %ss, it runs untracked" "${NAME}" "30")"
+    exit 0
+  fi
+  sleep 0.05
+done
+wait "${SUPERVISOR_PID}" && RETURN_CODE=0 || RETURN_CODE=$?
+b19-log error "b19-exec" "$(_p "%s failed to start, exit code %s" "${NAME}" "${RETURN_CODE}")"
 exit "${RETURN_CODE}"

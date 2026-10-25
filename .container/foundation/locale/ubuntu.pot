@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-23 18:50+0000\n"
+"POT-Creation-Date: 2026-10-25 05:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -150,28 +150,150 @@ msgstr ""
 msgid "LANG %s not generated — falling back to C.UTF-8"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:85
+#: .container/foundation/tools.d/b19-exec:71
 msgid "Unknown option:"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:93
+#: .container/foundation/tools.d/b19-exec:78
 msgid "No command provided. Usage: b19-exec [OPTIONS] -- COMMAND [ARGS...]"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:104
+#: .container/foundation/tools.d/b19-exec:87
 msgid "Invalid log level:"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:104
+#: .container/foundation/tools.d/b19-exec:87
 msgid "Must be one of: error, bad, warn, good, info, note"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:118
+#: .container/foundation/tools.d/b19-exec:101
+msgid "%s must be true or false, got %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:107
+msgid "Invalid name %s: use letters, digits, dot, dash and underscore"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:111
+#: .container/foundation/tools.d/b19-exec:119
+msgid "%s needs %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:115
+msgid "%s and %s exclude each other"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:123
+msgid "%s must be a whole number of seconds, got %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:139
 msgid "Passthrough: %s writes to the container directly"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:131
-msgid "%s must be true or false, got %s"
+#: .container/foundation/tools.d/b19-exec:215
+msgid "Stopping %s after %ss although %s still runs"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:219
+msgid "%s stops after %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:231
+msgid "%s is already stopping, %s not forwarded again"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:237
+msgid "Forwarding %s to %s (pid %s)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:239
+#: .container/foundation/tools.d/b19-exec:305
+msgid "%s (pid %s) is already gone"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:256
+msgid "Timed out waiting for %s, %s runs untracked"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:260
+msgid "%s is already running (pid %s)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:264
+msgid "%s is already running (pid %s), this one runs untracked"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:274
+msgid "Recorded %s (pid %s, %s)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:294
+msgid "No exit code recorded for %s after %s tries"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:303
+msgid "Stopping %s (pid %s) after %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:310
+msgid "Leaving after %ss although %s still runs"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:314
+msgid "Waiting for %s to stop"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:331
+msgid "Cannot write %s as uid %s, %s runs untracked"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:348
+msgid "Not starting %s: required %s exited with %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:363
+msgid "%s fails fast when %s (pid %s) exits"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:371
+msgid "Wait for %s interrupted with %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:381
+msgid "%s exited while %s stops"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:386
+msgid "Stopping %s: required %s exited with %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:396
+msgid "%s (pid %s) exited with %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:403
+msgid "%s (pid %s) stopped with %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:405
+msgid "Optional %s (pid %s) exited with %s, the container keeps running"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:407
+msgid "Required %s (pid %s) exited with %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:426
+msgid "Started %s (pid %s, %s)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:430
+msgid "%s has no record after %ss, it runs untracked"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec:436
+msgid "%s failed to start, exit code %s"
 msgstr ""
 
 #: .container/foundation/tools.d/b19-exec-with-secrets:33
@@ -337,7 +459,7 @@ msgid "Holding lock %s"
 msgstr ""
 
 #: .container/foundation/tools.d/b19-log:71
-#: .container/foundation/tools.d/b19-log:159
+#: .container/foundation/tools.d/b19-log:160
 msgid "Unknown log level: %s. Valid: error, warn, info, debug"
 msgstr ""
 
@@ -383,21 +505,23 @@ msgid ""
 "[--] <command> [args...]"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-run:124
+#: .container/foundation/tools.d/b19-run:130
 msgid "Attempt %s/%s failed (exit code %s), retrying in %s s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-run:134
-#: .container/foundation/tools.d/b19-run:136
+#: .container/foundation/tools.d/b19-run:138
+#: .container/foundation/tools.d/b19-run:151
+#: .container/foundation/tools.d/b19-run:153
 msgid "success [%s]"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-run:157
-msgid "failure (exit code %s), [%s]"
+#: .container/foundation/tools.d/b19-run:143
+#: .container/foundation/tools.d/b19-run:185
+msgid "failure (exit code %s) [%s]"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-run:168
-msgid "failure (exit code %s) [%s]"
+#: .container/foundation/tools.d/b19-run:174
+msgid "failure (exit code %s), [%s]"
 msgstr ""
 
 #: .container/foundation/tools.d/build-stage:23
@@ -976,18 +1100,19 @@ msgstr ""
 msgid "Updating CA certificates"
 msgstr ""
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:30
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:43
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:31
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:45
 msgid "Ensure exists %s"
 msgstr ""
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:32
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:45
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:33
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:47
 msgid "Set owner %s:0 %s"
 msgstr ""
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:36
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:47
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:37
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:38
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:49
 msgid "Set permissions of %s"
 msgstr ""
 
@@ -1089,19 +1214,19 @@ msgstr ""
 msgid "Render %s"
 msgstr ""
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:17
-msgid "Caught %s, transferring to %s"
+#: .container/user/entrypoint.d/0000-set-signals.sh:9
+msgid "Caught %s, b19-exec forwards it to the commands it runs"
 msgstr ""
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:20
-msgid "Caught %s, no active payload process to signal"
+#: .container/user/entrypoint.d/0000-set-signals.sh:15
+msgid "Clearing stale records in %s"
 msgstr ""
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:26
+#: .container/user/entrypoint.d/0000-set-signals.sh:22
 msgid "%s not found, no signals trapped"
 msgstr ""
 
-#: .container/user/entrypoint.d/0000-set-signals.sh:36
+#: .container/user/entrypoint.d/0000-set-signals.sh:32
 msgid "%s trapped"
 msgstr ""
 
@@ -1141,11 +1266,11 @@ msgstr ""
 msgid "Set gid of %s to %s"
 msgstr ""
 
-#: .container/user/entrypoint.d/0010-remap-user.sh:57
+#: .container/user/entrypoint.d/0010-remap-user.sh:59
 msgid "Set owner of %s to %s"
 msgstr ""
 
-#: .container/user/entrypoint.d/0010-remap-user.sh:63
+#: .container/user/entrypoint.d/0010-remap-user.sh:66
 msgid "Dropping root, restarting entrypoint as %s:%s"
 msgstr ""
 
@@ -1336,6 +1461,22 @@ msgstr ""
 
 #: .container/user/healthcheck.d/0800-check-listen.sh:29
 msgid "Not listening on 127.0.0.1:%s"
+msgstr ""
+
+#: .container/user/healthcheck.d/0900-check-daemons.sh:18
+msgid "Required daemon %s exited with %s"
+msgstr ""
+
+#: .container/user/healthcheck.d/0900-check-daemons.sh:28
+msgid "Skipping optional daemon %s (pid %s)"
+msgstr ""
+
+#: .container/user/healthcheck.d/0900-check-daemons.sh:32
+msgid "Daemon %s (pid %s) is gone"
+msgstr ""
+
+#: .container/user/healthcheck.d/0900-check-daemons.sh:40
+msgid "%s required daemons running in %s"
 msgstr ""
 
 #: .container/user/benchmark.d/0400-disk-rand-io/setup.sh:10
@@ -1544,31 +1685,43 @@ msgstr ""
 msgid "Test 12 failed: Exit code %s (expected 7)"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:156
-msgid "Test 13: Payload PID file published and cleaned up"
+#: .container/user/test.d/0200-b19-exec.sh:152
+msgid "Test 13: Payload PID record published and cleaned up"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:173
-msgid "Test 13 failed: no live PID observed in the file during run"
-msgstr ""
-
-#: .container/user/test.d/0200-b19-exec.sh:176
-msgid "Test 13 failed: PID file not removed after run"
-msgstr ""
-
-#: .container/user/test.d/0200-b19-exec.sh:179
-msgid "Test 13 passed: PID file published then cleaned up (pid=%s)"
-msgstr ""
-
-#: .container/user/test.d/0200-b19-exec.sh:183
+#: .container/user/test.d/0200-b19-exec.sh:168
 msgid "Test 14: Passthrough bypasses b19-log"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:198
+#: .container/user/test.d/0200-b19-exec.sh:184
 msgid "Test 15: Invalid passthrough value"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:203
+#: .container/user/test.d/0200-b19-exec.sh:205
+msgid "%s still recorded after %s tries"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:214
+msgid "Test 16: Background daemons stop in reverse start order"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:230
+msgid "Test 17: Required daemon exit fails fast"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:245
+msgid "Test 18: Optional daemon exit keeps the payload"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:260
+msgid "Test 19: Health check and stop on payload exit"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:267
+msgid "Test 20: Invalid background calls"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-exec.sh:283
 msgid "All b19-exec tests passed"
 msgstr ""
 
@@ -1576,7 +1729,7 @@ msgstr ""
 msgid "Skipping the decimal-comma case: no such locale among %s"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-log-json.sh:70
+#: .container/user/test.d/0200-b19-log-json.sh:90
 msgid "%s escapes, maps levels, filters and passes payload objects through"
 msgstr ""
 

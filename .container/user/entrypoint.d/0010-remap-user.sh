@@ -52,12 +52,15 @@
   fi
 
   # Group stays 0 so the g+rwX arbitrary-uid posture of the home survives.
-  if [ "$(stat --format=%u "${B19_HOME}")" != "${B19_PUID}" ]
-  then
-    b19-run "REMAP" "$(_p "Set owner of %s to %s" "${B19_HOME}" "${B19_PUID}")" -- \
-      chown --recursive "${B19_PUID}" "${B19_HOME}"
-  fi
-  unset _remap_owner
+  for _remap_dir in "${B19_HOME}" "${B19_RUNTIME_PATH}"
+  do
+    if [ -d "${_remap_dir}" ] && [ "$(stat --format=%u "${_remap_dir}")" != "${B19_PUID}" ]
+    then
+      b19-run "REMAP" "$(_p "Set owner of %s to %s" "${_remap_dir}" "${B19_PUID}")" -- \
+        chown --recursive "${B19_PUID}" "${_remap_dir}"
+    fi
+  done
+  unset _remap_owner _remap_dir
   export B19_UID="${B19_PUID}" B19_GID="${B19_PGID:-${B19_GID}}"
 
   b19-log info "REMAP" "$(_p "Dropping root, restarting entrypoint as %s:%s" "${B19_PUID}" "${B19_PGID:-$(id --group "${B19_USER}")}")"

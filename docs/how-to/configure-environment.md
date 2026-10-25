@@ -11,7 +11,7 @@ Every `B19_*` variable on one page: default, accepted values, scope, and what ea
 ## Conventions
 
 - **Scope** column: `build` = set via `ARG`/`--build-arg`; `runtime` = set via
-    `docker run -e` or compose `environment:`; `build + runtime` = both
+  `docker run -e` or compose `environment:`; `build + runtime` = both
 - All boolean toggles default to **enabled**; set to `false` to disable
 - Variables marked `Y`/`N` follow the pattern: `Y` = active, `N` = inactive
 - Unless noted, all variables are declared in `b19/ubuntu/Dockerfile` and inherited by every downstream image
@@ -72,6 +72,7 @@ the next hook.
 | `B19_EXEC_STDOUT_LEVEL`    | `info`  | `error`, `bad`, `warn`, `good`, `info`, `note` | Default `b19-log` level for stdout lines in `b19-exec`.                                                                                                                              |
 | `B19_EXEC_STDERR_LEVEL`    | `warn`  | (same as above)                                | Default `b19-log` level for stderr lines in `b19-exec`.                                                                                                                              |
 | `B19_EXEC_PASSTHROUGH`     | `false` | `true`, `false`                                | `b19-exec` hands payload output to the container unchanged, bypassing `b19-log`.                                                                                                     |
+| `B19_EXEC_STOP_TIMEOUT`    | `30`    | seconds                                        | How long each `b19-exec` stop waits for the commands started after it before it goes ahead. See [b19-exec](use-b19-exec.md#several-daemons---background---name-name).                |
 | `B19_LOG_FORMAT`           | `text`  | `text`, `json`                                 | `json`: `b19-log` writes one JSON object per line; a piped JSON line passes unchanged.                                                                                               |
 
 ## Behavior
@@ -83,6 +84,7 @@ the next hook.
 | `B19_IMMUTABLE`            | `N`              | `N`, `Y`                   | `Y` skips overlay copy and j2 template rendering at startup. Locks the filesystem to its build-time state.                                                                                                     |
 | `B19_OFFGRID_MODE`         | `N`              | `N`, `Y`                   | `Y` blocks all internet access. At build time: prevents downloads (cache miss = fail), skips SSH keyscan and APT upgrade. At runtime: network healthchecks skip with exit 0. See [OFFGRID.md](use-offgrid.md). |
 | `B19_RUNTIME_MODE`         | `docker-compose` | any string                 | Informational runtime environment identifier. Available for downstream images to adjust behavior.                                                                                                              |
+| `B19_RUNTIME_PATH`         | `/run/b19`       | directory                  | Runtime state the container rebuilds on every start, such as the `b19-exec/<name>.pid` records. Mount a tmpfs here beside a read-only root.                                                                    |
 | `B19_SINGLE_COMMAND_IMAGE` | `N`              | `N`, `Y`                   | `Y` lets a first arg that is not a command fall through to `5000-start.sh` — an image wrapping ONE program takes its subcommand as argv. `N` exits `127`. Unconsumed argv still fails `127` at `9000`.         |
 | `B19_TEST_TIMEOUT`         | `60`             | positive integer (seconds) | Seconds `test.d` waits for healthcheck to pass before running tests.                                                                                                                                           |
 | `B19_OVERLAY`              | (unset)          | directory name             | Name of an overlay directory under `B19_OVERLAYS_PATH/` to apply at startup. Contents are recursively copied to `/`.                                                                                           |
@@ -133,24 +135,24 @@ checks](use-healthcheck.d.md#egress-checks).
 
 Three-tier fetch model: local cache → Docker BuildKit cache → aria2c download.
 
-| Variable                  | Default                      | Accepted values    | Controls                                                       |
-| ------------------------- | ---------------------------- | ------------------ | -------------------------------------------------------------- |
-| `B19_FETCH_LOCAL_CACHE`   | `Y`                          | `Y`, `N`           | Enable Tier 1: check `.fetch` build context before network     |
-| `B19_FETCH_DOCKER_CACHE`  | `Y`                          | `Y`, `N`           | Enable Tier 2: check BuildKit persistent cache before download |
-| `B19_FETCH_LOCAL_PATH`    | `/fetch`                     | absolute path      | Mount point for `.fetch` context (set by Dockerfile `--mount`) |
-| `B19_CACHE_PATH`          | `/var/cache/b19`             | absolute path      | Parent of the download cache mount, writable by `B19_UID`      |
-| `B19_DOWNLOAD_ATTEMPTS`   | `3`                          | positive integer   | Whole-download attempts around aria2c; `1` disables the retry  |
-| `B19_DOWNLOAD_PATH`       | `${B19_CACHE_PATH}/download` | absolute path      | BuildKit cache mount target for aria2c downloads               |
-| `B19_DOWNLOAD_DISK_CACHE` | `64m`                        | aria2c size string | aria2c in-memory disk cache size                               |
-| `B19_DOWNLOAD_MAX_TRIES`  | `4`                          | positive integer   | Max aria2c retry attempts per download                         |
-| `B19_DOWNLOAD_RETRY_CODES`| `1 2 6 22 29`                | aria2c exit codes  | Codes treated as transient; anything else fails immediately    |
-| `B19_DOWNLOAD_RETRY_WAIT` | `16`                         | positive integer   | Seconds between aria2c retries                                 |
-| `B19_BUILD_CA_FILE`       | (staged)                     | absolute path      | Build-host CA bundle staged from `M6E_CA_CERTIFICATES`         |
-| `B19_BUILD_CA_ANCHOR`     | (transient)                  | absolute path      | Where a root stage installs it, then drops it pre-commit       |
-| `B19_CACHE_CHECK_TIMEOUT` | `2`                          | positive integer   | Seconds `check-reachable` waits for the apt/near-cache probe   |
-| `B19_CACHE_GUARD_STAMP`   | `.b19-cache-stamp`           | filename           | Freshness stamp `b19-cache-guard` writes inside the cache      |
-| `B19_CACHE_GUARD_TIMEOUT` | `900`                        | positive integer   | Seconds to wait for another holder’s refresh lock              |
-| `M6E_SHARED_CACHE`        | `N`                          | `Y` / `N`          | Cache is fleet-shared, so its writer owns staleness            |
+| Variable                   | Default                      | Accepted values    | Controls                                                       |
+| -------------------------- | ---------------------------- | ------------------ | -------------------------------------------------------------- |
+| `B19_FETCH_LOCAL_CACHE`    | `Y`                          | `Y`, `N`           | Enable Tier 1: check `.fetch` build context before network     |
+| `B19_FETCH_DOCKER_CACHE`   | `Y`                          | `Y`, `N`           | Enable Tier 2: check BuildKit persistent cache before download |
+| `B19_FETCH_LOCAL_PATH`     | `/fetch`                     | absolute path      | Mount point for `.fetch` context (set by Dockerfile `--mount`) |
+| `B19_CACHE_PATH`           | `/var/cache/b19`             | absolute path      | Parent of the download cache mount, writable by `B19_UID`      |
+| `B19_DOWNLOAD_ATTEMPTS`    | `3`                          | positive integer   | Whole-download attempts around aria2c; `1` disables the retry  |
+| `B19_DOWNLOAD_PATH`        | `${B19_CACHE_PATH}/download` | absolute path      | BuildKit cache mount target for aria2c downloads               |
+| `B19_DOWNLOAD_DISK_CACHE`  | `64m`                        | aria2c size string | aria2c in-memory disk cache size                               |
+| `B19_DOWNLOAD_MAX_TRIES`   | `4`                          | positive integer   | Max aria2c retry attempts per download                         |
+| `B19_DOWNLOAD_RETRY_CODES` | `1 2 6 22 29`                | aria2c exit codes  | Codes treated as transient; anything else fails immediately    |
+| `B19_DOWNLOAD_RETRY_WAIT`  | `16`                         | positive integer   | Seconds between aria2c retries                                 |
+| `B19_BUILD_CA_FILE`        | (staged)                     | absolute path      | Build-host CA bundle staged from `M6E_CA_CERTIFICATES`         |
+| `B19_BUILD_CA_ANCHOR`      | (transient)                  | absolute path      | Where a root stage installs it, then drops it pre-commit       |
+| `B19_CACHE_CHECK_TIMEOUT`  | `2`                          | positive integer   | Seconds `check-reachable` waits for the apt/near-cache probe   |
+| `B19_CACHE_GUARD_STAMP`    | `.b19-cache-stamp`           | filename           | Freshness stamp `b19-cache-guard` writes inside the cache      |
+| `B19_CACHE_GUARD_TIMEOUT`  | `900`                        | positive integer   | Seconds to wait for another holder’s refresh lock              |
+| `M6E_SHARED_CACHE`         | `N`                          | `Y` / `N`          | Cache is fleet-shared, so its writer owns staleness            |
 
 Both CA variables are inert unless the build host sets `M6E_CA_CERTIFICATES` —
 see [b19-fetch.md](use-b19-fetch.md) for why a privately fronted near cache needs
@@ -160,9 +162,9 @@ See [OFFGRID.md](use-offgrid.md) for the full three-tier model and interaction w
 
 ## Certificate Distrust (build-time)
 
-| Variable          | Default | Accepted values                              | Controls                                                                                     |
-| ----------------- | ------- | -------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `B19_CA_DISTRUST` | `""`    | SHA-256 fingerprints, space or comma divided | Added to `/etc/b19/ca-distrust.d/*.sha256`. [use-ca-distrust](use-ca-distrust.md)            |
+| Variable          | Default | Accepted values                              | Controls                                                                          |
+| ----------------- | ------- | -------------------------------------------- | --------------------------------------------------------------------------------- |
+| `B19_CA_DISTRUST` | `""`    | SHA-256 fingerprints, space or comma divided | Added to `/etc/b19/ca-distrust.d/*.sha256`. [use-ca-distrust](use-ca-distrust.md) |
 
 ## Report
 
@@ -246,14 +248,13 @@ All runners discover scripts in these directories.
 Set automatically at runtime by the entrypoint system. Not intended for user
 configuration, but useful in downstream scripts.
 
-| Variable                      | Set by                   | Purpose                                                                                                                                                    |
-| ----------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ENTRYPOINT_COMMAND_EXECUTED` | `2000-select-command.sh` | `Y`/`N` — `Y` when argv is a command `4000-run-command.sh` runs; gates service start                                                                       |
-| `PAYLOAD_PID`                 | `b19-exec`               | PID of the main service process — published to `${B19_HOME}/.payload.pid` for signal forwarding (the subprocess `export` can’t reach the entrypoint shell) |
-| `RETURN_CODE`                 | `b19-exec`               | Exit code of the main service                                                                                                                              |
-| `NUMPROCS`                    | `0200-set-cpu-count.sh`  | Detected CPU count (K8S > cgroups v2 > nproc)                                                                                                              |
-| `STAGE`                       | `build-stage`            | Current build stage name (foundation, user, etc.)                                                                                                          |
-| `_B19_I18N_MODE`              | `b19-i18n`               | Current i18n mode: `gettext`, `passthrough`, `disabled`                                                                                                    |
+| Variable                      | Set by                   | Purpose                                                                              |
+| ----------------------------- | ------------------------ | ------------------------------------------------------------------------------------ |
+| `ENTRYPOINT_COMMAND_EXECUTED` | `2000-select-command.sh` | `Y`/`N` — `Y` when argv is a command `4000-run-command.sh` runs; gates service start |
+| `RETURN_CODE`                 | `b19-exec`               | Exit code of the main service                                                        |
+| `NUMPROCS`                    | `0200-set-cpu-count.sh`  | Detected CPU count (K8S > cgroups v2 > nproc)                                        |
+| `STAGE`                       | `build-stage`            | Current build stage name (foundation, user, etc.)                                    |
+| `_B19_I18N_MODE`              | `b19-i18n`               | Current i18n mode: `gettext`, `passthrough`, `disabled`                              |
 
 ## Telemetry opt-out
 
@@ -317,6 +318,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_ENTRYPOINT_SKIP_*`         | runtime         | Per-script Skip  |
 | `B19_ENTRYPOINT_VERBOSITY`      | runtime         | Logging          |
 | `B19_EXEC_PASSTHROUGH`          | runtime         | Logging          |
+| `B19_EXEC_STOP_TIMEOUT`         | runtime         | Timeouts         |
 | `B19_EXEC_STDERR_LEVEL`         | runtime         | Logging          |
 | `B19_EXEC_STDOUT_LEVEL`         | runtime         | Logging          |
 | `B19_FETCH_DOCKER_CACHE`        | build           | Download         |
@@ -363,6 +365,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_REPORTD_FAT_FILES_AMOUNT`  | runtime         | Report           |
 | `B19_REQUIRED_SECRETS`          | runtime         | Behavior         |
 | `B19_RUN_BACKOFF_MAX`           | runtime         | Timeouts         |
+| `B19_RUNTIME_PATH`              | runtime         | Behavior         |
 | `B19_RUN_TIMEOUT`               | runtime         | Timeouts         |
 | `B19_RUN_TIMING_PRECISION`      | runtime         | Logging          |
 | `B19_SECRETS_ENABLED`           | runtime         | Feature Toggles  |
@@ -380,10 +383,10 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_TOOLS_PATH`                | runtime         | Hook Directories |
 | `B19_UBUNTU_HASH`               | build           | Build-time Only  |
 
-| `B19_UBUNTU_MIRROR_AMD64`       | build           | Build-time Only  |
-| `B19_UBUNTU_MIRROR_ARM64`       | build           | Build-time Only  |
-| `B19_UBUNTU_MIRROR_RISCV64`     | build           | Build-time Only  |
-| `B19_UBUNTU_SERIES`             | build           | Build-time Only  |
-| `B19_UID`                       | build + runtime | User Identity    |
-| `B19_USER`                      | build + runtime | User Identity    |
-| `B19_VERBOSITY`                 | build + runtime | Logging          |
+| `B19_UBUNTU_MIRROR_AMD64` | build | Build-time Only |
+| `B19_UBUNTU_MIRROR_ARM64` | build | Build-time Only |
+| `B19_UBUNTU_MIRROR_RISCV64` | build | Build-time Only |
+| `B19_UBUNTU_SERIES` | build | Build-time Only |
+| `B19_UID` | build + runtime | User Identity |
+| `B19_USER` | build + runtime | User Identity |
+| `B19_VERBOSITY` | build + runtime | Logging |
