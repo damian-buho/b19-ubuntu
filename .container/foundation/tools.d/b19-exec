@@ -174,7 +174,7 @@ fi
 # Prints field N (0 = state) after the command name of /proc/PID/stat
 proc_field() {
   local _stat _fields
-  { _stat=$(<"/proc/$1/stat"); } 2>/dev/null || return 1
+  { read -r _stat < "/proc/$1/stat"; } 2>/dev/null || return 1
   read -ra _fields <<<"${_stat##*) }"
   printf '%s\n' "${_fields[$2]}"
 }
