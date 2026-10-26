@@ -133,6 +133,12 @@ ROLE=payload
 EXPLICIT_NAME="${NAME}"
 NAME="${NAME:-payload}"
 
+if [ -f "${B19_HOME:-/app}/.signals" ]; then
+  SIGNALS=$(decomment < "${B19_HOME:-/app}/.signals") || true
+else
+  SIGNALS="HUP INT QUIT TERM USR1 USR2"
+fi
+
 # Routes the command output through one b19-log per stream, or straight to the container
 open_loggers() {
   if [ "${PASSTHROUGH}" = true ]; then
@@ -142,9 +148,11 @@ open_loggers() {
     exec {STDERR_LOG_FD}>/proc/1/fd/2
     STDERR_LOG_PID=""
   else
-    exec {STDOUT_LOG_FD}> >(b19-log "${STDOUT_LEVEL}" "${STDOUT_TAG}" > /proc/1/fd/1)
+    # shellcheck disable=SC2086 # the signal list splits on purpose
+    exec {STDOUT_LOG_FD}> >(trap '' ${SIGNALS}; exec b19-log "${STDOUT_LEVEL}" "${STDOUT_TAG}" > /proc/1/fd/1)
     STDOUT_LOG_PID=$!
-    exec {STDERR_LOG_FD}> >(b19-log "${STDERR_LEVEL}" "${STDERR_TAG}" > /proc/1/fd/2)
+    # shellcheck disable=SC2086 # the signal list splits on purpose
+    exec {STDERR_LOG_FD}> >(trap '' ${SIGNALS}; exec b19-log "${STDERR_LEVEL}" "${STDERR_TAG}" > /proc/1/fd/2)
     STDERR_LOG_PID=$!
   fi
 }
@@ -163,12 +171,6 @@ if [ "${FOREGROUND}" -eq 1 ]; then
     && RETURN_CODE=0 || RETURN_CODE=$?
   close_loggers
   exit "${RETURN_CODE}"
-fi
-
-if [ -f "${B19_HOME:-/app}/.signals" ]; then
-  SIGNALS=$(decomment < "${B19_HOME:-/app}/.signals") || true
-else
-  SIGNALS="HUP INT QUIT TERM USR1 USR2"
 fi
 
 # Prints field N (0 = state) after the command name of /proc/PID/stat
@@ -226,6 +228,16 @@ wait_newer() {
 # Forwards SIGNAL to the command's process group; a stop waits for newer commands and is sent once
 on_signal() {
   local _signal="$1"
+  if [ -z "${CMD_PID}" ]; then
+    if [[ "${STOP_SIGNALS}" == *" ${_signal} "* ]]; then
+      b19-log info "b19-exec" "$(_p "%s received %s before it started, it will not start" "${NAME}" "${_signal}")"
+      STOPPING=1
+      PENDING="${_signal}"
+    else
+      b19-log debug "b19-exec" "$(_p "%s has not started, %s dropped" "${NAME}" "${_signal}")"
+    fi
+    return 0
+  fi
   if [[ "${STOP_SIGNALS}" == *" ${_signal} "* ]]; then
     if [ "${STOPPING}" -eq 1 ]; then
       b19-log debug "b19-exec" "$(_p "%s is already stopping, %s not forwarded again" "${NAME}" "${_signal}")"
@@ -245,10 +257,9 @@ write_state() {
   mv --force "$1.$$" "$1"
 }
 
-# Claims NAME under the state lock, starts the command in its own session and records it
-start_command() {
-  local _lock _pid _role _stdin=/proc/1/fd/0
-  [ "${ROLE}" = payload ] || _stdin=/dev/null
+# Claims NAME under the state lock as "PID starting", so stops started earlier wait for this supervisor
+claim_name() {
+  local _lock _pid _role
   exec {_lock}>/dev/null
   if [ "${TRACKED}" -eq 1 ]; then
     exec {_lock}>"${STATE_PATH}/.lock"
@@ -265,15 +276,25 @@ start_command() {
       TRACKED=0
     fi
   fi
-  setsid "$@" < "${_stdin}" 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" {_lock}>&- &
+  if [ "${TRACKED}" -eq 1 ]; then
+    rm -f "${STATE_PATH}/${NAME}.exit"
+    write_state "${STATE_PATH}/${NAME}.pid" "${BASHPID} starting"
+    b19-log debug "b19-exec" "$(_p "Claimed %s (supervisor pid %s)" "${NAME}" "${BASHPID}")"
+  fi
+  exec {_lock}>&-
+}
+
+# Starts the command in its own session and records it
+start_command() {
+  local _stdin=/proc/1/fd/0
+  [ "${ROLE}" = payload ] || _stdin=/dev/null
+  setsid "$@" < "${_stdin}" 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" &
   CMD_PID=$!
   CMD_TICKS=$(proc_field "${CMD_PID}" 19) || CMD_TICKS=""
   if [ "${TRACKED}" -eq 1 ]; then
-    rm -f "${STATE_PATH}/${NAME}.exit"
     write_state "${STATE_PATH}/${NAME}.pid" "${CMD_PID} ${ROLE}"
     b19-log debug "b19-exec" "$(_p "Recorded %s (pid %s, %s)" "${NAME}" "${CMD_PID}" "${ROLE}")"
   fi
-  exec {_lock}>&-
 }
 
 # Drops our record when it still names our command
@@ -281,7 +302,7 @@ forget_command() {
   local _pid _role
   [ "${TRACKED}" -eq 1 ] || return 0
   read -r _pid _role 2>/dev/null < "${STATE_PATH}/${NAME}.pid" || return 0
-  [ "${_pid}" != "${CMD_PID}" ] || rm -f "${STATE_PATH}/${NAME}.pid"
+  [ "${_pid}" != "${CMD_PID:-${BASHPID}}" ] || rm -f "${STATE_PATH}/${NAME}.pid"
 }
 
 # Prints the exit code a failed required daemon left, waiting briefly for its supervisor to write it
@@ -311,7 +332,8 @@ stop_others() {
   while read -r _name _pid _role; do
     [ "${_role}" != payload ] || continue
     b19-log info "b19-exec" "$(_p "Stopping %s (pid %s) after %s" "${_name}" "${_pid}" "${NAME}")"
-    _supervisor=$(proc_field "${_pid}" 1) || _supervisor=""
+    _supervisor="${_pid}"
+    [ "${_role}" = starting ] || _supervisor=$(proc_field "${_pid}" 1) || _supervisor=""
     [ -z "${_supervisor}" ] || _supervisors+=("${_name}:${_supervisor}")
     kill -s TERM "${_supervisor}" 2>/dev/null \
       || b19-log debug "b19-exec" "$(_p "%s (pid %s) is already gone" "${_name}" "${_pid}")"
@@ -335,6 +357,7 @@ supervise() {
   local _done _code _name _pid _role _watcher _signal
   local -A _watchers=()
   STOPPING=0
+  PENDING=""
   FAILED=""
   CMD_PID=""
   CMD_TICKS=""
@@ -343,13 +366,11 @@ supervise() {
     b19-log warn "b19-exec" "$(_p "Cannot write %s as uid %s, %s runs untracked" "${STATE_PATH}" "$(id --user)" "${NAME}")"
     TRACKED=0
   fi
-  # shellcheck disable=SC2086 # the signal list splits on purpose
-  trap '' ${SIGNALS}
-  open_loggers "$1"
   for _signal in ${SIGNALS}; do
     # shellcheck disable=SC2064 # bound per signal
     trap "on_signal ${_signal}" "${_signal}"
   done
+  open_loggers "$1"
 
   if [ "${ROLE}" = payload ] && [ "${TRACKED}" -eq 1 ]; then
     for _done in "${STATE_PATH}"/*.exit; do
@@ -364,7 +385,17 @@ supervise() {
     done
   fi
 
-  start_command "$@" || { close_loggers; exit 1; }
+  claim_name || { close_loggers; exit 1; }
+  if [ -n "${PENDING}" ]; then
+    forget_command
+    close_loggers
+    exit "$(( 128 + $(kill -l "${PENDING}") ))"
+  fi
+  start_command "$@"
+  if [ -n "${PENDING}" ]; then
+    b19-log info "b19-exec" "$(_p "Forwarding held %s to %s (pid %s)" "${PENDING}" "${NAME}" "${CMD_PID}")"
+    kill -s "${PENDING}" -- "-${CMD_PID}" 2>/dev/null || true
+  fi
 
   if [ "${ROLE}" = payload ] && [ "${TRACKED}" -eq 1 ]; then
     while read -r _name _pid _role; do

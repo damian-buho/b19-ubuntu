@@ -13,6 +13,22 @@ set -eou pipefail
 
 b19-log good "b19-exec" "$(_ "Starting b19-exec tests")"
 
+# Keeps every call off the container's own records under /run/b19
+B19_RUNTIME_PATH="$(mktemp --directory "${B19_TEMP_PATH:-/tmp}/b19-exec-state-XXXXXX")"
+export B19_RUNTIME_PATH
+_state="${B19_RUNTIME_PATH}/b19-exec"
+
+# Waits up to 10 s for COMMAND to succeed
+wait_until() {
+  local _try
+  for _try in $(seq 100); do
+    "$@" && return 0
+    sleep 0.1
+  done
+  b19-log error "b19-exec" "$(_p "%s still false after %s tries" "$*" "${_try}")"
+  return 1
+}
+
 # Test 1: Basic execution with successful exit code
 b19-log note "b19-exec" "$(_ "Test 1: Successful command execution")"
 b19-exec -- true
@@ -150,18 +166,20 @@ fi
 
 # Test 13: The payload records "PID payload" under B19_RUNTIME_PATH and drops it on exit
 b19-log note "b19-exec" "$(_ "Test 13: Payload PID record published and cleaned up")"
-B19_RUNTIME_PATH="$(mktemp --directory "${B19_TEMP_PATH:-/tmp}/b19-exec-state-XXXXXX")"
-export B19_RUNTIME_PATH
-_state="${B19_RUNTIME_PATH}/b19-exec"
-b19-exec -- sleep 2 &
+_self="${B19_RUNTIME_PATH}/self"
+# shellcheck disable=SC2016 # expanded by the payload shell
+b19-exec -- bash -c 'echo $$ > "$0"; exec sleep 300' "${_self}" &
 _exec_pid=$!
-sleep 0.5
+wait_until test -s "${_self}"
+wait_until grep --quiet --line-regexp "$(<"${_self}") payload" "${_state}/payload.pid"
 _observed="" _role=""
 read -r _observed _role < "${_state}/payload.pid" || true
 b19-assert matches "b19-exec" '^[0-9]+$' "${_observed}"
 b19-assert equals "b19-exec" "payload" "${_role}"
-b19-assert equals "b19-exec" "sleep" "$(</proc/"${_observed}"/comm)"
-wait "${_exec_pid}"
+b19-assert equals "b19-exec" "$(<"${_self}")" "${_observed}"
+kill -s TERM "${_exec_pid}"
+wait "${_exec_pid}" || true
+rm -f "${_self}"
 b19-assert equals "b19-exec" "absent" "$([ -e "${_state}/payload.pid" ] && echo present || echo absent)"
 
 # Test 14: Passthrough hands the payload PID 1's stdout, the default a logger pipe
@@ -195,6 +213,14 @@ supervisor_of() {
   printf '%s\n' "${_fields[1]}"
 }
 
+# Succeeds once PID is gone or a zombie
+exited() {
+  local _stat
+  { read -r _stat < "/proc/$1/stat"; } 2>/dev/null || return 0
+  read -r _stat _ <<<"${_stat##*) }"
+  [ "${_stat}" = Z ]
+}
+
 # Waits up to 10 s for NAME's record to disappear
 wait_gone() {
   local _try
@@ -206,9 +232,9 @@ wait_gone() {
   return 1
 }
 
-# A daemon that appends its name to the order file when it is told to stop
+# A daemon that marks itself ready once trapped and appends its name to the order file when told to stop
 # shellcheck disable=SC2016 # expanded by the daemon shell
-_daemon='trap "echo $1 >> $0; exit 0" TERM; sleep 300 & wait'
+_daemon='trap "echo $1 >> $0; exit 0" TERM; : > "$0.$1"; sleep 300 & wait'
 
 # Test 16: Background daemons stop after the payload, newest first, each on its own SIGTERM
 b19-log note "b19-exec" "$(_ "Test 16: Background daemons stop in reverse start order")"
@@ -218,13 +244,27 @@ b19-exec --background --name second -- bash -c "${_daemon}" "${_order}" second
 b19-assert equals "b19-exec" "required" "$(cut --delimiter=' ' --fields=2 "${_state}/first.pid")"
 b19-exec --name main -- bash -c "${_daemon}" "${_order}" main &
 _exec_pid=$!
-sleep 0.5
+wait_until test -e "${_order}.first" -a -e "${_order}.second" -a -e "${_order}.main"
 kill -s TERM "${_exec_pid}" "$(supervisor_of second)" "$(supervisor_of first)"
 EXIT_CODE=0
 wait "${_exec_pid}" || EXIT_CODE=$?
 wait_gone first
 b19-assert equals "b19-exec" "0" "${EXIT_CODE}"
 b19-assert equals "b19-exec" "main second first" "$(paste --serial --delimiters=' ' "${_order}")"
+rm -f "${_order}" "${_order}".*
+
+# Test 16b: A stop that lands while the payload starts never leaves it running nor stops a daemon before it
+b19-log note "b19-exec" "$(_ "Test 16b: Stop while the payload starts")"
+b19-exec --background --name first -- bash -c "${_daemon}" "${_order}" first
+b19-exec --background --name second -- bash -c "${_daemon}" "${_order}" second
+wait_until test -e "${_order}.first" -a -e "${_order}.second"
+b19-exec --name main -- bash -c "${_daemon}" "${_order}" main &
+_exec_pid=$!
+kill -s TERM "${_exec_pid}" "$(supervisor_of second)" "$(supervisor_of first)"
+wait_until exited "${_exec_pid}"
+wait "${_exec_pid}" || true
+wait_gone first
+b19-assert matches "b19-exec" '^(main )?second first$' "$(paste --serial --delimiters=' ' "${_order}")"
 
 # Test 17: A required background daemon that exits stops the payload with its exit code
 b19-log note "b19-exec" "$(_ "Test 17: Required daemon exit fails fast")"
@@ -277,7 +317,7 @@ b19-exec --background --name twice -- sleep 300 2>/dev/null || EXIT_CODE=$?
 b19-assert equals "b19-exec" "1" "${EXIT_CODE}"
 kill -s TERM "$(supervisor_of twice)"
 wait_gone twice
-rm -f "${_state}/.lock" "${_order}"
+rm -f "${_state}/.lock" "${_order}" "${_order}".*
 rmdir "${_state}" "${B19_RUNTIME_PATH}"
 
 b19-log good "b19-exec" "$(_ "All b19-exec tests passed")"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-25 05:43+0000\n"
+"POT-Creation-Date: 2026-10-26 00:19+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -194,112 +194,129 @@ msgstr "%s y %s se excluyen mutuamente"
 msgid "%s must be a whole number of seconds, got %s"
 msgstr "%s debe ser un número entero de segundos, se obtuvo %s"
 
-#: .container/foundation/tools.d/b19-exec:139
+#: .container/foundation/tools.d/b19-exec:145
 msgid "Passthrough: %s writes to the container directly"
 msgstr "Passthrough: %s escribe directamente en el contenedor"
 
-#: .container/foundation/tools.d/b19-exec:215
+#: .container/foundation/tools.d/b19-exec:217
 msgid "Stopping %s after %ss although %s still runs"
 msgstr "Deteniendo %s tras %ss aunque %s sigue en ejecución"
 
-#: .container/foundation/tools.d/b19-exec:219
+#: .container/foundation/tools.d/b19-exec:221
 msgid "%s stops after %s"
 msgstr "%s se detiene después de %s"
 
-#: .container/foundation/tools.d/b19-exec:231
+#: .container/foundation/tools.d/b19-exec:233
+msgid "%s received %s before it started, it will not start"
+msgstr "%s recibió %s antes de arrancar, no arrancará"
+
+#: .container/foundation/tools.d/b19-exec:237
+msgid "%s has not started, %s dropped"
+msgstr "%s no ha arrancado, %s descartada"
+
+#: .container/foundation/tools.d/b19-exec:243
 msgid "%s is already stopping, %s not forwarded again"
 msgstr "%s ya se está deteniendo, %s no se reenvía otra vez"
 
-#: .container/foundation/tools.d/b19-exec:237
+#: .container/foundation/tools.d/b19-exec:249
 msgid "Forwarding %s to %s (pid %s)"
 msgstr "Reenviando %s a %s (pid %s)"
 
-#: .container/foundation/tools.d/b19-exec:239
-#: .container/foundation/tools.d/b19-exec:305
+#: .container/foundation/tools.d/b19-exec:251
+#: .container/foundation/tools.d/b19-exec:339
 msgid "%s (pid %s) is already gone"
 msgstr "%s (pid %s) ya no existe"
 
-#: .container/foundation/tools.d/b19-exec:256
+#: .container/foundation/tools.d/b19-exec:267
 msgid "Timed out waiting for %s, %s runs untracked"
 msgstr "Tiempo agotado esperando %s, %s se ejecuta sin registro"
 
-#: .container/foundation/tools.d/b19-exec:260
+#: .container/foundation/tools.d/b19-exec:271
 msgid "%s is already running (pid %s)"
 msgstr "%s ya está en ejecución (pid %s)"
 
-#: .container/foundation/tools.d/b19-exec:264
+#: .container/foundation/tools.d/b19-exec:275
 msgid "%s is already running (pid %s), this one runs untracked"
-msgstr "%s ya está en ejecución (pid %s), esta instancia se ejecuta sin registro"
+msgstr ""
+"%s ya está en ejecución (pid %s), esta instancia se ejecuta sin registro"
 
-#: .container/foundation/tools.d/b19-exec:274
+#: .container/foundation/tools.d/b19-exec:282
+msgid "Claimed %s (supervisor pid %s)"
+msgstr "Reservado %s (pid del supervisor %s)"
+
+#: .container/foundation/tools.d/b19-exec:296
 msgid "Recorded %s (pid %s, %s)"
 msgstr "Registrado %s (pid %s, %s)"
 
-#: .container/foundation/tools.d/b19-exec:294
+#: .container/foundation/tools.d/b19-exec:315
 msgid "No exit code recorded for %s after %s tries"
 msgstr "Ningún código de salida registrado para %s tras %s intentos"
 
-#: .container/foundation/tools.d/b19-exec:303
+#: .container/foundation/tools.d/b19-exec:334
 msgid "Stopping %s (pid %s) after %s"
 msgstr "Deteniendo %s (pid %s) después de %s"
 
-#: .container/foundation/tools.d/b19-exec:310
+#: .container/foundation/tools.d/b19-exec:344
 msgid "Leaving after %ss although %s still runs"
 msgstr "Saliendo tras %ss aunque %s sigue en ejecución"
 
-#: .container/foundation/tools.d/b19-exec:314
+#: .container/foundation/tools.d/b19-exec:348
 msgid "Waiting for %s to stop"
 msgstr "Esperando a que %s se detenga"
 
-#: .container/foundation/tools.d/b19-exec:331
+#: .container/foundation/tools.d/b19-exec:366
 msgid "Cannot write %s as uid %s, %s runs untracked"
 msgstr "No se puede escribir %s como uid %s, %s se ejecuta sin registro"
 
-#: .container/foundation/tools.d/b19-exec:348
+#: .container/foundation/tools.d/b19-exec:381
 msgid "Not starting %s: required %s exited with %s"
 msgstr "No se inicia %s: el obligatorio %s salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:363
+#: .container/foundation/tools.d/b19-exec:396
+msgid "Forwarding held %s to %s (pid %s)"
+msgstr "Reenviando %s retenida a %s (pid %s)"
+
+#: .container/foundation/tools.d/b19-exec:406
 msgid "%s fails fast when %s (pid %s) exits"
 msgstr "%s falla de inmediato cuando %s (pid %s) termina"
 
-#: .container/foundation/tools.d/b19-exec:371
+#: .container/foundation/tools.d/b19-exec:423
 msgid "Wait for %s interrupted with %s"
 msgstr "Espera de %s interrumpida con %s"
 
-#: .container/foundation/tools.d/b19-exec:381
+#: .container/foundation/tools.d/b19-exec:433
 msgid "%s exited while %s stops"
 msgstr "%s terminó mientras %s se detiene"
 
-#: .container/foundation/tools.d/b19-exec:386
+#: .container/foundation/tools.d/b19-exec:438
 msgid "Stopping %s: required %s exited with %s"
 msgstr "Deteniendo %s: el obligatorio %s salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:396
+#: .container/foundation/tools.d/b19-exec:448
 msgid "%s (pid %s) exited with %s"
 msgstr "%s (pid %s) salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:403
+#: .container/foundation/tools.d/b19-exec:455
 msgid "%s (pid %s) stopped with %s"
 msgstr "%s (pid %s) se detuvo con %s"
 
-#: .container/foundation/tools.d/b19-exec:405
+#: .container/foundation/tools.d/b19-exec:457
 msgid "Optional %s (pid %s) exited with %s, the container keeps running"
 msgstr "El opcional %s (pid %s) salió con %s, el contenedor sigue en ejecución"
 
-#: .container/foundation/tools.d/b19-exec:407
+#: .container/foundation/tools.d/b19-exec:459
 msgid "Required %s (pid %s) exited with %s"
 msgstr "El obligatorio %s (pid %s) salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:426
+#: .container/foundation/tools.d/b19-exec:478
 msgid "Started %s (pid %s, %s)"
 msgstr "Iniciado %s (pid %s, %s)"
 
-#: .container/foundation/tools.d/b19-exec:430
+#: .container/foundation/tools.d/b19-exec:482
 msgid "%s has no record after %ss, it runs untracked"
 msgstr "%s no tiene registro tras %ss, se ejecuta sin registro"
 
-#: .container/foundation/tools.d/b19-exec:436
+#: .container/foundation/tools.d/b19-exec:488
 msgid "%s failed to start, exit code %s"
 msgstr "%s no pudo iniciarse, código de salida %s"
 
@@ -1588,190 +1605,200 @@ msgstr "Las %s huellas desconfiadas están ausentes del paquete del sistema"
 msgid "Starting b19-exec tests"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:17
+#: .container/user/test.d/0200-b19-exec.sh:28
+msgid "%s still false after %s tries"
+msgstr "%s sigue sin cumplirse tras %s intentos"
+
+#: .container/user/test.d/0200-b19-exec.sh:33
 msgid "Test 1: Successful command execution"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:21
+#: .container/user/test.d/0200-b19-exec.sh:37
 msgid "Test 1 passed: Successful exit code"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:23
+#: .container/user/test.d/0200-b19-exec.sh:39
 #, fuzzy
 msgid "Test 1 failed: Wrong exit code"
 msgstr "%s falló al ejecutar (código %s)"
 
-#: .container/user/test.d/0200-b19-exec.sh:28
+#: .container/user/test.d/0200-b19-exec.sh:44
 msgid "Test 2: Failed command exit code propagation"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:32
+#: .container/user/test.d/0200-b19-exec.sh:48
 msgid "Test 2 passed: Exit code 42 propagated"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:34
+#: .container/user/test.d/0200-b19-exec.sh:50
 msgid "Test 2 failed: Exit code %s (expected 42)"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:39
+#: .container/user/test.d/0200-b19-exec.sh:55
 msgid "Test 3: Command execution with side effects"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:43
+#: .container/user/test.d/0200-b19-exec.sh:59
 msgid "Test 3 passed: Command executed with side effects"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:46
+#: .container/user/test.d/0200-b19-exec.sh:62
 msgid "Test 3 failed: File not created"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:51
+#: .container/user/test.d/0200-b19-exec.sh:67
 msgid "Test 4: Missing command error"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:55
+#: .container/user/test.d/0200-b19-exec.sh:71
 msgid "Test 4 passed: Missing command detected"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:57
+#: .container/user/test.d/0200-b19-exec.sh:73
 msgid "Test 4 failed: Missing command not detected"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:62
+#: .container/user/test.d/0200-b19-exec.sh:78
 #, fuzzy
 msgid "Test 5: Invalid log level error"
 msgstr "Nivel de log inválido:"
 
-#: .container/user/test.d/0200-b19-exec.sh:66
+#: .container/user/test.d/0200-b19-exec.sh:82
 msgid "Test 5 passed: Invalid level detected"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:68
+#: .container/user/test.d/0200-b19-exec.sh:84
 msgid "Test 5 failed: Invalid level not rejected"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:73
+#: .container/user/test.d/0200-b19-exec.sh:89
 msgid "Test 6: Command with multiple arguments"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:77
+#: .container/user/test.d/0200-b19-exec.sh:93
 msgid "Test 6 passed: Arguments passed correctly"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:80
+#: .container/user/test.d/0200-b19-exec.sh:96
 msgid "Test 6 failed: Arguments not passed correctly"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:85
+#: .container/user/test.d/0200-b19-exec.sh:101
 msgid "Test 7: Foreground mode"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:89
+#: .container/user/test.d/0200-b19-exec.sh:105
 msgid "Test 7 passed: Foreground mode works"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:91
+#: .container/user/test.d/0200-b19-exec.sh:107
 #, fuzzy
 msgid "Test 7 failed: Foreground mode error (code %s)"
 msgstr "%s falló al ejecutar (código %s)"
 
-#: .container/user/test.d/0200-b19-exec.sh:96
+#: .container/user/test.d/0200-b19-exec.sh:112
 msgid "Test 8: Output routing through b19-log"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:100
+#: .container/user/test.d/0200-b19-exec.sh:116
 msgid "Test 8 passed: Output routed through b19-log"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:103
+#: .container/user/test.d/0200-b19-exec.sh:119
 msgid "Test 8 skipped: Output routing cannot be fully tested in test context"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:108
+#: .container/user/test.d/0200-b19-exec.sh:124
 msgid "Test 9: Custom log levels"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:112
+#: .container/user/test.d/0200-b19-exec.sh:128
 msgid "Test 9 passed: Custom levels accepted"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:114
+#: .container/user/test.d/0200-b19-exec.sh:130
 msgid "Test 9 failed: Custom levels rejected"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:119
+#: .container/user/test.d/0200-b19-exec.sh:135
 msgid "Test 10: Custom tags"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:123
+#: .container/user/test.d/0200-b19-exec.sh:139
 msgid "Test 10 passed: Custom tags accepted"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:125
+#: .container/user/test.d/0200-b19-exec.sh:141
 msgid "Test 10 failed: Custom tags rejected"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:130
+#: .container/user/test.d/0200-b19-exec.sh:146
 msgid "Test 11: Stderr drain on failed command"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:134
+#: .container/user/test.d/0200-b19-exec.sh:150
 msgid "Test 11 passed: Exit code propagated and stderr drained"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:136
+#: .container/user/test.d/0200-b19-exec.sh:152
 msgid "Test 11 failed: Exit code %s (expected 5)"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:141
+#: .container/user/test.d/0200-b19-exec.sh:157
 msgid "Test 12: Foreground mode exit code propagation"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:145
+#: .container/user/test.d/0200-b19-exec.sh:161
 msgid "Test 12 passed: Foreground mode exit code propagated"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:147
+#: .container/user/test.d/0200-b19-exec.sh:163
 msgid "Test 12 failed: Exit code %s (expected 7)"
 msgstr ""
 
-#: .container/user/test.d/0200-b19-exec.sh:152
+#: .container/user/test.d/0200-b19-exec.sh:168
 msgid "Test 13: Payload PID record published and cleaned up"
 msgstr "Prueba 13: registro del PID del payload publicado y limpiado"
 
-#: .container/user/test.d/0200-b19-exec.sh:168
+#: .container/user/test.d/0200-b19-exec.sh:186
 msgid "Test 14: Passthrough bypasses b19-log"
 msgstr "Prueba 14: passthrough evita b19-log"
 
-#: .container/user/test.d/0200-b19-exec.sh:184
+#: .container/user/test.d/0200-b19-exec.sh:202
 msgid "Test 15: Invalid passthrough value"
 msgstr "Prueba 15: valor de passthrough no válido"
 
-#: .container/user/test.d/0200-b19-exec.sh:205
+#: .container/user/test.d/0200-b19-exec.sh:231
 msgid "%s still recorded after %s tries"
 msgstr "%s sigue registrado tras %s intentos"
 
-#: .container/user/test.d/0200-b19-exec.sh:214
+#: .container/user/test.d/0200-b19-exec.sh:240
 msgid "Test 16: Background daemons stop in reverse start order"
-msgstr "Prueba 16: los demonios en segundo plano se detienen en orden inverso al de arranque"
+msgstr ""
+"Prueba 16: los demonios en segundo plano se detienen en orden inverso al de "
+"arranque"
 
-#: .container/user/test.d/0200-b19-exec.sh:230
+#: .container/user/test.d/0200-b19-exec.sh:257
+msgid "Test 16b: Stop while the payload starts"
+msgstr "Prueba 16b: parada mientras arranca la carga útil"
+
+#: .container/user/test.d/0200-b19-exec.sh:270
 msgid "Test 17: Required daemon exit fails fast"
 msgstr "Prueba 17: la salida de un demonio obligatorio falla de inmediato"
 
-#: .container/user/test.d/0200-b19-exec.sh:245
+#: .container/user/test.d/0200-b19-exec.sh:285
 msgid "Test 18: Optional daemon exit keeps the payload"
 msgstr "Prueba 18: la salida de un demonio opcional conserva el payload"
 
-#: .container/user/test.d/0200-b19-exec.sh:260
+#: .container/user/test.d/0200-b19-exec.sh:300
 msgid "Test 19: Health check and stop on payload exit"
 msgstr "Prueba 19: comprobación de salud y parada al salir el payload"
 
-#: .container/user/test.d/0200-b19-exec.sh:267
+#: .container/user/test.d/0200-b19-exec.sh:307
 msgid "Test 20: Invalid background calls"
 msgstr "Prueba 20: llamadas en segundo plano no válidas"
 
-#: .container/user/test.d/0200-b19-exec.sh:283
+#: .container/user/test.d/0200-b19-exec.sh:323
 #, fuzzy
 msgid "All b19-exec tests passed"
 msgstr "Todas las %d pruebas pasaron."
@@ -2356,6 +2383,7 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
+
 
 #~ msgid "Caught %s, transferring to %s"
 #~ msgstr "Señal %s interceptada, transfiriendo a %s"

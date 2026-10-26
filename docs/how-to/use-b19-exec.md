@@ -48,7 +48,7 @@ The payload’s stdout and stderr go straight to the container’s, with no `b19
 
 `b19-exec` stays alive as the command’s supervisor. The command runs in its own session, so `tini -g` cannot signal it directly: the supervisor traps every signal in `${B19_HOME}/.signals` and forwards it to the command’s whole process group, exactly once. It then waits for the command, drains both loggers and exits with the command’s code.
 
-Each supervised command is recorded as `${B19_RUNTIME_PATH}/b19-exec/<name>.pid`, holding `PID ROLE` (`payload`, `required` or `optional`). The record is written under a lock and removed when the command exits; `0000-set-signals.sh` clears what an earlier run of the container left behind. Without `--name` the record is `payload.pid`; a second unnamed call while one runs is not recorded and logs a warning.
+Each supervised command is recorded as `${B19_RUNTIME_PATH}/b19-exec/<name>.pid`, holding `PID ROLE` (`payload`, `required` or `optional`). The supervisor claims it under a lock as `<supervisor PID> starting` before the command starts, so a stop already under way waits for it, and a stop signal that arrives before the command starts means it never starts. The record is removed when the command exits; `0000-set-signals.sh` clears what an earlier run of the container left behind. Without `--name` the record is `payload.pid`; a second unnamed call while one runs is not recorded and logs a warning.
 
 ### Several daemons (`--background --name NAME`)
 
