@@ -20,14 +20,9 @@
     # shellcheck source=.container/foundation/tools.d/b19-i18n
     . b19-i18n
 
-    # Priorities mirror b19-log, so a filtered line costs no process
-    declare -A LOG_PRIORITY=([error]=40 [warn]=30 [bad]=20 [good]=20 [info]=20 [debug]=10 [note]=10)
-    case "${B19_VERBOSITY:-warn}" in error) LOG_THRESHOLD=40 ;; info) LOG_THRESHOLD=20 ;; debug) LOG_THRESHOLD=10 ;; *) LOG_THRESHOLD=30 ;; esac
-    b19-log() {
-      # Unknown levels and piped calls fall through to the real tool
-      if [ $# -ge 3 ] && [ "${LOG_PRIORITY[$1]:-99}" -lt "${LOG_THRESHOLD}" ]; then return 0; fi
-      command b19-log "$@"
-    }
+    # A filtered log line costs no process
+    # shellcheck source=.container/foundation/tools.d/b19-log-filter
+    . b19-log-filter
 
     # Wait for an overlapping run instead of answering for it
     # shellcheck source=.container/foundation/tools.d/b19-lock
