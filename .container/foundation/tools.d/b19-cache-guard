@@ -44,7 +44,7 @@
   _is_stale() {
     [ "${GUARD_TTL}" -eq 0 ] && return 0
     local _age
-    _age=$(( $(date +%s) - $(stat --format=%Y "${GUARD_STAMP}" 2>/dev/null || echo 0) ))
+    _age=$(( EPOCHSECONDS - $(stat --format=%Y "${GUARD_STAMP}" 2>/dev/null || echo 0) ))
     [ "${_age}" -ge "${GUARD_TTL}" ]
   }
 

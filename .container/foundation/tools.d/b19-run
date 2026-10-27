@@ -35,9 +35,17 @@
         esac
     }
 
-    # Elapsed seconds since START with configurable decimal precision
+    # Elapsed seconds since START, rounded half up to B19_RUN_TIMING_PRECISION (0-9, else 3) decimals in integer maths
     elapsed_seconds() {
-        LC_ALL=C awk "BEGIN { printf \"%.${B19_RUN_TIMING_PRECISION:-3}f\", ($(date +%s%N) - ${START}) / 1000000000 }"
+        local _prec="${B19_RUN_TIMING_PRECISION:-3}" _now="${EPOCHREALTIME//[!0-9]/}000" _div _scaled
+        [[ "${_prec}" =~ ^[0-9]$ ]] || _prec=3
+        _div=$(( 10 ** (9 - _prec) ))
+        _scaled=$(( (_now - START + _div / 2) / _div ))
+        if [ "${_prec}" -eq 0 ]; then
+            printf '%d' "${_scaled}"
+        else
+            printf '%d.%0*d' $(( _scaled / 10 ** _prec )) "${_prec}" $(( _scaled % 10 ** _prec ))
+        fi
     }
 
     # Prints usage and fails
@@ -107,7 +115,7 @@
     fi
 
     # Capture start time for elapsed timing (ns integer — locale-safe)
-    START=$(date +%s%N)
+    START="${EPOCHREALTIME//[!0-9]/}000"
 
     # Runs the command, retrying a failure up to RUN_RETRIES times with capped jittered backoff
     ATTEMPT=1
