@@ -98,7 +98,7 @@
       exec 8>"${_state}.lock"
       flock --nonblock 8 || return 0
       run_check "${_check}" "${B19_HEALTH_TIER_TIMEOUT}" >"${_state}.log" 2>&1 || _code=$?
-      printf '%s %s\n%s\n' "$(date +%s)" "${_code}" "$(tail --lines=1 "${_state}.log")" >"${_state}.verdict.${BASHPID}"
+      printf '%s %s\n%s\n' "${EPOCHSECONDS}" "${_code}" "$(tail --lines=1 "${_state}.log")" >"${_state}.verdict.${BASHPID}"
       mv --force "${_state}.verdict.${BASHPID}" "${_state}.verdict"
     }
 
@@ -115,7 +115,7 @@
         disown
         return 0
       fi
-      _age=$(( $(date +%s) - _at ))
+      _age=$(( EPOCHSECONDS - _at ))
       _due="${_interval}"
       if [ "${_code}" -ne 0 ] && [ "${B19_HEALTH_RETRY_INTERVAL}" -lt "${_due}" ]; then
         _due="${B19_HEALTH_RETRY_INTERVAL}"
