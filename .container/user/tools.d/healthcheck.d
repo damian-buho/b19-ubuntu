@@ -20,6 +20,15 @@
     # shellcheck source=.container/foundation/tools.d/b19-i18n
     . b19-i18n
 
+    # Priorities mirror b19-log, so a filtered line costs no process
+    declare -A LOG_PRIORITY=([error]=40 [warn]=30 [bad]=20 [good]=20 [info]=20 [debug]=10 [note]=10)
+    case "${B19_VERBOSITY:-warn}" in error) LOG_THRESHOLD=40 ;; info) LOG_THRESHOLD=20 ;; debug) LOG_THRESHOLD=10 ;; *) LOG_THRESHOLD=30 ;; esac
+    b19-log() {
+      # Unknown levels and piped calls fall through to the real tool
+      if [ $# -ge 3 ] && [ "${LOG_PRIORITY[$1]:-99}" -lt "${LOG_THRESHOLD}" ]; then return 0; fi
+      command b19-log "$@"
+    }
+
     # Wait for an overlapping run instead of answering for it
     # shellcheck source=.container/foundation/tools.d/b19-lock
     . b19-lock
@@ -56,9 +65,11 @@
     # Upper-snake key of a check name, as used by B19_HEALTH_SKIP_<KEY> and B19_HEALTH_INTERVAL_<KEY>
     check_key() {
       local _name
-      _name=$(basename "$1" .sh)
+      _name="${1##*/}"
+      _name="${_name%.sh}"
       _name="${_name#*[0-9]-}"
-      echo "${_name}" | tr '[:lower:]-' '[:upper:]_'
+      _name="${_name^^}"
+      echo "${_name//-/_}"
     }
 
     # Logs and succeeds when B19_HEALTH_SKIP_<KEY>=true mutes this check
@@ -157,9 +168,9 @@
       # Find and sort scripts in the CHECKS_PATH directory
       CHECKS_COUNT=0
       # All inline checks share one deadline, so a queue of slow checks still ends inside Docker's probe timeout
-      CHECKS_DEADLINE=$(( $(date +%s) + B19_HEALTH_CHECK_TIMEOUT ))
+      CHECKS_DEADLINE=$(( EPOCHSECONDS + B19_HEALTH_CHECK_TIMEOUT ))
       while IFS= read -r -d '' CHECK; do
-        CHECK_BASENAME=$(basename "${CHECK}")
+        CHECK_BASENAME="${CHECK##*/}"
         CHECKS_COUNT=$((CHECKS_COUNT + 1))
 
         if check_skipped "${CHECK}"; then
@@ -171,7 +182,7 @@
         # Launch in the background, </dev/null so a check that reads stdin
         # cannot drain the process-substitution pipe the outer loop still
         # reads its remaining paths from (same trap as process-hooks).
-        CHECK_BUDGET=$(( CHECKS_DEADLINE - $(date +%s) ))
+        CHECK_BUDGET=$(( CHECKS_DEADLINE - EPOCHSECONDS ))
         [ "${CHECK_BUDGET}" -ge 1 ] || CHECK_BUDGET=1
         b19-log debug "HEALTH.D" "$(_p "Time budget for %s: %s s" "${CHECK_BASENAME}" "${CHECK_BUDGET}")"
         run_check "${CHECK}" "${CHECK_BUDGET}" </dev/null 9>&- &
