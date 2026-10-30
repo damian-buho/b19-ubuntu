@@ -15,6 +15,10 @@
     # shellcheck source=.container/foundation/tools.d/b19-i18n
     . b19-i18n
 
+    # A filtered log line costs no process
+    # shellcheck source=.container/foundation/tools.d/b19-log-filter
+    . b19-log-filter
+
     BOOTSTRAP_PATH="${B19_BOOTSTRAP_PATH:-/bootstrap.d}"
     LOCK_PATH="${B19_BOOTSTRAP_LOCK_PATH:-${B19_HOME}/.bootstrap}"
 

@@ -17,6 +17,10 @@
 
     # shellcheck source=.container/foundation/tools.d/b19-i18n
     . b19-i18n
+
+    # A filtered log line costs no process
+    # shellcheck source=.container/foundation/tools.d/b19-log-filter
+    . b19-log-filter
     b19-log debug "I18N" "mode=${_B19_I18N_MODE} lang=${LANG:-}"
 
     ENTRYPOINTS_PATH="/entrypoint.d"
