@@ -283,8 +283,12 @@ rm -f "${_state}/crasher.exit"
 
 # Test 18: An optional daemon that exits only logs, and its logger drains before its supervisor ends
 b19-log note "b19-exec" "$(_ "Test 18: Optional daemon exit keeps the payload")"
-b19-exec --background --optional --name watcher -- bash -c 'sleep 0.5; echo last-line; exit 4'
+_gate="${B19_RUNTIME_PATH}/gate"
+# shellcheck disable=SC2016 # expanded by the daemon shell
+b19-exec --background --optional --name watcher -- bash -c 'until [ -e "$0" ]; do sleep 0.1; done; echo last-line; exit 4' "${_gate}"
+touch "${_gate}"
 wait_gone watcher
+rm -f "${_gate}"
 b19-assert equals "b19-exec" "0" "$(fd --hidden --glob '*.exit' "${_state}" | wc --lines)"
 EXIT_CODE=0
 b19-exec --name main -- sleep 2 || EXIT_CODE=$?
