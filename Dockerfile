@@ -128,6 +128,7 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_RUNTIME_PATH=/run/b19                                                     \
     B19_SECRETS_ENABLED=true                                                      \
     B19_SECRETS_PATH="/run/secrets"                                               \
+    B19_SETUID_ALLOW=""                                                           \
     B19_SHELL_ENABLED=true                                                        \
     B19_SHELL_PATH="/shell.d"                                                     \
     B19_SINGLE_COMMAND_IMAGE=N                                                    \

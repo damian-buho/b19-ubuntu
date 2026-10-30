@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+  set -euo pipefail
+
+  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  . b19-i18n
+
+  # Space-separated absolute paths that keep their setuid/setgid bits
+  ALLOW=" ${B19_SETUID_ALLOW:-} "
+  STRIPPED=0
+
+  # Every regular file on the root filesystem carrying a setuid or setgid bit
+  while IFS= read -r -d '' FILE; do
+    # Skip a path the image declared in its allow-list
+    if [[ "${ALLOW}" == *" ${FILE} "* ]]; then
+      b19-log info "SETUID" "$(_p "Keeping setuid/setgid bits of %s" "${FILE}")"
+      continue
+    fi
+    b19-run "SETUID" "$(_p "Strip setuid/setgid bits of %s" "${FILE}")" -- chmod a-s "${FILE}"
+    STRIPPED=$((STRIPPED + 1))
+  done < <(find / -xdev -type f -perm /6000 -print0)
+
+  b19-log info "SETUID" "$(_p "Stripped %s files, allow-list: %s" "${STRIPPED}" "${B19_SETUID_ALLOW:-none}")"
