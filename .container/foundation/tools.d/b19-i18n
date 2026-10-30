@@ -29,7 +29,14 @@
 
   # NOTE: b19-i18n must NEVER call b19-log (b19-log sources b19-i18n -> infinite recursion)
 
-  if [ "${B19_I18N_ENABLED:-true}" = "false" ]; then
+  # No catalog exists for the C, POSIX or English locale, so gettext would only fork to return its input
+  _b19_i18n_locale="${LANGUAGE:-${LC_ALL:-${LC_MESSAGES:-${LANG:-C}}}}"
+  _b19_i18n_english=false
+  case "${_b19_i18n_locale}" in C | C.* | POSIX | en | en_* | en:*) _b19_i18n_english=true ;; esac
+  unset _b19_i18n_locale
+
+  if [ "${B19_I18N_ENABLED:-true}" = "false" ] || [ "${_b19_i18n_english}" = "true" ]; then
+    unset _b19_i18n_english
     _()  { printf '%s' "$1"; }
     _e() { eval "printf '%s' \"$1\""; }
     # shellcheck disable=SC2059
@@ -38,6 +45,8 @@
     # shellcheck disable=SC2317
     return 0 2>/dev/null || true
   fi
+
+  unset _b19_i18n_english
 
   # Configure gettext
   export TEXTDOMAIN="b19"
