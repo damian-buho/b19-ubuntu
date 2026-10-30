@@ -136,7 +136,7 @@
     # summary can be logged — same reasoning as the check execution below.
     reap_one_check() {
       local FINISHED_PID CHECK_EXIT CHECK_NAME
-      if wait -n -p FINISHED_PID; then
+      if wait -n -p FINISHED_PID "${!PID_NAMES[@]}"; then
         CHECK_EXIT=0
       else
         CHECK_EXIT=$?
