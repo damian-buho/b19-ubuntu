@@ -61,7 +61,7 @@ When the bound is reached, `timeout(1)` sends `SIGTERM`, then `SIGKILL` after a 
 | Variable                   | Default | Effect                                                    |
 | -------------------------- | ------- | --------------------------------------------------------- |
 | `B19_VERBOSITY`            | `warn`  | Controls progress/success output (table below)            |
-| `B19_RUN_TIMING_PRECISION` | `3`     | Decimal places in elapsed time (`0`=s, `3`=ms, `6`=µs)    |
+| `B19_RUN_TIMING_PRECISION` | `3`     | Decimal places in elapsed time, `0`–`9` (else `3`, ms)    |
 | `B19_RUN_TIMEOUT`          | (unset) | Wraps the command in `timeout(1)` after this many seconds |
 | `STAGE`                    | (unset) | Prepended as a stage label when set                       |
 
