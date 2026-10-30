@@ -16,6 +16,8 @@
   }
   aria2c() {
     printf '%s\n' "$@" > "${STUB_DIR}/args"
+    printf '%s\n' "${@: -1}" >> "${STUB_DIR}/calls"
+    if [ "${NEAR_CODE:-0}" -ne 0 ] && [[ "${*: -1}" == http*://*kiota-http-cache* ]]; then return "${NEAR_CODE}"; fi
     _prev=""
     for _a in "$@"; do
       if [ "${_prev}" = "--out" ]; then touch "${B19_DOWNLOAD_PATH}/${_a}"; fi
@@ -40,3 +42,33 @@
     b19-fetch "TEST" "https://example.com/other.tar.gz" "https-file" "dummyhash"
   grep -qx "https://cache.local/" "${_stub}/probe"
   grep -qx "https://cache.local/example.com/other.tar.gz" "${_stub}/args"
+
+  # cache refuses with 403 (aria2c exit 22): origin fetched once, both URLs logged
+  : > "${_stub}/calls"
+  NEAR_CODE=22 M6E_NEAR_CACHE_HOST=kiota-http-cache M6E_NEAR_CACHE_PORT=8080 M6E_NEAR_CACHE_SCHEME=http \
+    b19-fetch "TEST" "https://example.com/a.tar.gz" "fb-file" "dummyhash" > "${_stub}/out" 2>&1
+  [ "$(grep -c '^https://example.com/a.tar.gz$' "${_stub}/calls")" -eq 1 ]
+  [ "$(grep -c '^http://kiota-http-cache' "${_stub}/calls")" -eq 1 ]
+  grep -q "falling back to origin" "${_stub}/out"
+  grep -q "http://kiota-http-cache:8080/example.com/a.tar.gz" "${_stub}/out"
+  grep -q "https://example.com/a.tar.gz" "${_stub}/out"
+
+  # cache fails on every attempt: origin runs only after the last one
+  : > "${_stub}/calls"
+  B19_DOWNLOAD_ATTEMPTS=2 NEAR_CODE=22 M6E_NEAR_CACHE_HOST=kiota-http-cache M6E_NEAR_CACHE_PORT=8080 M6E_NEAR_CACHE_SCHEME=http \
+    b19-fetch "TEST" "https://example.com/b.tar.gz" "fb-file2" "dummyhash" > /dev/null 2>&1
+  [ "$(grep -c '^http://kiota-http-cache' "${_stub}/calls")" -eq 2 ]
+  [ "$(tail -n 1 "${_stub}/calls")" = "https://example.com/b.tar.gz" ]
+
+  # offgrid with a failing cache: no request at all, build fails
+  : > "${_stub}/calls"
+  if B19_OFFGRID_MODE=Y NEAR_CODE=22 M6E_NEAR_CACHE_HOST=kiota-http-cache \
+    b19-fetch "TEST" "https://example.com/c.tar.gz" "fb-file3" "dummyhash" > /dev/null 2>&1
+  then exit 1; fi
+  [ ! -s "${_stub}/calls" ]
+
+  # healthy cache: origin never touched
+  : > "${_stub}/calls"
+  M6E_NEAR_CACHE_HOST=kiota-http-cache M6E_NEAR_CACHE_PORT=8080 M6E_NEAR_CACHE_SCHEME=http \
+    b19-fetch "TEST" "https://example.com/d.tar.gz" "fb-file4" "dummyhash"
+  ! grep -q '^https://example.com/' "${_stub}/calls"

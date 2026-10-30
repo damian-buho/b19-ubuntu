@@ -2493,6 +2493,10 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
 
+#: .container/foundation/tools.d/b19-fetch
+msgid "Near cache %s failed with %s, falling back to origin %s"
+msgstr "Caché cercana %s falló con %s, se recurre al origen %s"
+
 #~ msgid "Caught %s, transferring to %s"
 #~ msgstr "Señal %s interceptada, transfiriendo a %s"
 

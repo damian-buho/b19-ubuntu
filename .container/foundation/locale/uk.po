@@ -2475,6 +2475,10 @@ msgstr "Загальне використання пам'яті (%s МБ) пер
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "Загальне використання пам'яті в межах порогу (%s МБ)"
 
+#: .container/foundation/tools.d/b19-fetch
+msgid "Near cache %s failed with %s, falling back to origin %s"
+msgstr "Ближній кеш %s завершився помилкою %s, перехід на джерело %s"
+
 #~ msgid "Caught %s, transferring to %s"
 #~ msgstr "Перехоплено %s, передаємо до %s"
 

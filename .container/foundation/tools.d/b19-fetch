@@ -126,6 +126,7 @@
   # Step 6: Download
   if [ "${DOWNLOAD}" = "Y" ]
   then
+    ARIA_FALLBACK=()
     if [ -n "${M6E_NEAR_CACHE_HOST:-}" ]
     then
       # unset/empty scheme stays https; an explicit http opts into plaintext
@@ -143,6 +144,7 @@
       [ "${_reachable}" -ne 127 ] || exit 127
       if [ "${_reachable}" -eq 0 ]
       then
+        ARIA_FALLBACK=( "${ARIA_URLS[@]}" )
         _rewritten=()
         for _url in "${ARIA_URLS[@]}"; do
           # shellcheck disable=SC2016
@@ -171,6 +173,15 @@
       b19-log info "DOWNLOAD" "$(_p "No build CA bundle at %s, using image trust store" "${B19_BUILD_CA_FILE}")"
     fi
     ARIA_ATTEMPT=1
+    # switch to the origin URLs once, never offgrid; cache and origin never share a call
+    fall_back_to_origin() {
+      [ "${#ARIA_FALLBACK[@]}" -gt 0 ] && [ "${B19_OFFGRID_MODE}" != 'Y' ] || return 1
+      b19-log warn "DOWNLOAD" "$(_p "Near cache %s failed with %s, falling back to origin %s" "${ARIA_URL_PRIMARY}" "$1" "${ARIA_FALLBACK[0]}")"
+      ARIA_URLS=( "${ARIA_FALLBACK[@]}" )
+      ARIA_URL_PRIMARY="${ARIA_URLS[0]}"
+      ARIA_FALLBACK=()
+      ARIA_ATTEMPT=1
+    }
     # aria2c honours --max-tries for 503 alone, so 500/502/504 abort on attempt 1
     while :
     do
@@ -201,12 +212,14 @@
         *" ${ARIA_CODE} "*)
           ;;
         *)
+          if fall_back_to_origin "${ARIA_CODE}"; then continue; fi
           b19-log error "DOWNLOAD" "$(_p "Permanent failure %s on %s" "${ARIA_CODE}" "${ARIA_FILE}")"
           exit "${ARIA_CODE}"
           ;;
       esac
       if [ "${ARIA_ATTEMPT}" -ge "${B19_DOWNLOAD_ATTEMPTS}" ]
       then
+        if fall_back_to_origin "${ARIA_CODE}"; then continue; fi
         b19-log error "DOWNLOAD" "$(_p "Code %s on %s survived %s attempt(s)" "${ARIA_CODE}" "${ARIA_FILE}" "${B19_DOWNLOAD_ATTEMPTS}")"
         exit "${ARIA_CODE}"
       fi

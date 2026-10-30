@@ -72,6 +72,8 @@ https://example.com/file.tar.gz
 
 Before rewriting, `b19-fetch` probes the near cache with `check-reachable` — the same short cURL connect `detect-apt-cacher` uses for the LAN apt proxy. A near cache that is set but unreachable is treated as transient: the rewrite is skipped, the original URLs are used, and aria2c downloads straight from the origin instead of retrying against a proxy that never answers. Set `B19_CACHE_CHECK_ENABLED=false` to skip the probe and always route through the configured host.
 
+A near cache that answers the probe but then fails the download — a 403 from an allowlist that misses the host, a 503 on every attempt — does not fail the build: once the `B19_DOWNLOAD_ATTEMPTS` budget is spent (or on a code outside `B19_DOWNLOAD_RETRY_CODES`), `b19-fetch` logs the cache URL, the code and the origin URL, then makes one more attempt against the origin URLs alone. Cache and origin URLs never share an aria2c call, since aria2c would split segments across them and bypass the cache. The SHA-512 check still guards that leg; offgrid mode never reaches it.
+
 #### Trusting a near cache behind private TLS
 
 A near cache fronted by a private root (a self-signed reverse proxy on the build LAN) is not trusted by the image’s stock CA store, and the failure reads as `SSL/TLS handshake failure: not signed by known authorities` on the download — not as a certificate problem at the place you set the proxy.

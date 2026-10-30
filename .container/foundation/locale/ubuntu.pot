@@ -2421,3 +2421,7 @@ msgstr ""
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch
+msgid "Near cache %s failed with %s, falling back to origin %s"
+msgstr ""
