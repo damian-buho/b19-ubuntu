@@ -151,3 +151,7 @@ repositories:
     url: git@codeberg.org:b19/ubuntu.git
 technologies:
   - docker
+upstream:
+  - authors: Canonical and the Ubuntu community
+    name: Ubuntu
+    url: https://ubuntu.com

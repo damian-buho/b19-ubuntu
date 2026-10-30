@@ -182,8 +182,13 @@ make container-build
 
 - [Специфікація Projectfile](https://projectfile.org)
 
+## Першоджерело
+
+Цей проєкт пакує [Ubuntu](https://ubuntu.com) (власна ліцензія).
+Дякуємо: Canonical and the Ubuntu community
+
 ## Ліцензія
 
-Цей проєкт ліцензовано на умовах MIT — див. файл [LICENSE](LICENSE) для подробиць.
+Пакування в цьому репозиторії ліцензовано на умовах MIT — див. файл [LICENSE](LICENSE) для подробиць.
 
 <!-- textlint-enable -->

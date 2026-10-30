@@ -180,6 +180,11 @@ Pipeline entry points:
 
 - [Projectfile Specification](https://projectfile.org)
 
+## Upstream
+
+This project packages [Ubuntu](https://ubuntu.com) (its own license).
+Thanks to: Canonical and the Ubuntu community
+
 ## License
 
-This project is licensed under MIT — see the [LICENSE](LICENSE) file for details.
+The packaging in this repository is licensed under MIT — see the [LICENSE](LICENSE) file for details.

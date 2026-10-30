@@ -182,8 +182,13 @@ Puntos de entrada de la canalización:
 
 - [Especificación de Projectfile](https://projectfile.org)
 
+## Proyecto original
+
+Este proyecto empaqueta [Ubuntu](https://ubuntu.com) (su propia licencia).
+Gracias a: Canonical and the Ubuntu community
+
 ## Licencia
 
-Este proyecto se publica bajo la licencia MIT — consulta el archivo [LICENSE](LICENSE) para más detalles.
+El empaquetado de este repositorio se publica bajo la licencia MIT — consulta el archivo [LICENSE](LICENSE) para más detalles.
 
 <!-- textlint-enable -->
