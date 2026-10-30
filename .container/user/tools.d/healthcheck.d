@@ -17,15 +17,18 @@
     # redirects stay plain text automatically.
     export B19_COLOR=auto
 
-    # shellcheck source=.container/foundation/tools.d/b19-i18n
+    # shellcheck source=/dev/null
     . b19-i18n
 
+    # shellcheck source=/dev/null
+    . b19-skip
+
     # A filtered log line costs no process
-    # shellcheck source=.container/foundation/tools.d/b19-log-filter
+    # shellcheck source=/dev/null
     . b19-log-filter
 
     # Wait for an overlapping run instead of answering for it
-    # shellcheck source=.container/foundation/tools.d/b19-lock
+    # shellcheck source=/dev/null
     . b19-lock
     if ! b19_lock "HEALTH.D" "${B19_TEMP_PATH:-/tmp}/healthcheck.d.lock" "${B19_HEALTH_LOCK_TIMEOUT:-4}"; then
       echo "healthcheck.d.lock"
@@ -33,7 +36,7 @@
     fi
 
     # Load secrets into environment (healthchecks run outside entrypoint context)
-    # shellcheck source=.container/foundation/tools.d/b19-load-secrets
+    # shellcheck source=/dev/null
     . b19-load-secrets
 
     # Drain gate: a deploy touches this file on the OUTGOING container so it
@@ -53,30 +56,9 @@
     # not the entrypoint tree that exports it — so detect it directly. Caps
     # concurrency: a 0.5-CPU container must not fork one background check per
     # script.
-    # shellcheck source=.container/foundation/tools.d/detect-cpu-count
+    # shellcheck source=/dev/null
     . detect-cpu-count
     b19-log debug "HEALTH.D" "$(_p "Parallel check cap (NUMPROCS): %s" "${NUMPROCS}")"
-
-    # Upper-snake key of a check name, as used by B19_HEALTH_SKIP_<KEY> and B19_HEALTH_INTERVAL_<KEY>
-    check_key() {
-      local _name
-      _name="${1##*/}"
-      _name="${_name%.sh}"
-      _name="${_name#*[0-9]-}"
-      _name="${_name^^}"
-      echo "${_name//-/_}"
-    }
-
-    # Logs and succeeds when B19_HEALTH_SKIP_<KEY>=true mutes this check
-    check_skipped() {
-      local _var
-      _var="B19_HEALTH_SKIP_$(check_key "$1")"
-      if [ "${!_var:-}" = "true" ]; then
-        b19-log note "HEALTH.D" "$(_p "Skipped: %s (via %s)" "$(basename "$1")" "${_var}")"
-        return 0
-      fi
-      return 1
-    }
 
     TIER_STATE_PATH="${B19_TEMP_PATH:-/tmp}/healthcheck.d"
 
@@ -168,7 +150,7 @@
         CHECK_BASENAME="${CHECK##*/}"
         CHECKS_COUNT=$((CHECKS_COUNT + 1))
 
-        if check_skipped "${CHECK}"; then
+        if b19_skipped note "HEALTH.D" B19_HEALTH_SKIP_ "${CHECK}"; then
           continue
         fi
 
@@ -204,10 +186,10 @@
         mkdir --parents "${TIER_STATE_PATH}"
         while IFS= read -r -d '' CHECK; do
           CHECKS_COUNT=$((CHECKS_COUNT + 1))
-          if check_skipped "${CHECK}"; then
+          if b19_skipped note "HEALTH.D" B19_HEALTH_SKIP_ "${CHECK}"; then
             continue
           fi
-          INTERVAL_VAR="B19_HEALTH_INTERVAL_$(check_key "${CHECK}")"
+          INTERVAL_VAR="B19_HEALTH_INTERVAL_$(b19_skip_key "${CHECK}")"
           if report_tier_check "${CHECK}" "${!INTERVAL_VAR:-${!TIER_VAR}}"; then
             b19-log good "HEALTH.D" "$(_ "Check passed:") $(basename "${CHECK}")"
           else

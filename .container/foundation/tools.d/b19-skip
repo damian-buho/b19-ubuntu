@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+    # Upper-snake key of a script name, as used by B19_<RUNNER>_SKIP_<KEY>
+    b19_skip_key() {
+      local _bsk_name
+      _bsk_name="${1##*/}"
+      _bsk_name="${_bsk_name%.sh}"
+      _bsk_name="${_bsk_name#*[0-9]-}"
+      _bsk_name="${_bsk_name^^}"
+      echo "${_bsk_name//-/_}"
+    }
+
+    # Logs at LEVEL and succeeds when PREFIX_<KEY>=true mutes the script
+    b19_skipped() {
+      local _bsk_level="$1" _bsk_tag="$2" _bsk_var
+      _bsk_var="$3$(b19_skip_key "$4")"
+      if [ "${!_bsk_var:-}" = "true" ]; then
+        b19-log "${_bsk_level}" "${_bsk_tag}" "$(_p "Skipped: %s (via %s)" "$(basename "$4")" "${_bsk_var}")"
+        return 0
+      fi
+      return 1
+    }

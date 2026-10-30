@@ -7,8 +7,10 @@
     # Enable safer bash scripting
     set -o pipefail  # Note: Removed `-e` to ensure all tests run, even if one fails
 
-    # shellcheck source=.container/foundation/tools.d/b19-i18n
+    # shellcheck source=/dev/null
     . b19-i18n
+    # shellcheck source=/dev/null
+    . b19-skip
 
     # Skip tests if disabled
     if [ "${B19_TEST_ENABLED:-}" = "false" ]; then
@@ -19,6 +21,7 @@
     # Initialize variables
     FINAL_EXIT_CODE=0
     FAILED_TESTS=0
+    SKIPPED_TESTS=0
 
     b19-log info "TEST.D" "$(_ "Reading from:") ${B19_TEST_PATH}"
 
@@ -52,6 +55,10 @@
       while IFS= read -r -d '' TEST; do
         TESTS_COUNT=$((TESTS_COUNT + 1))
         BASENAME=$(basename "${TEST}")
+        if b19_skipped warn "TEST.D" B19_TEST_SKIP_ "${TEST}"; then
+          SKIPPED_TESTS=$((SKIPPED_TESTS + 1))
+          continue
+        fi
         b19-run --timeout "${B19_TEST_SCRIPT_TIMEOUT:-600}" "TEST.D" "$(_ "Executing:") ${BASENAME} (${B19_TEST_SCRIPT_TIMEOUT:-600} s)" -- "${TEST}"
 
         # Capture the exit code of the test
@@ -74,7 +81,7 @@
     if [ "${FINAL_EXIT_CODE}" -ne 0 ]; then
       b19-log error "TEST.D" "$(_p "%d of %d tests failed. Final exit code: %d" "${FAILED_TESTS}" "${TESTS_COUNT}" "${FINAL_EXIT_CODE}")"
     else
-      b19-log good "TEST.D" "$(_p "All %d tests passed." "${TESTS_COUNT}")"
+      b19-log good "TEST.D" "$(_p "%d passed, %d skipped." "$((TESTS_COUNT - SKIPPED_TESTS))" "${SKIPPED_TESTS}")"
     fi
 
 exit "${FINAL_EXIT_CODE}"

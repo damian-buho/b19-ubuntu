@@ -1109,7 +1109,7 @@ msgid "%d of %d tests failed. Final exit code: %d"
 msgstr ""
 
 #: .container/user/tools.d/test.d:77
-msgid "All %d tests passed."
+msgid "%d passed, %d skipped."
 msgstr ""
 
 #: .container/foundation/build.d/foundation/post/100-update-certificates.sh:8
@@ -2311,4 +2311,64 @@ msgstr ""
 
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: muted script is not run and is counted"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Muted suite failed"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Muted test script ran"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Skip did not name its variable"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Skip was not counted"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: unset variable runs the script"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Unmuted suite failed"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Unmuted test script did not run"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Pass was not counted"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: false runs the script"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Suite with false mute failed"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Script with a false mute did not run"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: unknown name is a no-op"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Suite with unknown mute failed"
+msgstr ""
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Unknown mute stopped a script"
 msgstr ""

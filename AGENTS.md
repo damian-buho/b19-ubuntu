@@ -128,6 +128,7 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 - `b19-assert <equals|matches> <tag> <expected|regex> <actual>` — one-line test check; logs expected and found values, exits `1` on a mismatch and `2` on misuse.
 - `b19-i18n` — sourced to get `_()` / `_p()` gettext helpers (TEXTDOMAIN `b19`).
 - `b19-log-filter` — sourced to shadow `b19-log` with a function that drops lines below `B19_VERBOSITY` without a process (read per call, since `set-verbosity` changes it mid-run). `healthcheck.d` and `process-hooks` source it; a runner that logs many filtered lines should too.
+- `b19-skip` — sourced for `b19_skip_key <file>` and `b19_skipped <level> <tag> <prefix> <file>`, the `B19_<RUNNER>_SKIP_<NAME>=true` mute. `healthcheck.d` and `test.d` source it.
 - `b19-cache-guard <tag> <dir> <ttl> -- <cmd>` — refreshes a cache dir when it is empty or older than `<ttl>`, under `flock`; `M6E_SHARED_CACHE=Y` leaves staleness to the cache’s external writer, and an unwritable dir degrades to a warning.
 - `build-stage`, `process-hooks` — the build hook engine described above.
 - `trust-ca-certificates install|remove` — trusts the build host’s CA bundle for one build stage. [docs](docs/how-to/use-b19-fetch.md)

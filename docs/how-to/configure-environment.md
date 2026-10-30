@@ -46,6 +46,8 @@ Skip individual hooks without disabling the entire subsystem.
 
 **Healthcheck**: `B19_HEALTH_SKIP_<NAME>=true`
 
+**Tests**: `B19_TEST_SKIP_<NAME>=true`
+
 Name derivation: take the script filename, strip `.sh`, strip leading digits and
 first dash, convert `-` to `_`, uppercase.
 
@@ -57,9 +59,11 @@ first dash, convert `-` to `_`, uppercase.
 | `1000-parallel-j2.sh`              | `parallel-j2`              | `B19_ENTRYPOINT_SKIP_PARALLEL_J2=true`          |
 | `500-init-database.sh`             | `init-database`            | `B19_BOOTSTRAP_SKIP_INIT_DATABASE=true`         |
 | `0400-check-https-connectivity.sh` | `check-https-connectivity` | `B19_HEALTH_SKIP_CHECK_HTTPS_CONNECTIVITY=true` |
+| `0200-b19-exec.sh`                 | `b19-exec`                 | `B19_TEST_SKIP_B19_EXEC=true`                   |
 
 Skipped scripts log `"Skipped: <name> (via B19_*_SKIP_<NAME>)"` and continue to
-the next hook.
+the next hook. `test.d` logs the skip at `warn` and ends with `N passed, M skipped.`,
+so a muted test never reads as a pass.
 
 ## Logging and Output
 

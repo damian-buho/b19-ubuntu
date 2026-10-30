@@ -1133,8 +1133,8 @@ msgid "%d of %d tests failed. Final exit code: %d"
 msgstr "%d з %d тестів не пройдено. Код виходу: %d"
 
 #: .container/user/tools.d/test.d:77
-msgid "All %d tests passed."
-msgstr "Усі %d тестів пройдено."
+msgid "%d passed, %d skipped."
+msgstr "%d пройдено, %d пропущено."
 
 #: .container/foundation/build.d/foundation/post/100-update-certificates.sh:8
 msgid "Updating CA certificates"
@@ -2367,6 +2367,66 @@ msgstr "Загальне використання пам'яті (%s МБ) пер
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "Загальне використання пам'яті в межах порогу (%s МБ)"
 
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: muted script is not run and is counted"
+msgstr "Тест %s: приглушений скрипт не запускається й рахується"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Muted suite failed"
+msgstr "Набір із приглушеним тестом завершився помилкою"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Muted test script ran"
+msgstr "Приглушений тестовий скрипт було запущено"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Skip did not name its variable"
+msgstr "Пропуск не назвав свою змінну"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Skip was not counted"
+msgstr "Пропуск не було пораховано"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: unset variable runs the script"
+msgstr "Тест %s: незаданна змінна запускає скрипт"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Unmuted suite failed"
+msgstr "Набір без приглушення завершився помилкою"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Unmuted test script did not run"
+msgstr "Тестовий скрипт без приглушення не було запущено"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Pass was not counted"
+msgstr "Успіх не було пораховано"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: false runs the script"
+msgstr "Тест %s: false запускає скрипт"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Suite with false mute failed"
+msgstr "Набір із приглушенням false завершився помилкою"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Script with a false mute did not run"
+msgstr "Скрипт із приглушенням false не було запущено"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: unknown name is a no-op"
+msgstr "Тест %s: невідома назва нічого не робить"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Suite with unknown mute failed"
+msgstr "Набір із невідомим приглушенням завершився помилкою"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Unknown mute stopped a script"
+msgstr "Невідоме приглушення зупинило скрипт"
 
 #~ msgid "Caught %s, transferring to %s"
 #~ msgstr "Перехоплено %s, передаємо до %s"

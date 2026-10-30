@@ -1137,8 +1137,8 @@ msgid "%d of %d tests failed. Final exit code: %d"
 msgstr "%d de %d pruebas fallaron. Código de salida final: %d"
 
 #: .container/user/tools.d/test.d:77
-msgid "All %d tests passed."
-msgstr "Todas las %d pruebas pasaron."
+msgid "%d passed, %d skipped."
+msgstr "%d pasaron, %d omitidas."
 
 #: .container/foundation/build.d/foundation/post/100-update-certificates.sh:8
 msgid "Updating CA certificates"
@@ -2384,6 +2384,66 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
 
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: muted script is not run and is counted"
+msgstr "Prueba %s: el script silenciado no se ejecuta y se cuenta"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Muted suite failed"
+msgstr "El conjunto silenciado falló"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Muted test script ran"
+msgstr "El script de prueba silenciado se ejecutó"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Skip did not name its variable"
+msgstr "La omisión no nombró su variable"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Skip was not counted"
+msgstr "La omisión no se contó"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: unset variable runs the script"
+msgstr "Prueba %s: una variable sin definir ejecuta el script"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Unmuted suite failed"
+msgstr "El conjunto sin silenciar falló"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Unmuted test script did not run"
+msgstr "El script de prueba sin silenciar no se ejecutó"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Pass was not counted"
+msgstr "El éxito no se contó"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: false runs the script"
+msgstr "Prueba %s: false ejecuta el script"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Suite with false mute failed"
+msgstr "El conjunto con silencio false falló"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Script with a false mute did not run"
+msgstr "El script con silencio false no se ejecutó"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Test %s: unknown name is a no-op"
+msgstr "Prueba %s: un nombre desconocido no hace nada"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Suite with unknown mute failed"
+msgstr "El conjunto con silencio desconocido falló"
+
+#: .container/user/test.d/0370-test-d-skip.sh
+msgid "Unknown mute stopped a script"
+msgstr "Un silencio desconocido detuvo un script"
 
 #~ msgid "Caught %s, transferring to %s"
 #~ msgstr "Señal %s interceptada, transfiriendo a %s"
