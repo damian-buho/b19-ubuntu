@@ -88,7 +88,7 @@
 
     TIER_STATE_PATH="${B19_TEMP_PATH:-/tmp}/healthcheck.d"
     # A check's functions cross into its fresh bash, so it sources nothing twice
-    export -f _ _e _p
+    export -f _ _e _p b19-log
     B19_HEALTH_LOG_TARGET="${B19_HEALTH_LOG_TARGET:-/proc/1/fd/2}"
 
     # Writes one warn line to PID 1's stderr (docker logs) when a check's state changes: $1 name, $2 pass|fail, $3 reason
@@ -158,6 +158,38 @@
       return "${_code}"
     }
 
+    # Fills SCRIPTS with the *.sh files of $1, ordered by leading number then name, with no process
+    list_scripts() {
+      local _f _i _j _tmp
+      SCRIPTS=()
+      shopt -s nullglob dotglob
+      for _f in "$1"/*.sh; do
+        if [ -f "${_f}" ]; then SCRIPTS+=("${_f}"); fi
+      done
+      shopt -u nullglob dotglob
+      for (( _i = 1; _i < ${#SCRIPTS[@]}; _i++ )); do
+        _tmp="${SCRIPTS[_i]}"
+        for (( _j = _i - 1; _j >= 0; _j-- )); do
+          script_before "${_tmp}" "${SCRIPTS[_j]}" || break
+          SCRIPTS[_j + 1]="${SCRIPTS[_j]}"
+        done
+        SCRIPTS[_j + 1]="${_tmp}"
+      done
+      b19-log debug "HEALTH.D" "$(_p "Listed %s scripts in %s" "${#SCRIPTS[@]}" "$1")"
+    }
+
+    # Succeeds when script $1 sorts before $2: leading number first, then name
+    script_before() {
+      local _a="${1##*/}" _b="${2##*/}" _na _nb
+      _na="${_a%%[!0-9]*}"
+      _nb="${_b%%[!0-9]*}"
+      if [ $(( 10#${_na:-0} )) -ne $(( 10#${_nb:-0} )) ]; then
+        [ $(( 10#${_na:-0} )) -lt $(( 10#${_nb:-0} )) ]
+      else
+        [[ "${_a}" < "${_b}" ]]
+      fi
+    }
+
     declare -A PID_NAMES=()
     # Stop checks still running when we exit, so none outlives its probe
     trap 'kill "${!PID_NAMES[@]}" 2>/dev/null || true; b19_unlock' EXIT
@@ -202,7 +234,8 @@
       CHECKS_COUNT=0
       # All inline checks share one deadline, so a queue of slow checks still ends inside Docker's probe timeout
       CHECKS_DEADLINE=$(( EPOCHSECONDS + B19_HEALTH_CHECK_TIMEOUT ))
-      while IFS= read -r -d '' CHECK; do
+      list_scripts "${CHECKS_PATH}"
+      for CHECK in "${SCRIPTS[@]}"; do
         CHECK_BASENAME="${CHECK##*/}"
         CHECKS_COUNT=$((CHECKS_COUNT + 1))
 
@@ -226,21 +259,25 @@
         if [ "${RUNNING}" -ge "${NUMPROCS}" ]; then
           reap_one_check
         fi
-      done < <(fd --print0 --hidden --type file --extension sh --max-depth 1 . "${CHECKS_PATH}" | sort --zero-terminated --numeric-sort)
+      done
 
       while [ "${RUNNING}" -gt 0 ]; do
         reap_one_check
       done
 
       # Each subdirectory is a tier whose checks run at most once per B19_HEALTH_<TIER>_INTERVAL
-      while IFS= read -r -d '' TIER_DIR; do
+      shopt -s nullglob dotglob
+      TIER_DIRS=("${CHECKS_PATH}"/*/)
+      shopt -u nullglob dotglob
+      for TIER_DIR in "${TIER_DIRS[@]%/}"; do
         TIER_VAR="B19_HEALTH_$(basename "${TIER_DIR}" | tr '[:lower:]-' '[:upper:]_')_INTERVAL"
         if [ -z "${!TIER_VAR:-}" ]; then
           b19-log warn "HEALTH.D" "$(_p "Ignoring tier %s: %s is not set" "${TIER_DIR}" "${TIER_VAR}")"
           continue
         fi
         mkdir --parents "${TIER_STATE_PATH}"
-        while IFS= read -r -d '' CHECK; do
+        list_scripts "${TIER_DIR}"
+        for CHECK in "${SCRIPTS[@]}"; do
           CHECKS_COUNT=$((CHECKS_COUNT + 1))
           if b19_skipped note "HEALTH.D" B19_HEALTH_SKIP_ "${CHECK}"; then
             continue
@@ -255,8 +292,8 @@
             FINAL_EXIT_CODE=$((FINAL_EXIT_CODE + 1))
             FAILED_LIST+=("$(basename "${CHECK}")")
           fi
-        done < <(fd --print0 --hidden --type file --extension sh --max-depth 1 . "${TIER_DIR}" | sort --zero-terminated --numeric-sort)
-      done < <(fd --print0 --hidden --type directory --max-depth 1 . "${CHECKS_PATH}" | sort --zero-terminated)
+        done
+      done
 
       # Handle the case where no scripts are found
       if [ "${CHECKS_COUNT}" -eq 0 ]; then

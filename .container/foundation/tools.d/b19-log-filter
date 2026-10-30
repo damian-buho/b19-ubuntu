@@ -4,14 +4,12 @@
 #
 # SPDX-License-Identifier: MIT
 
-    # Level priorities as in b19-log
-    declare -gA _BLF_PRIORITY=([error]=40 [warn]=30 [bad]=20 [good]=20 [info]=20 [debug]=10 [note]=10)
-
     # Drops a line below B19_VERBOSITY without a process, read per call as set-verbosity changes it mid-run
     b19-log() {
-      local _blf_threshold
+      local _blf_threshold _blf_priority
       case "${B19_VERBOSITY:-warn}" in error) _blf_threshold=40 ;; info) _blf_threshold=20 ;; debug) _blf_threshold=10 ;; *) _blf_threshold=30 ;; esac
+      case "${1:-}" in error) _blf_priority=40 ;; warn) _blf_priority=30 ;; bad | good | info) _blf_priority=20 ;; debug | note) _blf_priority=10 ;; *) _blf_priority=99 ;; esac
       # Unknown levels and piped calls (no message) fall through to the real tool
-      if [ $# -ge 3 ] && [ "${_BLF_PRIORITY[$1]:-99}" -lt "${_blf_threshold}" ]; then return 0; fi
+      if [ $# -ge 3 ] && [ "${_blf_priority}" -lt "${_blf_threshold}" ]; then return 0; fi
       command b19-log "$@"
     }

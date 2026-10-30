@@ -63,5 +63,16 @@ else
     fail "$(_p "Container log holds the failure %s times" "${LINES}")"
 fi
 
+b19-log note "HEALTH-LIMIT-TEST" "$(_p "Test %s: checks run in numeric order, not text order" "5")"
+mkdir --parents /tmp/b19-test-health-limit/ordered
+printf '%s\n' 'exit 0' >/tmp/b19-test-health-limit/ordered/10-check-second.sh
+printf '%s\n' 'exit 0' >/tmp/b19-test-health-limit/ordered/9-check-first.sh
+ORDER="$(env "B19_HEALTH_PATH=/tmp/b19-test-health-limit/ordered" "B19_TEMP_PATH=/tmp/b19-test-health-limit/state" "B19_VERBOSITY=info" healthcheck.d 2>&1 | grep --only-matching 'Executing check: .*' | tr '\n' ' ')"
+if [ "${ORDER}" = "Executing check: 9-check-first.sh Executing check: 10-check-second.sh " ]; then
+    b19-log good "HEALTH-LIMIT-TEST" "$(_p "Test %s passed" "5")"
+else
+    fail "$(_p "Unexpected check order: %s" "${ORDER}")"
+fi
+
 rm --recursive --force /tmp/b19-test-health-limit
 b19-log good "HEALTH-LIMIT-TEST" "$(_ "All healthcheck output tests passed")"
