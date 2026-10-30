@@ -22,6 +22,7 @@
     FINAL_EXIT_CODE=0
     FAILED_TESTS=0
     SKIPPED_TESTS=0
+    FAILED_NAMES=()
 
     b19-log info "TEST.D" "$(_ "Reading from:") ${B19_TEST_PATH}"
 
@@ -59,13 +60,14 @@
           SKIPPED_TESTS=$((SKIPPED_TESTS + 1))
           continue
         fi
-        b19-run --timeout "${B19_TEST_SCRIPT_TIMEOUT:-600}" "TEST.D" "$(_ "Executing:") ${BASENAME} (${B19_TEST_SCRIPT_TIMEOUT:-600} s)" -- "${TEST}"
+        b19-run --timeout "${B19_TEST_SCRIPT_TIMEOUT:-600}" --reveal N "TEST.D" "$(_ "Executing:") ${BASENAME} (${B19_TEST_SCRIPT_TIMEOUT:-600} s)" -- "${TEST}"
 
         # Capture the exit code of the test
         EXIT_CODE=$?
         if [ "${EXIT_CODE}" -ne 0 ]; then
           FINAL_EXIT_CODE=1
           FAILED_TESTS=$((FAILED_TESTS + 1))
+          FAILED_NAMES+=("${BASENAME}")
         fi
       done < <(fd --print0 --hidden --type file --extension sh . "${B19_TEST_PATH}" | sort --zero-terminated --numeric-sort --reverse)
 
@@ -80,6 +82,9 @@
     # Log the final result
     if [ "${FINAL_EXIT_CODE}" -ne 0 ]; then
       b19-log error "TEST.D" "$(_p "%d of %d tests failed. Final exit code: %d" "${FAILED_TESTS}" "${TESTS_COUNT}" "${FINAL_EXIT_CODE}")"
+      for NAME in "${FAILED_NAMES[@]}"; do
+        b19-log error "TEST.D" "$(_p "Failed: %s" "${NAME}")"
+      done
     else
       b19-log good "TEST.D" "$(_p "%d passed, %d skipped." "$((TESTS_COUNT - SKIPPED_TESTS))" "${SKIPPED_TESTS}")"
     fi

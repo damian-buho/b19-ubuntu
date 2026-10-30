@@ -24,7 +24,7 @@ B19_VERBOSITY=debug b19-run "TEST" "Running tests" -- make test
 ## How it works
 
 ```bash
-b19-run [--timeout S] [--retries N] [--backoff S] <tag> <message> -- <command> [args...]
+b19-run [--timeout S] [--retries N] [--backoff S] [--reveal Y|N] <tag> <message> -- <command> [args...]
 ```
 
 The options go before the tag; retries and backoff are described in [Bound every step with timeouts](use-timeouts.md).
@@ -41,6 +41,8 @@ Hiding green output keeps a `make` sheet short, but exit-0 *warnings* (line-leng
 - `info` — dumps the buffered output on success too (the verbose view).
 - `debug` — streams live instead of buffering, so reveal is a no-op.
 - `error`/`warn` — quiet success (the classic view).
+
+`--reveal Y|N` overrides that choice for one call. `test.d` passes `--reveal N`, so a suite at `info` shows one line per passing script and the full output only of the failing ones.
 
 > Under `m6e-run` the container runs at `debug`, so b19-run streams live and the reveal path is not reached — it applies to the standalone / build-hook case where b19-run is the sole runner.
 

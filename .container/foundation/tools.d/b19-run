@@ -51,8 +51,25 @@
     # Prints usage and fails
     usage() {
         # shellcheck disable=SC2005
-        echo "$(_ "Usage: b19-run [--timeout S] [--retries N] [--backoff S] <tag> <message> [--] <command> [args...]")" >&2
+        echo "$(_ "Usage: b19-run [--timeout S] [--retries N] [--backoff S] [--reveal Y|N] <tag> <message> [--] <command> [args...]")" >&2
         exit 1
+    }
+
+    # Plain progress header, aligned with the b19-log level and tag columns
+    progress_header() {
+        show_progress && [ "${_JSON}" = "0" ] || return 0
+        if [ "${_USE_COLOR}" = "1" ]; then
+            if [ -n "${STAGE:-}" ]; then
+                ansi -n --black --bg-white " ${STAGE^^} " >&2
+            fi
+            ansi -n --black --bg-black-intense " $(printf "%-12s" "${TAG^^}") " >&2
+            ansi -n " ${LOG}… " >&2
+        else
+            if [ -n "${STAGE:-}" ]; then
+                printf " %s " "${STAGE^^}" >&2
+            fi
+            printf " %-5s  %-12s  %s… " "INFO" "${TAG^^}" "${LOG}" >&2
+        fi
     }
 
     # Options precede TAG; the timeout falls back to B19_RUN_TIMEOUT
@@ -64,6 +81,7 @@
             --timeout) RUN_TIMEOUT="$2" ;;
             --retries) RUN_RETRIES="$2" ;;
             --backoff) RUN_BACKOFF="$2" ;;
+            --reveal)  case "$2" in Y) _REVEAL=1 ;; N) _REVEAL=0 ;; *) usage ;; esac ;;
             *) break ;;
         esac
         shift 2
@@ -98,21 +116,7 @@
     # Generate a unique temporary file for output (if needed)
     TEMP_FILE=$(mktemp)
 
-    # Optional: Display the stage if defined (info/debug only)
-    if show_progress && [ "${_JSON}" = "0" ]; then
-        if [ "${_USE_COLOR}" = "1" ]; then
-            if [ -n "${STAGE:-}" ]; then
-                ansi -n --black --bg-white " ${STAGE^^} " >&2
-            fi
-            ansi -n --black --bg-black-intense " $(printf "%-12s" "${TAG^^}") " >&2
-            ansi -n " ${LOG}… " >&2
-        else
-            if [ -n "${STAGE:-}" ]; then
-                printf " %s " "${STAGE^^}" >&2
-            fi
-            printf " %-12s  %s… " "${TAG^^}" "${LOG}" >&2
-        fi
-    fi
+    progress_header
 
     # Capture start time for elapsed timing (ns integer — locale-safe)
     START="${EPOCHREALTIME//[!0-9]/}000"
@@ -135,8 +139,10 @@
             break
         fi
         WAIT_S=$(( DELAY - RANDOM % (DELAY / 2 + 1) ))
+        show_progress && [ "${_JSON}" = "0" ] && printf '\n' >&2
         b19-log warn "${TAG}" "$(_p "Attempt %s/%s failed (exit code %s), retrying in %s s" "${ATTEMPT}" "$(( RUN_RETRIES + 1 ))" "${CODE}" "${WAIT_S}")"
         sleep "${WAIT_S}"
+        progress_header
         DELAY=$(( DELAY * 2 > ${B19_RUN_BACKOFF_MAX:-60} ? ${B19_RUN_BACKOFF_MAX:-60} : DELAY * 2 ))
         ATTEMPT=$(( ATTEMPT + 1 ))
     done
@@ -171,15 +177,22 @@
                     ansi -n --black --bg-black-intense " $(printf "%-12s" "${TAG^^}") " >&2
                     ansi " ${LOG}" >&2
                 else
-                    printf " %-12s  %s\n" "${TAG^^}" "${LOG}" >&2
+                    printf " %-5s  %-12s  %s\n" "INFO" "${TAG^^}" "${LOG}" >&2
                 fi
             fi
             cat < "${TEMP_FILE}" >&2
         fi
     else
         if [ "${_USE_COLOR}" = "0" ]; then
-            # No color: plain output with TAG context
-            printf " %-12s  %s\n" "${TAG^^}" "$(_p "failure (exit code %s), [%s]" "${CODE}" "$(elapsed_seconds)s")" >&2
+            # No color: finish the progress line, or print a whole ERROR record when none was shown
+            if show_progress; then
+                printf " %s\n" "$(_p "failure (exit code %s), [%s]" "${CODE}" "$(elapsed_seconds)s")" >&2
+            else
+                if [ -n "${STAGE:-}" ]; then
+                    printf " %s " "${STAGE^^}" >&2
+                fi
+                printf " %-5s  %-12s  %s… %s\n" "ERROR" "${TAG^^}" "${LOG}" "$(_p "failure (exit code %s), [%s]" "${CODE}" "$(elapsed_seconds)s")" >&2
+            fi
             echo "${COMMAND}" >&2
         else
             # Colored output; prefix with TAG if progress line was suppressed

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-26 00:19+0000\n"
+"POT-Creation-Date: 2026-10-30 21:38+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -198,125 +198,125 @@ msgstr "%s debe ser un número entero de segundos, se obtuvo %s"
 msgid "Passthrough: %s writes to the container directly"
 msgstr "Passthrough: %s escribe directamente en el contenedor"
 
-#: .container/foundation/tools.d/b19-exec:217
+#: .container/foundation/tools.d/b19-exec:232
 msgid "Stopping %s after %ss although %s still runs"
 msgstr "Deteniendo %s tras %ss aunque %s sigue en ejecución"
 
-#: .container/foundation/tools.d/b19-exec:221
+#: .container/foundation/tools.d/b19-exec:236
 msgid "%s stops after %s"
 msgstr "%s se detiene después de %s"
 
-#: .container/foundation/tools.d/b19-exec:233
+#: .container/foundation/tools.d/b19-exec:248
 msgid "%s received %s before it started, it will not start"
 msgstr "%s recibió %s antes de arrancar, no arrancará"
 
-#: .container/foundation/tools.d/b19-exec:237
+#: .container/foundation/tools.d/b19-exec:252
 msgid "%s has not started, %s dropped"
 msgstr "%s no ha arrancado, %s descartada"
 
-#: .container/foundation/tools.d/b19-exec:243
+#: .container/foundation/tools.d/b19-exec:258
 msgid "%s is already stopping, %s not forwarded again"
 msgstr "%s ya se está deteniendo, %s no se reenvía otra vez"
 
-#: .container/foundation/tools.d/b19-exec:249
+#: .container/foundation/tools.d/b19-exec:264
 msgid "Forwarding %s to %s (pid %s)"
 msgstr "Reenviando %s a %s (pid %s)"
 
-#: .container/foundation/tools.d/b19-exec:251
-#: .container/foundation/tools.d/b19-exec:339
+#: .container/foundation/tools.d/b19-exec:266
+#: .container/foundation/tools.d/b19-exec:354
 msgid "%s (pid %s) is already gone"
 msgstr "%s (pid %s) ya no existe"
 
-#: .container/foundation/tools.d/b19-exec:267
+#: .container/foundation/tools.d/b19-exec:282
 msgid "Timed out waiting for %s, %s runs untracked"
 msgstr "Tiempo agotado esperando %s, %s se ejecuta sin registro"
 
-#: .container/foundation/tools.d/b19-exec:271
+#: .container/foundation/tools.d/b19-exec:286
 msgid "%s is already running (pid %s)"
 msgstr "%s ya está en ejecución (pid %s)"
 
-#: .container/foundation/tools.d/b19-exec:275
+#: .container/foundation/tools.d/b19-exec:290
 msgid "%s is already running (pid %s), this one runs untracked"
 msgstr ""
 "%s ya está en ejecución (pid %s), esta instancia se ejecuta sin registro"
 
-#: .container/foundation/tools.d/b19-exec:282
+#: .container/foundation/tools.d/b19-exec:297
 msgid "Claimed %s (supervisor pid %s)"
 msgstr "Reservado %s (pid del supervisor %s)"
 
-#: .container/foundation/tools.d/b19-exec:296
+#: .container/foundation/tools.d/b19-exec:311
 msgid "Recorded %s (pid %s, %s)"
 msgstr "Registrado %s (pid %s, %s)"
 
-#: .container/foundation/tools.d/b19-exec:315
+#: .container/foundation/tools.d/b19-exec:330
 msgid "No exit code recorded for %s after %s tries"
 msgstr "Ningún código de salida registrado para %s tras %s intentos"
 
-#: .container/foundation/tools.d/b19-exec:334
+#: .container/foundation/tools.d/b19-exec:349
 msgid "Stopping %s (pid %s) after %s"
 msgstr "Deteniendo %s (pid %s) después de %s"
 
-#: .container/foundation/tools.d/b19-exec:344
+#: .container/foundation/tools.d/b19-exec:359
 msgid "Leaving after %ss although %s still runs"
 msgstr "Saliendo tras %ss aunque %s sigue en ejecución"
 
-#: .container/foundation/tools.d/b19-exec:348
+#: .container/foundation/tools.d/b19-exec:363
 msgid "Waiting for %s to stop"
 msgstr "Esperando a que %s se detenga"
 
-#: .container/foundation/tools.d/b19-exec:366
+#: .container/foundation/tools.d/b19-exec:381
 msgid "Cannot write %s as uid %s, %s runs untracked"
 msgstr "No se puede escribir %s como uid %s, %s se ejecuta sin registro"
 
-#: .container/foundation/tools.d/b19-exec:381
+#: .container/foundation/tools.d/b19-exec:396
 msgid "Not starting %s: required %s exited with %s"
 msgstr "No se inicia %s: el obligatorio %s salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:396
+#: .container/foundation/tools.d/b19-exec:411
 msgid "Forwarding held %s to %s (pid %s)"
 msgstr "Reenviando %s retenida a %s (pid %s)"
 
-#: .container/foundation/tools.d/b19-exec:406
+#: .container/foundation/tools.d/b19-exec:421
 msgid "%s fails fast when %s (pid %s) exits"
 msgstr "%s falla de inmediato cuando %s (pid %s) termina"
 
-#: .container/foundation/tools.d/b19-exec:423
+#: .container/foundation/tools.d/b19-exec:438
 msgid "Wait for %s interrupted with %s"
 msgstr "Espera de %s interrumpida con %s"
 
-#: .container/foundation/tools.d/b19-exec:433
+#: .container/foundation/tools.d/b19-exec:448
 msgid "%s exited while %s stops"
 msgstr "%s terminó mientras %s se detiene"
 
-#: .container/foundation/tools.d/b19-exec:438
+#: .container/foundation/tools.d/b19-exec:453
 msgid "Stopping %s: required %s exited with %s"
 msgstr "Deteniendo %s: el obligatorio %s salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:448
+#: .container/foundation/tools.d/b19-exec:463
 msgid "%s (pid %s) exited with %s"
 msgstr "%s (pid %s) salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:455
+#: .container/foundation/tools.d/b19-exec:470
 msgid "%s (pid %s) stopped with %s"
 msgstr "%s (pid %s) se detuvo con %s"
 
-#: .container/foundation/tools.d/b19-exec:457
+#: .container/foundation/tools.d/b19-exec:472
 msgid "Optional %s (pid %s) exited with %s, the container keeps running"
 msgstr "El opcional %s (pid %s) salió con %s, el contenedor sigue en ejecución"
 
-#: .container/foundation/tools.d/b19-exec:459
+#: .container/foundation/tools.d/b19-exec:474
 msgid "Required %s (pid %s) exited with %s"
 msgstr "El obligatorio %s (pid %s) salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:478
+#: .container/foundation/tools.d/b19-exec:493
 msgid "Started %s (pid %s, %s)"
 msgstr "Iniciado %s (pid %s, %s)"
 
-#: .container/foundation/tools.d/b19-exec:482
+#: .container/foundation/tools.d/b19-exec:497
 msgid "%s has no record after %ss, it runs untracked"
 msgstr "%s no tiene registro tras %ss, se ejecuta sin registro"
 
-#: .container/foundation/tools.d/b19-exec:488
+#: .container/foundation/tools.d/b19-exec:503
 msgid "%s failed to start, exit code %s"
 msgstr "%s no pudo iniciarse, código de salida %s"
 
@@ -532,32 +532,39 @@ msgstr "Hash:      %s"
 msgid "Filename:  %s"
 msgstr "Archivo:   %s"
 
-#: .container/foundation/tools.d/b19-run:46
+#: .container/foundation/tools.d/b19-run:54
 msgid ""
-"Usage: b19-run [--timeout S] [--retries N] [--backoff S] <tag> <message> "
-"[--] <command> [args...]"
+"Usage: b19-run [--timeout S] [--retries N] [--backoff S] [--reveal Y|N] <tag>"
+" <message> [--] <command> [args...]"
 msgstr ""
-"Uso: b19-run [--timeout S] [--retries N] [--backoff S] <etiqueta> <mensaje> "
-"[--] <comando> [args...]"
+"Uso: b19-run [--timeout S] [--retries N] [--backoff S] [--reveal Y|N] "
+"<etiqueta> <mensaje> [--] <comando> [args...]"
 
-#: .container/foundation/tools.d/b19-run:130
+#: .container/foundation/tools.d/b19-run:143
 msgid "Attempt %s/%s failed (exit code %s), retrying in %s s"
 msgstr "Intento %s/%s fallido (código de salida %s), reintentando en %s s"
 
-#: .container/foundation/tools.d/b19-run:138
-#: .container/foundation/tools.d/b19-run:151
-#: .container/foundation/tools.d/b19-run:153
+#: .container/foundation/tools.d/b19-run:152
+#: .container/foundation/tools.d/b19-run:165
+#: .container/foundation/tools.d/b19-run:167
 msgid "success [%s]"
 msgstr "éxito [%s]"
 
-#: .container/foundation/tools.d/b19-run:143
-#: .container/foundation/tools.d/b19-run:185
+#: .container/foundation/tools.d/b19-run:157
+#: .container/foundation/tools.d/b19-run:206
 msgid "failure (exit code %s) [%s]"
 msgstr "fallo (código de salida %s) [%s]"
 
-#: .container/foundation/tools.d/b19-run:174
+#: .container/foundation/tools.d/b19-run:189
+#: .container/foundation/tools.d/b19-run:194
 msgid "failure (exit code %s), [%s]"
 msgstr "fallo (código de salida %s), [%s]"
+
+#: .container/foundation/tools.d/b19-skip:22
+#: .container/user/tools.d/bootstrap.d:45
+#: .container/user/tools.d/entrypoint.d:39
+msgid "Skipped: %s (via %s)"
+msgstr "Omitido: %s (mediante %s)"
 
 #: .container/foundation/tools.d/build-stage:23
 msgid "Stage-independent hooks for %s: %s"
@@ -748,23 +755,23 @@ msgstr "minijinja-cli no instalado, omitiendo"
 msgid "B19_IMMUTABLE=Y, skipping j2 templates"
 msgstr "B19_IMMUTABLE=Y, omitiendo plantillas j2"
 
-#: .container/foundation/tools.d/process-hooks:13
+#: .container/foundation/tools.d/process-hooks:17
 msgid "%s failed to execute (code %s)"
 msgstr "%s falló al ejecutar (código %s)"
 
-#: .container/foundation/tools.d/process-hooks:24
+#: .container/foundation/tools.d/process-hooks:28
 msgid "Directories found for stage: %s"
 msgstr "Directorios encontrados para etapa: %s"
 
-#: .container/foundation/tools.d/process-hooks:28
+#: .container/foundation/tools.d/process-hooks:32
 msgid "Executing: %s"
 msgstr "Ejecutando: %s"
 
-#: .container/foundation/tools.d/process-hooks:37
+#: .container/foundation/tools.d/process-hooks:41
 msgid "%s executed successfully"
 msgstr "%s ejecutado exitosamente"
 
-#: .container/foundation/tools.d/process-hooks:47
+#: .container/foundation/tools.d/process-hooks:51
 msgid "Not found for stage: %s"
 msgstr "No encontrado para etapa: %s"
 
@@ -952,12 +959,6 @@ msgstr "No se encontraron scripts en %s"
 msgid "Create lock directory %s"
 msgstr "Crear directorio de bloqueo %s"
 
-#: .container/user/tools.d/bootstrap.d:45
-#: .container/user/tools.d/entrypoint.d:39
-#: .container/user/tools.d/healthcheck.d:69
-msgid "Skipped: %s (via %s)"
-msgstr "Omitido: %s (mediante %s)"
-
 #: .container/user/tools.d/bootstrap.d:52
 msgid "Already done: %s"
 msgstr "Ya completado: %s"
@@ -983,7 +984,7 @@ msgid "Completed: %s"
 msgstr "Completado: %s"
 
 #: .container/user/tools.d/entrypoint.d:26 .container/user/tools.d/report.d:26
-#: .container/user/tools.d/test.d:48
+#: .container/user/tools.d/test.d:52
 msgid "Directory found:"
 msgstr "Directorio encontrado:"
 
@@ -1000,99 +1001,99 @@ msgid "No entrypoint scripts found in"
 msgstr "No se encontraron scripts de entrada en"
 
 #: .container/user/tools.d/entrypoint.d:55 .container/user/tools.d/report.d:52
-#: .container/user/tools.d/test.d:70
+#: .container/user/tools.d/test.d:79
 msgid "Directory not found:"
 msgstr "Directorio no encontrado:"
 
-#: .container/user/tools.d/healthcheck.d:40
+#: .container/user/tools.d/healthcheck.d:47
 msgid "Draining via %s: reporting not ready"
 msgstr "En drenaje mediante %s: notificando no disponible"
 
-#: .container/user/tools.d/healthcheck.d:54
+#: .container/user/tools.d/healthcheck.d:61
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:102
+#: .container/user/tools.d/healthcheck.d:90
 msgid "No verdict yet for %s, running it in the background"
 msgstr "Aún no hay veredicto para %s, se ejecuta en segundo plano"
 
-#: .container/user/tools.d/healthcheck.d:113
+#: .container/user/tools.d/healthcheck.d:101
 msgid "Stale verdict for %s (%s s old, due every %s s), re-running"
 msgstr ""
 "Veredicto caducado para %s (%s s de antigüedad, cada %s s), se vuelve a "
 "ejecutar"
 
-#: .container/user/tools.d/healthcheck.d:117
+#: .container/user/tools.d/healthcheck.d:105
 msgid "Cached verdict for %s (%s s old): %s"
 msgstr "Veredicto en caché para %s (%s s de antigüedad): %s"
 
-#: .container/user/tools.d/healthcheck.d:142
-#: .container/user/tools.d/healthcheck.d:206
+#: .container/user/tools.d/healthcheck.d:130
+#: .container/user/tools.d/healthcheck.d:194
 msgid "Check passed:"
 msgstr "Verificación exitosa:"
 
-#: .container/user/tools.d/healthcheck.d:144
+#: .container/user/tools.d/healthcheck.d:132
 msgid "Check timed out: %s (probe deadline %s s)"
 msgstr "Comprobación agotada: %s (plazo del sondeo %s s)"
 
-#: .container/user/tools.d/healthcheck.d:148
-#: .container/user/tools.d/healthcheck.d:208
+#: .container/user/tools.d/healthcheck.d:136
+#: .container/user/tools.d/healthcheck.d:196
 msgid "Check failed:"
 msgstr "Verificación fallida:"
 
-#: .container/user/tools.d/healthcheck.d:148
+#: .container/user/tools.d/healthcheck.d:136
 msgid "with exit code"
 msgstr "con código de salida"
 
-#: .container/user/tools.d/healthcheck.d:155
+#: .container/user/tools.d/healthcheck.d:143
 msgid "Checks directory found"
 msgstr "Directorio de verificaciones encontrado"
 
-#: .container/user/tools.d/healthcheck.d:169
+#: .container/user/tools.d/healthcheck.d:157
 msgid "Executing check:"
 msgstr "Ejecutando verificación:"
 
-#: .container/user/tools.d/healthcheck.d:176
+#: .container/user/tools.d/healthcheck.d:164
 msgid "Time budget for %s: %s s"
 msgstr "Tiempo disponible para %s: %s s"
 
-#: .container/user/tools.d/healthcheck.d:195
+#: .container/user/tools.d/healthcheck.d:183
 msgid "Ignoring tier %s: %s is not set"
 msgstr "Se ignora el nivel %s: %s no está definida"
 
-#: .container/user/tools.d/healthcheck.d:217
+#: .container/user/tools.d/healthcheck.d:205
 msgid "No health checks found in"
 msgstr "No se encontraron verificaciones de salud en"
 
-#: .container/user/tools.d/healthcheck.d:220
+#: .container/user/tools.d/healthcheck.d:208
 msgid "Checks directory not found at"
 msgstr "Directorio de verificaciones no encontrado en"
 
-#: .container/user/tools.d/healthcheck.d:232
+#: .container/user/tools.d/healthcheck.d:220
 msgid "%d of %d checks failed: %s"
 msgstr "%d de %d verificaciones fallaron: %s"
 
-#: .container/user/tools.d/healthcheck.d:234
+#: .container/user/tools.d/healthcheck.d:222
 msgid "All %d checks passed."
 msgstr "Todas las %d verificaciones pasaron."
 
-#: .container/user/tools.d/healthcheck.d:248
+#: .container/user/tools.d/healthcheck.d:236
 msgid "Ignoring B19_HEALTH_EXIT_AFTER=%s: not a positive integer"
 msgstr "Se ignora B19_HEALTH_EXIT_AFTER=%s: no es un entero positivo"
 
-#: .container/user/tools.d/healthcheck.d:261
+#: .container/user/tools.d/healthcheck.d:249
 msgid "Consecutive failed probes: %s of %s (PID 1 age %s s)"
 msgstr "Sondeos fallidos consecutivos: %s de %s (edad del PID 1: %s s)"
 
-#: .container/user/tools.d/healthcheck.d:263
+#: .container/user/tools.d/healthcheck.d:251
 msgid "%s consecutive failed probes, sending TERM to PID 1"
 msgstr "%s sondeos fallidos consecutivos, enviando TERM al PID 1"
 
-#: .container/user/tools.d/healthcheck.d:264
+#: .container/user/tools.d/healthcheck.d:252
 msgid "Cannot signal PID 1 as UID %s"
 msgstr "No se puede enviar una señal al PID 1 como UID %s"
 
-#: .container/user/tools.d/report.d:18 .container/user/tools.d/test.d:23
+#: .container/user/tools.d/report.d:18 .container/user/tools.d/test.d:27
 msgid "Reading from:"
 msgstr "Leyendo de:"
 
@@ -1104,39 +1105,43 @@ msgstr "Procesando reporte:"
 msgid "No report scripts found in"
 msgstr "No se encontraron scripts de reporte en"
 
-#: .container/user/tools.d/test.d:15
+#: .container/user/tools.d/test.d:17
 msgid "Tests disabled"
 msgstr "Pruebas deshabilitadas"
 
-#: .container/user/tools.d/test.d:36
+#: .container/user/tools.d/test.d:40
 msgid "Healthcheck did not pass within %s seconds"
 msgstr "Healthcheck no pasó dentro de %s segundos"
 
-#: .container/user/tools.d/test.d:37
+#: .container/user/tools.d/test.d:41
 msgid "Unhealthy checks: %s"
 msgstr "Verificaciones fallidas: %s"
 
-#: .container/user/tools.d/test.d:40
+#: .container/user/tools.d/test.d:44
 msgid "Waiting for healthcheck... %ss elapsed"
 msgstr "Esperando healthcheck... %ss transcurridos"
 
-#: .container/user/tools.d/test.d:44
+#: .container/user/tools.d/test.d:48
 msgid "Healthcheck passed. Starting tests."
 msgstr "Healthcheck pasó. Iniciando pruebas."
 
-#: .container/user/tools.d/test.d:55
+#: .container/user/tools.d/test.d:63
 msgid "Executing:"
 msgstr "Ejecutando:"
 
-#: .container/user/tools.d/test.d:67
+#: .container/user/tools.d/test.d:76
 msgid "No test scripts found in"
 msgstr "No se encontraron scripts de prueba en"
 
-#: .container/user/tools.d/test.d:75
+#: .container/user/tools.d/test.d:84
 msgid "%d of %d tests failed. Final exit code: %d"
 msgstr "%d de %d pruebas fallaron. Código de salida final: %d"
 
-#: .container/user/tools.d/test.d:77
+#: .container/user/tools.d/test.d:86
+msgid "Failed: %s"
+msgstr "Falló: %s"
+
+#: .container/user/tools.d/test.d:89
 msgid "%d passed, %d skipped."
 msgstr "%d pasaron, %d omitidas."
 
@@ -1786,22 +1791,54 @@ msgstr "Prueba 16b: parada mientras arranca la carga útil"
 msgid "Test 17: Required daemon exit fails fast"
 msgstr "Prueba 17: la salida de un demonio obligatorio falla de inmediato"
 
-#: .container/user/test.d/0200-b19-exec.sh:285
+#: .container/user/test.d/0200-b19-exec.sh:289
 msgid "Test 18: Optional daemon exit keeps the payload"
 msgstr "Prueba 18: la salida de un demonio opcional conserva el payload"
 
-#: .container/user/test.d/0200-b19-exec.sh:300
+#: .container/user/test.d/0200-b19-exec.sh:308
 msgid "Test 19: Health check and stop on payload exit"
 msgstr "Prueba 19: comprobación de salud y parada al salir el payload"
 
-#: .container/user/test.d/0200-b19-exec.sh:307
+#: .container/user/test.d/0200-b19-exec.sh:315
 msgid "Test 20: Invalid background calls"
 msgstr "Prueba 20: llamadas en segundo plano no válidas"
 
-#: .container/user/test.d/0200-b19-exec.sh:323
+#: .container/user/test.d/0200-b19-exec.sh:331
 #, fuzzy
 msgid "All b19-exec tests passed"
 msgstr "Todas las %d pruebas pasaron."
+
+#: .container/user/test.d/0200-b19-log-filter.sh:24
+msgid "verbosity %s level %s: filter printed [%s], b19-log printed [%s]"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-log-filter.sh:27
+msgid "Starting log filter tests"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-log-filter.sh:37
+msgid "b19-log is not a function after sourcing"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-log-filter.sh:41
+msgid "verbosity change was not honored"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-log-filter.sh:42
+msgid "line below the old threshold was printed"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-log-filter.sh:46
+msgid "unknown level was accepted"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-log-filter.sh:51
+msgid "piped line was dropped"
+msgstr ""
+
+#: .container/user/test.d/0200-b19-log-filter.sh:53
+msgid "Log filter tests passed"
+msgstr "Las pruebas del filtro de registro pasaron"
 
 #: .container/user/test.d/0200-b19-log-json.sh:40
 msgid "Skipping the decimal-comma case: no such locale among %s"
@@ -1826,6 +1863,14 @@ msgstr "Interrumpir por tiempo un comando colgado"
 #: .container/user/test.d/0200-b19-run-retries.sh:24
 msgid "Expected exit code 124, got %s"
 msgstr "Se esperaba el código de salida 124, se obtuvo %s"
+
+#: .container/user/test.d/0200-b19-run-timing.sh:38
+msgid "precision %s: expected %s decimals, got [%s]"
+msgstr "precisión %s: se esperaban %s decimales, se obtuvo [%s]"
+
+#: .container/user/test.d/0200-b19-run-timing.sh:41
+msgid "Timing precision tests passed"
+msgstr "Las pruebas de precisión del tiempo pasaron"
 
 #: .container/user/test.d/0200-b19-run.sh:13
 #, fuzzy
@@ -2017,6 +2062,10 @@ msgstr "Prueba %s: el puerto alto seguro pasa"
 #: .container/user/test.d/0360-entrypoint-verbosity.sh:40
 #: .container/user/test.d/0360-entrypoint-verbosity.sh:47
 #: .container/user/test.d/0360-entrypoint-verbosity.sh:55
+#: .container/user/test.d/0370-test-d-skip.sh:39
+#: .container/user/test.d/0370-test-d-skip.sh:45
+#: .container/user/test.d/0370-test-d-skip.sh:50
+#: .container/user/test.d/0370-test-d-skip.sh:55
 msgid "Test %s passed"
 msgstr "Prueba %s superada"
 
@@ -2364,10 +2413,70 @@ msgstr "El nivel de la carga pasó a %s tras una nueva ejecución"
 msgid "All entrypoint verbosity tests passed"
 msgstr "Todas las pruebas de verbosidad del punto de entrada pasaron"
 
+#: .container/user/test.d/0370-test-d-skip.sh:34
+msgid "Test %s: muted script is not run and is counted"
+msgstr "Prueba %s: el script silenciado no se ejecuta y se cuenta"
+
+#: .container/user/test.d/0370-test-d-skip.sh:35
+msgid "Muted suite failed"
+msgstr "El conjunto silenciado falló"
+
+#: .container/user/test.d/0370-test-d-skip.sh:36
+msgid "Muted test script ran"
+msgstr "El script de prueba silenciado se ejecutó"
+
+#: .container/user/test.d/0370-test-d-skip.sh:37
+msgid "Skip did not name its variable"
+msgstr "La omisión no nombró su variable"
+
+#: .container/user/test.d/0370-test-d-skip.sh:38
+msgid "Skip was not counted"
+msgstr "La omisión no se contó"
+
+#: .container/user/test.d/0370-test-d-skip.sh:41
+msgid "Test %s: unset variable runs the script"
+msgstr "Prueba %s: una variable sin definir ejecuta el script"
+
+#: .container/user/test.d/0370-test-d-skip.sh:42
+msgid "Unmuted suite failed"
+msgstr "El conjunto sin silenciar falló"
+
+#: .container/user/test.d/0370-test-d-skip.sh:43
+msgid "Unmuted test script did not run"
+msgstr "El script de prueba sin silenciar no se ejecutó"
+
+#: .container/user/test.d/0370-test-d-skip.sh:44
+msgid "Pass was not counted"
+msgstr "El éxito no se contó"
+
+#: .container/user/test.d/0370-test-d-skip.sh:47
+msgid "Test %s: false runs the script"
+msgstr "Prueba %s: false ejecuta el script"
+
+#: .container/user/test.d/0370-test-d-skip.sh:48
+msgid "Suite with false mute failed"
+msgstr "El conjunto con silencio false falló"
+
+#: .container/user/test.d/0370-test-d-skip.sh:49
+msgid "Script with a false mute did not run"
+msgstr "El script con silencio false no se ejecutó"
+
+#: .container/user/test.d/0370-test-d-skip.sh:52
+msgid "Test %s: unknown name is a no-op"
+msgstr "Prueba %s: un nombre desconocido no hace nada"
+
+#: .container/user/test.d/0370-test-d-skip.sh:53
+msgid "Suite with unknown mute failed"
+msgstr "El conjunto con silencio desconocido falló"
+
+#: .container/user/test.d/0370-test-d-skip.sh:54
+msgid "Unknown mute stopped a script"
+msgstr "Un silencio desconocido detuvo un script"
+
 #: .container/user/test.d/0900-memory-consumption.sh:17
 msgid ""
-"memory.current unavailable (memory controller not delegated); skipping "
-"memory check"
+"memory.current unavailable (memory controller not delegated); skipping memory"
+" check"
 msgstr ""
 "memory.current no disponible (controlador de memoria no delegado); omitiendo "
 "verificación de memoria"
@@ -2384,73 +2493,11 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
 
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Test %s: muted script is not run and is counted"
-msgstr "Prueba %s: el script silenciado no se ejecuta y se cuenta"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Muted suite failed"
-msgstr "El conjunto silenciado falló"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Muted test script ran"
-msgstr "El script de prueba silenciado se ejecutó"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Skip did not name its variable"
-msgstr "La omisión no nombró su variable"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Skip was not counted"
-msgstr "La omisión no se contó"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Test %s: unset variable runs the script"
-msgstr "Prueba %s: una variable sin definir ejecuta el script"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Unmuted suite failed"
-msgstr "El conjunto sin silenciar falló"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Unmuted test script did not run"
-msgstr "El script de prueba sin silenciar no se ejecutó"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Pass was not counted"
-msgstr "El éxito no se contó"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Test %s: false runs the script"
-msgstr "Prueba %s: false ejecuta el script"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Suite with false mute failed"
-msgstr "El conjunto con silencio false falló"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Script with a false mute did not run"
-msgstr "El script con silencio false no se ejecutó"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Test %s: unknown name is a no-op"
-msgstr "Prueba %s: un nombre desconocido no hace nada"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Suite with unknown mute failed"
-msgstr "El conjunto con silencio desconocido falló"
-
-#: .container/user/test.d/0370-test-d-skip.sh
-msgid "Unknown mute stopped a script"
-msgstr "Un silencio desconocido detuvo un script"
-
 #~ msgid "Caught %s, transferring to %s"
 #~ msgstr "Señal %s interceptada, transfiriendo a %s"
 
 #~ msgid "Caught %s, no active payload process to signal"
-#~ msgstr ""
-#~ "Señal %s interceptada, no hay proceso de carga activo para señalizar"
+#~ msgstr "Señal %s interceptada, no hay proceso de carga activo para señalizar"
 
 #~ msgid "Usage: b19-flatten <source-root> <destination> <exclude-list>"
 #~ msgstr "Uso: b19-flatten <raíz-origen> <destino> <lista-de-exclusión>"
@@ -2506,9 +2553,6 @@ msgstr "Un silencio desconocido detuvo un script"
 #~ msgid "Write to image"
 #~ msgstr "Escribir en imagen"
 
-#~ msgid "Failed scripts: %s"
-#~ msgstr "Scripts fallidos: %s"
-
 #~ msgid "Setup Pass as credential store"
 #~ msgstr "Configurar Pass como almacén de credenciales"
 
@@ -2525,8 +2569,7 @@ msgstr "Un silencio desconocido detuvo un script"
 #~ msgstr "Lista común con prefijo de etapa (%s) encontrada, se concatenará"
 
 #~ msgid "Stage-prefixed release list (%s) found, will concat it"
-#~ msgstr ""
-#~ "Lista de release con prefijo de etapa (%s) encontrada, se concatenará"
+#~ msgstr "Lista de release con prefijo de etapa (%s) encontrada, se concatenará"
 
 #~ msgid "Default dependencies list (%s) found"
 #~ msgstr "Lista de dependencias por defecto (%s) encontrada"

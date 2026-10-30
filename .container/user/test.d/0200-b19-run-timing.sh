@@ -19,7 +19,7 @@ fail() {
 # Elapsed text of a successful run at the given precision setting
 elapsed_at() {
   local _out
-  _out="$(NO_COLOR=1 B19_VERBOSITY=info B19_LOG_FORMAT=text B19_RUN_TIMING_PRECISION="$1" b19-run TIMING "run" -- true 2>&1)"
+  _out="$(B19_I18N_ENABLED=false NO_COLOR=1 B19_VERBOSITY=info B19_LOG_FORMAT=text B19_RUN_TIMING_PRECISION="$1" b19-run TIMING "run" -- true 2>&1)"
   if [[ "${_out}" =~ success\ \[([0-9.]+)s\] ]]; then
     printf '%s' "${BASH_REMATCH[1]}"
   fi
