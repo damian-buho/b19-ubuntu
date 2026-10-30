@@ -33,6 +33,7 @@ Any violation exits 1 and stops the entrypoint chain. The check runs twice — a
 Scope details that matter:
 
 - Only names **ending** in `PORT` are matched, and only uppercase: `HTTP_PORT` is checked, a bare `PORT` is not.
+- Names ending in `_UPSTREAM_PORT` name a port the service connects to, not one it binds, and are skipped entirely: `PROMETHEUS_UPSTREAM_PORT=443` passes.
 - `0` is exempt from the privileged check (the conventional “let the OS pick” value).
 - 443 is not in the blocklist — `HTTPS_PORT=443` passes.
 - A non-root container granted `NET_BIND_SERVICE` (for example via `cap_add`) passes the privileged check, so it can serve 80/443 without running as root.

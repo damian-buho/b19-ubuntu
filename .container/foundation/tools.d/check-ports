@@ -54,6 +54,12 @@
         VAR_NAME="${ENV_LINE%%=*}"
         VAR_VALUE="${ENV_LINE#*=}"
 
+        # A client port (*_UPSTREAM_PORT) is connected to, never bound
+        if [[ "${VAR_NAME}" == *_UPSTREAM_PORT ]]; then
+            b19-log debug "PORT-CHECK" "$(_p "%s=%s is a client port, skipped" "${VAR_NAME}" "${VAR_VALUE}")"
+            continue
+        fi
+
         # Skip non-numeric values
         if ! [[ "${VAR_VALUE}" =~ ^[0-9]+$ ]]; then
             continue

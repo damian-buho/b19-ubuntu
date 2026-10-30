@@ -86,4 +86,23 @@ else
     fail "$(_ "Disabled check still rejected the port")"
 fi
 
+b19-log note "PORT-CHECK-TEST" "$(_p "Test %s: client port is never checked" "6")"
+if TEST_OUTPUT="$(run_check "B19_TEST_PROMETHEUS_UPSTREAM_PORT=443" "B19_TEST_BLOCKED_UPSTREAM_PORT=6000")"; then
+    b19-log good "PORT-CHECK-TEST" "$(_p "Test %s passed" "6")"
+else
+    fail "$(_ "Client port was rejected")"
+fi
+
+b19-log note "PORT-CHECK-TEST" "$(_p "Test %s: privileged edge 1023 follows the kernel, 1024 always passes" "7")"
+if TEST_OUTPUT="$(run_check "B19_TEST_APP_PORT=1024")"; then
+    b19-log good "PORT-CHECK-TEST" "$(_p "Test %s passed" "7")"
+else
+    fail "$(_ "Port 1024 was rejected")"
+fi
+if can_bind_privileged; then
+    run_check "B19_TEST_APP_PORT=1023" >/dev/null || fail "$(_ "Port 1023 was rejected despite the capability")"
+else
+    ! run_check "B19_TEST_APP_PORT=1023" >/dev/null || fail "$(_ "Port 1023 was allowed without the capability")"
+fi
+
 b19-log good "PORT-CHECK-TEST" "$(_ "All check-ports tests passed")"
