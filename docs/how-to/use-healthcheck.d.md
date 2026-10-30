@@ -353,6 +353,9 @@ esac
 | `B19_HEALTH_PING_TARGETS`       | `"9.9.9.9 1.1.1.1 8.8.8.8"`                   | Space-separated IPs for the TCP reachability probe                 |
 | `B19_HEALTH_REACH_PORT_SAFE`    | `443`                                         | TCP port probed by the reachability check                          |
 | `B19_HEALTH_MEMORY_THRESHOLD`   | (unset)                                       | MB threshold for memory consumption test                           |
+| B19_HEALTH_OUTPUT_LIMIT         | `4096`                                        | Bytes of probe output kept, failed names first                     |
+| B19_HEALTH_LOG_TARGET           | `/proc/1/fd/2`                                | File that gets one warn line per state change                      |
+| B19_SECRETS_QUIET               | (empty)                                       | Logs a binary secret at debug on re-source                         |
 
 The full variable index lives in [configure-environment](configure-environment.md).
 

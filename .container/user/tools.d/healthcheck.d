@@ -27,13 +27,38 @@
     # shellcheck source=/dev/null
     . b19-log-filter
 
+    TIER_STATE_PATH="${B19_TEMP_PATH:-/tmp}/healthcheck.d"
+    OUTPUT_LIMIT="${B19_HEALTH_OUTPUT_LIMIT:-4096}"
+    RUN_DIR="${TIER_STATE_PATH}/run"
+    mkdir --parents "${RUN_DIR}"
+
+    # Docker keeps only the first B19_HEALTH_OUTPUT_LIMIT bytes of a probe's output, so the log waits in an unlinked file and follows the verdict
+    exec 3>&2
+    if ! [ -t 2 ]; then
+      LOG_FILE=$(mktemp "${RUN_DIR}/log.XXXXXX")
+      exec 4<"${LOG_FILE}"
+      exec 2>"${LOG_FILE}"
+      unlink "${LOG_FILE}"
+    fi
+
+    # Writes the buffered log to the real stderr, cut so $1 verdict bytes and the log fit the output limit
+    flush_log() {
+      local _room=$(( OUTPUT_LIMIT - $1 ))
+      [ "${_room}" -gt 0 ] || _room=0
+      { head --bytes="${_room}" <&4 >&3; } 2>/dev/null || true
+    }
+
     # Wait for an overlapping run instead of answering for it
     # shellcheck source=/dev/null
     . b19-lock
     if ! b19_lock "HEALTH.D" "${B19_TEMP_PATH:-/tmp}/healthcheck.d.lock" "${B19_HEALTH_LOCK_TIMEOUT:-4}"; then
       echo "healthcheck.d.lock"
+      flush_log 19
       exit 1
     fi
+
+    # The entrypoint already warned about each binary secret, so this run and its checks stay quiet
+    export B19_SECRETS_QUIET=true
 
     # Load secrets into environment (healthchecks run outside entrypoint context)
     # shellcheck source=/dev/null
@@ -45,6 +70,7 @@
     # check runs — draining must win over every check result.
     if [ -f "${B19_HEALTH_DRAIN_FILE}" ]; then
       b19-log warn "HEALTH.D" "$(_p "Draining via %s: reporting not ready" "${B19_HEALTH_DRAIN_FILE}")"
+      flush_log 0
       exit 1
     fi
 
@@ -61,12 +87,35 @@
     b19-log debug "HEALTH.D" "$(_p "Parallel check cap (NUMPROCS): %s" "${NUMPROCS}")"
 
     TIER_STATE_PATH="${B19_TEMP_PATH:-/tmp}/healthcheck.d"
+    # A check's functions cross into its fresh bash, so it sources nothing twice
+    export -f _ _e _p
+    B19_HEALTH_LOG_TARGET="${B19_HEALTH_LOG_TARGET:-/proc/1/fd/2}"
+
+    # Writes one warn line to PID 1's stderr (docker logs) when a check's state changes: $1 name, $2 pass|fail, $3 reason
+    report_state() {
+      local _name="$1" _now="$2" _why="$3" _file="${TIER_STATE_PATH}/reported.${1}" _was=""
+      [ -f "${_file}" ] && _was=$(<"${_file}")
+      [ "${_was}" = "${_now} ${_why}" ] && return 0
+      printf '%s %s\n' "${_now}" "${_why}" >"${_file}"
+      if [ "${_now}" = "pass" ] && [ -z "${_was}" ]; then
+        return 0
+      fi
+      if [ ! -w "${B19_HEALTH_LOG_TARGET}" ]; then
+        b19-log debug "HEALTH.D" "$(_p "%s is not writable, not reporting %s" "${B19_HEALTH_LOG_TARGET}" "${_name}")"
+        return 0
+      fi
+      if [ "${_now}" = "pass" ]; then
+        b19-log warn "HEALTH.D" "$(_p "Check recovered: %s" "${_name}")" 2>>"${B19_HEALTH_LOG_TARGET}"
+      else
+        b19-log warn "HEALTH.D" "$(_p "Check failed: %s: %s" "${_name}" "${_why}")" 2>>"${B19_HEALTH_LOG_TARGET}"
+      fi
+    }
 
     # Runs one check in a fresh bash that timeout(1) kills, with its process group, after $2 seconds
     run_check() {
       # shellcheck disable=SC2016 # the child bash sources the check with its own helpers loaded
       timeout --kill-after=1 "$2" \
-        bash -c 'set -euo pipefail; . b19-i18n; . b19-load-secrets; . detect-cpu-count; . "$1"' healthcheck.d "$1"
+        bash -c 'set -euo pipefail; . b19-i18n; . "$1"' healthcheck.d "$1"
     }
 
     # Runs a tier check detached from the probe, then swaps in its verdict atomically
@@ -82,6 +131,7 @@
     # Answers a tier check from its last verdict and refreshes it in the background once due
     report_tier_check() {
       local _check="$1" _interval="$2" _state _at="" _code="" _log="" _age _due
+      TIER_REASON=""
       _state="${TIER_STATE_PATH}/$(basename "${_check}")"
       if [ -f "${_state}.verdict" ]; then
         { read -r _at _code; IFS= read -r _log || true; } <"${_state}.verdict"
@@ -92,6 +142,7 @@
         disown
         return 0
       fi
+      TIER_REASON="${_log}"
       _age=$(( EPOCHSECONDS - _at ))
       _due="${_interval}"
       if [ "${_code}" -ne 0 ] && [ "${B19_HEALTH_RETRY_INTERVAL}" -lt "${_due}" ]; then
@@ -117,7 +168,7 @@
     # so a failing check's non-zero `wait` does not trip `set -e` before the
     # summary can be logged — same reasoning as the check execution below.
     reap_one_check() {
-      local FINISHED_PID CHECK_EXIT CHECK_NAME
+      local FINISHED_PID CHECK_EXIT CHECK_NAME CHECK_WHY
       if wait -n -p FINISHED_PID "${!PID_NAMES[@]}"; then
         CHECK_EXIT=0
       else
@@ -126,16 +177,21 @@
       CHECK_NAME="${PID_NAMES[${FINISHED_PID}]}"
       unset "PID_NAMES[${FINISHED_PID}]"
       RUNNING=$((RUNNING - 1))
+      [ ! -s "${RUN_DIR}/${CHECK_NAME}.out" ] || cat "${RUN_DIR}/${CHECK_NAME}.out" >&2
+      CHECK_WHY=$(tail --lines=1 "${RUN_DIR}/${CHECK_NAME}.out")
       if [ "${CHECK_EXIT}" -eq 0 ]; then
         b19-log good "HEALTH.D" "$(_ "Check passed:") ${CHECK_NAME}"
+        report_state "${CHECK_NAME}" pass ""
       elif [ "${CHECK_EXIT}" -eq 124 ]; then
         b19-log bad "HEALTH.D" "$(_p "Check timed out: %s (probe deadline %s s)" "${CHECK_NAME}" "${B19_HEALTH_CHECK_TIMEOUT}")"
         FINAL_EXIT_CODE=$((FINAL_EXIT_CODE + 1))
         FAILED_LIST+=("${CHECK_NAME}")
+        report_state "${CHECK_NAME}" fail "$(_p "timed out after %s s" "${B19_HEALTH_CHECK_TIMEOUT}")"
       else
         b19-log bad "HEALTH.D" "$(_ "Check failed:") ${CHECK_NAME} $(_ "with exit code") ${CHECK_EXIT}"
         FINAL_EXIT_CODE=$((FINAL_EXIT_CODE + 1))  # Increment failed checks counter
         FAILED_LIST+=("${CHECK_NAME}")
+        report_state "${CHECK_NAME}" fail "${CHECK_WHY:-exit code ${CHECK_EXIT}}"
       fi
     }
 
@@ -162,7 +218,7 @@
         CHECK_BUDGET=$(( CHECKS_DEADLINE - EPOCHSECONDS ))
         [ "${CHECK_BUDGET}" -ge 1 ] || CHECK_BUDGET=1
         b19-log debug "HEALTH.D" "$(_p "Time budget for %s: %s s" "${CHECK_BASENAME}" "${CHECK_BUDGET}")"
-        run_check "${CHECK}" "${CHECK_BUDGET}" </dev/null 9>&- &
+        run_check "${CHECK}" "${CHECK_BUDGET}" </dev/null >"${RUN_DIR}/${CHECK_BASENAME}.out" 2>&1 9>&- &
         CHECK_PID=$!
         PID_NAMES[${CHECK_PID}]="${CHECK_BASENAME}"
         RUNNING=$((RUNNING + 1))
@@ -192,8 +248,10 @@
           INTERVAL_VAR="B19_HEALTH_INTERVAL_$(b19_skip_key "${CHECK}")"
           if report_tier_check "${CHECK}" "${!INTERVAL_VAR:-${!TIER_VAR}}"; then
             b19-log good "HEALTH.D" "$(_ "Check passed:") $(basename "${CHECK}")"
+            report_state "$(basename "${CHECK}")" pass ""
           else
             b19-log bad "HEALTH.D" "$(_ "Check failed:") $(basename "${CHECK}")"
+            report_state "$(basename "${CHECK}")" fail "${TIER_REASON:-no verdict line}"
             FINAL_EXIT_CODE=$((FINAL_EXIT_CODE + 1))
             FAILED_LIST+=("$(basename "${CHECK}")")
           fi
@@ -262,5 +320,8 @@
     if [ "${FINAL_EXIT_CODE}" -gt 0 ]; then
       printf '%s\n' "${FAILED_NAMES}"
     fi
+
+    # The buffered log follows the verdict, cut so both fit the output limit
+    flush_log "$(( ${#FAILED_NAMES} + 1 ))"
 
     exit "${FINAL_EXIT_CODE}"
