@@ -268,9 +268,13 @@ b19-assert matches "b19-exec" '^(main )?second first$' "$(paste --serial --delim
 
 # Test 17: A required background daemon that exits stops the payload with its exit code
 b19-log note "b19-exec" "$(_ "Test 17: Required daemon exit fails fast")"
-b19-exec --background --name crasher -- bash -c 'sleep 1; exit 3'
+_crash="${B19_RUNTIME_PATH}/crash"
+# shellcheck disable=SC2016 # expanded by the daemon shell
+b19-exec --background --name crasher -- bash -c 'until [ -e "$0" ]; do sleep 0.1; done; exit 3' "${_crash}"
 EXIT_CODE=0
-timeout 15 b19-exec --name main -- sleep 300 || EXIT_CODE=$?
+( wait_until test -e "${_state}/main.pid"; touch "${_crash}" ) &
+b19-exec --name main -- sleep 300 || EXIT_CODE=$?
+rm -f "${_crash}"
 b19-assert equals "b19-exec" "3" "${EXIT_CODE}"
 b19-assert equals "b19-exec" "3" "$(<"${_state}/crasher.exit")"
 EXIT_CODE=0

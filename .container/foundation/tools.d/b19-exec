@@ -194,6 +194,21 @@ list_records() {
   done
 }
 
+# Lists required records whose process is already gone as "name pid required"
+list_gone_required() {
+  local _file _pid _role
+  for _file in "${STATE_PATH}"/*.pid; do
+    [ -e "${_file}" ] || continue
+    _pid="" _role=""
+    read -r _pid _role 2>/dev/null < "${_file}" || true
+    [[ "${_pid}" =~ ^[0-9]+$ ]] || continue
+    [ "${_role}" = required ] || continue
+    ! [ -e "/proc/${_pid}" ] || continue
+    _file="${_file##*/}"
+    printf '%s %s required\n' "${_file%.pid}" "${_pid}"
+  done
+}
+
 # Succeeds when PID started after our command, PID breaking a tie of clock ticks
 is_newer() {
   local _ticks
@@ -404,7 +419,7 @@ supervise() {
       ( trap '' ${SIGNALS}; exec tail --pid="${_pid}" --follow /dev/null ) &
       _watchers[$!]="${_name}"
       b19-log debug "b19-exec" "$(_p "%s fails fast when %s (pid %s) exits" "${NAME}" "${_name}" "${_pid}")"
-    done < <(list_records)
+    done < <(list_records; list_gone_required)
   fi
 
   while :; do
