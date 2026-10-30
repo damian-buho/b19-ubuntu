@@ -20,6 +20,11 @@ Imagen base Ubuntu reproducible, de una capa y sin root — fijada por digest, m
 
 [![Publish pipeline on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/published.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Vulnerability audit on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/audited.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Dependency freshness on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/check-outdated.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Analysis sweep on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/analyzed.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions)
 
+## Proyecto original
+
+Este proyecto empaqueta [Ubuntu](https://ubuntu.com) (su propia licencia).
+Gracias a: Canonical y la comunidad de Ubuntu
+
 ## Características
 
 - Caché APT persistente entre compilaciones
@@ -181,11 +186,6 @@ Puntos de entrada de la canalización:
 ## Enlaces
 
 - [Especificación de Projectfile](https://projectfile.org)
-
-## Proyecto original
-
-Este proyecto empaqueta [Ubuntu](https://ubuntu.com) (su propia licencia).
-Gracias a: Canonical and the Ubuntu community
 
 ## Licencia
 

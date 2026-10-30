@@ -152,6 +152,9 @@ repositories:
 technologies:
   - docker
 upstream:
-  - authors: Canonical and the Ubuntu community
+  - authors:
+      en: Canonical and the Ubuntu community
+      es: Canonical y la comunidad de Ubuntu
+      uk: Canonical та спільнота Ubuntu
     name: Ubuntu
     url: https://ubuntu.com

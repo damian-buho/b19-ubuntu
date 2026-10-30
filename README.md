@@ -18,6 +18,11 @@ Reproducible, single-layer, non-root Ubuntu base image — digest-pinned, multi-
 
 [![Publish pipeline on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/published.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Vulnerability audit on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/audited.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Dependency freshness on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/check-outdated.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Analysis sweep on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/analyzed.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions)
 
+## Upstream
+
+This project packages [Ubuntu](https://ubuntu.com) (its own license).
+Thanks to: Canonical and the Ubuntu community
+
 ## Features
 
 - Persistent APT cache across builds
@@ -179,11 +184,6 @@ Pipeline entry points:
 ## Links
 
 - [Projectfile Specification](https://projectfile.org)
-
-## Upstream
-
-This project packages [Ubuntu](https://ubuntu.com) (its own license).
-Thanks to: Canonical and the Ubuntu community
 
 ## License
 

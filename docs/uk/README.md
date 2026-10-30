@@ -20,6 +20,11 @@ pf-cli-managed: yes
 
 [![Publish pipeline on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/published.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Vulnerability audit on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/audited.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Dependency freshness on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/check-outdated.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions) [![Analysis sweep on kiota.ch](https://kiota.ch/b19/ubuntu/badges/workflows/analyzed.yaml/badge.svg?style=flat-square)](https://kiota.ch/b19/ubuntu/actions)
 
+## Першоджерело
+
+Цей проєкт пакує [Ubuntu](https://ubuntu.com) (власна ліцензія).
+Дякуємо: Canonical та спільнота Ubuntu
+
 ## Можливості
 
 - Постійний APT-кеш між збираннями
@@ -181,11 +186,6 @@ make container-build
 ## Посилання
 
 - [Специфікація Projectfile](https://projectfile.org)
-
-## Першоджерело
-
-Цей проєкт пакує [Ubuntu](https://ubuntu.com) (власна ліцензія).
-Дякуємо: Canonical and the Ubuntu community
 
 ## Ліцензія
 
