@@ -71,7 +71,7 @@ Docker daemon (every --interval)
 Runner lifecycle:
 
 1. Checks `B19_HEALTH_ENABLED` — exits 0 immediately if `false`
-1. Acquires `flock` on `${B19_TEMP_PATH}/healthcheck.d.lock` — waits up to `B19_HEALTH_LOCK_TIMEOUT` seconds for a run still in progress, then reports unhealthy, so an overlapping caller never reads a pass nobody checked
+1. Acquires `flock` on `${B19_TEMP_PATH}/healthcheck.d.lock` — waits up to `B19_HEALTH_LOCK_TIMEOUT` seconds for a run still in progress, then repeats the last finished probe’s verdict from `${B19_TEMP_PATH}/healthcheck.d/last-verdict` (unhealthy when there is none yet), so an overlapping caller never reads a pass nobody checked and contention alone never fails a healthy container
 1. Sets `B19_COLOR=auto` — color only on a TTY; `docker inspect` and file redirects get plain text automatically
 1. Sources `b19-i18n` and `b19-load-secrets` — healthchecks run outside entrypoint context, so secrets are loaded explicitly
 1. Checks `B19_HEALTH_DRAIN_FILE` — exits 1 unconditionally if present
@@ -345,7 +345,7 @@ esac
 | `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768`                                       | Min free KB in `$XDG_CACHE_HOME` before failing                    |
 | `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_TEMP_PATH` before failing                     |
 | `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Timeout in seconds for the egress `curl` checks                    |
-| `B19_HEALTH_LOCK_TIMEOUT`       | `4`                                           | Seconds to wait for an overlapping run before failing              |
+| `B19_HEALTH_LOCK_TIMEOUT`       | `4`                                           | Seconds to wait for an overlapping run, then repeat its verdict    |
 | `B19_HEALTH_CHECK_TIMEOUT`      | `3`                                           | Seconds all inline checks of one probe may take together           |
 | `B19_HEALTH_EXIT_AFTER`         | (empty)                                       | Consecutive failed probes before PID 1 gets `TERM`; empty is off   |
 | `B19_HEALTH_EXIT_GRACE`         | `90`                                          | Seconds after start during which failed probes do not count        |

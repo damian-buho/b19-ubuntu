@@ -29,8 +29,14 @@
 
     TIER_STATE_PATH="${B19_TEMP_PATH:-/tmp}/healthcheck.d"
     OUTPUT_LIMIT="${B19_HEALTH_OUTPUT_LIMIT:-4096}"
-    RUN_DIR="${TIER_STATE_PATH}/run"
+    RUN_DIR="${TIER_STATE_PATH}/run.$$"
     mkdir --parents "${RUN_DIR}"
+    # A probe Docker killed leaves its run dir behind, so each probe sweeps the ones whose probe is gone
+    for _stale in "${TIER_STATE_PATH}"/run.*; do
+      if ! [ -d "${_stale}" ] || [ "${_stale}" = "${RUN_DIR}" ] || [ -e "/proc/${_stale##*.}" ]; then continue; fi
+      rm --force -- "${_stale}"/*.out "${_stale}"/log.*
+      rmdir -- "${_stale}" 2>/dev/null || b19-log debug "HEALTH.D" "$(_p "Cannot remove %s yet" "${_stale}")"
+    done
 
     # Docker keeps only the first B19_HEALTH_OUTPUT_LIMIT bytes of a probe's output, so the log waits in an unlinked file and follows the verdict
     exec 3>&2
@@ -48,12 +54,29 @@
       { head --bytes="${_room}" <&4 >&3; } 2>/dev/null || true
     }
 
-    # Wait for an overlapping run instead of answering for it
+    # Writes FILE atomically with CONTENT, so a probe killed mid-write never leaves it empty
+    write_atomic() {
+      printf '%s\n' "$2" >"$1.$$"
+      mv --force "$1.$$" "$1"
+    }
+
+    # Wait for an overlapping run, and answer with the last finished verdict when it outlasts the wait
+    LAST_VERDICT="${TIER_STATE_PATH}/last-verdict"
     # shellcheck source=/dev/null
     . b19-lock
     if ! b19_lock "HEALTH.D" "${B19_TEMP_PATH:-/tmp}/healthcheck.d.lock" "${B19_HEALTH_LOCK_TIMEOUT:-4}"; then
+      _last_code="" _last_names=""
+      { read -r _last_code; IFS= read -r _last_names || true; } 2>/dev/null <"${LAST_VERDICT}" || true
+      if [[ "${_last_code}" =~ ^[0-9]+$ ]]; then
+        b19-log info "HEALTH.D" "$(_p "Another probe holds the lock, repeating the last verdict %s" "${_last_code}")"
+        [ -z "${_last_names}" ] || printf '%s\n' "${_last_names}"
+        flush_log "$(( ${#_last_names} + 1 ))"
+        rmdir -- "${RUN_DIR}" 2>/dev/null || true
+        exit "${_last_code}"
+      fi
       echo "healthcheck.d.lock"
       flush_log 19
+      rmdir -- "${RUN_DIR}" 2>/dev/null || true
       exit 1
     fi
 
@@ -96,7 +119,7 @@
       local _name="$1" _now="$2" _why="$3" _file="${TIER_STATE_PATH}/reported.${1}" _was=""
       [ -f "${_file}" ] && _was=$(<"${_file}")
       [ "${_was}" = "${_now} ${_why}" ] && return 0
-      printf '%s %s\n' "${_now}" "${_why}" >"${_file}"
+      write_atomic "${_file}" "${_now} ${_why}"
       if [ "${_now}" = "pass" ] && [ -z "${_was}" ]; then
         return 0
       fi
@@ -192,7 +215,7 @@
 
     declare -A PID_NAMES=()
     # Stop checks still running when we exit, so none outlives its probe
-    trap 'kill "${!PID_NAMES[@]}" 2>/dev/null || true; b19_unlock' EXIT
+    trap 'kill "${!PID_NAMES[@]}" 2>/dev/null || true; rmdir -- "${RUN_DIR}" 2>/dev/null || true; b19_unlock' EXIT
     declare -a FAILED_LIST=()
     RUNNING=0
 
@@ -211,6 +234,7 @@
       RUNNING=$((RUNNING - 1))
       [ ! -s "${RUN_DIR}/${CHECK_NAME}.out" ] || cat "${RUN_DIR}/${CHECK_NAME}.out" >&2
       CHECK_WHY=$(tail --lines=1 "${RUN_DIR}/${CHECK_NAME}.out")
+      rm --force -- "${RUN_DIR}/${CHECK_NAME}.out"
       if [ "${CHECK_EXIT}" -eq 0 ]; then
         b19-log good "HEALTH.D" "$(_ "Check passed:") ${CHECK_NAME}"
         report_state "${CHECK_NAME}" pass ""
@@ -340,7 +364,7 @@
       else
         FAILURES=$((FAILURES + 1))
       fi
-      echo "${FAILURES}" >"${FAILURES_FILE}"
+      write_atomic "${FAILURES_FILE}" "${FAILURES}"
       b19-log debug "HEALTH.D" "$(_p "Consecutive failed probes: %s of %s (PID 1 age %s s)" "${FAILURES}" "${B19_HEALTH_EXIT_AFTER}" "${PID1_AGE}")"
       if [ "${FAILURES}" -ge "${B19_HEALTH_EXIT_AFTER}" ]; then
         b19-log error "HEALTH.D" "$(_p "%s consecutive failed probes, sending TERM to PID 1" "${FAILURES}")"
@@ -357,6 +381,8 @@
     if [ "${FINAL_EXIT_CODE}" -gt 0 ]; then
       printf '%s\n' "${FAILED_NAMES}"
     fi
+    write_atomic "${LAST_VERDICT}" "${FINAL_EXIT_CODE}"$'\n'"${FAILED_NAMES}" 2>/dev/null \
+      || b19-log debug "HEALTH.D" "$(_p "Cannot write %s" "${LAST_VERDICT}")"
 
     # The buffered log follows the verdict, cut so both fit the output limit
     flush_log "$(( ${#FAILED_NAMES} + 1 ))"
