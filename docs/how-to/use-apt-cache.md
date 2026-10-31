@@ -26,7 +26,7 @@ RUN --mount=type=cache,id=apt-cache-${B19_UBUNTU_SERIES}-${TARGETARCH},target=/v
 
 Two BuildKit `--mount=type=cache` mounts persist APT state: `/var/cache/apt` (archives) and `/var/lib/apt` (lists). The base image keys both cache IDs by Ubuntu series and architecture (`apt-cache-${B19_UBUNTU_SERIES}-${TARGETARCH}`), so parallel builds of different series never poison each other’s caches. `/etc/apt/apt.conf.d/docker-clean` — which normally deletes archives after every apt run — is removed during the foundation stage so packages persist.
 
-Concurrent builds coordinate through lockfiles inside the shared mounts: `update-apt` wraps `apt-get update` in `flock -w 600 /var/lib/apt/.buildkit-lock`, and `install-apt` wraps `apt-get install` in `flock -w 600 /var/cache/apt/.buildkit-lock`.
+Concurrent builds coordinate through lockfiles inside the shared mounts: `update-apt`, `install-apt` and the foundation `dist-upgrade` each hold `/var/lib/apt/.buildkit-lock` and then `/var/cache/apt/.buildkit-lock`, always in that order, for the whole `apt-get` call or list copy. Neither wait has a timeout: `apt-get` itself has none, and a holder that dies releases its lock.
 
 The lists mount is shared by every project of a series, so `update-apt` passes `--option APT::Get::List-Cleanup=false`: by default `apt-get update` deletes list files no source of *this* build declares, which is every list a concurrently building project fetched from its own repository. A project that adds a repository whose suite name varies per build (`b19/llvm`, one apt suite per LLVM series) MUST also carry that variable in its lists cache ID, so its key describes its content.
 

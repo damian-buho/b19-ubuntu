@@ -57,9 +57,7 @@
 
     b19-log info "PACKAGES" "$(cat "${FULL_DEPS}")"
 
-    # Serialize concurrent buildkit jobs sharing the apt-cache (archives) mount.
-    # Lock file lives inside the shared mount so all builds see the same inode.
-    b19-log info "PACKAGES" "$(_p "Acquire flock on shared APT archives cache (wait %s s)" "600")"
+    b19-log info "PACKAGES" "$(_p "Lock shared APT caches %s and %s" "/var/lib/apt/.buildkit-lock" "/var/cache/apt/.buildkit-lock")"
 
     # Pre-compute package list to avoid shell features inside b19-run.
     # The first token is the package, optionally pinned as name=version — apt
@@ -69,7 +67,7 @@
 
     # shellcheck disable=SC2086
     b19-run "PACKAGES" "$(_p "Install dependencies (%s packages)" "${#PKGS[@]}")" --  \
-      flock --close --wait 600 /var/cache/apt/.buildkit-lock \
+      flock --close /var/lib/apt/.buildkit-lock flock --close /var/cache/apt/.buildkit-lock \
       apt-get install                               \
         --assume-yes                                \
         --no-install-recommends                     \
