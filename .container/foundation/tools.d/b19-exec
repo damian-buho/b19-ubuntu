@@ -347,6 +347,14 @@ failed_code() {
   printf '%s\n' "${_code:-1}"
 }
 
+# Stops the payload because required NAME exited, keeping its exit code
+fail_fast() {
+  FAILED="$1"
+  FAILED_CODE=$(failed_code "${FAILED}")
+  b19-log error "b19-exec" "$(_p "Stopping %s: required %s exited with %s" "${NAME}" "${FAILED}" "${FAILED_CODE}")"
+  kill -s TERM -- "-${CMD_PID}" 2>/dev/null || true
+}
+
 # Prints the names of NAME:SUPERVISOR pairs whose supervisor has not exited yet
 running_supervisors() {
   local _entry _state
@@ -441,6 +449,13 @@ supervise() {
       _watchers[$!]="${_name}"
       b19-log debug "b19-exec" "$(_p "%s fails fast when %s (pid %s) exits" "${NAME}" "${_name}" "${_pid}")"
     done < <(list_records; list_gone_required)
+    # A daemon whose record vanished before the scan above left its exit code behind
+    for _done in "${STATE_PATH}"/*.exit; do
+      [ -e "${_done}" ] || continue
+      _name="${_done##*/}"
+      fail_fast "${_name%.exit}"
+      break
+    done
   fi
 
   while :; do
@@ -469,10 +484,7 @@ supervise() {
       b19-log debug "b19-exec" "$(_p "%s exited while %s stops" "${_name}" "${NAME}")"
       continue
     fi
-    FAILED="${_name}"
-    FAILED_CODE=$(failed_code "${_name}")
-    b19-log error "b19-exec" "$(_p "Stopping %s: required %s exited with %s" "${NAME}" "${_name}" "${FAILED_CODE}")"
-    kill -s TERM -- "-${CMD_PID}" 2>/dev/null || true
+    fail_fast "${_name}"
   done
 
   for _watcher in "${!_watchers[@]}"; do
