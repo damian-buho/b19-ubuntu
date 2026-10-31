@@ -36,11 +36,14 @@
 
   # Rewrites one PEM bundle without its distrusted certificates and their leading comments
   distrust_bundle() {
-    local _cd_file="$1" _cd_list="$2" _cd_tmp _cd_lock _cd_line _cd_print _cd_pending="" _cd_cert="" _cd_dropped=0
-    exec {_cd_lock}<"${_cd_file}"
-    flock --timeout 60 "${_cd_lock}"
+    local _cd_file="$1" _cd_list="$2" _cd_tmp _cd_lock _cd_in _cd_line _cd_print _cd_pending="" _cd_cert="" _cd_dropped=0
+    # the directory keeps its inode across the mv below, the file does not
+    exec {_cd_lock}<"$(dirname -- "${_cd_file}")"
+    b19-log debug "SECURITY" "$(_p "Waiting for lock on %s" "$(dirname -- "${_cd_file}")")"
+    flock "${_cd_lock}"
+    exec {_cd_in}<"${_cd_file}"
     _cd_tmp="$(mktemp "${_cd_file}.XXXXXX")"
-    while IFS= read -r -u "${_cd_lock}" _cd_line || [ -n "${_cd_line}" ]; do
+    while IFS= read -r -u "${_cd_in}" _cd_line || [ -n "${_cd_line}" ]; do
       if [ -n "${_cd_cert}" ] || [[ "${_cd_line}" == "-----BEGIN CERTIFICATE-----" ]]; then
         _cd_cert+="${_cd_line}"$'\n'
         [[ "${_cd_line}" == "-----END CERTIFICATE-----" ]] || continue
@@ -60,13 +63,13 @@
     chmod --reference="${_cd_file}" "${_cd_tmp}"
     [ "$(id --user)" -ne 0 ] || chown --reference="${_cd_file}" "${_cd_tmp}"
     mv "${_cd_tmp}" "${_cd_file}"
-    exec {_cd_lock}<&-
+    exec {_cd_in}<&- {_cd_lock}<&-
     b19-log "$([ "${_cd_dropped}" -eq 0 ] && echo info || echo warn)" "SECURITY" "$(_p "%s distrusted certificates dropped from %s" "${_cd_dropped}" "${_cd_file}")"
   }
 
   # Deselects every distrusted anchor in ca-certificates.conf, then rebuilds the system bundle
   distrust_system() {
-    local _cd_list="$1" _cd_entry _cd_print _cd_lock _cd_changed=0
+    local _cd_list="$1" _cd_entry _cd_print _cd_lock _cd_new _cd_changed=0
     if [ "$(id --user)" -ne 0 ]; then
       b19-log info "SECURITY" "$(_p "Not root (uid %s), trust store left untouched" "$(id --user)")"
       return 0
@@ -75,15 +78,18 @@
       b19-log info "SECURITY" "$(_p "No %s, nothing to distrust" "${B19_CA_DISTRUST_CONF}")"
       return 0
     fi
-    exec {_cd_lock}<"${B19_CA_DISTRUST_CONF}"
-    flock --timeout 60 "${_cd_lock}"
+    # the directory keeps its inode across the mv below, the file does not
+    exec {_cd_lock}<"$(dirname -- "${B19_CA_DISTRUST_CONF}")"
+    b19-log debug "SECURITY" "$(_p "Waiting for lock on %s" "$(dirname -- "${B19_CA_DISTRUST_CONF}")")"
+    flock "${_cd_lock}"
     while IFS= read -r _cd_entry; do
       [ -f "${B19_CA_DISTRUST_SOURCE}/${_cd_entry}" ] || continue
       _cd_print="$(fingerprint < "${B19_CA_DISTRUST_SOURCE}/${_cd_entry}")"
       if [ -n "${_cd_print}" ] && grep --quiet --fixed-strings --line-regexp "${_cd_print}" <<<"${_cd_list}"; then
-        awk -v entry="${_cd_entry}" '$0 == entry { $0 = "!" $0 } { print }' "${B19_CA_DISTRUST_CONF}" > "${B19_CA_DISTRUST_CONF}.new"
-        chmod --reference="${B19_CA_DISTRUST_CONF}" "${B19_CA_DISTRUST_CONF}.new"
-        mv "${B19_CA_DISTRUST_CONF}.new" "${B19_CA_DISTRUST_CONF}"
+        _cd_new="$(mktemp "${B19_CA_DISTRUST_CONF}.XXXXXX")"
+        awk -v entry="${_cd_entry}" '$0 == entry { $0 = "!" $0 } { print }' "${B19_CA_DISTRUST_CONF}" > "${_cd_new}"
+        chmod --reference="${B19_CA_DISTRUST_CONF}" "${_cd_new}"
+        mv "${_cd_new}" "${B19_CA_DISTRUST_CONF}"
         _cd_changed=$((_cd_changed + 1))
         b19-log warn "SECURITY" "$(_p "Distrusted anchor %s deselected" "${_cd_entry}")"
       fi
