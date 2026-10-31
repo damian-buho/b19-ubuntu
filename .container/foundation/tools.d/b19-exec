@@ -192,52 +192,57 @@ proc_field() {
   printf '%s\n' "${_fields[$2]}"
 }
 
-# Lists every record, or only NAME's, whose process still exists as "name pid role"
-list_records() {
-  local _file _name _pid _role
+# Succeeds while PID is still the process that started at clock tick TICKS
+alive() {
+  local _ticks
+  [[ "$1" =~ ^[0-9]+$ ]] || return 1
+  _ticks=$(proc_field "$1" 19) || return 1
+  [ -z "${2:-}" ] || [ "${_ticks}" = "$2" ]
+}
+
+# Prints every record, or only NAME's, as "name pid role ticks seq supervisor supervisor_ticks"
+read_records() {
+  local _file _name _pid _role _ticks _seq _sup _sup_ticks
   for _file in "${STATE_PATH}"/*.pid; do
     [ -e "${_file}" ] || continue
     _name="${_file##*/}"
     [ -z "${1:-}" ] || [ "${_name}" = "$1.pid" ] || continue
-    _pid="" _role=""
-    read -r _pid _role 2>/dev/null < "${_file}" || true
-    [[ "${_pid}" =~ ^[0-9]+$ ]] && [ -e "/proc/${_pid}" ] || continue
-    printf '%s %s %s\n' "${_name%.pid}" "${_pid}" "${_role:-required}"
-  done
-}
-
-# Lists required records whose process is already gone as "name pid required"
-list_gone_required() {
-  local _file _pid _role
-  for _file in "${STATE_PATH}"/*.pid; do
-    [ -e "${_file}" ] || continue
-    _pid="" _role=""
-    read -r _pid _role 2>/dev/null < "${_file}" || true
+    _pid="" _role="" _ticks="" _seq="" _sup="" _sup_ticks=""
+    read -r _pid _role _ticks _seq _sup _sup_ticks 2>/dev/null < "${_file}" || true
     [[ "${_pid}" =~ ^[0-9]+$ ]] || continue
-    [ "${_role}" = required ] || continue
-    ! [ -e "/proc/${_pid}" ] || continue
-    _file="${_file##*/}"
-    printf '%s %s required\n' "${_file%.pid}" "${_pid}"
+    printf '%s %s %s %s %s %s %s\n' "${_name%.pid}" "${_pid}" "${_role:-required}" "${_ticks:--}" "${_seq:-0}" "${_sup:-${_pid}}" "${_sup_ticks:--}"
   done
 }
 
-# Succeeds when PID started after our command, PID breaking a tie of clock ticks
-is_newer() {
-  local _ticks
-  _ticks=$(proc_field "$1" 19) || return 1
-  [ "${_ticks}" -gt "${CMD_TICKS}" ] || { [ "${_ticks}" -eq "${CMD_TICKS}" ] && [ "$1" -gt "${CMD_PID}" ]; }
+# Lists the records, or only NAME's, whose process still runs, in the read_records shape
+list_records() {
+  local _name _pid _role _ticks _rest
+  while read -r _name _pid _role _ticks _rest; do
+    alive "${_pid}" "${_ticks#-}" || continue
+    printf '%s %s %s %s %s\n' "${_name}" "${_pid}" "${_role}" "${_ticks}" "${_rest}"
+  done < <(read_records "$@")
 }
 
-# Holds a stop until every command started after ours is gone, so stops run newest first
+# Lists the required records whose process is gone, in the read_records shape
+list_gone_required() {
+  local _name _pid _role _ticks _rest
+  while read -r _name _pid _role _ticks _rest; do
+    [ "${_role}" = required ] || continue
+    ! alive "${_pid}" "${_ticks#-}" || continue
+    printf '%s %s %s %s %s\n' "${_name}" "${_pid}" "${_role}" "${_ticks}" "${_rest}"
+  done < <(read_records)
+}
+
+# Holds a stop until every command claimed after ours is gone, so stops run newest first
 wait_newer() {
-  local _deadline _name _pid _role _waiting _logged=""
-  [ -n "${CMD_TICKS}" ] || return 0
+  local _deadline _name _pid _role _ticks _seq _waiting _logged=""
+  [ -n "${CMD_SEQ}" ] || return 0
   _deadline=$(( SECONDS + STOP_TIMEOUT ))
   while :; do
     _waiting=""
-    while read -r _name _pid _role; do
-      [ "${_pid}" != "${CMD_PID}" ] || continue
-      if is_newer "${_pid}"; then _waiting="${_waiting:+${_waiting} }${_name}"; fi
+    while read -r _name _pid _role _ticks _seq _; do
+      [ "${_name}" != "${NAME}" ] || continue
+      [ "${_seq}" -le "${CMD_SEQ}" ] || _waiting="${_waiting:+${_waiting} }${_name}"
     done < <(list_records)
     [ -n "${_waiting}" ] || return 0
     if [ "${SECONDS}" -ge "${_deadline}" ]; then
@@ -288,16 +293,17 @@ write_state() {
   mv --force "$1.$$" "$1"
 }
 
-# Claims NAME under the state lock as "PID starting", so stops started earlier wait for this supervisor
+# Claims NAME and the next start sequence under the state lock, recording the supervisor as the not yet started command
 claim_name() {
-  local _lock _pid _role
+  local _lock _pid _ticks
   exec {_lock}>/dev/null
   if [ "${TRACKED}" -eq 1 ]; then
     exec {_lock}>"${STATE_PATH}/.lock"
-    if ! flock --wait 5 "${_lock}"; then
-      b19-log warn "b19-exec" "$(_p "Timed out waiting for %s, %s runs untracked" "${STATE_PATH}/.lock" "${NAME}")"
-      TRACKED=0
-    elif read -r _pid _role 2>/dev/null < "${STATE_PATH}/${NAME}.pid" && [ -e "/proc/${_pid}" ]; then
+    b19-log debug "b19-exec" "$(_p "Waiting for lock on %s" "${STATE_PATH}/.lock")"
+    flock "${_lock}"
+    _pid=""
+    read -r _ _pid _ _ticks _ < <(list_records "${NAME}") || true
+    if [ -n "${_pid}" ]; then
       if [ -n "${EXPLICIT_NAME}" ]; then
         b19-log error "b19-exec" "$(_p "%s is already running (pid %s)" "${NAME}" "${_pid}")"
         exec {_lock}>&-
@@ -308,9 +314,15 @@ claim_name() {
     fi
   fi
   if [ "${TRACKED}" -eq 1 ]; then
+    CMD_SEQ=0
+    read -r CMD_SEQ 2>/dev/null < "${STATE_PATH}/.seq" || true
+    [[ "${CMD_SEQ}" =~ ^[0-9]+$ ]] || CMD_SEQ=0
+    CMD_SEQ=$(( CMD_SEQ + 1 ))
+    write_state "${STATE_PATH}/.seq" "${CMD_SEQ}"
+    SUPERVISOR_TICKS=$(proc_field "${SUPERVISOR}" 19) || SUPERVISOR_TICKS="-"
     rm -f "${STATE_PATH}/${NAME}.exit" "${STATE_PATH}/${NAME}.stop"
-    write_state "${STATE_PATH}/${NAME}.pid" "${BASHPID} starting"
-    b19-log debug "b19-exec" "$(_p "Claimed %s (supervisor pid %s)" "${NAME}" "${BASHPID}")"
+    write_state "${STATE_PATH}/${NAME}.pid" "${SUPERVISOR} ${ROLE} ${SUPERVISOR_TICKS} ${CMD_SEQ} ${SUPERVISOR} ${SUPERVISOR_TICKS}"
+    b19-log debug "b19-exec" "$(_p "Claimed %s (supervisor pid %s, sequence %s)" "${NAME}" "${SUPERVISOR}" "${CMD_SEQ}")"
   fi
   exec {_lock}>&-
 }
@@ -321,9 +333,9 @@ start_command() {
   [ "${ROLE}" = payload ] || _stdin=/dev/null
   setsid "$@" < "${_stdin}" 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" &
   CMD_PID=$!
-  CMD_TICKS=$(proc_field "${CMD_PID}" 19) || CMD_TICKS=""
+  CMD_TICKS=$(proc_field "${CMD_PID}" 19) || CMD_TICKS="-"
   if [ "${TRACKED}" -eq 1 ]; then
-    write_state "${STATE_PATH}/${NAME}.pid" "${CMD_PID} ${ROLE}"
+    write_state "${STATE_PATH}/${NAME}.pid" "${CMD_PID} ${ROLE} ${CMD_TICKS} ${CMD_SEQ} ${SUPERVISOR} ${SUPERVISOR_TICKS}"
     b19-log debug "b19-exec" "$(_p "Recorded %s (pid %s, %s)" "${NAME}" "${CMD_PID}" "${ROLE}")"
   fi
 }
@@ -333,17 +345,23 @@ forget_command() {
   local _pid _role
   [ "${TRACKED}" -eq 1 ] || return 0
   read -r _pid _role 2>/dev/null < "${STATE_PATH}/${NAME}.pid" || return 0
-  [ "${_pid}" != "${CMD_PID:-${BASHPID}}" ] || rm -f "${STATE_PATH}/${NAME}.pid" "${STATE_PATH}/${NAME}.stop"
+  [ "${_pid}" != "${CMD_PID:-${SUPERVISOR}}" ] || rm -f "${STATE_PATH}/${NAME}.pid" "${STATE_PATH}/${NAME}.stop"
 }
 
-# Prints the exit code a failed required daemon left, waiting briefly for its supervisor to write it
+# Prints the exit code a failed required daemon left, waiting until its supervisor wrote it or is gone
 failed_code() {
-  local _code="" _try
-  for _try in $(seq 20); do
+  local _code="" _sup="" _sup_ticks=""
+  while :; do
     read -r _code 2>/dev/null < "${STATE_PATH}/$1.exit" && [ -n "${_code}" ] && break
+    _sup=""
+    read -r _ _ _ _ _ _sup _sup_ticks < <(read_records "$1") || true
+    if [ -z "${_sup}" ] || ! alive "${_sup}" "${_sup_ticks#-}" || [ "$(proc_field "${_sup}" 0)" = Z ]; then
+      read -r _code 2>/dev/null < "${STATE_PATH}/$1.exit" || true
+      break
+    fi
     sleep 0.1
   done
-  [ -n "${_code}" ] || b19-log warn "b19-exec" "$(_p "No exit code recorded for %s after %s tries" "$1" "${_try}")"
+  [ -n "${_code}" ] || b19-log warn "b19-exec" "$(_p "No exit code recorded for %s, its supervisor %s is gone" "$1" "${_sup:-?}")"
   printf '%s\n' "${_code:-1}"
 }
 
@@ -355,20 +373,21 @@ fail_fast() {
   kill -s TERM -- "-${CMD_PID}" 2>/dev/null || true
 }
 
-# Prints the names of NAME:SUPERVISOR pairs whose supervisor has not exited yet
+# Prints the names of NAME:SUPERVISOR:TICKS entries whose supervisor has not exited yet
 running_supervisors() {
-  local _entry _state
+  local _entry _name _sup _ticks
   for _entry in "$@"; do
-    _state=$(proc_field "${_entry#*:}" 0) || continue
-    [ "${_state}" = Z ] || printf '%s\n' "${_entry%%:*}"
+    IFS=: read -r _name _sup _ticks <<<"${_entry}"
+    alive "${_sup}" "${_ticks#-}" && [ "$(proc_field "${_sup}" 0)" != Z ] && printf '%s\n' "${_name}"
   done
+  return 0
 }
 
 # Stops every other recorded command, or only NAME, through its supervisor and waits until they and their supervisors are gone
 stop_others() {
-  local _name _pid _role _left _deadline _logged="" _supervisor
+  local _name _pid _role _left _deadline _logged="" _supervisor _sup_ticks
   local -a _supervisors=()
-  while read -r _name _pid _role; do
+  while read -r _name _pid _role _ _ _supervisor _sup_ticks; do
     if [ -n "${1:-}" ]; then
       b19-log info "b19-exec" "$(_p "Stopping %s (pid %s)" "${_name}" "${_pid}")"
     elif [ "${_role}" = payload ]; then
@@ -376,10 +395,8 @@ stop_others() {
     else
       b19-log info "b19-exec" "$(_p "Stopping %s (pid %s) after %s" "${_name}" "${_pid}" "${NAME}")"
     fi
-    _supervisor="${_pid}"
-    [ "${_role}" = starting ] || _supervisor=$(proc_field "${_pid}" 1) || _supervisor=""
-    [ -z "${_supervisor}" ] || _supervisors+=("${_name}:${_supervisor}")
-    kill -s TERM "${_supervisor}" 2>/dev/null \
+    _supervisors+=("${_name}:${_supervisor}:${_sup_ticks}")
+    { alive "${_supervisor}" "${_sup_ticks#-}" && kill -s TERM "${_supervisor}" 2>/dev/null; } \
       || b19-log debug "b19-exec" "$(_p "%s (pid %s) is already gone" "${_name}" "${_pid}")"
   done < <(list_records "$@")
   _deadline=$(( SECONDS + STOP_TIMEOUT ))
@@ -398,13 +415,17 @@ stop_others() {
 
 # Runs the command until it exits, forwarding signals; the payload also fails fast on a required daemon
 supervise() {
-  local _done _code _name _pid _role _watcher _signal
+  local _done _code _name _pid _role _watcher _signal _gone
   local -A _watchers=()
   STOPPING=0
   PENDING=""
   FAILED=""
   CMD_PID=""
-  CMD_TICKS=""
+  CMD_TICKS="-"
+  CMD_SEQ=""
+  SUPERVISOR_TICKS="-"
+  # BASHPID read inside a $(…) would name that substitution's subshell
+  SUPERVISOR="${BASHPID}"
   TRACKED=1
   if ! mkdir -p "${STATE_PATH}" 2>/dev/null || ! [ -w "${STATE_PATH}" ]; then
     b19-log warn "b19-exec" "$(_p "Cannot write %s as uid %s, %s runs untracked" "${STATE_PATH}" "$(id --user)" "${NAME}")"
@@ -442,20 +463,25 @@ supervise() {
   fi
 
   if [ "${ROLE}" = payload ] && [ "${TRACKED}" -eq 1 ]; then
-    while read -r _name _pid _role; do
+    _gone=""
+    while read -r _name _pid _role _; do
       [ "${_role}" = required ] || continue
       # shellcheck disable=SC2086 # the signal list splits on purpose
       ( trap '' ${SIGNALS}; exec tail --pid="${_pid}" --follow /dev/null ) &
       _watchers[$!]="${_name}"
       b19-log debug "b19-exec" "$(_p "%s fails fast when %s (pid %s) exits" "${NAME}" "${_name}" "${_pid}")"
-    done < <(list_records; list_gone_required)
-    # A daemon whose record vanished before the scan above left its exit code behind
+    done < <(list_records)
+    while read -r _name _pid _role _; do
+      b19-log debug "b19-exec" "$(_p "Required %s (pid %s) is already gone" "${_name}" "${_pid}")"
+      _gone="${_gone:-${_name}}"
+    done < <(list_gone_required)
+    # A daemon whose record vanished before the scans above left its exit code behind
     for _done in "${STATE_PATH}"/*.exit; do
       [ -e "${_done}" ] || continue
       _name="${_done##*/}"
-      fail_fast "${_name%.exit}"
-      break
+      _gone="${_gone:-${_name%.exit}}"
     done
+    [ -z "${_gone}" ] || fail_fast "${_gone}"
   fi
 
   while :; do
@@ -504,8 +530,8 @@ supervise() {
   elif [ "${ROLE}" = optional ]; then
     b19-log warn "b19-exec" "$(_p "Optional %s (pid %s) exited with %s, the container keeps running" "${NAME}" "${CMD_PID}" "${RETURN_CODE}")"
   else
-    b19-log error "b19-exec" "$(_p "Required %s (pid %s) exited with %s" "${NAME}" "${CMD_PID}" "${RETURN_CODE}")"
     [ "${TRACKED}" -eq 0 ] || write_state "${STATE_PATH}/${NAME}.exit" "${RETURN_CODE}"
+    b19-log error "b19-exec" "$(_p "Required %s (pid %s) exited with %s" "${NAME}" "${CMD_PID}" "${RETURN_CODE}")"
   fi
   forget_command
 
@@ -531,15 +557,15 @@ fi
 
 ( supervise "$@" ) < /dev/null > /proc/1/fd/1 2> /proc/1/fd/2 &
 SUPERVISOR_PID=$!
-DEADLINE=$(( SECONDS + 30 ))
+# an unwritable state dir never gets a record, so there is nothing to wait for
+if ! mkdir -p "${STATE_PATH}" 2>/dev/null || ! [ -w "${STATE_PATH}" ]; then
+  b19-log info "b19-exec" "$(_p "Started %s untracked (supervisor pid %s)" "${NAME}" "${SUPERVISOR_PID}")"
+  exit 0
+fi
 while [ -e "/proc/${SUPERVISOR_PID}" ] && [ "$(proc_field "${SUPERVISOR_PID}" 0 2>/dev/null)" != Z ]; do
-  if read -r DAEMON_PID _ 2>/dev/null < "${STATE_PATH}/${NAME}.pid" \
-    && [ "$(proc_field "${DAEMON_PID}" 1 2>/dev/null)" = "${SUPERVISOR_PID}" ]; then
+  if read -r DAEMON_PID _ _ _ RECORD_SUPERVISOR _ 2>/dev/null < "${STATE_PATH}/${NAME}.pid" \
+    && [ "${RECORD_SUPERVISOR}" = "${SUPERVISOR_PID}" ] && [ "${DAEMON_PID}" != "${SUPERVISOR_PID}" ]; then
     b19-log info "b19-exec" "$(_p "Started %s (pid %s, %s)" "${NAME}" "${DAEMON_PID}" "${ROLE}")"
-    exit 0
-  fi
-  if [ "${SECONDS}" -ge "${DEADLINE}" ]; then
-    b19-log warn "b19-exec" "$(_p "%s has no record after %ss, it runs untracked" "${NAME}" "30")"
     exit 0
   fi
   sleep 0.05

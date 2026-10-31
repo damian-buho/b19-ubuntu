@@ -22,11 +22,14 @@ done
 for _daemons_file in "${_daemons_state}"/*.pid; do
   [ -e "${_daemons_file}" ] || continue
   _daemons_name="${_daemons_file##*/}"
-  _daemons_pid="" _daemons_role=""
-  read -r _daemons_pid _daemons_role < "${_daemons_file}" || true
+  _daemons_pid="" _daemons_role="" _daemons_ticks="" _daemons_stat=""
+  read -r _daemons_pid _daemons_role _daemons_ticks _ < "${_daemons_file}" || true
+  # field 19 after the command name is the start tick, which tells a reused PID apart
+  [[ "${_daemons_pid}" =~ ^[0-9]+$ ]] && { read -r _daemons_stat < "/proc/${_daemons_pid}/stat"; } 2>/dev/null || true
+  read -ra _daemons_fields <<<"${_daemons_stat##*) }"
   if [ "${_daemons_role}" = optional ]; then
     b19-log debug "HEALTH.D" "$(_p "Skipping optional daemon %s (pid %s)" "${_daemons_name%.pid}" "${_daemons_pid}")"
-  elif [[ "${_daemons_pid}" =~ ^[0-9]+$ ]] && [ -e "/proc/${_daemons_pid}" ]; then
+  elif [ -n "${_daemons_stat}" ] && { [ -z "${_daemons_ticks#-}" ] || [ "${_daemons_fields[19]:-}" = "${_daemons_ticks}" ]; }; then
     _daemons_count=$((_daemons_count + 1))
   else
     b19-log bad "HEALTH.D" "$(_p "Daemon %s (pid %s) is gone" "${_daemons_name%.pid}" "${_daemons_pid}")"

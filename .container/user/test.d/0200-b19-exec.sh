@@ -171,9 +171,9 @@ _self="${B19_RUNTIME_PATH}/self"
 b19-exec -- bash -c 'echo $$ > "$0"; exec sleep 300' "${_self}" &
 _exec_pid=$!
 wait_until test -s "${_self}"
-wait_until grep --quiet --line-regexp "$(<"${_self}") payload" "${_state}/payload.pid"
+wait_until grep --quiet "^$(<"${_self}") payload " "${_state}/payload.pid"
 _observed="" _role=""
-read -r _observed _role < "${_state}/payload.pid" || true
+read -r _observed _role _ < "${_state}/payload.pid" || true
 b19-assert matches "b19-exec" '^[0-9]+$' "${_observed}"
 b19-assert equals "b19-exec" "payload" "${_role}"
 b19-assert equals "b19-exec" "$(<"${_self}")" "${_observed}"
@@ -347,7 +347,7 @@ EXIT_CODE=0
 b19-exec --stop stopme 2>/dev/null || EXIT_CODE=$?
 b19-assert equals "b19-exec" "3" "${EXIT_CODE}"
 rm -f "${_stopped}" "${_stopped}".*
-rm -f "${_state}/.lock" "${_order}" "${_order}".*
+rm -f "${_state}/.lock" "${_state}/.seq" "${_order}" "${_order}".*
 rmdir "${_state}" "${B19_RUNTIME_PATH}"
 
 b19-log good "b19-exec" "$(_ "All b19-exec tests passed")"
