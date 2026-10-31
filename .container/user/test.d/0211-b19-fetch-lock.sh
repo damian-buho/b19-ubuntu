@@ -9,8 +9,9 @@
   # shellcheck source=/dev/null
   . b19-i18n
 
-  _stub="$(mktemp --directory)"
-  trap 'rm -rf "${_stub}"' EXIT
+  _stub="/tmp/b19-fetch-lock.$$"
+  mkdir --parents "${_stub}"
+  trap 'rm --recursive --force -- /tmp/b19-fetch-lock.$$' EXIT
   # Preallocates the cache file, then holds the download open until the gate file appears
   aria2c() {
     local _prev="" _a _out=""

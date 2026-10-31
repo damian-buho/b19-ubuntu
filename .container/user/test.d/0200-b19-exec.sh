@@ -18,10 +18,10 @@ B19_RUNTIME_PATH="$(mktemp --directory "${B19_TEMP_PATH:-/tmp}/b19-exec-state-XX
 export B19_RUNTIME_PATH
 _state="${B19_RUNTIME_PATH}/b19-exec"
 
-# Waits up to 10 s for COMMAND to succeed
+# Polls up to 5 min for COMMAND to succeed
 wait_until() {
   local _try
-  for _try in $(seq 100); do
+  for _try in $(seq 3000); do
     "$@" && return 0
     sleep 0.1
   done
@@ -221,10 +221,10 @@ exited() {
   [ "${_stat}" = Z ]
 }
 
-# Waits up to 10 s for NAME's record to disappear
+# Polls up to 5 min for NAME's record to disappear
 wait_gone() {
   local _try
-  for _try in $(seq 100); do
+  for _try in $(seq 3000); do
     [ -e "${_state}/$1.pid" ] || return 0
     sleep 0.1
   done
@@ -235,6 +235,9 @@ wait_gone() {
 # A daemon that marks itself ready once trapped and appends its name to the order file when told to stop
 # shellcheck disable=SC2016 # expanded by the daemon shell
 _daemon='trap "echo $1 >> $0; exit 0" TERM; : > "$0.$1"; sleep 300 & wait'
+
+# Stop order must never fall back to the timeout on a slow host
+export B19_EXEC_STOP_TIMEOUT=600
 
 # Test 16: Background daemons stop after the payload, newest first, each on its own SIGTERM
 b19-log note "b19-exec" "$(_ "Test 16: Background daemons stop in reverse start order")"

@@ -37,7 +37,7 @@ docker exec -it <container> test.d   # inside a running container
 Runner lifecycle (`/tools.d/test.d`, source `.container/foundation/tools.d/test.d`):
 
 1. Checks `B19_TEST_ENABLED` — exits immediately if `false`
-1. Waits for `healthcheck.d` to pass (up to `B19_TEST_TIMEOUT` seconds, default 60) — an unhealthy service skips the suite rather than failing it on a false alarm
+1. Waits for `healthcheck.d` to pass (up to `B19_TEST_TIMEOUT` probes one second apart, default 300) — an unhealthy service skips the suite rather than failing it on a false alarm
 1. Finds all `*.sh` in `$B19_TEST_PATH` (default `/test.d`), sorts **reverse numerically** — higher numbers run first
 1. Executes each via `b19-run`, capturing the exit code; continues on failure
 1. Prints `All N tests passed` / `N of M tests failed`; exits 0 or 1
@@ -168,7 +168,7 @@ exit 0
 | `B19_TEST_PATH`         | `/test.d`     | Directory containing test scripts                       |
 | `B19_TEST_ENABLED`      | `true`        | Set to `false` to skip all tests                        |
 | `B19_TEST_SKIP_<NAME>`  | (unset)       | `true` mutes one script (`B19_TEST_SKIP_B19_EXEC=true`) |
-| `B19_TEST_TIMEOUT`      | `60`          | Seconds to wait for healthcheck before running tests    |
+| `B19_TEST_TIMEOUT`      | `300`         | Seconds to wait for healthcheck before running tests    |
 | `B19_TEST_RESULTS_PATH` | `/tmp/test.d` | (reserved, not yet used by runner)                      |
 
 The full variable index lives in [configure-environment](configure-environment.md).

@@ -10,12 +10,12 @@
   . b19-i18n
 
   # Fails twice, then passes on the third attempt
-  : >/tmp/b19-run-retries.count
+  : >/tmp/b19-run-retries.$$.count
   # shellcheck disable=SC2016 # expanded by the child bash
   b19-run --retries 2 --backoff 1 "TEST" "$(_ "Retry a flaky command")" -- \
-    bash -c 'echo x >>/tmp/b19-run-retries.count; [ "$(wc --lines </tmp/b19-run-retries.count)" -ge 3 ]'
-  ATTEMPTS="$(wc --lines </tmp/b19-run-retries.count)"
-  rm --force /tmp/b19-run-retries.count
+    bash -c 'echo x >>"$0"; [ "$(wc --lines <"$0")" -ge 3 ]' /tmp/b19-run-retries.$$.count
+  ATTEMPTS="$(wc --lines </tmp/b19-run-retries.$$.count)"
+  rm --force /tmp/b19-run-retries.$$.count
   [ "${ATTEMPTS}" -eq 3 ] || { b19-log error "TEST" "$(_p "Expected 3 attempts, got %s" "${ATTEMPTS}")"; exit 1; }
 
   # A hung command dies with timeout(1)'s 124

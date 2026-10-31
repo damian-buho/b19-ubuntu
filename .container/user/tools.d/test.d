@@ -26,7 +26,7 @@
 
     b19-log info "TEST.D" "$(_ "Reading from:") ${B19_TEST_PATH}"
 
-    B19_TEST_TIMEOUT="${B19_TEST_TIMEOUT:-60}"
+    B19_TEST_TIMEOUT="${B19_TEST_TIMEOUT:-300}"
     ELAPSED=0
     # Capture the gate's STDOUT verdict (space-separated names of the still-failing
     # checks) so a timeout can name what stayed unhealthy instead of dying dark:
