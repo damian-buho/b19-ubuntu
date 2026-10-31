@@ -155,7 +155,7 @@ Three-tier fetch model: local cache → Docker BuildKit cache → aria2c downloa
 | `B19_BUILD_CA_ANCHOR`      | (transient)                  | absolute path      | Where a root stage installs it, then drops it pre-commit       |
 | `B19_CACHE_CHECK_TIMEOUT`  | `2`                          | positive integer   | Seconds `check-reachable` waits for the apt/near-cache probe   |
 | `B19_CACHE_GUARD_STAMP`    | `.b19-cache-stamp`           | filename           | Freshness stamp `b19-cache-guard` writes inside the cache      |
-| `B19_CACHE_GUARD_TIMEOUT`  | `900`                        | positive integer   | Seconds to wait for another holder’s refresh lock              |
+| `B19_CACHE_GUARD_TIMEOUT`  | (empty)                      | seconds or empty   | Wait for another refresh; empty: as long as it runs            |
 | `M6E_SHARED_CACHE`         | `N`                          | `Y` / `N`          | Cache is fleet-shared, so its writer owns staleness            |
 
 Both CA variables are inert unless the build host sets `M6E_CA_CERTIFICATES` —
@@ -236,7 +236,7 @@ All runners discover scripts in these directories.
 | `B19_TEST_RESULTS_PATH`      | `${B19_TEMP_PATH}/test.d`     | test.d               |
 | `B19_BOOTSTRAP_PATH`         | `/bootstrap.d`                | bootstrap.d          |
 | `B19_BOOTSTRAP_LOCK_PATH`    | `${XDG_DATA_HOME}/.bootstrap` | bootstrap.d          |
-| `B19_BOOTSTRAP_LOCK_TIMEOUT` | `600`                         | bootstrap.d          |
+| `B19_BOOTSTRAP_LOCK_TIMEOUT` | (empty: as long as holder)    | bootstrap.d          |
 | `B19_BENCHMARK_PATH`         | `/benchmark.d`                | benchmark.d          |
 | `B19_BENCHMARK_LOCK_TIMEOUT` | `3600`                        | benchmark.d          |
 | `B19_BENCHMARK_RESULTS_PATH` | `/tmp/benchmark.d`            | benchmark.d          |

@@ -4,11 +4,14 @@
 #
 # SPDX-License-Identifier: MIT
 
-    # Holds FILE on fd 9 until the caller exits; start children with 9>&- so none keeps it
+    # Holds FILE on fd 9 until the caller exits, waiting TIMEOUT seconds or, when empty, as long as the holder; start children with 9>&- so none keeps it
     b19_lock() {
-      local _tag="$1" _file="$2" _timeout="$3"
+      local _tag="$1" _file="$2" _timeout="${3:-}"
       exec 9>"${_file}"
-      if ! flock --wait "${_timeout}" 9; then
+      if [ -z "${_timeout}" ]; then
+        b19-log debug "${_tag}" "$(_p "Waiting for %s as long as its holder runs" "${_file}")"
+        flock 9
+      elif ! flock --wait "${_timeout}" 9; then
         b19-log error "${_tag}" "$(_p "Timed out after %ss waiting for %s" "${_timeout}" "${_file}")"
         return 1
       fi

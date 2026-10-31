@@ -49,7 +49,7 @@ Bootstrap runs on every start, whatever the argv: `docker run myimage some-comma
 1. Checks `B19_BOOTSTRAP_ENABLED` — exits 0 immediately if `false`
 1. Enables `set -eo pipefail`, sources `b19-i18n` for `_()` / `_p()`
 1. Resolves `B19_BOOTSTRAP_PATH` (default `/bootstrap.d`) and `B19_BOOTSTRAP_LOCK_PATH` (default `$B19_HOME/.bootstrap`)
-1. Holds `${LOCK_PATH}/.lock` via `b19-lock`, waiting up to `B19_BOOTSTRAP_LOCK_TIMEOUT` seconds, so replicas sharing the volume never run the same script twice at once
+1. Holds `${LOCK_PATH}/.lock` via `b19-lock`, waiting as long as the holder runs (each of its scripts is bounded by `B19_BOOTSTRAP_TIMEOUT`), or `B19_BOOTSTRAP_LOCK_TIMEOUT` seconds when set, so replicas sharing the volume never run the same script twice at once
 1. Finds all `*.sh`, sorts ascending (`sort -zn`)
 1. For each script: lockfile `${LOCK_PATH}/.${BASENAME}.bootstrap` exists → skip with “Already done”; otherwise execute via `b19-run`, create the lockfile on success
 1. On failure: logs the exit code, **breaks immediately** — no further scripts run, no lockfile is created, so the failed script retries on the next start
@@ -115,7 +115,7 @@ After adding strings, run `make build` so `b19-compile-i18n` extracts the `.pot`
 | `B19_BOOTSTRAP_ENABLED`      | `true`                 | Set to `false` to skip all bootstrap scripts |
 | `B19_BOOTSTRAP_PATH`         | `/bootstrap.d`         | Directory containing bootstrap scripts       |
 | `B19_BOOTSTRAP_LOCK_PATH`    | `$B19_HOME/.bootstrap` | Directory for per-script lockfiles           |
-| `B19_BOOTSTRAP_LOCK_TIMEOUT` | `600`                  | Seconds to wait for another bootstrap run    |
+| `B19_BOOTSTRAP_LOCK_TIMEOUT` | (empty)                | Wait for another run; empty: until it ends   |
 
 The Dockerfile declares `VOLUME ${B19_BOOTSTRAP_LOCK_PATH}`, so locks persist across restarts by default. The full variable index lives in [configure-environment](configure-environment.md).
 

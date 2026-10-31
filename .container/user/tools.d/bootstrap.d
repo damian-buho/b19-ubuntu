@@ -39,7 +39,7 @@
     # One bootstrap at a time per lock directory, even across replicas sharing it
     # shellcheck source=.container/foundation/tools.d/b19-lock
     . b19-lock
-    b19_lock "BOOTSTRAP" "${LOCK_PATH}/.lock" "${B19_BOOTSTRAP_LOCK_TIMEOUT:-600}" || exit 1
+    b19_lock "BOOTSTRAP" "${LOCK_PATH}/.lock" "${B19_BOOTSTRAP_LOCK_TIMEOUT:-}" || exit 1
 
     while IFS= read -r -d '' SCRIPT; do
       BASENAME=$(basename "${SCRIPT}" .sh)
