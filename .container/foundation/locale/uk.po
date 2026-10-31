@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-31 20:15+0000\n"
+"POT-Creation-Date: 2026-10-31 20:37+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -1535,30 +1535,6 @@ msgstr "Готово: %s"
 msgid "Nothing consumed %s — the image declares no start hook for it"
 msgstr "Ніщо не використало %s — образ не оголошує хука запуску для цього"
 
-#: .container/user/healthcheck.d/0100-check-home-directory-space.sh:18
-msgid "Low space in %s (B19_HOME): %s < %s"
-msgstr "Мало місця у %s (B19_HOME): %s < %s"
-
-#: .container/user/healthcheck.d/0100-check-home-directory-space.sh:22
-msgid "%s (B19_HOME) has sufficient space: %s > %s"
-msgstr "%s (B19_HOME) має достатньо місця: %s > %s"
-
-#: .container/user/healthcheck.d/0200-check-cache-directory-space.sh:18
-msgid "Low space in %s (XDG_CACHE_HOME): %s < %s"
-msgstr "Мало місця у %s (XDG_CACHE_HOME): %s < %s"
-
-#: .container/user/healthcheck.d/0200-check-cache-directory-space.sh:22
-msgid "%s (XDG_CACHE_HOME) has sufficient space: %s > %s"
-msgstr "%s (XDG_CACHE_HOME) має достатньо місця: %s > %s"
-
-#: .container/user/healthcheck.d/0300-check-temp-directory-space.sh:18
-msgid "Low space in %s (B19_TEMP_PATH): %s < %s"
-msgstr "Мало місця у %s (B19_TEMP_PATH): %s < %s"
-
-#: .container/user/healthcheck.d/0300-check-temp-directory-space.sh:22
-msgid "%s (B19_TEMP_PATH) has sufficient space: %s > %s"
-msgstr "%s (B19_TEMP_PATH) має достатньо місця: %s > %s"
-
 #: .container/user/healthcheck.d/0400-check-https-connectivity.sh:17
 msgid "HTTPS connectivity check skipped (no B19_HEALTH_NETWORK_URL configured)"
 msgstr ""
@@ -1665,6 +1641,59 @@ msgstr "Демона %s (pid %s) немає"
 #: .container/user/healthcheck.d/0900-check-daemons.sh:43
 msgid "%s required daemons running in %s"
 msgstr "%s обовʼязкових демонів працює в %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:34
+msgid "B19_HEALTH_DISK_WARN_PERCENT=%s is not a percentage from 1 to 100"
+msgstr "B19_HEALTH_DISK_WARN_PERCENT=%s не є відсотком від 1 до 100"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:42
+msgid "%s is empty, no budget"
+msgstr "%s порожня, бюджету немає"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:50
+msgid "%s=%s: needs an IEC size and %s holding an absolute path, found '%s'"
+msgstr ""
+"%s=%s: потрібні розмір IEC і змінна %s з абсолютним шляхом, знайдено '%s'"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:55
+msgid "%s (%s) does not exist, not checked"
+msgstr "%s (%s) не існує, не перевіряється"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:60
+msgid "Some entries under %s are unreadable, its usage is a lower bound"
+msgstr "Деякі записи в %s неможливо прочитати, їхній обсяг є нижньою межею"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:63
+msgid "Cannot measure %s"
+msgstr "Не вдається виміряти %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:66
+msgid "%s uses %s, over its budget of %s"
+msgstr "%s займає %s, понад бюджет %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:69
+msgid "%s uses %s, %s%% or more of its budget of %s"
+msgstr "%s займає %s, %s%% або більше від бюджету %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:72
+msgid "%s uses %s of its %s budget"
+msgstr "%s займає %s із бюджету %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:84
+msgid "Near the disk budget (%s%%): %s"
+msgstr "Близько до дискового бюджету (%s%%): %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:85
+msgid "Cannot write to %s"
+msgstr "Не вдається записати в %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:90
+msgid "%s of %s disk budgets failed: %s"
+msgstr "%s з %s дискових бюджетів не пройшли: %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:93
+msgid "All %s disk budgets hold"
+msgstr "Усі %s дискових бюджетів дотримано"
 
 #: .container/user/benchmark.d/0400-disk-rand-io/setup.sh:10
 #: .container/user/benchmark.d/0800-process-fork/setup.sh:10
@@ -2181,6 +2210,7 @@ msgstr "Тест %s: безпечний високий порт проходит
 #: .container/user/test.d/0330-healthcheck-tiers.sh:43
 #: .container/user/test.d/0330-healthcheck-tiers.sh:53
 #: .container/user/test.d/0330-healthcheck-tiers.sh:65
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:41
 #: .container/user/test.d/0345-healthcheck-output-limit.sh:37
 #: .container/user/test.d/0345-healthcheck-output-limit.sh:45
 #: .container/user/test.d/0345-healthcheck-output-limit.sh:53
@@ -2435,6 +2465,46 @@ msgstr "Проба не вдалася, не назвавши перевірку
 #: .container/user/test.d/0330-healthcheck-tiers.sh:71
 msgid "All healthcheck tier tests passed"
 msgstr "Усі тести рівнів перевірки стану пройдено"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:38
+msgid "Test %s: expecting %s for %s"
+msgstr "Тест %s: очікується %s для %s"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:40
+msgid "Test %s: expected %s, got %s"
+msgstr "Тест %s: очікувалося %s, отримано %s"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:59
+msgid "Fixture %s uses %s bytes"
+msgstr "Фікстура %s займає %s байтів"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:62
+msgid "Used equal to the budget at 100 % was not reported as near"
+msgstr "Використання, рівне бюджету при 100 %, не позначено як близьке"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:65
+msgid "An unchanged near-budget set was reported again"
+msgstr "Незмінний набір шляхів біля бюджету повідомлено вдруге"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:69
+msgid "A path crossing the threshold again was not reported"
+msgstr "Шлях, що знову перетнув поріг, не повідомлено"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:72
+msgid "The last line does not name the path over budget"
+msgstr "Останній рядок не називає шлях, що перевищив бюджет"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:75
+msgid "Missing budget path was not logged"
+msgstr "Відсутній шлях бюджету не записано в журнал"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:78
+msgid "Malformed budget was not named by its variable"
+msgstr "Некоректний бюджет не названо за його змінною"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:87
+msgid "All disk budget tests passed"
+msgstr "Усі тести дискового бюджету пройдено"
 
 #: .container/user/test.d/0340-healthcheck-exit-after.sh:30
 msgid "Expected 2 failures, counted %s"
@@ -2710,6 +2780,24 @@ msgstr "Загальне використання пам'яті (%s МБ) пер
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "Загальне використання пам'яті в межах порогу (%s МБ)"
+
+#~ msgid "Low space in %s (B19_HOME): %s < %s"
+#~ msgstr "Мало місця у %s (B19_HOME): %s < %s"
+
+#~ msgid "%s (B19_HOME) has sufficient space: %s > %s"
+#~ msgstr "%s (B19_HOME) має достатньо місця: %s > %s"
+
+#~ msgid "Low space in %s (XDG_CACHE_HOME): %s < %s"
+#~ msgstr "Мало місця у %s (XDG_CACHE_HOME): %s < %s"
+
+#~ msgid "%s (XDG_CACHE_HOME) has sufficient space: %s > %s"
+#~ msgstr "%s (XDG_CACHE_HOME) має достатньо місця: %s > %s"
+
+#~ msgid "Low space in %s (B19_TEMP_PATH): %s < %s"
+#~ msgstr "Мало місця у %s (B19_TEMP_PATH): %s < %s"
+
+#~ msgid "%s (B19_TEMP_PATH) has sufficient space: %s > %s"
+#~ msgstr "%s (B19_TEMP_PATH) має достатньо місця: %s > %s"
 
 #~ msgid "Timed out waiting for %s, %s runs untracked"
 #~ msgstr "Час очікування %s вичерпано, %s працює без запису"

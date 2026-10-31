@@ -31,7 +31,7 @@ Set once in the Dockerfile `ENV` block, anchored at `B19_HOME=/app`. One deliber
 The foundation permissions hook pre-creates all four and chowns them to `${B19_UID}:0`, so the very first write by the runtime user succeeds. Consumers across the image:
 
 - `B19_BOOTSTRAP_LOCK_PATH=${XDG_DATA_HOME}/.bootstrap` — the run-once lockfiles
-- The cache-space healthcheck watches `XDG_CACHE_HOME` free space
+- `B19_DISK_BUDGET_XDG_CACHE_HOME` caps the cache with a [disk budget](use-healthcheck.d.md#disk-budgets)
 - The cache-writability test asserts `-w "${XDG_CACHE_HOME}"`
 - Host-side cache binds land here: `- ~/.cache/npm:/app/.cache/npm`
 

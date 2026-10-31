@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 # Write healthchecks
 
-`healthcheck.d` is the Docker-native health monitor every b19 image inherits: each check is a plain shell script, the runner discovers and sorts them, runs them in parallel under one deadline, counts failures and reports the count to Docker. Eight checks ship in the base image — disk space, HTTPS, DNS, TCP reachability, writability, and a generic listen-port probe — and downstream images add service-specific checks in their own slot range. The pitch: [container health monitoring](../features.d/healthcheck.d.md).
+`healthcheck.d` is the Docker-native health monitor every b19 image inherits: each check is a plain shell script, the runner discovers and sorts them, runs them in parallel under one deadline, counts failures and reports the count to Docker. Six checks ship in the base image — disk budget, HTTPS, DNS, TCP reachability, writability, and a generic listen-port probe — and downstream images add service-specific checks in their own slot range. The pitch: [container health monitoring](../features.d/healthcheck.d.md).
 
 Checks that reach the public internet are opt-in: `check-https-connectivity.sh`, `check-dns-resolution.sh` and `check-reachability.sh` stand down unless `B19_HEALTH_EGRESS=true`. Each carries the guard itself, next to the offgrid guard it already had — the runner dispatches on nothing. A container that only serves local traffic carries no check that a third party can fail, and a container whose whole job is egress (proxy, mirror, relay) turns them on and reports unhealthy when the outside is gone. See [Egress checks](#egress-checks) below.
 
@@ -133,20 +133,18 @@ Unset (the default) turns it off. It is a runtime choice, so set it where the re
 
 | Slot | Script                           | Check                                                                                      | Skip condition                                         |
 | ---- | -------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------ |
-| 0100 | `check-home-directory-space.sh`  | `$B19_HOME` has > `B19_HEALTH_HOME_MIN_SPACE_KB` KB free                                   | Never                                                  |
-| 0200 | `check-cache-directory-space.sh` | `$XDG_CACHE_HOME` has > `B19_HEALTH_CACHE_MIN_SPACE_KB`                                    | Never                                                  |
-| 0300 | `check-temp-directory-space.sh`  | `$B19_TEMP_PATH` has > `B19_HEALTH_TEMP_MIN_SPACE_KB`                                      | Never                                                  |
+| 0100 | `hourly/check-disk-budget.sh`    | Every `B19_DISK_BUDGET_*` holds, see [disk budgets](#disk-budgets)                         | No `B19_DISK_BUDGET_*` set                             |
 | 0400 | `check-https-connectivity.sh`    | At least one `B19_HEALTH_NETWORK_URL` responds to `curl -I`                                | `B19_HEALTH_EGRESS` not `true`, empty URL, or offgrid  |
 | 0500 | `check-dns-resolution.sh`        | At least one hostname from `B19_HEALTH_NETWORK_URL` resolves via `getent`                  | Same as 0400                                           |
 | 0600 | `check-reachability.sh`          | At least one `B19_HEALTH_PING_TARGETS` answers a TCP probe on `B19_HEALTH_REACH_PORT_SAFE` | `B19_HEALTH_EGRESS` not `true`, no targets, or offgrid |
 | 0700 | `check-dummy.sh`                 | Can `touch` + `rm` a file in `B19_HEALTH_PATH`                                             | Never                                                  |
 | 0800 | `check-listen.sh`                | TCP-connects `127.0.0.1:B19_READY_PORT`                                                    | `B19_READY_PORT` empty                                 |
 
-Any check — including the space checks — can also be disabled individually at runtime
+Any check — including the disk budget check — can also be disabled individually at runtime
 with `B19_HEALTH_SKIP_<NAME>=true` (see [configure-environment](configure-environment.md)),
 which logs a “Skipped” line and counts as neither passed nor failed.
 
-Network checks iterate over multiple targets and pass when **any single target** succeeds — one flaky endpoint must not flag the container unhealthy. The reachability check probes TCP port 443 rather than ICMP: a `ping` needs `CAP_NET_RAW` or a permissive `ping_group_range`, which rootless and hardened containers do not have. The `B19_HEALTH_PING_TARGETS` name predates that switch and is kept for config stability. Under `B19_OFFGRID_MODE=Y` the network checks skip with a “skipped (offgrid mode)” line and exit 0; space checks still run.
+Network checks iterate over multiple targets and pass when **any single target** succeeds — one flaky endpoint must not flag the container unhealthy. The reachability check probes TCP port 443 rather than ICMP: a `ping` needs `CAP_NET_RAW` or a permissive `ping_group_range`, which rootless and hardened containers do not have. The `B19_HEALTH_PING_TARGETS` name predates that switch and is kept for config stability. Under `B19_OFFGRID_MODE=Y` the network checks skip with a “skipped (offgrid mode)” line and exit 0; the disk budget check still runs.
 
 ### Slot numbering
 
@@ -156,7 +154,6 @@ A check therefore sorts after every check of the image it inherits from.
 
 | Range     | Purpose                   | Reserved by                  |
 | --------- | ------------------------- | ---------------------------- |
-| 0100-0300 | System resource checks    | b19/Ubuntu (space)           |
 | 0400-0600 | HTTPS, DNS, reachability  | b19/Ubuntu                   |
 | 0700      | Writability probe         | b19/Ubuntu                   |
 | 0800      | Generic listen-port probe | b19/Ubuntu                   |
@@ -180,6 +177,24 @@ A heavy or rate-limited check — a compliance scan, a probe against a public ra
 - A passing verdict is reused for the tier interval; a failing one is retried after `B19_HEALTH_RETRY_INTERVAL` (when shorter), so an outage clears fast without re-running a heavy check on every probe. The stale verdict keeps answering while the re-run is in flight.
 - `B19_HEALTH_INTERVAL_<NAME>` overrides the interval of one check (`B19_HEALTH_INTERVAL_CHECK_AUDIT=900`); `B19_HEALTH_SKIP_<NAME>` mutes it as usual.
 - A tier needs its interval variable: a subdirectory with no `B19_HEALTH_<TIER>_INTERVAL` is ignored with a warning. `hourly` is the only tier the base declares.
+
+### Disk budgets
+
+`hourly/0100-check-disk-budget.sh` compares what a path holds with its budget. A budget is an environment variable named after the variable that holds the path:
+
+```dockerfile
+ENV MYAPP_DATA_PATH=/app/data     B19_DISK_BUDGET_MYAPP_DATA_PATH=20Gi     B19_DISK_BUDGET_XDG_CACHE_HOME=2Gi
+```
+
+- `B19_DISK_BUDGET_<VAR>=<size>`: `<VAR>` is the name of the variable holding an absolute path. The path is declared once, and the budget follows it when it moves.
+- Sizes are bytes or IEC (`512Mi`, `4Gi`, `1Ti`). Empty or unset is no budget; no budget is set in the base image.
+- Usage is `du --summarize --one-file-system` of the path, at the lowest CPU and best-effort I/O priority: what the container wrote, never the free space of the host. It stops at a mount point, so a volume mounted below a budgeted path needs a budget of its own.
+- Above the budget, the container is unhealthy, and the last line names the path, its usage and its budget. Equal to the budget still passes.
+- At `B19_HEALTH_DISK_WARN_PERCENT` (90) of the budget or more, the container stays healthy and one warn line reaches the container log; it is written again only when the set of paths near their budget changes.
+- A budget with a malformed size, or naming a variable that holds no absolute path, fails the check, named by its variable. A path that does not exist is logged and skipped.
+- An image sets its budgets in its `ENV`; a deployment overrides one with one `environment:` line.
+- `du` walks the whole tree, so the check runs in the `hourly` tier with `B19_HEALTH_INTERVAL_CHECK_DISK_BUDGET=300`: every 5 minutes, and every `B19_HEALTH_RETRY_INTERVAL` while it fails.
+- A budget makes the container unhealthy, and with `B19_HEALTH_EXIT_AFTER` restarts it. It never stops a write: it is a soft limit.
 
 ### Egress checks
 
@@ -341,9 +356,8 @@ esac
 | `B19_HEALTH_RETRY_INTERVAL`     | `60`                                          | Seconds before a failing tier verdict is re-run                    |
 | `B19_HEALTH_TIER_TIMEOUT`       | `300`                                         | Seconds a detached tier check may run before it counts as failed   |
 | `B19_HEALTH_INTERVAL_<NAME>`    | (unset)                                       | Per-check interval override for a tier check                       |
-| `B19_HEALTH_HOME_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_HOME` before failing                          |
-| `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768`                                       | Min free KB in `$XDG_CACHE_HOME` before failing                    |
-| `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768`                                       | Min free KB in `$B19_TEMP_PATH` before failing                     |
+| `B19_HEALTH_DISK_WARN_PERCENT`  | `90`                                          | Percent of a disk budget that logs a warning                       |
+| `B19_DISK_BUDGET_<VAR>`         | (unset)                                       | Budget of the path in `$<VAR>`, see [disk budgets](#disk-budgets)  |
 | `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Timeout in seconds for the egress `curl` checks                    |
 | `B19_HEALTH_LOCK_TIMEOUT`       | `4`                                           | Seconds to wait for an overlapping run, then repeat its verdict    |
 | `B19_HEALTH_CHECK_TIMEOUT`      | `3`                                           | Seconds all inline checks of one probe may take together           |
@@ -389,7 +403,6 @@ Typical runner output with egress off — the default (plain text, no TTY):
 
 ```text
 [INFO]  HEALTH.D  Checks directory found
-[INFO]  HEALTH.D  Executing check: 0100-check-home-directory-space.sh
 [GOOD]  HEALTH.D  /app (B19_HOME) has sufficient space: 12.50GiB > 32.00MiB
 [INFO]  HEALTH.D  Executing check: 0400-check-https-connectivity.sh
 [GOOD]  HEALTH.D  HTTPS connectivity check skipped (B19_HEALTH_EGRESS not enabled)

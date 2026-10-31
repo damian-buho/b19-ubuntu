@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-31 20:15+0000\n"
+"POT-Creation-Date: 2026-10-31 20:37+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -1543,30 +1543,6 @@ msgid "Nothing consumed %s — the image declares no start hook for it"
 msgstr ""
 "Nada consumió %s — la imagen no declara ningún hook de arranque para ello"
 
-#: .container/user/healthcheck.d/0100-check-home-directory-space.sh:18
-msgid "Low space in %s (B19_HOME): %s < %s"
-msgstr "Poco espacio en %s (B19_HOME): %s < %s"
-
-#: .container/user/healthcheck.d/0100-check-home-directory-space.sh:22
-msgid "%s (B19_HOME) has sufficient space: %s > %s"
-msgstr "%s (B19_HOME) tiene suficiente espacio: %s > %s"
-
-#: .container/user/healthcheck.d/0200-check-cache-directory-space.sh:18
-msgid "Low space in %s (XDG_CACHE_HOME): %s < %s"
-msgstr "Poco espacio en %s (XDG_CACHE_HOME): %s < %s"
-
-#: .container/user/healthcheck.d/0200-check-cache-directory-space.sh:22
-msgid "%s (XDG_CACHE_HOME) has sufficient space: %s > %s"
-msgstr "%s (XDG_CACHE_HOME) tiene suficiente espacio: %s > %s"
-
-#: .container/user/healthcheck.d/0300-check-temp-directory-space.sh:18
-msgid "Low space in %s (B19_TEMP_PATH): %s < %s"
-msgstr "Poco espacio en %s (B19_TEMP_PATH): %s < %s"
-
-#: .container/user/healthcheck.d/0300-check-temp-directory-space.sh:22
-msgid "%s (B19_TEMP_PATH) has sufficient space: %s > %s"
-msgstr "%s (B19_TEMP_PATH) tiene suficiente espacio: %s > %s"
-
 #: .container/user/healthcheck.d/0400-check-https-connectivity.sh:17
 msgid "HTTPS connectivity check skipped (no B19_HEALTH_NETWORK_URL configured)"
 msgstr ""
@@ -1679,6 +1655,61 @@ msgstr "El demonio %s (pid %s) ya no existe"
 #: .container/user/healthcheck.d/0900-check-daemons.sh:43
 msgid "%s required daemons running in %s"
 msgstr "%s demonios obligatorios en ejecución en %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:34
+msgid "B19_HEALTH_DISK_WARN_PERCENT=%s is not a percentage from 1 to 100"
+msgstr "B19_HEALTH_DISK_WARN_PERCENT=%s no es un porcentaje de 1 a 100"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:42
+msgid "%s is empty, no budget"
+msgstr "%s está vacío, sin presupuesto"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:50
+msgid "%s=%s: needs an IEC size and %s holding an absolute path, found '%s'"
+msgstr ""
+"%s=%s: necesita un tamaño IEC y que %s contenga una ruta absoluta, se "
+"encontró '%s'"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:55
+msgid "%s (%s) does not exist, not checked"
+msgstr "%s (%s) no existe, no se comprueba"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:60
+msgid "Some entries under %s are unreadable, its usage is a lower bound"
+msgstr ""
+"Algunas entradas bajo %s no se pueden leer, su uso es un límite inferior"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:63
+msgid "Cannot measure %s"
+msgstr "No se puede medir %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:66
+msgid "%s uses %s, over its budget of %s"
+msgstr "%s usa %s, por encima de su presupuesto de %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:69
+msgid "%s uses %s, %s%% or more of its budget of %s"
+msgstr "%s usa %s, el %s%% o más de su presupuesto de %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:72
+msgid "%s uses %s of its %s budget"
+msgstr "%s usa %s de su presupuesto de %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:84
+msgid "Near the disk budget (%s%%): %s"
+msgstr "Cerca del presupuesto de disco (%s%%): %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:85
+msgid "Cannot write to %s"
+msgstr "No se puede escribir en %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:90
+msgid "%s of %s disk budgets failed: %s"
+msgstr "%s de %s presupuestos de disco fallaron: %s"
+
+#: .container/user/healthcheck.d/hourly/0100-check-disk-budget.sh:93
+msgid "All %s disk budgets hold"
+msgstr "Los %s presupuestos de disco se cumplen"
 
 #: .container/user/benchmark.d/0400-disk-rand-io/setup.sh:10
 #: .container/user/benchmark.d/0800-process-fork/setup.sh:10
@@ -2196,6 +2227,7 @@ msgstr "Prueba %s: el puerto alto seguro pasa"
 #: .container/user/test.d/0330-healthcheck-tiers.sh:43
 #: .container/user/test.d/0330-healthcheck-tiers.sh:53
 #: .container/user/test.d/0330-healthcheck-tiers.sh:65
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:41
 #: .container/user/test.d/0345-healthcheck-output-limit.sh:37
 #: .container/user/test.d/0345-healthcheck-output-limit.sh:45
 #: .container/user/test.d/0345-healthcheck-output-limit.sh:53
@@ -2453,6 +2485,46 @@ msgstr "La sonda falló sin nombrar la comprobación de nivel"
 #: .container/user/test.d/0330-healthcheck-tiers.sh:71
 msgid "All healthcheck tier tests passed"
 msgstr "Todas las pruebas de niveles del healthcheck superadas"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:38
+msgid "Test %s: expecting %s for %s"
+msgstr "Prueba %s: se espera %s para %s"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:40
+msgid "Test %s: expected %s, got %s"
+msgstr "Prueba %s: se esperaba %s, se obtuvo %s"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:59
+msgid "Fixture %s uses %s bytes"
+msgstr "El fixture %s usa %s bytes"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:62
+msgid "Used equal to the budget at 100 % was not reported as near"
+msgstr "Un uso igual al presupuesto al 100 % no se informó como cercano"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:65
+msgid "An unchanged near-budget set was reported again"
+msgstr "Un conjunto sin cambios cercano al presupuesto se informó de nuevo"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:69
+msgid "A path crossing the threshold again was not reported"
+msgstr "Una ruta que vuelve a cruzar el umbral no se informó"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:72
+msgid "The last line does not name the path over budget"
+msgstr "La última línea no nombra la ruta que excede el presupuesto"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:75
+msgid "Missing budget path was not logged"
+msgstr "La ruta de presupuesto ausente no se registró"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:78
+msgid "Malformed budget was not named by its variable"
+msgstr "El presupuesto mal formado no se identificó por su variable"
+
+#: .container/user/test.d/0335-healthcheck-disk-budget.sh:87
+msgid "All disk budget tests passed"
+msgstr "Todas las pruebas de presupuesto de disco pasaron"
 
 #: .container/user/test.d/0340-healthcheck-exit-after.sh:30
 msgid "Expected 2 failures, counted %s"
@@ -2730,6 +2802,24 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
+
+#~ msgid "Low space in %s (B19_HOME): %s < %s"
+#~ msgstr "Poco espacio en %s (B19_HOME): %s < %s"
+
+#~ msgid "%s (B19_HOME) has sufficient space: %s > %s"
+#~ msgstr "%s (B19_HOME) tiene suficiente espacio: %s > %s"
+
+#~ msgid "Low space in %s (XDG_CACHE_HOME): %s < %s"
+#~ msgstr "Poco espacio en %s (XDG_CACHE_HOME): %s < %s"
+
+#~ msgid "%s (XDG_CACHE_HOME) has sufficient space: %s > %s"
+#~ msgstr "%s (XDG_CACHE_HOME) tiene suficiente espacio: %s > %s"
+
+#~ msgid "Low space in %s (B19_TEMP_PATH): %s < %s"
+#~ msgstr "Poco espacio en %s (B19_TEMP_PATH): %s < %s"
+
+#~ msgid "%s (B19_TEMP_PATH) has sufficient space: %s > %s"
+#~ msgstr "%s (B19_TEMP_PATH) tiene suficiente espacio: %s > %s"
 
 #~ msgid "Timed out waiting for %s, %s runs untracked"
 #~ msgstr "Tiempo agotado esperando %s, %s se ejecuta sin registro"

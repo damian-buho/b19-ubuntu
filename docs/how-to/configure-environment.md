@@ -108,14 +108,13 @@ See [ENTRYPOINT.md](use-entrypoint.d.md) for secrets loading and validation flow
 
 ## Health Thresholds
 
-All thresholds apply at runtime. Space checks compare free kilobytes; network
-checks test connectivity. Network checks respect `B19_OFFGRID_MODE`.
+All thresholds apply at runtime. Disk budgets are `B19_DISK_BUDGET_<VAR>` variables
+([disk budgets](use-healthcheck.d.md#disk-budgets)); network checks test connectivity. Network checks respect `B19_OFFGRID_MODE`.
 
 | Variable                        | Default                                       | Controls                                                                                         |
 | ------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `B19_HEALTH_HOME_MIN_SPACE_KB`  | `32768` (32 MB)                               | Min free KB in `$B19_HOME`                                                                       |
-| `B19_HEALTH_CACHE_MIN_SPACE_KB` | `32768` (32 MB)                               | Min free KB in `$XDG_CACHE_HOME`                                                                 |
-| `B19_HEALTH_TEMP_MIN_SPACE_KB`  | `32768` (32 MB)                               | Min free KB in `$B19_TEMP_PATH`                                                                  |
+| `B19_HEALTH_DISK_WARN_PERCENT`  | `90`                                          | Percent of a `B19_DISK_BUDGET_<VAR>` that logs a warning                                         |
+| `B19_DISK_BUDGET_<VAR>`         | (unset)                                       | Budget of the path in `$<VAR>`, IEC size; over it the container is unhealthy                     |
 | `B19_HEALTH_CURL_TIMEOUT`       | `8`                                           | Connection timeout in seconds for cURL checks (max-time = 2x)                                    |
 | `B19_HEALTH_LOCK_TIMEOUT`       | `4`                                           | Seconds to wait for an overlapping healthcheck run before repeating the last finished verdict    |
 | `B19_HEALTH_CHECK_TIMEOUT`      | `3`                                           | Seconds all inline checks of one probe may take together; a check past it counts as failed       |
@@ -310,6 +309,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_COMMAND_PATH`              | runtime         | Hook Directories |
 | `B19_COMMAND_TIMEOUT`           | runtime         | Timeouts         |
 | `B19_DEPS_PATH`                 | runtime         | Hook Directories |
+| `B19_DISK_BUDGET_<VAR>`         | runtime         | Health           |
 | `B19_DOCKER_GID`                | build + runtime | System Paths     |
 | `B19_DOWNLOAD_ATTEMPTS`         | build           | Download         |
 | `B19_DOWNLOAD_DISK_CACHE`       | build           | Download         |
@@ -330,15 +330,14 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_FETCH_LOCAL_PATH`          | build           | Download         |
 | `B19_GID`                       | build + runtime | User Identity    |
 | `B19_GROUP`                     | build + runtime | User Identity    |
-| `B19_HEALTH_CACHE_MIN_SPACE_KB` | runtime         | Health           |
 | `B19_HEALTH_CHECK_TIMEOUT`      | runtime         | Health           |
+| `B19_HEALTH_DISK_WARN_PERCENT`  | runtime         | Health           |
 | `B19_HEALTH_CURL_TIMEOUT`       | runtime         | Health           |
 | `B19_HEALTH_DRAIN_FILE`         | runtime         | Health           |
 | `B19_HEALTH_EGRESS`             | runtime         | Health           |
 | `B19_HEALTH_ENABLED`            | runtime         | Feature Toggles  |
 | `B19_HEALTH_EXIT_AFTER`         | runtime         | Timeouts         |
 | `B19_HEALTH_EXIT_GRACE`         | runtime         | Timeouts         |
-| `B19_HEALTH_HOME_MIN_SPACE_KB`  | runtime         | Health           |
 | `B19_HEALTH_HOURLY_INTERVAL`    | runtime         | Health           |
 | `B19_HEALTH_INTERVAL_<NAME>`    | runtime         | Health           |
 | `B19_HEALTH_LOCK_TIMEOUT`       | runtime         | Health           |
@@ -348,7 +347,6 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_HEALTH_PING_TARGETS`       | runtime         | Health           |
 | `B19_HEALTH_REACH_PORT_SAFE`    | runtime         | Health           |
 | `B19_HEALTH_RETRY_INTERVAL`     | runtime         | Health           |
-| `B19_HEALTH_TEMP_MIN_SPACE_KB`  | runtime         | Health           |
 | `B19_HEALTH_TIER_TIMEOUT`       | runtime         | Health           |
 | `B19_HOME`                      | build + runtime | User Identity    |
 | `B19_I18N_ENABLED`              | build + runtime | Feature Toggles  |
