@@ -31,5 +31,5 @@ keywords:
   - container-image
   - multiarch
   - reproducible
-version: 0.28.0
-date-released: "2026-10-30"
+version: 0.29.0
+date-released: "2026-10-31"
