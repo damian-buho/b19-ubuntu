@@ -210,7 +210,7 @@ WORKDIR ${B19_HOME}
 
 ENV B19_VERBOSITY=warn
 
-ENTRYPOINT      ["/usr/bin/tini", "-g", "--", "entrypoint.d"]
+ENTRYPOINT      ["/usr/bin/catatonit", "-g", "--", "entrypoint.d"]
 HEALTHCHECK --start-period=90s --start-interval=1s --interval=10s --timeout=5s --retries=3 \
             CMD ["healthcheck.d"]
 # Don't use CMD ["sleep", "infinity"] here

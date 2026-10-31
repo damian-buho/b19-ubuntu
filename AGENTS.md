@@ -24,7 +24,7 @@ just what the docs claim. Root conventions live in [../../AGENTS.md](../../AGENT
 - Binaries `fd`, `minijinja-cli` are **copied from sibling b19 images** (`b19/fd`, `b19/minijinja`) via multi-stage `FROM`, not apt. Those images must build first (tier ordering). `mold` comes via a pinned GitHub-release download (`b19-fetch`), not apt — see `deps/mold/`.
 - Runs as `ubuntu` UID/GID **1000**, home `/app`. Root is only used during the
     `foundation` build stage. The one runtime exception is opt-in: `--user 0` plus `B19_PUID` makes `0010-remap-user` move the account to that UID/GID and `setpriv` back down before secrets load or anything starts. [use-non-root](docs/how-to/use-non-root.md)
-- PID 1 is `tini -g`; entrypoint is `entrypoint.d`; healthcheck is `healthcheck.d`. These three are **inherited** by every child — children must not redefine them.
+- PID 1 is `catatonit -g`; entrypoint is `entrypoint.d`; healthcheck is `healthcheck.d`. These three are **inherited** by every child — children must not redefine them.
 - `CMD` is intentionally **absent** (the Dockerfile comment warns against `sleep infinity`). Children set their own `CMD`.
 
 ## Build model (the core mechanism)
@@ -68,7 +68,7 @@ foundation.
 
 ## Runtime lifecycle
 
-`tini -g` → `entrypoint.d` runs numbered hooks from `.container/user/entrypoint.d/`:
+`catatonit -g` → `entrypoint.d` runs numbered hooks from `.container/user/entrypoint.d/`:
 set-signals → set-verbosity → remap-user → load-secrets → set-cpu-count → check-ports → print-lineage →
 copy-overlay → parallel-j2 (render `.j2`) → select-command → validate-secrets →
 bootstrap → run-command → start → finalize. A bare `docker run img <cmd>` is
@@ -152,7 +152,7 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 - **`test.d` doubles must not rely on executing files under `/tmp`.** That mount can be noexec, so a stub script there fails with `Permission denied` (exit 126) and the test silently exercises the real tool instead. Define the doubles as shell functions and `export -f` them into the child shell — see `test.d/0210-b19-fetch-near-cache.sh`.
 - **A hook child that reads stdin starves the hook list.** `process-hooks` feeds its `while read` loop from a process-substitution pipe on fd 0, and `b19-run` passes stdin through — a child like `npm` that drains stdin (r8e/shields: `npm run build`/`npm prune`) consumes the queued hook paths, so every hook after it silently never runs and the stage still exits 0. Guard such calls with `< /dev/null` in the hook.
 - **A hook that SOURCES a `tools.d` command ends the stage.** Hooks share one shell, so the `exit 0` a command like `parallel-j2` takes on its no-op path ends `build-stage` with status 0, and every later hook (`980-strip-setuid`, `always/post`) silently never runs; call tools as commands, source only the `b19-i18n`-style libraries.
-- **An entrypoint trap cannot forward to a running payload.** Bash runs a trap only after the foreground command ends, and `5000-start.sh` runs `b19-exec` in the foreground, so every signal is forwarded by `b19-exec` itself. Its command sits in its own session, outside `tini -g`’s group, so nothing else reaches it and each signal arrives once; a hook that starts a daemon with a bare `&` is outside that contract.
+- **An entrypoint trap cannot forward to a running payload.** Bash runs a trap only after the foreground command ends, and `5000-start.sh` runs `b19-exec` in the foreground, so every signal is forwarded by `b19-exec` itself. Its command sits in its own session, outside `catatonit -g`’s group, so nothing else reaches it and each signal arrives once; a hook that starts a daemon with a bare `&` is outside that contract.
 - **`$(< file)` on a vanished file kills the shell under `set -e` on noble.** Bash 5.2 (noble) exits at once with status 1 and no message, `|| return` and `2>/dev/null` notwithstanding; 5.3 (resolute) does not. A `/proc/PID/stat` read races the reaper, so read it with `{ read -r x < "/proc/$pid/stat"; } 2>/dev/null || …` (`b19-exec` `proc_field`).
 - **i18n is mandatory.** User-facing strings go through `_()`/`_p()`; update
     `.container/{stage}/locale/*.pot|*.po` (es, uk). Don’t add English-only output.

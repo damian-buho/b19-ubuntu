@@ -59,7 +59,7 @@ The `PATH` includes `/tools.d` and `/command.d`; the tree is assembled from `.co
 
 ### Preinstalled binaries
 
-Not in `tools.d` but shipped by install hooks and always available: `mold` (default linker, opt-out via `B19_BUILD_DISABLE_MOLD`), `fd`, `minijinja-cli`, `aria2c`, `tini`, `pbzip2` / `pigz` / `pixz`, gettext, cURL.
+Not in `tools.d` but shipped by install hooks and always available: `mold` (default linker, opt-out via `B19_BUILD_DISABLE_MOLD`), `fd`, `minijinja-cli`, `aria2c`, `catatonit`, `pbzip2` / `pigz` / `pixz`, gettext, cURL.
 
 ## See also
 

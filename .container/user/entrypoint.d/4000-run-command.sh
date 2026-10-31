@@ -9,7 +9,7 @@
   then
     b19-log info "ENTRY.D" "$(_p "Running: %s (timeout: %s)" "$*" "${B19_COMMAND_TIMEOUT:-none}")"
     COMMAND_TIMEOUT_ARGS=()
-    # --foreground keeps the command in tini's process group, so docker stop still reaches it
+    # --foreground keeps the command in PID 1's process group, so docker stop still reaches it
     [ -n "${B19_COMMAND_TIMEOUT:-}" ] && COMMAND_TIMEOUT_ARGS=(timeout --foreground --kill-after=5s "${B19_COMMAND_TIMEOUT}")
     B19_VERBOSITY="${ENTRYPOINT_PAYLOAD_VERBOSITY:-${B19_VERBOSITY:-warn}}" "${COMMAND_TIMEOUT_ARGS[@]}" "$@" && RETURN_CODE=0 || RETURN_CODE=$?
     export RETURN_CODE

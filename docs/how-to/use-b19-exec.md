@@ -46,7 +46,7 @@ The payload’s stdout and stderr go straight to the container’s, with no `b19
 
 ### Supervision (default)
 
-`b19-exec` stays alive as the command’s supervisor. The command runs in its own session, so `tini -g` cannot signal it directly: the supervisor traps every signal in `${B19_HOME}/.signals` and forwards it to the command’s whole process group, exactly once. It then waits for the command, drains both loggers and exits with the command’s code.
+`b19-exec` stays alive as the command’s supervisor. The command runs in its own session, so `catatonit -g` cannot signal it directly: the supervisor traps every signal in `${B19_HOME}/.signals` and forwards it to the command’s whole process group, exactly once. It then waits for the command, drains both loggers and exits with the command’s code.
 
 Each supervised command is recorded as `${B19_RUNTIME_PATH}/b19-exec/<name>.pid`, holding `PID ROLE TICKS SEQUENCE SUPERVISOR SUPERVISOR_TICKS`: `ROLE` is `payload`, `required` or `optional`, each `TICKS` is that process’s start time from `/proc/PID/stat`, so a reused PID never reads as alive, and `SEQUENCE` counts claims, which sets the stop order. The supervisor claims it under a lock with its own PID in both PID fields before the command starts, so a stop already under way waits for it, a payload watches a required daemon that is still starting, and a stop signal that arrives before the command starts means it never starts. The record is removed when the command exits; `0000-set-signals.sh` clears what an earlier run of the container left behind. Without `--name` the record is `payload.pid`; a second unnamed call while one runs is not recorded and logs a warning.
 
@@ -84,7 +84,7 @@ trap 'b19-exec --stop csp-watch || true' EXIT
 
 ### Foreground mode (`--foreground`)
 
-Runs the command inline, with the same log routing and drain, but neither supervises nor records it. Signals reach it straight from `tini -g`, as part of the entrypoint’s process group.
+Runs the command inline, with the same log routing and drain, but neither supervises nor records it. Signals reach it straight from `catatonit -g`, as part of the entrypoint’s process group.
 
 ## Configuration
 

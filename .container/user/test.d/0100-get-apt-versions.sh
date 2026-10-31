@@ -8,13 +8,13 @@
 
   adduser   --version
   aria2c    --version
+  catatonit --version
   curl      --version
   gettext   --version
   gpg       --version
   killall   --version
   pbzip2    --version
   pigz      --version
-  tini      --version
   tree      --version
 
   nslookup  -version

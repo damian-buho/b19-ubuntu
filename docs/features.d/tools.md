@@ -8,6 +8,6 @@ SPDX-License-Identifier: MIT
 
 - `mold` as default linker (opt-out available).
 - `fd` for file finding, `minijinja-cli` for template rendering.
-- `aria2c` for multi-connection downloads, `tini` as PID 1 for zombie reaping.
+- `aria2c` for multi-connection downloads, `catatonit` as PID 1 for zombie reaping.
 - Parallel compression tools: `pbzip2`, `pigz`, `pixz`.
 - gettext tools for i18n compilation, `cURL` for network operations.

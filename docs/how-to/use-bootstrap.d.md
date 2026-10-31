@@ -31,7 +31,7 @@ b19-run "BOOTSTRAP" "$(_p "Run schema migrations for %s" "${NS_PROJECT}")" -- \
 ## How it works
 
 ```text
-Container start (tini → entrypoint.d)
+Container start (catatonit → entrypoint.d)
   ├─ 2000-select-command.sh     ← detects CMD vs long-run
   ├─ 2100-validate-secrets.sh
   ├─ 3000-bootstrap.sh          ← calls the bootstrap.d runner

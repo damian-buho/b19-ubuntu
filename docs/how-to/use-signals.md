@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 # Handle signals gracefully
 
-PID 1 is `tini -g`: it reaps zombies and forwards every signal to the whole process group. Every daemon started with `b19-exec` gets the signal once, from its own supervisor, and several daemons stop in reverse start order — so `docker stop` ends the service first, then its sidecars, each cleanly. The pitch: [graceful signal handling](../features.d/signals.md).
+PID 1 is `catatonit -g`: it reaps zombies and forwards every signal to the whole process group. Every daemon started with `b19-exec` gets the signal once, from its own supervisor, and several daemons stop in reverse start order — so `docker stop` ends the service first, then its sidecars, each cleanly. The pitch: [graceful signal handling](../features.d/signals.md).
 
 ## When to use
 
@@ -28,15 +28,15 @@ docker stop <container>   # SIGTERM reaches my-daemon; exit code propagates
 
 ```text
 docker stop / kill
-  → tini -g (PID 1)                    reaps zombies, signals the entrypoint’s process group
+  → catatonit -g (PID 1)               reaps zombies, signals the entrypoint’s process group
     → b19-exec (one per command)       traps the signal, holds a stop for newer commands
       → kill -s $SIGNAL -- -$pid       forwarded once to the command’s own process group
 ```
 
-- **`tini -g`** is the base mechanism — `ENTRYPOINT ["/usr/bin/tini", "-g", "--", "entrypoint.d"]` is inherited, never redeclared. There is no `STOPSIGNAL` directive in the image: `docker stop` sends the default SIGTERM, which tini forwards to its process group.
+- **`catatonit -g`** is the base mechanism — `ENTRYPOINT ["/usr/bin/catatonit", "-g", "--", "entrypoint.d"]` is inherited, never redeclared. There is no `STOPSIGNAL` directive in the image: `docker stop` sends the default SIGTERM, which catatonit forwards to its process group.
 - **`b19-exec` is the only forwarder.** Each command it supervises runs in its own session, outside that group, so the signal reaches it exactly once, through its `b19-exec`. A stop signal (`INT`, `QUIT`, `TERM`) waits until every command started later is gone, so the payload stops first and background daemons follow, last started first; [b19-exec](use-b19-exec.md#several-daemons---background---name-name) has the whole contract. `b19-exec` and its loggers outlive the stop, so a daemon’s last lines before it exits are drained, not cut off.
 - **The entrypoint trap only logs.** `0000-set-signals.sh` reads `${B19_HOME}/.signals` (shipped listing `ALRM HUP ILL INT QUIT TERM USR1 USR2`, comments stripped by `decomment`) and traps each one, so the entrypoint shell survives a signal and reports the payload’s exit code. Bash runs a trap only after the foreground command ends, so this shell could never forward to a running payload. The hook also clears the `${B19_RUNTIME_PATH}/b19-exec/` records an earlier run of the container left behind.
-- **`--foreground` and `docker run img <cmd>`** run inside tini’s process group, unsupervised, and get the signal straight from `tini -g`.
+- **`--foreground` and `docker run img <cmd>`** run inside catatonit’s process group, unsupervised, and get the signal straight from `catatonit -g`.
 
 When the payload exits, `b19-exec` stops the background daemons, exits with the payload’s code, and `9000-finalize.sh` exits the container with it.
 

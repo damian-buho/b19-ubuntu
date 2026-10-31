@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 # Start containers with entrypoint.d
 
-`entrypoint.d` is the numbered-hook runner that orchestrates every container startup: under `tini -g` it sources `/entrypoint.d/*.sh` in ascending order — signals, secrets, CPU detection, port validation, overlays, template rendering, bootstrap, and finally slot 5000 where your service starts. The pitch: [pluggable startup system](../features.d/entrypoint.d.md).
+`entrypoint.d` is the numbered-hook runner that orchestrates every container startup: under `catatonit -g` it sources `/entrypoint.d/*.sh` in ascending order — signals, secrets, CPU detection, port validation, overlays, template rendering, bootstrap, and finally slot 5000 where your service starts. The pitch: [pluggable startup system](../features.d/entrypoint.d.md).
 
 ## When to use
 
@@ -27,19 +27,19 @@ fi
 Do not redeclare `ENTRYPOINT` or `HEALTHCHECK` in the Dockerfile — they are inherited:
 
 ```dockerfile
-ENTRYPOINT ["/usr/bin/tini", "-g", "--", "entrypoint.d"]
+ENTRYPOINT ["/usr/bin/catatonit", "-g", "--", "entrypoint.d"]
 HEALTHCHECK CMD ["healthcheck.d"]
 ```
 
 ## How it works
 
 ```text
-tini -g (PID 1)
+catatonit -g (PID 1)
   └─ entrypoint.d (runner: /tools.d/entrypoint.d)
        └─ sources /entrypoint.d/*.sh in numeric order
 ```
 
-- `tini -g` reaps zombies and forwards signals to the process group.
+- `catatonit -g` reaps zombies and forwards signals to the process group.
 - The runner finds all `*.sh` in `/entrypoint.d/`, sorts ascending and **sources** each one — shared shell state, no subshells, so variables (`NUMPROCS`, `ENTRYPOINT_COMMAND_EXECUTED`, `RETURN_CODE`) are visible to every subsequent hook.
 - Two projects’ hooks merge by Docker layer overlay: the runner finds all `*.sh` regardless of which image layer added them.
 
@@ -144,7 +144,7 @@ When creating hooks for a downstream project, pick a slot in the appropriate ran
 
 ```text
 docker stop / kill
-  → tini -g (PID 1)
+  → catatonit -g (PID 1)
     → b19-exec (one per daemon, see 5000-start.sh)
       → kill -s $SIGNAL -- -$pid
         → your service process, then each background daemon, newest first
