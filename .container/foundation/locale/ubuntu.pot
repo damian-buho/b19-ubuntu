@@ -356,6 +356,14 @@ msgstr ""
 msgid "Local Cache disabled: %s"
 msgstr ""
 
+#: .container/foundation/tools.d/b19-fetch
+msgid "Waiting for lock on %s"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-fetch
+msgid "Locked %s"
+msgstr ""
+
 #: .container/foundation/tools.d/b19-fetch:88
 msgid "Docker Cache HIT: %s"
 msgstr ""

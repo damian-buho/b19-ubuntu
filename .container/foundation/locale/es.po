@@ -367,6 +367,14 @@ msgstr "Local Cache NO ENCONTRADO: %s"
 msgid "Local Cache disabled: %s"
 msgstr "Local Cache deshabilitado: %s"
 
+#: .container/foundation/tools.d/b19-fetch
+msgid "Waiting for lock on %s"
+msgstr "Esperando el bloqueo de %s"
+
+#: .container/foundation/tools.d/b19-fetch
+msgid "Locked %s"
+msgstr "Bloqueado %s"
+
 #: .container/foundation/tools.d/b19-fetch:88
 msgid "Docker Cache HIT: %s"
 msgstr "Docker Cache ENCONTRADO: %s"

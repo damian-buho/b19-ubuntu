@@ -80,7 +80,11 @@
     b19-log bad "${TAG}" "$(_p "Local Cache disabled: %s" "${B19_FETCH_LOCAL_CACHE}")"
   fi
 
-  # Step 3: Docker Cache
+  # Step 3: Docker Cache, held under a per-file lock through the final copy
+  b19-log debug "${TAG}" "$(_p "Waiting for lock on %s" "${B19_DOWNLOAD_PATH}/${ARIA_FILE}.lock")"
+  exec 9> "${B19_DOWNLOAD_PATH}/${ARIA_FILE}.lock"
+  flock 9
+  b19-log debug "${TAG}" "$(_p "Locked %s" "${B19_DOWNLOAD_PATH}/${ARIA_FILE}.lock")"
   if [ "${B19_FETCH_DOCKER_CACHE}" = "Y" ]
   then
     if [ -f "${B19_DOWNLOAD_PATH}/${ARIA_FILE}" ]
