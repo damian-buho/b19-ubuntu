@@ -173,22 +173,26 @@
         # pointer). Payload passthrough (PIPE_MODE) keeps the bare shape: those
         # lines are the process's own output, not a b19 log record.
         while IFS= read -r line || [ -n "$line" ]; do
+          OUT=""
           if [ -n "${STAGE:-}" ]; then
-            printf " %s " "${STAGE^^}" >&2
+            printf -v OUT " %s " "${STAGE^^}"
           fi
           if [ "${PIPE_MODE}" -eq 0 ]; then
-            printf " %-5s " "${LEVEL^^}" >&2
+            printf -v OUT "%s %-5s " "${OUT}" "${LEVEL^^}"
           fi
-          printf " %-12s " "${TAG^^}" >&2
-          printf " %s\n" "${line}" >&2
+          # one write per line, so concurrent loggers never splice
+          printf "%s %-12s  %s\n" "${OUT}" "${TAG^^}" "${line}" >&2
         done <&3
     else
         # warn/info/debug: colored output
         while IFS= read -r line || [ -n "$line" ]; do
+          OUT=""
           if [ -n "${STAGE:-}" ]; then
-            ansi -n --black --bg-white " ${STAGE^^} " >&2
+            OUT="$(ansi -n --black --bg-white " ${STAGE^^} ")"
           fi
-          ansi -n --black --bg-black-intense " $(printf "%-12s" "${TAG^^}") " >&2
-          ansi "${COLOR}" " ${line}" >&2
+          OUT+="$(ansi -n --black --bg-black-intense " $(printf "%-12s" "${TAG^^}") ")"
+          OUT+="$(ansi "${COLOR}" " ${line}")"
+          # one write per line, so concurrent loggers never splice
+          printf '%s\n' "${OUT}" >&2
         done <&3
     fi
