@@ -2451,3 +2451,39 @@ msgstr ""
 
 msgid "Test 21: Stop a named daemon"
 msgstr ""
+
+#: .container/foundation/tools.d/b19-exec
+msgid "Claimed %s (supervisor pid %s, sequence %s)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec
+msgid "No exit code recorded for %s, its supervisor %s is gone"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec
+msgid "Required %s (pid %s) is already gone"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-exec
+msgid "Started %s untracked (supervisor pid %s)"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-lock
+msgid "Waiting for %s as long as its holder runs"
+msgstr ""
+
+#: .container/foundation/tools.d/update-apt
+msgid "Lock shared APT caches %s and %s"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d
+msgid "Cannot remove %s yet"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d
+msgid "Another probe holds the lock, repeating the last verdict %s"
+msgstr ""
+
+#: .container/user/tools.d/healthcheck.d
+msgid "Cannot write %s"
+msgstr ""

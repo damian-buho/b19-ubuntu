@@ -2592,3 +2592,39 @@ msgstr "Неможливо записати %s, %s зупиниться післ
 
 msgid "Test 21: Stop a named daemon"
 msgstr "Тест 21: зупинка демона за назвою"
+
+#: .container/foundation/tools.d/b19-exec
+msgid "Claimed %s (supervisor pid %s, sequence %s)"
+msgstr "Зарезервовано %s (pid супервізора %s, послідовність %s)"
+
+#: .container/foundation/tools.d/b19-exec
+msgid "No exit code recorded for %s, its supervisor %s is gone"
+msgstr "Для %s не записано код виходу, його супервізор %s завершився"
+
+#: .container/foundation/tools.d/b19-exec
+msgid "Required %s (pid %s) is already gone"
+msgstr "Обов’язковий %s (pid %s) вже завершився"
+
+#: .container/foundation/tools.d/b19-exec
+msgid "Started %s untracked (supervisor pid %s)"
+msgstr "Запущено %s без відстеження (pid супервізора %s)"
+
+#: .container/foundation/tools.d/b19-lock
+msgid "Waiting for %s as long as its holder runs"
+msgstr "Очікування %s, поки працює його власник"
+
+#: .container/foundation/tools.d/update-apt
+msgid "Lock shared APT caches %s and %s"
+msgstr "Блокування спільних кешів APT %s і %s"
+
+#: .container/user/tools.d/healthcheck.d
+msgid "Cannot remove %s yet"
+msgstr "Поки що неможливо видалити %s"
+
+#: .container/user/tools.d/healthcheck.d
+msgid "Another probe holds the lock, repeating the last verdict %s"
+msgstr "Блокування утримує інша перевірка, повторюється останній вердикт %s"
+
+#: .container/user/tools.d/healthcheck.d
+msgid "Cannot write %s"
+msgstr "Неможливо записати %s"

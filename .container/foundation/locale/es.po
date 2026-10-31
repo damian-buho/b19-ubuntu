@@ -2609,3 +2609,39 @@ msgstr "No se puede escribir %s, %s se detiene después de los comandos iniciado
 
 msgid "Test 21: Stop a named daemon"
 msgstr "Prueba 21: detener un demonio por nombre"
+
+#: .container/foundation/tools.d/b19-exec
+msgid "Claimed %s (supervisor pid %s, sequence %s)"
+msgstr "Reservado %s (pid del supervisor %s, secuencia %s)"
+
+#: .container/foundation/tools.d/b19-exec
+msgid "No exit code recorded for %s, its supervisor %s is gone"
+msgstr "No hay código de salida registrado para %s, su supervisor %s ya no existe"
+
+#: .container/foundation/tools.d/b19-exec
+msgid "Required %s (pid %s) is already gone"
+msgstr "El requerido %s (pid %s) ya terminó"
+
+#: .container/foundation/tools.d/b19-exec
+msgid "Started %s untracked (supervisor pid %s)"
+msgstr "Iniciado %s sin seguimiento (pid del supervisor %s)"
+
+#: .container/foundation/tools.d/b19-lock
+msgid "Waiting for %s as long as its holder runs"
+msgstr "Esperando %s mientras su titular siga en ejecución"
+
+#: .container/foundation/tools.d/update-apt
+msgid "Lock shared APT caches %s and %s"
+msgstr "Bloquear las cachés APT compartidas %s y %s"
+
+#: .container/user/tools.d/healthcheck.d
+msgid "Cannot remove %s yet"
+msgstr "Todavía no se puede eliminar %s"
+
+#: .container/user/tools.d/healthcheck.d
+msgid "Another probe holds the lock, repeating the last verdict %s"
+msgstr "Otra sonda tiene el bloqueo, se repite el último veredicto %s"
+
+#: .container/user/tools.d/healthcheck.d
+msgid "Cannot write %s"
+msgstr "No se puede escribir %s"
