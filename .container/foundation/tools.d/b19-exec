@@ -25,6 +25,12 @@ PASSTHROUGH="${B19_EXEC_PASSTHROUGH:-false}"
 STOP_TIMEOUT="${B19_EXEC_STOP_TIMEOUT:-30}"
 STATE_PATH="${B19_RUNTIME_PATH:-/run/b19}/b19-exec"
 STOP_SIGNALS=" INT QUIT TERM "
+# Holds PID 1's streams, or the inherited ones when a PID 1 of another uid refuses /proc/1/fd
+CONTAINER_STREAMS=/proc/1/fd
+{ exec {CONTAINER_STDIN_FD}</proc/1/fd/0; } 2>/dev/null || { CONTAINER_STREAMS=inherited; exec {CONTAINER_STDIN_FD}<&0; }
+{ exec {CONTAINER_STDOUT_FD}>/proc/1/fd/1; } 2>/dev/null || { CONTAINER_STREAMS=inherited; exec {CONTAINER_STDOUT_FD}>&1; }
+{ exec {CONTAINER_STDERR_FD}>/proc/1/fd/2; } 2>/dev/null || { CONTAINER_STREAMS=inherited; exec {CONTAINER_STDERR_FD}>&2; }
+b19-log debug "b19-exec" "$(_p "Container streams: %s" "${CONTAINER_STREAMS}")"
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -154,16 +160,16 @@ fi
 open_loggers() {
   if [ "${PASSTHROUGH}" = true ]; then
     b19-log debug "b19-exec" "$(_p "Passthrough: %s writes to the container directly" "$1")"
-    exec {STDOUT_LOG_FD}>/proc/1/fd/1
+    exec {STDOUT_LOG_FD}>&"${CONTAINER_STDOUT_FD}"
     STDOUT_LOG_PID=""
-    exec {STDERR_LOG_FD}>/proc/1/fd/2
+    exec {STDERR_LOG_FD}>&"${CONTAINER_STDERR_FD}"
     STDERR_LOG_PID=""
   else
     # shellcheck disable=SC2086 # the signal list splits on purpose
-    exec {STDOUT_LOG_FD}> >(trap '' ${SIGNALS}; exec b19-log "${STDOUT_LEVEL}" "${STDOUT_TAG}" > /proc/1/fd/1)
+    exec {STDOUT_LOG_FD}> >(trap '' ${SIGNALS}; exec b19-log "${STDOUT_LEVEL}" "${STDOUT_TAG}" 1>&"${CONTAINER_STDOUT_FD}")
     STDOUT_LOG_PID=$!
     # shellcheck disable=SC2086 # the signal list splits on purpose
-    exec {STDERR_LOG_FD}> >(trap '' ${SIGNALS}; exec b19-log "${STDERR_LEVEL}" "${STDERR_TAG}" > /proc/1/fd/2)
+    exec {STDERR_LOG_FD}> >(trap '' ${SIGNALS}; exec b19-log "${STDERR_LEVEL}" "${STDERR_TAG}" 1>&"${CONTAINER_STDERR_FD}")
     STDERR_LOG_PID=$!
   fi
 }
@@ -178,7 +184,7 @@ close_loggers() {
 
 if [ "${FOREGROUND}" -eq 1 ]; then
   open_loggers "$1"
-  "$@" < /proc/1/fd/0 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" \
+  "$@" <&"${CONTAINER_STDIN_FD}" 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" \
     && RETURN_CODE=0 || RETURN_CODE=$?
   close_loggers
   exit "${RETURN_CODE}"
@@ -329,9 +335,9 @@ claim_name() {
 
 # Starts the command in its own session and records it
 start_command() {
-  local _stdin=/proc/1/fd/0
-  [ "${ROLE}" = payload ] || _stdin=/dev/null
-  setsid "$@" < "${_stdin}" 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" &
+  local _stdin="${CONTAINER_STDIN_FD}"
+  [ "${ROLE}" = payload ] || exec {_stdin}</dev/null
+  setsid "$@" <&"${_stdin}" 1>&"${STDOUT_LOG_FD}" 2>&"${STDERR_LOG_FD}" &
   CMD_PID=$!
   CMD_TICKS=$(proc_field "${CMD_PID}" 19) || CMD_TICKS="-"
   if [ "${TRACKED}" -eq 1 ]; then
@@ -555,7 +561,7 @@ if [ "${BACKGROUND}" -eq 0 ]; then
   supervise "$@"
 fi
 
-( supervise "$@" ) < /dev/null > /proc/1/fd/1 2> /proc/1/fd/2 &
+( supervise "$@" ) < /dev/null 1>&"${CONTAINER_STDOUT_FD}" 2>&"${CONTAINER_STDERR_FD}" &
 SUPERVISOR_PID=$!
 # an unwritable state dir never gets a record, so there is nothing to wait for
 if ! mkdir -p "${STATE_PATH}" 2>/dev/null || ! [ -w "${STATE_PATH}" ]; then
