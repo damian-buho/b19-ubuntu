@@ -2425,3 +2425,21 @@ msgstr ""
 #: .container/foundation/tools.d/b19-fetch
 msgid "Near cache %s failed with %s, falling back to origin %s"
 msgstr ""
+
+msgid "Stopping %s (pid %s)"
+msgstr ""
+
+msgid "%s is not running"
+msgstr ""
+
+msgid "Stopped %s"
+msgstr ""
+
+msgid "%s stops on request, without waiting for newer commands"
+msgstr ""
+
+msgid "Cannot write %s, %s stops after the commands started later"
+msgstr ""
+
+msgid "Test 21: Stop a named daemon"
+msgstr ""

@@ -13,7 +13,7 @@
   _signals_state="${B19_RUNTIME_PATH:-/run/b19}/b19-exec"
   if [ -d "${_signals_state}" ]; then
     b19-log debug "SIGNALS" "$(_p "Clearing stale records in %s" "${_signals_state}")"
-    rm -f -- "${_signals_state}"/*.pid "${_signals_state}"/*.exit
+    rm -f -- "${_signals_state}"/*.pid "${_signals_state}"/*.exit "${_signals_state}"/*.stop
   fi
   unset _signals_state
 

@@ -313,7 +313,7 @@ b19-assert equals "b19-exec" "absent" "$([ -e "${_state}/keeper.pid" ] && echo p
 
 # Test 20: Misuse is refused before anything starts
 b19-log note "b19-exec" "$(_ "Test 20: Invalid background calls")"
-for _args in "--background" "--name ../x" "--optional" "--background --foreground --name x"; do
+for _args in "--background" "--name ../x" "--optional" "--background --foreground --name x" "--stop ../x" "--stop x"; do
   EXIT_CODE=0
   # shellcheck disable=SC2086 # the option string splits on purpose
   b19-exec ${_args} -- true 2>/dev/null || EXIT_CODE=$?
@@ -325,6 +325,28 @@ b19-exec --background --name twice -- sleep 300 2>/dev/null || EXIT_CODE=$?
 b19-assert equals "b19-exec" "1" "${EXIT_CODE}"
 kill -s TERM "$(supervisor_of twice)"
 wait_gone twice
+
+# Test 21: --stop ends a named daemon and its supervisor at once, beside a newer payload, and exits 3 once the name is free
+b19-log note "b19-exec" "$(_ "Test 21: Stop a named daemon")"
+_stopped="${B19_RUNTIME_PATH}/stopped"
+B19_EXEC_STOP_TIMEOUT=600 b19-exec --background --optional --name stopme -- bash -c "${_daemon}" "${_stopped}" stopme
+b19-exec --name main -- bash -c "${_daemon}" "${_stopped}" main &
+_exec_pid=$!
+wait_until test -e "${_stopped}.stopme" -a -e "${_stopped}.main"
+_supervisor=$(supervisor_of stopme)
+EXIT_CODE=0
+B19_EXEC_STOP_TIMEOUT=60 b19-exec --stop stopme || EXIT_CODE=$?
+b19-assert equals "b19-exec" "0" "${EXIT_CODE}"
+b19-assert equals "b19-exec" "0" "$(fd --hidden --glob 'stopme.*' "${_state}" | wc --lines)"
+b19-assert equals "b19-exec" "gone" "$(exited "${_supervisor}" && echo gone || echo running)"
+b19-assert equals "b19-exec" "running" "$(exited "${_exec_pid}" && echo gone || echo running)"
+b19-exec --stop main
+wait "${_exec_pid}" || true
+b19-assert equals "b19-exec" "stopme main" "$(paste --serial --delimiters=' ' "${_stopped}")"
+EXIT_CODE=0
+b19-exec --stop stopme 2>/dev/null || EXIT_CODE=$?
+b19-assert equals "b19-exec" "3" "${EXIT_CODE}"
+rm -f "${_stopped}" "${_stopped}".*
 rm -f "${_state}/.lock" "${_order}" "${_order}".*
 rmdir "${_state}" "${B19_RUNTIME_PATH}"
 

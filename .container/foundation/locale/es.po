@@ -2583,3 +2583,21 @@ msgstr "Caché cercana %s falló con %s, se recurre al origen %s"
 
 #~ msgid "Release-dependent list (%s) found, will concat it"
 #~ msgstr "Lista dependiente de release (%s) encontrada, se concatenará"
+
+msgid "Stopping %s (pid %s)"
+msgstr "Deteniendo %s (pid %s)"
+
+msgid "%s is not running"
+msgstr "%s no está en ejecución"
+
+msgid "Stopped %s"
+msgstr "%s detenido"
+
+msgid "%s stops on request, without waiting for newer commands"
+msgstr "%s se detiene a petición, sin esperar a los comandos más recientes"
+
+msgid "Cannot write %s, %s stops after the commands started later"
+msgstr "No se puede escribir %s, %s se detiene después de los comandos iniciados más tarde"
+
+msgid "Test 21: Stop a named daemon"
+msgstr "Prueba 21: detener un demonio por nombre"

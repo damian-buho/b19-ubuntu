@@ -65,6 +65,23 @@ b19-exec --name forgejo -- forgejo web
 - **Payload exit.** When the payload exits for any reason, its `b19-exec` stops every background daemon in that order and waits for each daemon and its supervisor before exiting, so the container never ends with a daemon still writing or a record left behind.
 - **Fail-fast.** The payload’s `b19-exec` watches every required daemon. When one exits, it logs the name, PID and exit code, stops the payload, and exits with that daemon’s code (`1` if the daemon exited `0`), so the restart policy acts. A payload started after a required daemon already died refuses to start. `--optional` (a file watcher) only logs a warning. The `0900-check-daemons` health check fails while a required daemon is gone.
 
+### Stopping one daemon (`--stop NAME`)
+
+```bash
+b19-exec --stop sshd
+```
+
+Writes `<name>.stop` beside the record and sends `TERM` to the supervisor of the command recorded as `NAME`; the marker makes it forward the stop at once instead of waiting for newer commands. It then waits until the command, its record and its supervisor are all gone. It exits `0` once they are, `3` when nothing runs under that name, and `1` on misuse or when something still runs after `B19_EXEC_STOP_TIMEOUT`. Fail-fast treats a stopped required daemon like any other required exit, so a running payload stops with `1`; an `--optional` one stops alone.
+
+`$!` after a `--background` call names nothing useful: `b19-exec` has already returned, and the command runs in its own session under a supervisor. A test that sources a hook starting a daemon therefore claims its names under its own `B19_RUNTIME_PATH`, so they never collide with the container’s daemons of the same name, and stops them by name:
+
+```bash
+B19_RUNTIME_PATH="$(mktemp --directory)"
+export B19_RUNTIME_PATH
+trap 'b19-exec --stop csp-watch || true' EXIT
+. /entrypoint.d/0920-csp-watch.sh
+```
+
 ### Foreground mode (`--foreground`)
 
 Runs the command inline, with the same log routing and drain, but neither supervises nor records it. Signals reach it straight from `tini -g`, as part of the entrypoint’s process group.
@@ -81,6 +98,7 @@ Runs the command inline, with the same log routing and drain, but neither superv
 | `--background`   | (off)     | Supervise in the background and return  |
 | `--name`         | `payload` | Record name, and tag of both streams    |
 | `--optional`     | (off)     | A background exit only logs             |
+| `--stop NAME`    | (off)     | Stop the daemon recorded as `NAME`      |
 | `--passthrough`  | (off)     | Payload output bypasses `b19-log`       |
 
 | Variable                | Default    | Description                                             |

@@ -2566,3 +2566,21 @@ msgstr "Ближній кеш %s завершився помилкою %s, пе�
 
 #~ msgid "Release-dependent list (%s) found, will concat it"
 #~ msgstr "Знайдено список залежний від релізу (%s), буде об'єднано"
+
+msgid "Stopping %s (pid %s)"
+msgstr "Зупинка %s (pid %s)"
+
+msgid "%s is not running"
+msgstr "%s не працює"
+
+msgid "Stopped %s"
+msgstr "%s зупинено"
+
+msgid "%s stops on request, without waiting for newer commands"
+msgstr "%s зупиняється на запит, не чекаючи новіших команд"
+
+msgid "Cannot write %s, %s stops after the commands started later"
+msgstr "Неможливо записати %s, %s зупиниться після команд, запущених пізніше"
+
+msgid "Test 21: Stop a named daemon"
+msgstr "Тест 21: зупинка демона за назвою"
