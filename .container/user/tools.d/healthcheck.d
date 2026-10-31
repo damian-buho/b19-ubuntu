@@ -27,6 +27,13 @@
     # shellcheck source=/dev/null
     . b19-log-filter
 
+    # A root probe of a remapped container opens the state-change log as root, then drops to the remapped user like the entrypoint
+    if [ "$(id --user)" -eq 0 ] && [ -n "${B19_PUID:-}" ]; then
+      { exec {_B19_HEALTH_LOG_FD}>>"${B19_HEALTH_LOG_TARGET:-/proc/1/fd/2}"; } 2>/dev/null && export _B19_HEALTH_LOG_FD
+      b19-log debug "HEALTH.D" "$(_p "Dropping root, probing as %s" "${B19_USER}")"
+      exec setpriv --reuid="${B19_USER}" --regid="${B19_GROUP}" --init-groups -- "$0" "$@"
+    fi
+
     TIER_STATE_PATH="${B19_TEMP_PATH:-/tmp}/healthcheck.d"
     OUTPUT_LIMIT="${B19_HEALTH_OUTPUT_LIMIT:-4096}"
     RUN_DIR="${TIER_STATE_PATH}/run.$$"
@@ -123,14 +130,17 @@
       if [ "${_now}" = "pass" ] && [ -z "${_was}" ]; then
         return 0
       fi
-      if [ ! -w "${B19_HEALTH_LOG_TARGET}" ]; then
-        b19-log debug "HEALTH.D" "$(_p "%s is not writable, not reporting %s" "${B19_HEALTH_LOG_TARGET}" "${_name}")"
-        return 0
+      if [ -z "${_B19_HEALTH_LOG_FD:-}" ]; then
+        if [ ! -w "${B19_HEALTH_LOG_TARGET}" ] || ! { exec {_B19_HEALTH_LOG_FD}>>"${B19_HEALTH_LOG_TARGET}"; } 2>/dev/null; then
+          _B19_HEALTH_LOG_FD=""
+          b19-log debug "HEALTH.D" "$(_p "%s is not writable, not reporting %s" "${B19_HEALTH_LOG_TARGET}" "${_name}")"
+          return 0
+        fi
       fi
       if [ "${_now}" = "pass" ]; then
-        b19-log warn "HEALTH.D" "$(_p "Check recovered: %s" "${_name}")" 2>>"${B19_HEALTH_LOG_TARGET}"
+        b19-log warn "HEALTH.D" "$(_p "Check recovered: %s" "${_name}")" 2>&"${_B19_HEALTH_LOG_FD}"
       else
-        b19-log warn "HEALTH.D" "$(_p "Check failed: %s: %s" "${_name}" "${_why}")" 2>>"${B19_HEALTH_LOG_TARGET}"
+        b19-log warn "HEALTH.D" "$(_p "Check failed: %s: %s" "${_name}" "${_why}")" 2>&"${_B19_HEALTH_LOG_FD}"
       fi
     }
 
