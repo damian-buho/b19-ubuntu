@@ -77,6 +77,33 @@ per line, still on stderr and still filtered by `B19_VERBOSITY`:
 
 The variable reaches every b19 tool and `b19-exec` payload through the environment, so one setting switches the whole container.
 
+### Parsing a service’s own lines
+
+Under `B19_LOG_FORMAT=json`, `b19-exec` sends each stream through `b19-log-format`, one long-lived `gojq` per stream. It tries each line in turn:
+
+1. A JSON object: written unchanged when it carries `time` and `level`, otherwise it gains the missing ones. It never gains a `tag`.
+1. An image rule: the first regular expression in `/log-formats.d/` that matches.
+1. `key=value` pairs, when the whole line is pairs: each becomes a field, and the first spelling of a repeated key wins.
+1. Anything else: `msg`, at the stream’s level.
+
+A rule is one regular expression per line in any file under `.container/user/log-formats.d/`, with named groups as fields. Only a leading `#` starts a comment, so a rule may hold one. Go regular expressions have no lookaround or backreferences:
+
+```text
+^(?<upstream_time>[0-9/]+ [0-9:]+) \[(?<level>[a-z]+)\] [0-9]+#[0-9]+: (?<msg>.*)$
+```
+
+```json
+{"level":"error","msg":"open() failed","raw":"2026/11/03 10:00:00 [crit] 12#12: open() failed","tag":"nginx","time":"2026-11-03T10:00:00.123Z","upstream_time":"2026/11/03 10:00:00"}
+```
+
+- `raw` holds the native line whenever `msg` differs from it, so a parser that needs the original still has it
+- A `level` group normalises to `error`, `warn`, `info` or `debug`; an unknown spelling takes the stream’s level
+- `time`, `tag`, `stage` and `raw` are always the formatter’s own: log content cannot set them
+- A rule that fails is skipped, and a failing `gojq` hands the stream to `b19-log`, so a bad rule never stops a service
+- The formatter reads line by line, so a multi-line traceback stays the image’s own job
+- A slow formatter fills the pipe and blocks the service’s log writes: give a very chatty log, such as an access log, the service’s native JSON
+- Test each rule against the service’s real output in `test.d`, or an upstream bump drifts past a hand-written sample
+
 ## Configuration
 
 | Variable         | Default | Effect                                                          |

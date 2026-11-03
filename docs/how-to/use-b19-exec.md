@@ -40,6 +40,8 @@ stdout: b19-log $LEVEL $TAG -> /proc/1/fd/1
 stderr: b19-log $LEVEL $TAG -> /proc/1/fd/2
 ```
 
+Under `B19_LOG_FORMAT=json` each stream goes through `b19-log-format` instead, which [parses the line](use-b19-log.md#parsing-a-services-own-lines) and falls back to `b19-log`.
+
 Writing to PID 1’s streams lets a `docker exec b19-exec …` reach the container log. On the `--user 0` plus `B19_PUID` start ([use-non-root](use-non-root.md)), PID 1 stays root and the dropped user may not open `/proc/1/fd`, so `b19-exec` uses the streams it inherited from the entrypoint instead: the same container streams. The debug line `Container streams: inherited` says which one it took.
 
 ### Passthrough (`--passthrough`)

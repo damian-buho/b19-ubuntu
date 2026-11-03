@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+# Usage: b19-log-format <level> <tag>, turns the lines on stdin into JSON records on stderr
+
+set -uo pipefail
+
+[ "${B19_LOG_FORMAT:-text}" = "json" ] || exec b19-log "$@"
+
+# shellcheck source=.container/foundation/tools.d/b19-i18n
+. b19-i18n
+
+LEVEL=$1
+TAG=$2
+FILTER=/etc/b19/log-format.jq
+RULES=()
+
+case "${LEVEL}" in
+  "bad"|"good") JSON_LEVEL=info ;;
+  "note") JSON_LEVEL=debug ;;
+  *) JSON_LEVEL=${LEVEL} ;;
+esac
+
+# One rule per line; only a leading # is a comment, since a regex may hold one
+for FILE in "${B19_LOG_FORMATS_PATH:-/log-formats.d}"/*; do
+  [ -f "${FILE}" ] || continue
+  while IFS= read -r RULE || [ -n "${RULE}" ]; do
+    [[ -z "${RULE}" || "${RULE}" == \#* ]] || RULES+=("${RULE}")
+  done < "${FILE}"
+done
+b19-log debug "b19-log-format" "$(_p "Formatting %s with %s rules" "${TAG}" "${#RULES[@]}")"
+
+# Own session: catatonit signals its group and Go honours no inherited ignore of TERM
+setsid --wait gojq --raw-input --raw-output --from-file "${FILTER}" \
+  --arg level "${JSON_LEVEL}" --arg tag "${TAG}" --arg stage "${STAGE:-}" \
+  --args -- "${RULES[@]}" >&2
+RETURN_CODE=$?
+[ "${RETURN_CODE}" -ne 0 ] || exit 0
+
+b19-log warn "b19-log-format" "$(_p "gojq exited with %s, %s continues through b19-log" "${RETURN_CODE}" "${TAG}")"
+exec b19-log "${LEVEL}" "${TAG}"

@@ -156,7 +156,7 @@ else
   SIGNALS="HUP INT QUIT TERM USR1 USR2"
 fi
 
-# Routes the command output through one b19-log per stream, or straight to the container
+# Routes the command output through one formatter per stream, or straight to the container
 open_loggers() {
   if [ "${PASSTHROUGH}" = true ]; then
     b19-log debug "b19-exec" "$(_p "Passthrough: %s writes to the container directly" "$1")"
@@ -166,10 +166,10 @@ open_loggers() {
     STDERR_LOG_PID=""
   else
     # shellcheck disable=SC2086 # the signal list splits on purpose
-    exec {STDOUT_LOG_FD}> >(trap '' ${SIGNALS}; exec b19-log "${STDOUT_LEVEL}" "${STDOUT_TAG}" 1>&"${CONTAINER_STDOUT_FD}")
+    exec {STDOUT_LOG_FD}> >(trap '' ${SIGNALS}; exec b19-log-format "${STDOUT_LEVEL}" "${STDOUT_TAG}" 1>&"${CONTAINER_STDOUT_FD}")
     STDOUT_LOG_PID=$!
     # shellcheck disable=SC2086 # the signal list splits on purpose
-    exec {STDERR_LOG_FD}> >(trap '' ${SIGNALS}; exec b19-log "${STDERR_LEVEL}" "${STDERR_TAG}" 1>&"${CONTAINER_STDERR_FD}")
+    exec {STDERR_LOG_FD}> >(trap '' ${SIGNALS}; exec b19-log-format "${STDERR_LEVEL}" "${STDERR_TAG}" 1>&"${CONTAINER_STDERR_FD}")
     STDERR_LOG_PID=$!
   fi
 }

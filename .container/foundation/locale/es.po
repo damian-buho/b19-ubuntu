@@ -2803,6 +2803,14 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
 
+#: .container/foundation/tools.d/b19-log-format:34
+msgid "Formatting %s with %s rules"
+msgstr "Formateando %s con %s reglas"
+
+#: .container/foundation/tools.d/b19-log-format:43
+msgid "gojq exited with %s, %s continues through b19-log"
+msgstr "gojq terminó con %s, %s continúa por b19-log"
+
 #~ msgid "Low space in %s (B19_HOME): %s < %s"
 #~ msgstr "Poco espacio en %s (B19_HOME): %s < %s"
 

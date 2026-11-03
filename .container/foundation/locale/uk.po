@@ -2781,6 +2781,14 @@ msgstr "Загальне використання пам'яті (%s МБ) пер
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "Загальне використання пам'яті в межах порогу (%s МБ)"
 
+#: .container/foundation/tools.d/b19-log-format:34
+msgid "Formatting %s with %s rules"
+msgstr "Форматування %s за правилами: %s"
+
+#: .container/foundation/tools.d/b19-log-format:43
+msgid "gojq exited with %s, %s continues through b19-log"
+msgstr "gojq завершився з кодом %s, %s продовжує через b19-log"
+
 #~ msgid "Low space in %s (B19_HOME): %s < %s"
 #~ msgstr "Мало місця у %s (B19_HOME): %s < %s"
 

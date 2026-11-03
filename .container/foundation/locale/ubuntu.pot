@@ -2710,3 +2710,11 @@ msgstr ""
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr ""
+
+#: .container/foundation/tools.d/b19-log-format:34
+msgid "Formatting %s with %s rules"
+msgstr ""
+
+#: .container/foundation/tools.d/b19-log-format:43
+msgid "gojq exited with %s, %s continues through b19-log"
+msgstr ""

@@ -3,11 +3,13 @@
 # SPDX-License-Identifier: MIT
 
 ARG B19_FD_IMAGE=registry.invalid/b19/fd:latest
+ARG B19_GOJQ_IMAGE=registry.invalid/b19/gojq:latest
 ARG B19_MINIJINJA_IMAGE=registry.invalid/b19/minijinja:latest
 ARG B19_UBUNTU_HASH=sha256:f3d28607ddd78734bb7f71f117f3c6706c666b8b76cbff7c9ff6e5718d46ff64
 ARG BASE_ARCH=amd64
 
 FROM --platform=${BASE_ARCH} ${B19_FD_IMAGE} AS b19-fd
+FROM --platform=${BASE_ARCH} ${B19_GOJQ_IMAGE} AS b19-gojq
 FROM --platform=${BASE_ARCH} ${B19_MINIJINJA_IMAGE} AS b19-minijinja
 
 FROM ubuntu@${B19_UBUNTU_HASH} AS upstream
@@ -114,6 +116,7 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_LINEAGE_FILE=${B19_HOME}/.lineage                                         \
     B19_LOCALES=${B19_LOCALES}                                                    \
     B19_LOG_FORMAT=text                                                           \
+    B19_LOG_FORMATS_PATH=/log-formats.d                                           \
     B19_OFFGRID_MODE=${B19_OFFGRID_MODE}                                          \
     B19_OVERLAYS_PATH=/overlays/                                                  \
     B19_PGID=""                                                                   \
@@ -171,6 +174,7 @@ USER 0
 WORKDIR ${B19_HOME}
 
 COPY --from=b19-fd          /usr/local/bin/fd.${TARGETARCH}                 /usr/local/bin/fd
+COPY --from=b19-gojq        /usr/local/bin/gojq.${TARGETARCH}               /usr/local/bin/gojq
 COPY --from=b19-minijinja   /usr/local/bin/minijinja-cli.${TARGETARCH}      /usr/local/bin/minijinja-cli
 
 COPY --chown="${B19_UID}:${B19_GID}"                             .container/foundation/  /
