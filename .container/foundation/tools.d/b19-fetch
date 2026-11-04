@@ -9,8 +9,8 @@
   # shellcheck source=/dev/null
   . b19-i18n
 
-  NUMPROCS=$(nproc)
-  export NUMPROCS
+  # shellcheck source=/dev/null
+  . detect-cpu-count
 
   TAG=${1}
   # Parse $2: may be multi-line (mirrors); filter blank lines
