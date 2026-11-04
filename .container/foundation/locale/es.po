@@ -1126,9 +1126,8 @@ msgid "Check recovered: %s"
 msgstr ""
 
 #: .container/user/tools.d/healthcheck.d:143
-#, fuzzy
 msgid "Check failed: %s: %s"
-msgstr "Verificación fallida:"
+msgstr "Verificación fallida: %s: %s"
 
 #: .container/user/tools.d/healthcheck.d:173
 msgid "No verdict yet for %s, running it in the background"
