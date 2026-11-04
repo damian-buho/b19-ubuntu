@@ -60,7 +60,7 @@
           SKIPPED_TESTS=$((SKIPPED_TESTS + 1))
           continue
         fi
-        b19-run --timeout "${B19_TEST_SCRIPT_TIMEOUT:-600}" --reveal N "TEST.D" "$(_ "Executing:") ${BASENAME} (${B19_TEST_SCRIPT_TIMEOUT:-600} s)" -- "${TEST}"
+        b19-run --timeout "${B19_TEST_SCRIPT_TIMEOUT:-600}" --reveal N "TEST.D" "$(_ "Executing:") ${BASENAME} (${B19_TEST_SCRIPT_TIMEOUT:-600} s)" -- env LC_ALL=C.UTF-8 "${TEST}"
 
         # Capture the exit code of the test
         EXIT_CODE=$?

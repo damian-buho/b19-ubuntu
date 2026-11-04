@@ -50,7 +50,7 @@
   B19_TEMP_PATH="${_stub}/first" b19-fetch "TEST" "https://example.com/f.tar.gz" "shared-file" > "${_stub}/first.out" 2>&1 &
   _first=$!
   wait_until test -e "${_stub}/started"
-  LC_ALL=C B19_VERBOSITY=debug NO_COLOR=1 B19_TEMP_PATH="${_stub}/second" b19-fetch "TEST" "https://example.com/f.tar.gz" "shared-file" > "${_stub}/second.out" 2>&1 &
+  B19_VERBOSITY=debug NO_COLOR=1 B19_TEMP_PATH="${_stub}/second" b19-fetch "TEST" "https://example.com/f.tar.gz" "shared-file" > "${_stub}/second.out" 2>&1 &
   _second=$!
   wait_until second_parked
   : > "${_stub}/gate"

@@ -67,6 +67,7 @@ Rules:
 1. Self-contained: no shared helpers beyond `b19-i18n`, `b19-log` and `b19-assert`.
 1. Clean up: `mktemp -d` + `trap 'rm -rf "${WORK_DIR}"' EXIT`.
 1. Source `b19-i18n` and wrap user-facing strings in `_()` / `_p()`.
+1. Expect English: `test.d` starts every script under `LC_ALL=C.UTF-8` whatever the host’s `LANG`, so a check may match an English message. A test of a locale sets `LC_ALL` itself.
 1. Skip gracefully when optional: `command -v` the tool, `b19-log warn` + `exit 0` if absent.
 1. Number files `NNNN-name.sh` — reverse order means higher numbers run first.
 
