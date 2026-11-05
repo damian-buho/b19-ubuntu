@@ -6,11 +6,57 @@
 
   set -euo pipefail
 
-  # shellcheck source=.container/foundation/tools.d/b19-i18n
+  # shellcheck source=/dev/null
   . b19-i18n
 
   DIRECTORY=$1
   J2_LIST="${DIRECTORY}/.j2.list"
+
+  # Point FINAL at its runtime copy.
+  link_final() {
+    local final="$1"
+    mkdir --parents "$(dirname "${final}")"
+    ln --symbolic --force --no-target-directory "${B19_RUNTIME_PATH%/}${final}" "${final}"
+  }
+
+  # Move one file into the template layer, keeping its absolute path below it.
+  move_to_layer() {
+    local source="$1" target="${B19_TEMPLATES_PATH%/}$1"
+    mkdir --parents "$(dirname "${target}")"
+    mv --force "${source}" "${target}"
+  }
+
+  # Move every listed template and its data companions to the layer, linking the final path.
+  harvest_templates() {
+    local template companion
+    while IFS= read -r template; do
+      for companion in "${template%.j2}".data.*; do
+        [ -f "${companion}" ] && move_to_layer "${companion}"
+      done
+      move_to_layer "${template}"
+      link_final "${template%.j2}"
+      b19-log debug "J2" "$(_p "Harvested %s" "${template}")"
+    done < "${J2_LIST}"
+  }
+
+  # Link every final path a shipped overlay touches, so any B19_OVERLAY works on a read-only root.
+  harvest_overlays() {
+    local file overlay final
+    for overlay in "${B19_OVERLAYS_PATH%/}"/*/; do
+      [ -d "${overlay}" ] || continue
+      while IFS= read -r -d '' file; do
+        final="/${file#"${overlay}"}"
+        final="${final%.j2}"
+        if [ -L "${final}" ]; then
+          continue
+        fi
+        if [ -f "${final}" ]; then
+          move_to_layer "${final}"
+        fi
+        link_final "${final}" || b19-log warn "OVERLAY" "$(_p "Cannot link %s, overlay needs a writable root there" "${final}")"
+      done < <(fd . --hidden --type file --print0 "${overlay}")
+    done
+  }
 
   # Build exclude options from B19_J2_EXCLUDE_PATTERNS (space-separated directory names)
   FD_EXCLUDE_ARRAY=()
@@ -32,6 +78,14 @@
 
   FILE_COUNT=$(wc -l < "${J2_LIST}")
   b19-log info "J2" "$(_p "Saved %s files in %s" "${FILE_COUNT}" "${J2_LIST}")"
+
+  # The home is harvested into the template layer, any other directory renders in place.
+  if [ "${DIRECTORY%/}" = "${B19_HOME%/}" ]; then
+    harvest_templates
+    harvest_overlays
+    rm --force "${J2_LIST}"
+    b19-materialize
+  fi
 
   # Pre-processing
   parallel-j2 "${DIRECTORY}"

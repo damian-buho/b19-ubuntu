@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+# Answer whether PATH sits on a read-only mount: exit 0 yes, 1 no, 2 misuse.
+
+  set -euo pipefail
+
+  # shellcheck source=/dev/null
+  . b19-i18n
+
+  case "${1:-}" in
+    -h|--help)
+      printf '%s\n' "$(_ "Usage: b19-is-immutable [PATH]")"
+      printf '%s\n' "$(_ "Exits 0 when PATH (default /) sits on a read-only mount, 1 when it does not.")"
+      exit 0
+      ;;
+  esac
+
+  if [ $# -gt 1 ]; then
+    b19-log error "IMMUTABLE" "$(_p "Usage: b19-is-immutable [PATH] (got %s arguments)" "$#")"
+    exit 2
+  fi
+
+  TARGET="${1:-/}"
+  MOUNTINFO="${B19_MOUNTINFO_PATH:-/proc/self/mountinfo}"
+
+  if [ "${B19_IMMUTABLE:-}" = "Y" ]; then
+    b19-log debug "IMMUTABLE" "$(_p "B19_IMMUTABLE=Y forces the answer for %s" "${TARGET}")"
+    exit 0
+  fi
+
+  if [ ! -r "${MOUNTINFO}" ]; then
+    b19-log error "IMMUTABLE" "$(_p "Cannot read %s" "${MOUNTINFO}")"
+    exit 2
+  fi
+
+  # A path that does not exist yet answers for the mount that would hold it.
+  TARGET="$(realpath --canonicalize-missing -- "${TARGET}")"
+
+  BEST_LENGTH=-1
+  BEST_OPTIONS=""
+  BEST_MOUNT=""
+  while read -r _id _parent _device _root MOUNT OPTIONS _rest; do
+    # mountinfo escapes space, tab, newline and backslash as octal.
+    MOUNT="$(printf '%b' "${MOUNT//\\/\\0}")"
+    case "${TARGET}/" in
+      "${MOUNT%/}/"*) ;;
+      *) continue ;;
+    esac
+    # A later mount at the same point shadows the earlier one, hence -ge.
+    if [ "${#MOUNT}" -ge "${BEST_LENGTH}" ]; then
+      BEST_LENGTH="${#MOUNT}"
+      BEST_OPTIONS="${OPTIONS}"
+      BEST_MOUNT="${MOUNT}"
+    fi
+  done < "${MOUNTINFO}"
+
+  b19-log debug "IMMUTABLE" "$(_p "%s sits on %s with options %s" "${TARGET}" "${BEST_MOUNT}" "${BEST_OPTIONS}")"
+
+  case ",${BEST_OPTIONS}," in
+    *,ro,*) exit 0 ;;
+    *) exit 1 ;;
+  esac

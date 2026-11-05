@@ -28,10 +28,11 @@ docker run -e B19_OVERLAY=tls-everywhere <image>
 The entrypoint hook `0500-copy-overlay.sh` runs before template rendering and service start:
 
 - Skipped entirely unless `B19_OVERLAY` names an existing directory under `${B19_OVERLAYS_PATH}`.
-- Copies with `cp --recursive "${B19_OVERLAYS_PATH}/${B19_OVERLAY}/." --target-directory=/` — overwriting whatever is in the way.
-- Wipes the whole `/overlays/` tree afterwards: the choice is per-run and unchosen payloads never linger in the filesystem.
+- Runs `b19-materialize`, which merges the image’s templates and then the chosen overlay into `${B19_RUNTIME_PATH}`. The later layer wins per final path, so a plain overlay file replaces a template at that path.
+- The build links every path a shipped overlay touches to `${B19_RUNTIME_PATH}`, so any `B19_OVERLAY` works on a read-only root. A link no chosen layer fills dangles.
+- To ship an overlay without a rebuild, mount a volume read-only over `/overlays/<name>`. It may override any path the image knows; it may add a new path only on a writable root, and on a read-only root that file is skipped with a `warn` naming it.
 
-The copy runs as the non-root runtime user, so an overlay can only overwrite files writable by UID 1000 — system paths owned by root are effectively read-only to it. `B19_IMMUTABLE=Y` skips the copy (and template rendering) for production-locked images.
+The copy runs as the non-root runtime user, so an overlay can only overwrite files writable by UID 1000 — system paths owned by root are effectively read-only to it. `B19_IMMUTABLE=Y` skips the merge and template rendering; it is deprecated in favour of a read-only root.
 
 Overlays ship in your payload tree and land in the image via the standard `COPY .container/user/ /`; the base image anchors the directory with an empty `/overlays/` owned by the runtime user.
 

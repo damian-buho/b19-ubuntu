@@ -138,10 +138,14 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 - `b19-load-secrets` / `b19-exec-with-secrets`, `b19-resolve-dep`,
     `read-lineage`/`write-lineage`, `detect-cpu-count`, `detect-memory` (`MEMTOTAL_KB`, capped by the cgroup limit), `check-ports`,
     `install-apt`, `j2-render`/`parallel-j2`/`save-j2`, `keyscan`, `setup-ssh`.
+- `b19-is-immutable [PATH]` — exit 0 when PATH (default `/`) sits on a read-only mount, 1 when not, 2 on misuse, read from `B19_MOUNTINFO_PATH`, resolving symlinks. Not `test -w`, which also fails on plain permissions. `B19_IMMUTABLE=Y` forces yes.
+- `b19-materialize` — merges `B19_TEMPLATES_PATH` and the chosen overlay into `B19_RUNTIME_PATH`, later layer wins per final path; fails closed on a read-only root whose runtime path is unwritable, since a build-time render drops every runtime value.
 
 ## Non-obvious facts / gotchas
 
 - **CLAUDE.md → AGENTS.md.** `CLAUDE.md` is just `@AGENTS.md`; edit this file.
+- **`save-j2 "${B19_HOME}"` empties the home of templates.** Only that exact directory harvests: `*.j2` and `*.data.*` move to `B19_TEMPLATES_PATH` and the final path becomes a link into `B19_RUNTIME_PATH`. A hook that writes a companion at runtime must therefore write under `${B19_RUNTIME_PATH}${B19_HOME}`; `j2-render` and `parallel-j2` still accept the original path.
+- **A tmpfs takes the mode of the directory it covers, not its owner.** Docker mounts `--tmpfs /run/b19` as `root:root`, so `/run/b19` ships `1777`; at `775` uid 1000 cannot write it. A child that ships its own file under `B19_TEMPLATES_PATH` gets it rendered at startup, so a build-only template lives elsewhere.
 - **Multi-series matrix.** Builds across `B19_UBUNTU_SERIES` ∈ {`resolute`, `noble`} (`projectfile.yaml` → `org.projectfile.ci.matrix`). Image name is series-qualified: `b19/ubuntu:<series>`. Anything series-specific belongs in
     `deps/ubuntu/<series>.*` or `.j2` templates, never hardcoded.
 - **deps are declarative.** Add a `*.deps` file under the right `deps/` path and the m6e build auto-discovers it (URL/version/SHA-512, arch-aware) — no Makefile edit. A `git+<url>#<ref>` `url.deps` declares a repository the build clones instead of a file it downloads: no `hash.deps`, `M6E_UPSTREAM__REF` carries the tag. [docs/how-to/use-dependencies.md](docs/how-to/use-dependencies.md).

@@ -74,7 +74,8 @@ parallel-j2 [--final] <directory>
 ```
 
 - Reads `<directory>/.j2.list` and renders each template via `xargs -P "${NUMPROCS:-4}" j2-render`
-- Skips entirely if `B19_IMMUTABLE=Y` (production-locked images)
+- `parallel-j2 "${B19_HOME}"` renders the materialized copy in `${B19_RUNTIME_PATH}`
+- Skips when `b19-is-immutable <directory>` says the directory sits on a read-only mount
 - Skips if `minijinja-cli` is not installed (warns)
 - Filters out templates listed in `B19_J2_SKIP_FILES` (comma-separated basenames, e.g. `robots.txt,nginx.conf`)
 - `--final`: after rendering, deletes every rendered `.j2` file and its `.data.json` companion, then removes the `.j2.list` itself — skipped templates are not deleted
@@ -324,10 +325,29 @@ If present, it is passed as additional context to minijinja-cli.
 Currently unused across the ecosystem but available for complex templates
 that need structured data beyond flat ENV vars.
 
-## Immutable mode
+## Read-only root
 
-When `B19_IMMUTABLE=Y`, `parallel-j2` skips rendering entirely.
-Use this for production images where all config should be baked in at build time.
+`save-j2 "${B19_HOME}"` harvests at build: each `*.j2` and its `*.data.*` companions move to `${B19_TEMPLATES_PATH}`, and a symlink at the final path points to `${B19_RUNTIME_PATH}`, so `/app/app.conf` reads `/run/b19/app/app.conf`. Any other directory, such as `test.d`, renders in place.
+
+Every start merges the layers into `${B19_RUNTIME_PATH}` and renders from the current environment, so no consumer changes a path:
+
+```yaml
+services:
+  app:
+    read_only: true
+    tmpfs:
+      - /run/b19
+```
+
+| Run                     | Result                                            |
+| ----------------------- | ------------------------------------------------- |
+| tmpfs on `/run/b19`     | rendered from the environment on every start      |
+| no tmpfs, writable root | rendered into the image layer                     |
+| no tmpfs, `ro` root     | the start fails, naming the missing tmpfs         |
+
+An image with templates refuses to start in the last case: a configuration frozen at build time would drop every value set at runtime, a password included. An image with no templates starts anyway.
+
+`/run/b19` carries mode `1777` in the image because a tmpfs takes its mode from the directory it covers, not its owner. A file `B19_J2_SKIP_FILES` skips has no render in a fresh tmpfs, so its link dangles.
 
 ## Quick reference
 

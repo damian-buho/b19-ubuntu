@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-11-05 02:48+0000\n"
+"POT-Creation-Date: 2026-11-05 15:50+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Ukrainian\n"
@@ -508,6 +508,31 @@ msgstr ""
 msgid "localedef %s"
 msgstr ""
 
+#: .container/foundation/tools.d/b19-is-immutable:16
+msgid "Usage: b19-is-immutable [PATH]"
+msgstr "Використання: b19-is-immutable [ШЛЯХ]"
+
+#: .container/foundation/tools.d/b19-is-immutable:17
+msgid ""
+"Exits 0 when PATH (default /) sits on a read-only mount, 1 when it does not."
+msgstr "Завершується з кодом 0, якщо ШЛЯХ (типово /) на монтуванні лише для читання, інакше з кодом 1."
+
+#: .container/foundation/tools.d/b19-is-immutable:23
+msgid "Usage: b19-is-immutable [PATH] (got %s arguments)"
+msgstr "Використання: b19-is-immutable [ШЛЯХ] (отримано аргументів: %s)"
+
+#: .container/foundation/tools.d/b19-is-immutable:31
+msgid "B19_IMMUTABLE=Y forces the answer for %s"
+msgstr "B19_IMMUTABLE=Y примусово задає відповідь для %s"
+
+#: .container/foundation/tools.d/b19-is-immutable:36
+msgid "Cannot read %s"
+msgstr "Неможливо прочитати %s"
+
+#: .container/foundation/tools.d/b19-is-immutable:61
+msgid "%s sits on %s with options %s"
+msgstr "%s розташовано на %s з параметрами %s"
+
 #: .container/foundation/tools.d/b19-load-secrets:23
 msgid "Secrets loading disabled"
 msgstr "Завантаження секретів вимкнено"
@@ -571,6 +596,49 @@ msgstr "Форматування %s за правилами: %s"
 #: .container/foundation/tools.d/b19-log-format:43
 msgid "gojq exited with %s, %s continues through b19-log"
 msgstr "gojq завершився з кодом %s, %s продовжує через b19-log"
+
+#: .container/foundation/tools.d/b19-materialize:19
+msgid "B19_IMMUTABLE=Y, keeping %s as built"
+msgstr "B19_IMMUTABLE=Y, %s лишається таким, як під час збирання"
+
+#: .container/foundation/tools.d/b19-materialize:26
+msgid "%s is active"
+msgstr "%s активний"
+
+#: .container/foundation/tools.d/b19-materialize:28
+msgid "Overlay %s not found in %s"
+msgstr "Накладання %s не знайдено в %s"
+
+#: .container/foundation/tools.d/b19-materialize:33
+msgid "No templates in %s, nothing to materialize"
+msgstr "У %s немає шаблонів, нічого матеріалізувати"
+
+#: .container/foundation/tools.d/b19-materialize:39
+msgid ""
+"%s is not writable by uid %s on a read-only root, mount a tmpfs there to "
+"render this image’s configuration"
+msgstr "%s недоступний для запису uid %s на кореневій системі лише для читання, змонтуйте там tmpfs, щоб згенерувати конфігурацію цього образу"
+
+#: .container/foundation/tools.d/b19-materialize:42
+#: .container/foundation/tools.d/j2-render:27
+msgid "Keeping build-time %s, directory not writable by uid %s"
+msgstr "Лишається %s часу збирання, каталог недоступний для запису uid %s"
+
+#: .container/foundation/tools.d/b19-materialize:56
+msgid "Skipping %s, a read-only root cannot gain a new path"
+msgstr "Пропускаємо %s, коренева система лише для читання не може отримати новий шлях"
+
+#: .container/foundation/tools.d/b19-materialize:60
+msgid "Skipping %s, not writable by uid %s"
+msgstr "Пропускаємо %s, недоступно для запису uid %s"
+
+#: .container/foundation/tools.d/b19-materialize:67
+msgid "Applied %s"
+msgstr "Застосовано %s"
+
+#: .container/foundation/tools.d/b19-materialize:77
+msgid "Materialized %s template(s) in %s"
+msgstr "Матеріалізовано шаблонів: %s у %s"
 
 #: .container/foundation/tools.d/b19-prepare-volumes:30
 msgid "Chown %s to %s:%s"
@@ -802,10 +870,6 @@ msgstr "Встановити залежності (%s пакетів)"
 msgid "Dependencies list (%s) is not detected"
 msgstr "Список залежностей (%s) не виявлено"
 
-#: .container/foundation/tools.d/j2-render:21
-msgid "Keeping build-time %s, directory not writable by uid %s"
-msgstr "Залишено %s зі збирання, каталог недоступний для запису uid %s"
-
 #: .container/foundation/tools.d/keyscan:21
 msgid "Touch %s"
 msgstr "Створити %s"
@@ -822,29 +886,29 @@ msgstr "%s вже є відомим хостом"
 msgid "B19_SSH_SCAN_HOSTS is not set, skipping"
 msgstr "B19_SSH_SCAN_HOSTS не встановлено, пропускаємо"
 
-#: .container/foundation/tools.d/parallel-j2:22
+#: .container/foundation/tools.d/parallel-j2:28
 msgid "No .j2 files in %s, nothing to process"
 msgstr "Немає файлів .j2 у %s, нічого обробляти"
 
-#: .container/foundation/tools.d/parallel-j2:37
+#: .container/foundation/tools.d/parallel-j2:43
 msgid "Skipped %s file(s) via B19_J2_SKIP_FILES"
 msgstr ""
 
-#: .container/foundation/tools.d/parallel-j2:42
+#: .container/foundation/tools.d/parallel-j2:48
 msgid "Loaded %s files from %s"
 msgstr "Завантажено %s файлів з %s"
 
-#: .container/foundation/tools.d/parallel-j2:46
+#: .container/foundation/tools.d/parallel-j2:52
 msgid "Final mode: deleting %s source templates"
 msgstr ""
 
-#: .container/foundation/tools.d/parallel-j2:58
+#: .container/foundation/tools.d/parallel-j2:64
 msgid "minijinja-cli not installed, skipping"
 msgstr "minijinja-cli не встановлено, пропускаємо"
 
-#: .container/foundation/tools.d/parallel-j2:61
-msgid "B19_IMMUTABLE=Y, skipping j2 templates"
-msgstr "B19_IMMUTABLE=Y, пропускаємо шаблони j2"
+#: .container/foundation/tools.d/parallel-j2:67
+msgid "%s is read-only, skipping j2 templates"
+msgstr "%s лише для читання, пропускаємо шаблони j2"
 
 #: .container/foundation/tools.d/process-hooks:17
 msgid "%s failed to execute (code %s)"
@@ -866,15 +930,23 @@ msgstr "%s виконано успішно"
 msgid "Not found for stage: %s"
 msgstr "Не знайдено для етапу: %s"
 
-#: .container/foundation/tools.d/save-j2:26
+#: .container/foundation/tools.d/save-j2:38
+msgid "Harvested %s"
+msgstr "Зібрано %s"
+
+#: .container/foundation/tools.d/save-j2:56
+msgid "Cannot link %s, overlay needs a writable root there"
+msgstr "Неможливо зв’язати %s, накладанню потрібен там корінь із правом запису"
+
+#: .container/foundation/tools.d/save-j2:72
 msgid "Chown %s"
 msgstr "Змінити власника %s"
 
-#: .container/foundation/tools.d/save-j2:30
+#: .container/foundation/tools.d/save-j2:76
 msgid "Optimize %s"
 msgstr "Оптимізувати %s"
 
-#: .container/foundation/tools.d/save-j2:34
+#: .container/foundation/tools.d/save-j2:80
 msgid "Saved %s files in %s"
 msgstr "Збережено %s файлів у %s"
 
@@ -1285,19 +1357,19 @@ msgstr ""
 msgid "Updating CA certificates"
 msgstr "Оновлення CA сертифікатів"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:31
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:45
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:32
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:47
 msgid "Ensure exists %s"
 msgstr "Перевірити наявність %s"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:33
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:47
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:34
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:49
 msgid "Set owner %s:0 %s"
 msgstr "Встановити власника %s:0 %s"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:37
 #: .container/foundation/build.d/foundation/post/200-permissions.sh:38
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:49
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:40
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:51
 msgid "Set permissions of %s"
 msgstr "Встановити права для %s"
 
@@ -1463,18 +1535,6 @@ msgstr "Встановити власника %s:0 %s"
 msgid "Dropping root, restarting entrypoint as %s:%s"
 msgstr "Відмова від root, перезапуск entrypoint як %s:%s"
 
-#: .container/user/entrypoint.d/0500-copy-overlay.sh:11
-msgid "%s is active"
-msgstr "%s активний"
-
-#: .container/user/entrypoint.d/0500-copy-overlay.sh:20
-msgid "Remove overlays directory"
-msgstr "Видалити каталог оверлеїв"
-
-#: .container/user/entrypoint.d/0500-copy-overlay.sh:27
-msgid "B19_IMMUTABLE=Y, skipping overlays"
-msgstr "B19_IMMUTABLE=Y, пропускаємо накладки"
-
 #: .container/user/entrypoint.d/2000-select-command.sh:9
 msgid "Treating %s as command"
 msgstr "Розглядаємо %s як команду"
@@ -1613,12 +1673,16 @@ msgstr ""
 msgid "Reachability working on port %s (B19_HEALTH_PING_TARGETS: %s)"
 msgstr "Доступність працює на порту %s (B19_HEALTH_PING_TARGETS: %s)"
 
-#: .container/user/healthcheck.d/0700-check-dummy.sh:13
+#: .container/user/healthcheck.d/0700-check-dummy.sh:12
+msgid "Skipping write check, %s is read-only"
+msgstr "Пропускаємо перевірку запису, %s лише для читання"
+
+#: .container/user/healthcheck.d/0700-check-dummy.sh:18
 msgid "Healthcheck directory operations failed (B19_HEALTH_PATH: %s)"
 msgstr ""
 "Операції з директорією перевірки стану не вдалися (B19_HEALTH_PATH: %s)"
 
-#: .container/user/healthcheck.d/0700-check-dummy.sh:17
+#: .container/user/healthcheck.d/0700-check-dummy.sh:22
 msgid "Healthcheck directory operations working (B19_HEALTH_PATH: %s)"
 msgstr "Операції з директорією перевірки стану працюють (B19_HEALTH_PATH: %s)"
 
@@ -2796,6 +2860,9 @@ msgstr "Загальне використання пам'яті (%s МБ) пер
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "Загальне використання пам'яті в межах порогу (%s МБ)"
+
+#~ msgid "Remove overlays directory"
+#~ msgstr "Видалити каталог оверлеїв"
 
 #~ msgid "Low space in %s (B19_HOME): %s < %s"
 #~ msgstr "Мало місця у %s (B19_HOME): %s < %s"

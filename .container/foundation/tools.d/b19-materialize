@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+# Merge the template and overlay layers into B19_RUNTIME_PATH, later layer wins per final path.
+
+  set -euo pipefail
+
+  # shellcheck source=/dev/null
+  . b19-i18n
+
+  TEMPLATES="${B19_TEMPLATES_PATH%/}"
+  RUNTIME="${B19_RUNTIME_PATH%/}"
+  OVERLAY=""
+
+  if [ "${B19_IMMUTABLE:-}" = "Y" ]; then
+    b19-log warn "LAYERS" "$(_p "B19_IMMUTABLE=Y, keeping %s as built" "${RUNTIME}")"
+    exit 0
+  fi
+
+  if [ -n "${B19_OVERLAY:-}" ]; then
+    if [ -d "${B19_OVERLAYS_PATH%/}/${B19_OVERLAY}" ]; then
+      OVERLAY="${B19_OVERLAYS_PATH%/}/${B19_OVERLAY}"
+      b19-log note "OVERLAY" "$(_p "%s is active" "${B19_OVERLAY}")"
+    else
+      b19-log warn "OVERLAY" "$(_p "Overlay %s not found in %s" "${B19_OVERLAY}" "${B19_OVERLAYS_PATH}")"
+    fi
+  fi
+
+  if [ -z "${OVERLAY}" ] && { [ ! -d "${TEMPLATES}" ] || [ -z "$(fd . --hidden --type file --max-results 1 "${TEMPLATES}")" ]; }; then
+    b19-log debug "LAYERS" "$(_p "No templates in %s, nothing to materialize" "${TEMPLATES}")"
+    exit 0
+  fi
+
+  if [ ! -w "${RUNTIME}" ]; then
+    if b19-is-immutable "${RUNTIME}" || b19-is-immutable /; then
+      b19-log error "LAYERS" "$(_p "%s is not writable by uid %s on a read-only root, mount a tmpfs there to render this image’s configuration" "${RUNTIME}" "$(id -u)")"
+      exit 1
+    fi
+    b19-log warn "LAYERS" "$(_p "Keeping build-time %s, directory not writable by uid %s" "${RUNTIME}" "$(id -u)")"
+    exit 0
+  fi
+
+  if [ -d "${TEMPLATES}" ]; then
+    cp --recursive --force "${TEMPLATES}/." "${RUNTIME}/"
+  fi
+
+  if [ -n "${OVERLAY}" ]; then
+    while IFS= read -r -d '' FILE; do
+      RELATIVE="${FILE#"${OVERLAY}"/}"
+      FINAL="/${RELATIVE%.j2}"
+      if [ ! -L "${FINAL}" ] || [ "$(readlink "${FINAL}")" != "${RUNTIME}${FINAL}" ]; then
+        if b19-is-immutable "${FINAL}"; then
+          b19-log warn "OVERLAY" "$(_p "Skipping %s, a read-only root cannot gain a new path" "${FINAL}")"
+          continue
+        fi
+        if ! { mkdir --parents "$(dirname "${FINAL}")" && ln --symbolic --force --no-target-directory "${RUNTIME}${FINAL}" "${FINAL}"; }; then
+          b19-log warn "OVERLAY" "$(_p "Skipping %s, not writable by uid %s" "${FINAL}" "$(id -u)")"
+          continue
+        fi
+      fi
+      mkdir --parents "$(dirname "${RUNTIME}/${RELATIVE}")"
+      rm --force "${RUNTIME}${FINAL}" "${RUNTIME}${FINAL}.j2"
+      cp --force "${FILE}" "${RUNTIME}/${RELATIVE}"
+      b19-log debug "OVERLAY" "$(_p "Applied %s" "${FINAL}")"
+    done < <(fd . --hidden --type file --type symlink --print0 "${OVERLAY}")
+  fi
+
+  fd . --hidden --extension j2 "${RUNTIME}" | sort --unique > "${RUNTIME}/.j2.list"
+
+  if [ "$(id -u)" = "0" ]; then
+    chown --recursive "${B19_UID}:0" "${RUNTIME}"
+  fi
+
+  b19-log info "LAYERS" "$(_p "Materialized %s template(s) in %s" "$(wc --lines < "${RUNTIME}/.j2.list")" "${RUNTIME}")"

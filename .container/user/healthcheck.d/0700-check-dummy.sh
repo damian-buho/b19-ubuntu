@@ -8,6 +8,11 @@ set -euo pipefail
 # shellcheck source=b19-i18n
 
 # Self-check: Test healthcheck directory operations
+if b19-is-immutable "${B19_HEALTH_PATH}"; then
+  b19-log debug "HEALTH.D" "$(_p "Skipping write check, %s is read-only" "${B19_HEALTH_PATH}")"
+  exit 0
+fi
+
 # Test writing to healthcheck directory (can fail if permission/space issues)
 if ! touch "${B19_HEALTH_PATH}/.healthcheck_test" 2>/dev/null || ! rm "${B19_HEALTH_PATH}/.healthcheck_test" 2>/dev/null; then
   b19-log bad "HEALTH.D" "$(_p "Healthcheck directory operations failed (B19_HEALTH_PATH: %s)" "${B19_HEALTH_PATH}")"

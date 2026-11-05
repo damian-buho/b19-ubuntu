@@ -19,6 +19,7 @@
       "${B19_RUNTIME_PATH}"
       "${B19_SHELL_PATH}"
       "${B19_TEMP_PATH}"
+      "${B19_TEMPLATES_PATH}"
       "${B19_TEST_PATH}"
       "${B19_TOOLS_PATH}"
       "${XDG_CACHE_HOME}"
@@ -35,7 +36,8 @@
     done
 
     b19-run "SECURITY" "$(_p "Set permissions of %s" "${B19_HOME}")" --  chmod -R g+rwX "${B19_HOME}"
-    b19-run "SECURITY" "$(_p "Set permissions of %s" "${B19_RUNTIME_PATH}")" --  chmod g+rwX "${B19_RUNTIME_PATH}"
+    # A tmpfs mounted here inherits this mode but not the owner, so any uid must be able to write it.
+    b19-run "SECURITY" "$(_p "Set permissions of %s" "${B19_RUNTIME_PATH}")" --  chmod 1777 "${B19_RUNTIME_PATH}"
 
     # ${B19_CACHE_PATH} is the parent of the build-time download cache mount.
     # b19-fetch creates ${B19_DOWNLOAD_PATH} below it, so uid ${B19_UID} needs

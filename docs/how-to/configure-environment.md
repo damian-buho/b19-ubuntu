@@ -86,7 +86,9 @@ so a muted test never reads as a pass.
 | -------------------------- | ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `B19_J2_EXCLUDE_PATTERNS`  | (unset)          | space-separated names      | Directory names to exclude from j2 template discovery (e.g., `venv node_modules`). Used by `save-j2`.                                                                                                          |
 | `B19_J2_SKIP_FILES`        | (unset)          | comma-separated basenames  | Basenames (without `.j2`) to skip at render time (e.g. `robots.txt`). Used by `parallel-j2`.                                                                                                                   |
-| `B19_IMMUTABLE`            | `N`              | `N`, `Y`                   | `Y` skips overlay copy and j2 template rendering at startup. Locks the filesystem to its build-time state.                                                                                                     |
+| `B19_IMMUTABLE`            | `N`              | `N`, `Y`                   | Deprecated. `Y` forces `b19-is-immutable` to answer yes and skips overlays and j2 rendering at startup. A read-only root is now detected on its own.                                                           |
+| `B19_MOUNTINFO_PATH`       | procfs           | file                       | Mount table `b19-is-immutable` reads, `/proc/self/mountinfo` by default.                                                                                                                                       |
+| `B19_TEMPLATES_PATH`       | `/templates`     | directory                  | The image’s template layer, filled by `save-j2` at build and merged into `B19_RUNTIME_PATH` at startup.                                                                                                        |
 | `B19_OFFGRID_MODE`         | `N`              | `N`, `Y`                   | `Y` blocks all internet access. At build time: prevents downloads (cache miss = fail), skips SSH keyscan and APT upgrade. At runtime: network healthchecks skip with exit 0. See [OFFGRID.md](use-offgrid.md). |
 | `B19_RUNTIME_MODE`         | `docker-compose` | any string                 | Informational runtime environment identifier. Available for downstream images to adjust behavior.                                                                                                              |
 | `B19_RUNTIME_PATH`         | `/run/b19`       | directory                  | Runtime state the container rebuilds on every start, such as the `b19-exec/<name>.pid` records. Mount a tmpfs here beside a read-only root.                                                                    |
@@ -358,6 +360,7 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_LOCALES`                   | build           | Build-time Only  |
 | `B19_LOG_FORMAT`                | runtime         | Logging          |
 | `B19_LOG_FORMATS_PATH`          | runtime         | Logging          |
+| `B19_MOUNTINFO_PATH`            | runtime         | Behavior         |
 | `B19_OFFGRID_MODE`              | build + runtime | Behavior         |
 | `B19_OVERLAY`                   | runtime         | Behavior         |
 | `B19_OVERLAYS_PATH`             | runtime         | Hook Directories |

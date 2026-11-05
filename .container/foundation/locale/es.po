@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-11-05 02:48+0000\n"
+"POT-Creation-Date: 2026-11-05 15:50+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -509,6 +509,31 @@ msgstr ""
 msgid "localedef %s"
 msgstr ""
 
+#: .container/foundation/tools.d/b19-is-immutable:16
+msgid "Usage: b19-is-immutable [PATH]"
+msgstr "Uso: b19-is-immutable [RUTA]"
+
+#: .container/foundation/tools.d/b19-is-immutable:17
+msgid ""
+"Exits 0 when PATH (default /) sits on a read-only mount, 1 when it does not."
+msgstr "Sale con 0 si RUTA (por defecto /) está en un montaje de solo lectura y con 1 si no."
+
+#: .container/foundation/tools.d/b19-is-immutable:23
+msgid "Usage: b19-is-immutable [PATH] (got %s arguments)"
+msgstr "Uso: b19-is-immutable [RUTA] (se recibieron %s argumentos)"
+
+#: .container/foundation/tools.d/b19-is-immutable:31
+msgid "B19_IMMUTABLE=Y forces the answer for %s"
+msgstr "B19_IMMUTABLE=Y fuerza la respuesta para %s"
+
+#: .container/foundation/tools.d/b19-is-immutable:36
+msgid "Cannot read %s"
+msgstr "No se puede leer %s"
+
+#: .container/foundation/tools.d/b19-is-immutable:61
+msgid "%s sits on %s with options %s"
+msgstr "%s está en %s con las opciones %s"
+
 #: .container/foundation/tools.d/b19-load-secrets:23
 msgid "Secrets loading disabled"
 msgstr "Carga de secretos deshabilitada"
@@ -572,6 +597,49 @@ msgstr "Formateando %s con %s reglas"
 #: .container/foundation/tools.d/b19-log-format:43
 msgid "gojq exited with %s, %s continues through b19-log"
 msgstr "gojq terminó con %s, %s continúa por b19-log"
+
+#: .container/foundation/tools.d/b19-materialize:19
+msgid "B19_IMMUTABLE=Y, keeping %s as built"
+msgstr "B19_IMMUTABLE=Y, se conserva %s tal como se construyó"
+
+#: .container/foundation/tools.d/b19-materialize:26
+msgid "%s is active"
+msgstr "%s está activo"
+
+#: .container/foundation/tools.d/b19-materialize:28
+msgid "Overlay %s not found in %s"
+msgstr "Superposición %s no encontrada en %s"
+
+#: .container/foundation/tools.d/b19-materialize:33
+msgid "No templates in %s, nothing to materialize"
+msgstr "No hay plantillas en %s, nada que materializar"
+
+#: .container/foundation/tools.d/b19-materialize:39
+msgid ""
+"%s is not writable by uid %s on a read-only root, mount a tmpfs there to "
+"render this image’s configuration"
+msgstr "%s no es escribible por el uid %s en una raíz de solo lectura, monte allí un tmpfs para generar la configuración de esta imagen"
+
+#: .container/foundation/tools.d/b19-materialize:42
+#: .container/foundation/tools.d/j2-render:27
+msgid "Keeping build-time %s, directory not writable by uid %s"
+msgstr "Se conserva %s de la construcción, directorio no escribible por el uid %s"
+
+#: .container/foundation/tools.d/b19-materialize:56
+msgid "Skipping %s, a read-only root cannot gain a new path"
+msgstr "Omitiendo %s, una raíz de solo lectura no admite rutas nuevas"
+
+#: .container/foundation/tools.d/b19-materialize:60
+msgid "Skipping %s, not writable by uid %s"
+msgstr "Omitiendo %s, no escribible por el uid %s"
+
+#: .container/foundation/tools.d/b19-materialize:67
+msgid "Applied %s"
+msgstr "Aplicado %s"
+
+#: .container/foundation/tools.d/b19-materialize:77
+msgid "Materialized %s template(s) in %s"
+msgstr "%s plantilla(s) materializada(s) en %s"
 
 #: .container/foundation/tools.d/b19-prepare-volumes:30
 msgid "Chown %s to %s:%s"
@@ -805,12 +873,6 @@ msgstr "Instalar dependencias (%s paquetes)"
 msgid "Dependencies list (%s) is not detected"
 msgstr "Lista de dependencias (%s) no detectada"
 
-#: .container/foundation/tools.d/j2-render:21
-msgid "Keeping build-time %s, directory not writable by uid %s"
-msgstr ""
-"Se mantiene %s de la construcción, el directorio no es escribible por el uid "
-"%s"
-
 #: .container/foundation/tools.d/keyscan:21
 msgid "Touch %s"
 msgstr "Crear %s"
@@ -827,29 +889,29 @@ msgstr "%s ya es un host conocido"
 msgid "B19_SSH_SCAN_HOSTS is not set, skipping"
 msgstr "B19_SSH_SCAN_HOSTS no está establecido, omitiendo"
 
-#: .container/foundation/tools.d/parallel-j2:22
+#: .container/foundation/tools.d/parallel-j2:28
 msgid "No .j2 files in %s, nothing to process"
 msgstr "No hay archivos .j2 en %s, nada que procesar"
 
-#: .container/foundation/tools.d/parallel-j2:37
+#: .container/foundation/tools.d/parallel-j2:43
 msgid "Skipped %s file(s) via B19_J2_SKIP_FILES"
 msgstr ""
 
-#: .container/foundation/tools.d/parallel-j2:42
+#: .container/foundation/tools.d/parallel-j2:48
 msgid "Loaded %s files from %s"
 msgstr "Cargados %s archivos desde %s"
 
-#: .container/foundation/tools.d/parallel-j2:46
+#: .container/foundation/tools.d/parallel-j2:52
 msgid "Final mode: deleting %s source templates"
 msgstr ""
 
-#: .container/foundation/tools.d/parallel-j2:58
+#: .container/foundation/tools.d/parallel-j2:64
 msgid "minijinja-cli not installed, skipping"
 msgstr "minijinja-cli no instalado, omitiendo"
 
-#: .container/foundation/tools.d/parallel-j2:61
-msgid "B19_IMMUTABLE=Y, skipping j2 templates"
-msgstr "B19_IMMUTABLE=Y, omitiendo plantillas j2"
+#: .container/foundation/tools.d/parallel-j2:67
+msgid "%s is read-only, skipping j2 templates"
+msgstr "%s es de solo lectura, omitiendo plantillas j2"
 
 #: .container/foundation/tools.d/process-hooks:17
 msgid "%s failed to execute (code %s)"
@@ -871,15 +933,23 @@ msgstr "%s ejecutado exitosamente"
 msgid "Not found for stage: %s"
 msgstr "No encontrado para etapa: %s"
 
-#: .container/foundation/tools.d/save-j2:26
+#: .container/foundation/tools.d/save-j2:38
+msgid "Harvested %s"
+msgstr "Recogida %s"
+
+#: .container/foundation/tools.d/save-j2:56
+msgid "Cannot link %s, overlay needs a writable root there"
+msgstr "No se puede enlazar %s, la superposición necesita ahí una raíz escribible"
+
+#: .container/foundation/tools.d/save-j2:72
 msgid "Chown %s"
 msgstr "Cambiar propietario de %s"
 
-#: .container/foundation/tools.d/save-j2:30
+#: .container/foundation/tools.d/save-j2:76
 msgid "Optimize %s"
 msgstr "Optimizar %s"
 
-#: .container/foundation/tools.d/save-j2:34
+#: .container/foundation/tools.d/save-j2:80
 msgid "Saved %s files in %s"
 msgstr "Guardados %s archivos en %s"
 
@@ -1292,19 +1362,19 @@ msgstr ""
 msgid "Updating CA certificates"
 msgstr "Actualizando certificados CA"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:31
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:45
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:32
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:47
 msgid "Ensure exists %s"
 msgstr "Verificar existencia de %s"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:33
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:47
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:34
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:49
 msgid "Set owner %s:0 %s"
 msgstr "Establecer propietario %s:0 %s"
 
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:37
 #: .container/foundation/build.d/foundation/post/200-permissions.sh:38
-#: .container/foundation/build.d/foundation/post/200-permissions.sh:49
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:40
+#: .container/foundation/build.d/foundation/post/200-permissions.sh:51
 msgid "Set permissions of %s"
 msgstr "Establecer permisos de %s"
 
@@ -1470,18 +1540,6 @@ msgstr "Establecer propietario %s:0 %s"
 msgid "Dropping root, restarting entrypoint as %s:%s"
 msgstr "Renunciando a root, reiniciando el entrypoint como %s:%s"
 
-#: .container/user/entrypoint.d/0500-copy-overlay.sh:11
-msgid "%s is active"
-msgstr "%s está activo"
-
-#: .container/user/entrypoint.d/0500-copy-overlay.sh:20
-msgid "Remove overlays directory"
-msgstr "Eliminar directorio de overlays"
-
-#: .container/user/entrypoint.d/0500-copy-overlay.sh:27
-msgid "B19_IMMUTABLE=Y, skipping overlays"
-msgstr "B19_IMMUTABLE=Y, omitiendo superposiciones"
-
 #: .container/user/entrypoint.d/2000-select-command.sh:9
 msgid "Treating %s as command"
 msgstr "Tratando %s como comando"
@@ -1626,12 +1684,16 @@ msgstr ""
 msgid "Reachability working on port %s (B19_HEALTH_PING_TARGETS: %s)"
 msgstr "Alcance funcionando en el puerto %s (B19_HEALTH_PING_TARGETS: %s)"
 
-#: .container/user/healthcheck.d/0700-check-dummy.sh:13
+#: .container/user/healthcheck.d/0700-check-dummy.sh:12
+msgid "Skipping write check, %s is read-only"
+msgstr "Omitiendo la comprobación de escritura, %s es de solo lectura"
+
+#: .container/user/healthcheck.d/0700-check-dummy.sh:18
 msgid "Healthcheck directory operations failed (B19_HEALTH_PATH: %s)"
 msgstr ""
 "Operaciones en directorio de healthcheck fallidas (B19_HEALTH_PATH: %s)"
 
-#: .container/user/healthcheck.d/0700-check-dummy.sh:17
+#: .container/user/healthcheck.d/0700-check-dummy.sh:22
 msgid "Healthcheck directory operations working (B19_HEALTH_PATH: %s)"
 msgstr ""
 "Operaciones en directorio de healthcheck funcionando (B19_HEALTH_PATH: %s)"
@@ -2818,6 +2880,9 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
+
+#~ msgid "Remove overlays directory"
+#~ msgstr "Eliminar directorio de overlays"
 
 #~ msgid "Low space in %s (B19_HOME): %s < %s"
 #~ msgstr "Poco espacio en %s (B19_HOME): %s < %s"

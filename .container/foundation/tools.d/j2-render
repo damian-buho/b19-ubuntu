@@ -11,10 +11,16 @@
 
 set -euo pipefail
 
-# shellcheck source=.container/foundation/tools.d/b19-i18n
+# shellcheck source=/dev/null
 . b19-i18n
 
 TEMPLATE="$1"
+
+# A harvested template is addressed by its original path.
+if [ ! -f "${TEMPLATE}" ] && [ -f "${B19_RUNTIME_PATH%/}${TEMPLATE}" ]; then
+  TEMPLATE="${B19_RUNTIME_PATH%/}${TEMPLATE}"
+fi
+
 OUTPUT="$(dirname "${TEMPLATE}")/$(basename --suffix .j2 "${TEMPLATE}")"
 
 if [ ! -w "$(dirname "${OUTPUT}")" ]; then
