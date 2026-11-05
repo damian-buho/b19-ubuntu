@@ -350,6 +350,25 @@ EXIT_CODE=0
 b19-exec --stop stopme 2>/dev/null || EXIT_CODE=$?
 b19-assert equals "b19-exec" "3" "${EXIT_CODE}"
 rm -f "${_stopped}" "${_stopped}".*
+
+# Test 22: A second payload, unnamed or named, runs untracked and leaves the daemon and the named payload running
+b19-log note "b19-exec" "$(_ "Test 22: Second payload leaves the container running")"
+_second="${B19_RUNTIME_PATH}/second"
+b19-exec --background --name keeper -- bash -c "${_daemon}" "${_second}" keeper
+b19-exec --name main -- bash -c "${_daemon}" "${_second}" main &
+_exec_pid=$!
+wait_until test -e "${_second}.keeper" -a -e "${_second}.main"
+b19-exec -- true
+EXIT_CODE=0
+b19-exec --name other -- bash -c 'exit 6' || EXIT_CODE=$?
+b19-assert equals "b19-exec" "6" "${EXIT_CODE}"
+b19-assert equals "b19-exec" "keeper.pid main.pid" "$(fd --hidden --glob '*.pid' --strip-cwd-prefix --base-directory "${_state}" | sort | paste --serial --delimiters=' ')"
+b19-exec --stop main
+EXIT_CODE=0
+wait "${_exec_pid}" || EXIT_CODE=$?
+b19-assert equals "b19-exec" "0" "${EXIT_CODE}"
+b19-assert equals "b19-exec" "main keeper" "$(paste --serial --delimiters=' ' "${_second}")"
+rm -f "${_second}" "${_second}".*
 rm -f "${_state}/.lock" "${_state}/.seq" "${_order}" "${_order}".*
 rmdir "${_state}" "${B19_RUNTIME_PATH}"
 

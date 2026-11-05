@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-10-31 20:37+0000\n"
+"POT-Creation-Date: 2026-11-05 02:48+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -239,7 +239,7 @@ msgid "Forwarding %s to %s (pid %s)"
 msgstr "Reenviando %s a %s (pid %s)"
 
 #: .container/foundation/tools.d/b19-exec:293
-#: .container/foundation/tools.d/b19-exec:406
+#: .container/foundation/tools.d/b19-exec:412
 msgid "%s (pid %s) is already gone"
 msgstr "%s (pid %s) ya no existe"
 
@@ -256,124 +256,125 @@ msgid "%s is already running (pid %s)"
 msgstr "%s ya está en ejecución (pid %s)"
 
 #: .container/foundation/tools.d/b19-exec:318
+#: .container/foundation/tools.d/b19-exec:324
 msgid "%s is already running (pid %s), this one runs untracked"
 msgstr ""
 "%s ya está en ejecución (pid %s), esta instancia se ejecuta sin registro"
 
-#: .container/foundation/tools.d/b19-exec:331
+#: .container/foundation/tools.d/b19-exec:337
 msgid "Claimed %s (supervisor pid %s, sequence %s)"
 msgstr "Reservado %s (pid del supervisor %s, secuencia %s)"
 
-#: .container/foundation/tools.d/b19-exec:345
+#: .container/foundation/tools.d/b19-exec:351
 msgid "Recorded %s (pid %s, %s)"
 msgstr "Registrado %s (pid %s, %s)"
 
-#: .container/foundation/tools.d/b19-exec:363
-#: .container/foundation/tools.d/b19-exec:396
-#: .container/foundation/tools.d/b19-exec:572
+#: .container/foundation/tools.d/b19-exec:369
+#: .container/foundation/tools.d/b19-exec:402
+#: .container/foundation/tools.d/b19-exec:578
 msgid "_"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:363
+#: .container/foundation/tools.d/b19-exec:369
 msgid "_sup"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:370
+#: .container/foundation/tools.d/b19-exec:376
 msgid "No exit code recorded for %s, its supervisor %s is gone"
 msgstr ""
 "No hay código de salida registrado para %s, su supervisor %s ya no existe"
 
-#: .container/foundation/tools.d/b19-exec:378
+#: .container/foundation/tools.d/b19-exec:384
 msgid "Stopping %s: required %s exited with %s"
 msgstr "Deteniendo %s: el obligatorio %s salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:398
+#: .container/foundation/tools.d/b19-exec:404
 msgid "Stopping %s (pid %s)"
 msgstr "Deteniendo %s (pid %s)"
 
-#: .container/foundation/tools.d/b19-exec:402
+#: .container/foundation/tools.d/b19-exec:408
 msgid "Stopping %s (pid %s) after %s"
 msgstr "Deteniendo %s (pid %s) después de %s"
 
-#: .container/foundation/tools.d/b19-exec:411
+#: .container/foundation/tools.d/b19-exec:417
 msgid "Leaving after %ss although %s still runs"
 msgstr "Saliendo tras %ss aunque %s sigue en ejecución"
 
-#: .container/foundation/tools.d/b19-exec:415
+#: .container/foundation/tools.d/b19-exec:421
 msgid "Waiting for %s to stop"
 msgstr "Esperando a que %s se detenga"
 
-#: .container/foundation/tools.d/b19-exec:437
+#: .container/foundation/tools.d/b19-exec:443
 msgid "Cannot write %s as uid %s, %s runs untracked"
 msgstr "No se puede escribir %s como uid %s, %s se ejecuta sin registro"
 
-#: .container/foundation/tools.d/b19-exec:452
+#: .container/foundation/tools.d/b19-exec:458
 msgid "Not starting %s: required %s exited with %s"
 msgstr "No se inicia %s: el obligatorio %s salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:467
+#: .container/foundation/tools.d/b19-exec:473
 msgid "Forwarding held %s to %s (pid %s)"
 msgstr "Reenviando %s retenida a %s (pid %s)"
 
-#: .container/foundation/tools.d/b19-exec:478
+#: .container/foundation/tools.d/b19-exec:484
 msgid "%s fails fast when %s (pid %s) exits"
 msgstr "%s falla de inmediato cuando %s (pid %s) termina"
 
-#: .container/foundation/tools.d/b19-exec:481
+#: .container/foundation/tools.d/b19-exec:487
 msgid "Required %s (pid %s) is already gone"
 msgstr "El requerido %s (pid %s) ya terminó"
 
-#: .container/foundation/tools.d/b19-exec:506
+#: .container/foundation/tools.d/b19-exec:512
 msgid "Wait for %s interrupted with %s"
 msgstr "Espera de %s interrumpida con %s"
 
-#: .container/foundation/tools.d/b19-exec:516
+#: .container/foundation/tools.d/b19-exec:522
 msgid "%s exited while %s stops"
 msgstr "%s terminó mientras %s se detiene"
 
-#: .container/foundation/tools.d/b19-exec:528
+#: .container/foundation/tools.d/b19-exec:534
 msgid "%s (pid %s) exited with %s"
 msgstr "%s (pid %s) salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:535
+#: .container/foundation/tools.d/b19-exec:541
 msgid "%s (pid %s) stopped with %s"
 msgstr "%s (pid %s) se detuvo con %s"
 
-#: .container/foundation/tools.d/b19-exec:537
+#: .container/foundation/tools.d/b19-exec:543
 msgid "Optional %s (pid %s) exited with %s, the container keeps running"
 msgstr "El opcional %s (pid %s) salió con %s, el contenedor sigue en ejecución"
 
-#: .container/foundation/tools.d/b19-exec:540
+#: .container/foundation/tools.d/b19-exec:546
 msgid "Required %s (pid %s) exited with %s"
 msgstr "El obligatorio %s (pid %s) salió con %s"
 
-#: .container/foundation/tools.d/b19-exec:550
+#: .container/foundation/tools.d/b19-exec:556
 msgid "%s is not running"
 msgstr "%s no está en ejecución"
 
-#: .container/foundation/tools.d/b19-exec:554
+#: .container/foundation/tools.d/b19-exec:560
 msgid "Cannot write %s, %s stops after the commands started later"
 msgstr ""
 "No se puede escribir %s, %s se detiene después de los comandos iniciados más "
 "tarde"
 
-#: .container/foundation/tools.d/b19-exec:556
+#: .container/foundation/tools.d/b19-exec:562
 msgid "Stopped %s"
 msgstr "%s detenido"
 
-#: .container/foundation/tools.d/b19-exec:568
+#: .container/foundation/tools.d/b19-exec:574
 msgid "Started %s untracked (supervisor pid %s)"
 msgstr "Iniciado %s sin seguimiento (pid del supervisor %s)"
 
-#: .container/foundation/tools.d/b19-exec:572
+#: .container/foundation/tools.d/b19-exec:578
 msgid "RECORD_SUPERVISOR"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:574
+#: .container/foundation/tools.d/b19-exec:580
 msgid "Started %s (pid %s, %s)"
 msgstr "Iniciado %s (pid %s, %s)"
 
-#: .container/foundation/tools.d/b19-exec:580
+#: .container/foundation/tools.d/b19-exec:586
 msgid "%s failed to start, exit code %s"
 msgstr "%s no pudo iniciarse, código de salida %s"
 
@@ -563,6 +564,14 @@ msgstr "Bloqueo %s adquirido"
 #: .container/foundation/tools.d/b19-log:160
 msgid "Unknown log level: %s. Valid: error, warn, info, debug"
 msgstr "Nivel de log desconocido: %s. Válidos: error, warn, info, debug"
+
+#: .container/foundation/tools.d/b19-log-format:34
+msgid "Formatting %s with %s rules"
+msgstr "Formateando %s con %s reglas"
+
+#: .container/foundation/tools.d/b19-log-format:43
+msgid "gojq exited with %s, %s continues through b19-log"
+msgstr "gojq terminó con %s, %s continúa por b19-log"
 
 #: .container/foundation/tools.d/b19-prepare-volumes:30
 msgid "Chown %s to %s:%s"
@@ -1973,7 +1982,11 @@ msgstr "Prueba 20: llamadas en segundo plano no válidas"
 msgid "Test 21: Stop a named daemon"
 msgstr "Prueba 21: detener un demonio por nombre"
 
-#: .container/user/test.d/0200-b19-exec.sh:356
+#: .container/user/test.d/0200-b19-exec.sh:355
+msgid "Test 22: Second payload leaves the container running"
+msgstr "Prueba 22: un segundo payload deja el contenedor en marcha"
+
+#: .container/user/test.d/0200-b19-exec.sh:375
 #, fuzzy
 msgid "All b19-exec tests passed"
 msgstr "Todas las %d pruebas pasaron."
@@ -2009,6 +2022,10 @@ msgstr ""
 #: .container/user/test.d/0200-b19-log-filter.sh:53
 msgid "Log filter tests passed"
 msgstr "Las pruebas del filtro de registro pasaron"
+
+#: .container/user/test.d/0200-b19-log-format.sh:105
+msgid "No record reached %s"
+msgstr ""
 
 #: .container/user/test.d/0200-b19-log-json.sh:40
 msgid "Skipping the decimal-comma case: no such locale among %s"
@@ -2801,14 +2818,6 @@ msgstr "El uso de memoria total (%s MB) excede el umbral (%s MB)"
 #: .container/user/test.d/0900-memory-consumption.sh:31
 msgid "Total memory usage is within the threshold (%s MB)"
 msgstr "El uso de memoria total está dentro del umbral (%s MB)"
-
-#: .container/foundation/tools.d/b19-log-format:34
-msgid "Formatting %s with %s rules"
-msgstr "Formateando %s con %s reglas"
-
-#: .container/foundation/tools.d/b19-log-format:43
-msgid "gojq exited with %s, %s continues through b19-log"
-msgstr "gojq terminó con %s, %s continúa por b19-log"
 
 #~ msgid "Low space in %s (B19_HOME): %s < %s"
 #~ msgstr "Poco espacio en %s (B19_HOME): %s < %s"

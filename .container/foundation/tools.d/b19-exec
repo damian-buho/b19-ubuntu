@@ -9,7 +9,7 @@
 # shellcheck disable=SC2329 # on_signal and its helpers run from the signal traps
 set -euo pipefail
 
-# shellcheck source=.container/foundation/tools.d/b19-i18n
+# shellcheck source=/dev/null
 . b19-i18n
 
 STDOUT_LEVEL="${B19_EXEC_STDOUT_LEVEL:-info}"
@@ -301,7 +301,7 @@ write_state() {
 
 # Claims NAME and the next start sequence under the state lock, recording the supervisor as the not yet started command
 claim_name() {
-  local _lock _pid _ticks
+  local _lock _name _pid _role _ticks
   exec {_lock}>/dev/null
   if [ "${TRACKED}" -eq 1 ]; then
     exec {_lock}>"${STATE_PATH}/.lock"
@@ -318,6 +318,12 @@ claim_name() {
       b19-log warn "b19-exec" "$(_p "%s is already running (pid %s), this one runs untracked" "${NAME}" "${_pid}")"
       TRACKED=0
     fi
+    # A container has one payload, whatever its name: another one must not stop its daemons
+    while [ "${ROLE}" = payload ] && [ "${TRACKED}" -eq 1 ] && read -r _name _pid _role _; do
+      [ "${_role}" = payload ] || continue
+      b19-log warn "b19-exec" "$(_p "%s is already running (pid %s), this one runs untracked" "${_name}" "${_pid}")"
+      TRACKED=0
+    done < <(list_records)
   fi
   if [ "${TRACKED}" -eq 1 ]; then
     CMD_SEQ=0
