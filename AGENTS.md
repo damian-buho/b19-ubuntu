@@ -144,7 +144,7 @@ over raw shell so logging, i18n, caching, and offgrid guards apply uniformly:
 ## Non-obvious facts / gotchas
 
 - **CLAUDE.md → AGENTS.md.** `CLAUDE.md` is just `@AGENTS.md`; edit this file.
-- **`save-j2 "${B19_HOME}"` empties the home of templates.** Only that exact directory harvests: `*.j2` and `*.data.*` move to `B19_TEMPLATES_PATH` and the final path becomes a link into `B19_RUNTIME_PATH`. A hook that writes a companion at runtime must therefore write under `${B19_RUNTIME_PATH}${B19_HOME}`; `j2-render` and `parallel-j2` still accept the original path.
+- **`save-j2 "${B19_HOME}"` empties the home of templates.** Only that exact directory harvests: `*.j2` and `*.data.*` move to `B19_TEMPLATES_PATH` and the final path becomes a link into `B19_RUNTIME_PATH`. The original `*.j2` path stays a link into `B19_TEMPLATES_PATH`, so a hook reads a template at any point of the start, even before `0500`; `j2-render` and `parallel-j2` still accept that path. A hook that writes a companion at runtime must write under `${B19_RUNTIME_PATH}${B19_HOME}`.
 - **A tmpfs takes the mode of the directory it covers, not its owner.** Docker mounts `--tmpfs /run/b19` as `root:root`, so `/run/b19` ships `1777`; at `775` uid 1000 cannot write it. A child that ships its own file under `B19_TEMPLATES_PATH` gets it rendered at startup, so a build-only template lives elsewhere.
 - **Multi-series matrix.** Builds across `B19_UBUNTU_SERIES` ∈ {`resolute`, `noble`} (`projectfile.yaml` → `org.projectfile.ci.matrix`). Image name is series-qualified: `b19/ubuntu:<series>`. Anything series-specific belongs in
     `deps/ubuntu/<series>.*` or `.j2` templates, never hardcoded.

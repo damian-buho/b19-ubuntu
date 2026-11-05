@@ -34,6 +34,7 @@
         [ -f "${companion}" ] && move_to_layer "${companion}"
       done
       move_to_layer "${template}"
+      ln --symbolic --force --no-target-directory "${B19_TEMPLATES_PATH%/}${template}" "${template}"
       link_final "${template%.j2}"
       b19-log debug "J2" "$(_p "Harvested %s" "${template}")"
     done < "${J2_LIST}"
@@ -66,7 +67,7 @@
     done
   fi
 
-  fd . --hidden --extension j2 "${FD_EXCLUDE_ARRAY[@]}" "${DIRECTORY}" > "${J2_LIST}"
+  fd . --hidden --type file --extension j2 "${FD_EXCLUDE_ARRAY[@]}" "${DIRECTORY}" > "${J2_LIST}"
 
   if [ "$(id -u)" = "0" ]; then
     b19-run "J2" "$(_p "Chown %s" "${J2_LIST}")" \

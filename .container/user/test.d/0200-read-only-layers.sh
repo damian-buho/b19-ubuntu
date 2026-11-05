@@ -62,7 +62,8 @@ EOF
   LAYER_A=build save-j2 "${B19_HOME}" 2>/dev/null
 
   b19-assert equals "LAYERS" "${B19_RUNTIME_PATH}${B19_HOME}/sub/a.conf" "$(readlink "${B19_HOME}/sub/a.conf")"
-  b19-assert equals "LAYERS" "absent" "$([ -e "${B19_HOME}/sub/a.conf.j2" ] && echo present || echo absent)"
+  b19-assert equals "LAYERS" "${B19_TEMPLATES_PATH}${B19_HOME}/sub/a.conf.j2" "$(readlink "${B19_HOME}/sub/a.conf.j2")"
+  b19-assert equals "LAYERS" "a={{ ENV.LAYER_A }}" "$(<"${B19_HOME}/sub/a.conf.j2")"
   b19-assert equals "LAYERS" "absent" "$([ -e "${B19_HOME}/b.conf.data.json" ] && echo present || echo absent)"
   b19-assert equals "LAYERS" "absent" "$([ -e "${B19_HOME}/.j2.list" ] && echo present || echo absent)"
   b19-assert equals "LAYERS" "a=build" "$(<"${B19_HOME}/sub/a.conf")"
@@ -76,7 +77,8 @@ EOF
   LAYER_A=direct j2-render "${B19_HOME}/sub/a.conf.j2"
   b19-assert equals "LAYERS" "a=direct" "$(<"${B19_HOME}/sub/a.conf")"
 
-  # A later template at one path replaces the harvested one.
+  # A child image’s template replaces the link and the harvested one.
+  rm --force "${B19_HOME}/sub/a.conf.j2"
   printf 'a2={{ ENV.LAYER_A }}\n' > "${B19_HOME}/sub/a.conf.j2"
   save-j2 "${B19_HOME}" 2>/dev/null
   b19-assert equals "LAYERS" "a2=start" "$(<"${B19_HOME}/sub/a.conf")"

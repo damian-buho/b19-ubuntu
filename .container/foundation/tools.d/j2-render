@@ -14,12 +14,12 @@ set -euo pipefail
 # shellcheck source=/dev/null
 . b19-i18n
 
-TEMPLATE="$1"
+TEMPLATE="$(realpath -- "$1")"
 
-# A harvested template is addressed by its original path.
-if [ ! -f "${TEMPLATE}" ] && [ -f "${B19_RUNTIME_PATH%/}${TEMPLATE}" ]; then
-  TEMPLATE="${B19_RUNTIME_PATH%/}${TEMPLATE}"
-fi
+# A harvested template renders through its runtime copy.
+case "${TEMPLATE}" in
+  "${B19_TEMPLATES_PATH%/}"/*) TEMPLATE="${B19_RUNTIME_PATH%/}${TEMPLATE#"${B19_TEMPLATES_PATH%/}"}" ;;
+esac
 
 OUTPUT="$(dirname "${TEMPLATE}")/$(basename --suffix .j2 "${TEMPLATE}")"
 
