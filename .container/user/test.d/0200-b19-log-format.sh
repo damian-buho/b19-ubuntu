@@ -84,8 +84,8 @@ OUT="$(printf '%s\n' 'a=1' | PATH="/tools.d:/usr/bin:/bin" b19-log-format warn T
 b19-assert matches "LOG-FORMAT" '"tag":"b19-log-format"' "${OUT}"
 b19-assert matches "LOG-FORMAT" '"tag":"TAG","msg":"a=1"' "${OUT}"
 
-# b19-exec routes both streams through the formatter
-OUT="$(b19-exec -- bash -c 'echo "level=error a=1"; echo "plain rule abc" >&2' 2>&1 | untimed)"
+# b19-exec routes both streams through the formatter, on its own records so the container’s daemons keep running
+OUT="$(B19_RUNTIME_PATH="${WORK}" b19-exec -- bash -c 'echo "level=error a=1"; echo "plain rule abc" >&2' 2>&1 | untimed)"
 b19-assert matches "LOG-FORMAT" '"a":"1","level":"error"' "${OUT}"
 b19-assert matches "LOG-FORMAT" '"word":"abc"' "${OUT}"
 
