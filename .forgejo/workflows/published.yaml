@@ -130,6 +130,9 @@ jobs:
       - name: dc-diagnose
         if: ${{ always() }}
         run: .makefile/container/scripts/compose-diagnose.sh
+      - name: container-read-only-probe
+        if: (vars.CI_ONLY_B19_UBUNTU_SERIES == '' || contains(format(',{0},', vars.CI_ONLY_B19_UBUNTU_SERIES), format(',{0},', matrix.B19_UBUNTU_SERIES))) && (vars.CI_ONLY_M6E_ARCH == '' || contains(format(',{0},', vars.CI_ONLY_M6E_ARCH), format(',{0},', matrix.M6E_ARCH))) && vars.CI_SKIP_CONTAINER_IS_READ_ONLY != 'true' && vars.CI_SKIP_CONTAINER_READ_ONLY_PROBE != 'true'
+        run: .makefile/b19/scripts/read-only-probe.sh
       - name: dc-down
         if: ${{ always() }}
         run: docker compose --project-name "$M6E_COMPOSE_PROJECT_NAME" --file .compose/pipeline.yaml down --volumes </dev/null

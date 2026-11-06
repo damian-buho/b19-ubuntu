@@ -24,6 +24,7 @@ includes:
   - .makefile/b19/images/fd.yaml
   - .makefile/b19/images/gojq.yaml
   - .makefile/b19/images/minijinja.yaml
+  - .makefile/b19/traits/image/read-only.yaml
   - .makefile/b19/traits/image/release.yaml
   - .makefile/b19/traits/image/signed.yaml
   - .makefile/container/traits/image/variant.yaml
