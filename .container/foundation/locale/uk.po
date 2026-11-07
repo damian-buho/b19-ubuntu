@@ -621,8 +621,8 @@ msgstr "%s недоступний для запису uid %s на коренев
 
 #: .container/foundation/tools.d/b19-materialize:42
 #: .container/foundation/tools.d/j2-render:27
-msgid "Keeping build-time %s, directory not writable by uid %s"
-msgstr "Лишається %s часу збирання, каталог недоступний для запису uid %s"
+msgid "Keeping build-time %s, %s not writable by uid %s"
+msgstr "Лишається %s часу збирання, %s недоступний для запису uid %s"
 
 #: .container/foundation/tools.d/b19-materialize:56
 msgid "Skipping %s, a read-only root cannot gain a new path"

@@ -34,12 +34,21 @@
     exit 0
   fi
 
-  if [ ! -w "${RUNTIME}" ]; then
+  BLOCKED="${RUNTIME}"
+  if [ -w "${RUNTIME}" ]; then
+    BLOCKED=""
+    while IFS= read -r -d '' ENTRY; do
+      # Stop at the first runtime entry this uid cannot write.
+      if [ ! -w "${ENTRY}" ]; then BLOCKED="${ENTRY}"; break; fi
+    done < <(fd . --hidden --no-ignore --type file --type directory --print0 "${RUNTIME}")
+  fi
+
+  if [ -n "${BLOCKED}" ]; then
     if b19-is-immutable "${RUNTIME}" || b19-is-immutable /; then
       b19-log error "LAYERS" "$(_p "%s is not writable by uid %s on a read-only root, mount a tmpfs there to render this image’s configuration" "${RUNTIME}" "$(id -u)")"
       exit 1
     fi
-    b19-log warn "LAYERS" "$(_p "Keeping build-time %s, directory not writable by uid %s" "${RUNTIME}" "$(id -u)")"
+    b19-log warn "LAYERS" "$(_p "Keeping build-time %s, %s not writable by uid %s" "${RUNTIME}" "${BLOCKED}" "$(id -u)")"
     exit 0
   fi
 

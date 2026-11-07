@@ -110,6 +110,14 @@ EOF
   fi
   chmod 0755 "${B19_RUNTIME_PATH}"
 
+  # A writable runtime with an unwritable entry below it degrades the same way.
+  chmod 0555 "${B19_RUNTIME_PATH}${B19_HOME}"
+  if [ ! -w "${B19_RUNTIME_PATH}${B19_HOME}" ]; then
+    b19-assert equals "LAYERS" "1" "$(materialize "${T}/mountinfo.ro")"
+    b19-assert equals "LAYERS" "0" "$(materialize "${T}/mountinfo.rw")"
+  fi
+  chmod 0755 "${B19_RUNTIME_PATH}${B19_HOME}"
+
   # An image with no templates has nothing to fail on.
   chmod 0555 "${B19_RUNTIME_PATH}"
   b19-assert equals "LAYERS" "0" "$(B19_TEMPLATES_PATH="${T}/empty" materialize "${T}/mountinfo.ro")"

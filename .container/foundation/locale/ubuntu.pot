@@ -603,7 +603,7 @@ msgstr ""
 
 #: .container/foundation/tools.d/b19-materialize:42
 #: .container/foundation/tools.d/j2-render:27
-msgid "Keeping build-time %s, directory not writable by uid %s"
+msgid "Keeping build-time %s, %s not writable by uid %s"
 msgstr ""
 
 #: .container/foundation/tools.d/b19-materialize:56
