@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-11-05 15:50+0000\n"
+"POT-Creation-Date: 2026-11-07 14:55+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -516,7 +516,9 @@ msgstr "Uso: b19-is-immutable [RUTA]"
 #: .container/foundation/tools.d/b19-is-immutable:17
 msgid ""
 "Exits 0 when PATH (default /) sits on a read-only mount, 1 when it does not."
-msgstr "Sale con 0 si RUTA (por defecto /) está en un montaje de solo lectura y con 1 si no."
+msgstr ""
+"Sale con 0 si RUTA (por defecto /) está en un montaje de solo lectura y con "
+"1 si no."
 
 #: .container/foundation/tools.d/b19-is-immutable:23
 msgid "Usage: b19-is-immutable [PATH] (got %s arguments)"
@@ -614,30 +616,31 @@ msgstr "Superposición %s no encontrada en %s"
 msgid "No templates in %s, nothing to materialize"
 msgstr "No hay plantillas en %s, nada que materializar"
 
-#: .container/foundation/tools.d/b19-materialize:39
+#: .container/foundation/tools.d/b19-materialize:48
 msgid ""
 "%s is not writable by uid %s on a read-only root, mount a tmpfs there to "
 "render this image’s configuration"
-msgstr "%s no es escribible por el uid %s en una raíz de solo lectura, monte allí un tmpfs para generar la configuración de esta imagen"
+msgstr ""
+"%s no es escribible por el uid %s en una raíz de solo lectura, monte allí un "
+"tmpfs para generar la configuración de esta imagen"
 
-#: .container/foundation/tools.d/b19-materialize:42
-#: .container/foundation/tools.d/j2-render:27
+#: .container/foundation/tools.d/b19-materialize:51
 msgid "Keeping build-time %s, %s not writable by uid %s"
 msgstr "Se conserva %s de la construcción, %s no es escribible por el uid %s"
 
-#: .container/foundation/tools.d/b19-materialize:56
+#: .container/foundation/tools.d/b19-materialize:65
 msgid "Skipping %s, a read-only root cannot gain a new path"
 msgstr "Omitiendo %s, una raíz de solo lectura no admite rutas nuevas"
 
-#: .container/foundation/tools.d/b19-materialize:60
+#: .container/foundation/tools.d/b19-materialize:69
 msgid "Skipping %s, not writable by uid %s"
 msgstr "Omitiendo %s, no escribible por el uid %s"
 
-#: .container/foundation/tools.d/b19-materialize:67
+#: .container/foundation/tools.d/b19-materialize:76
 msgid "Applied %s"
 msgstr "Aplicado %s"
 
-#: .container/foundation/tools.d/b19-materialize:77
+#: .container/foundation/tools.d/b19-materialize:89
 msgid "Materialized %s template(s) in %s"
 msgstr "%s plantilla(s) materializada(s) en %s"
 
@@ -873,6 +876,11 @@ msgstr "Instalar dependencias (%s paquetes)"
 msgid "Dependencies list (%s) is not detected"
 msgstr "Lista de dependencias (%s) no detectada"
 
+#: .container/foundation/tools.d/j2-render:27
+#, fuzzy
+msgid "Keeping build-time %s, directory not writable by uid %s"
+msgstr "Se conserva %s de la construcción, %s no es escribible por el uid %s"
+
 #: .container/foundation/tools.d/keyscan:21
 msgid "Touch %s"
 msgstr "Crear %s"
@@ -933,23 +941,24 @@ msgstr "%s ejecutado exitosamente"
 msgid "Not found for stage: %s"
 msgstr "No encontrado para etapa: %s"
 
-#: .container/foundation/tools.d/save-j2:38
+#: .container/foundation/tools.d/save-j2:39
 msgid "Harvested %s"
 msgstr "Recogida %s"
 
-#: .container/foundation/tools.d/save-j2:56
+#: .container/foundation/tools.d/save-j2:57
 msgid "Cannot link %s, overlay needs a writable root there"
-msgstr "No se puede enlazar %s, la superposición necesita ahí una raíz escribible"
+msgstr ""
+"No se puede enlazar %s, la superposición necesita ahí una raíz escribible"
 
-#: .container/foundation/tools.d/save-j2:72
+#: .container/foundation/tools.d/save-j2:73
 msgid "Chown %s"
 msgstr "Cambiar propietario de %s"
 
-#: .container/foundation/tools.d/save-j2:76
+#: .container/foundation/tools.d/save-j2:77
 msgid "Optimize %s"
 msgstr "Optimizar %s"
 
-#: .container/foundation/tools.d/save-j2:80
+#: .container/foundation/tools.d/save-j2:81
 msgid "Saved %s files in %s"
 msgstr "Guardados %s archivos en %s"
 
@@ -2859,6 +2868,23 @@ msgstr ""
 
 #: .container/user/test.d/0610-no-setuid-files.sh:23
 msgid "No setuid/setgid file outside the allow-list"
+msgstr ""
+
+#: .container/user/test.d/0620-foreign-uid-posture.sh:19
+#: .container/user/test.d/0620-foreign-uid-posture.sh:31
+msgid "Absent, not checked: %s"
+msgstr ""
+
+#: .container/user/test.d/0620-foreign-uid-posture.sh:23
+msgid "Unreadable by a foreign uid: %s"
+msgstr ""
+
+#: .container/user/test.d/0620-foreign-uid-posture.sh:35
+msgid "Not writable by group root: %s"
+msgstr ""
+
+#: .container/user/test.d/0620-foreign-uid-posture.sh:41
+msgid "Runtime paths readable and writable under a foreign uid"
 msgstr ""
 
 #: .container/user/test.d/0900-memory-consumption.sh:17

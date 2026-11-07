@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu development\n"
+"Project-Id-Version: ubuntu 0.32.0-7-gc930cc4\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-11-05 15:50+0000\n"
+"POT-Creation-Date: 2026-11-07 14:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -595,30 +595,29 @@ msgstr ""
 msgid "No templates in %s, nothing to materialize"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-materialize:39
+#: .container/foundation/tools.d/b19-materialize:48
 msgid ""
 "%s is not writable by uid %s on a read-only root, mount a tmpfs there to "
 "render this image’s configuration"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-materialize:42
-#: .container/foundation/tools.d/j2-render:27
+#: .container/foundation/tools.d/b19-materialize:51
 msgid "Keeping build-time %s, %s not writable by uid %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-materialize:56
+#: .container/foundation/tools.d/b19-materialize:65
 msgid "Skipping %s, a read-only root cannot gain a new path"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-materialize:60
+#: .container/foundation/tools.d/b19-materialize:69
 msgid "Skipping %s, not writable by uid %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-materialize:67
+#: .container/foundation/tools.d/b19-materialize:76
 msgid "Applied %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-materialize:77
+#: .container/foundation/tools.d/b19-materialize:89
 msgid "Materialized %s template(s) in %s"
 msgstr ""
 
@@ -846,6 +845,10 @@ msgstr ""
 msgid "Dependencies list (%s) is not detected"
 msgstr ""
 
+#: .container/foundation/tools.d/j2-render:27
+msgid "Keeping build-time %s, directory not writable by uid %s"
+msgstr ""
+
 #: .container/foundation/tools.d/keyscan:21
 msgid "Touch %s"
 msgstr ""
@@ -906,23 +909,23 @@ msgstr ""
 msgid "Not found for stage: %s"
 msgstr ""
 
-#: .container/foundation/tools.d/save-j2:38
+#: .container/foundation/tools.d/save-j2:39
 msgid "Harvested %s"
 msgstr ""
 
-#: .container/foundation/tools.d/save-j2:56
+#: .container/foundation/tools.d/save-j2:57
 msgid "Cannot link %s, overlay needs a writable root there"
 msgstr ""
 
-#: .container/foundation/tools.d/save-j2:72
+#: .container/foundation/tools.d/save-j2:73
 msgid "Chown %s"
 msgstr ""
 
-#: .container/foundation/tools.d/save-j2:76
+#: .container/foundation/tools.d/save-j2:77
 msgid "Optimize %s"
 msgstr ""
 
-#: .container/foundation/tools.d/save-j2:80
+#: .container/foundation/tools.d/save-j2:81
 msgid "Saved %s files in %s"
 msgstr ""
 
@@ -2772,6 +2775,23 @@ msgstr ""
 
 #: .container/user/test.d/0610-no-setuid-files.sh:23
 msgid "No setuid/setgid file outside the allow-list"
+msgstr ""
+
+#: .container/user/test.d/0620-foreign-uid-posture.sh:19
+#: .container/user/test.d/0620-foreign-uid-posture.sh:31
+msgid "Absent, not checked: %s"
+msgstr ""
+
+#: .container/user/test.d/0620-foreign-uid-posture.sh:23
+msgid "Unreadable by a foreign uid: %s"
+msgstr ""
+
+#: .container/user/test.d/0620-foreign-uid-posture.sh:35
+msgid "Not writable by group root: %s"
+msgstr ""
+
+#: .container/user/test.d/0620-foreign-uid-posture.sh:41
+msgid "Runtime paths readable and writable under a foreign uid"
 msgstr ""
 
 #: .container/user/test.d/0900-memory-consumption.sh:17
