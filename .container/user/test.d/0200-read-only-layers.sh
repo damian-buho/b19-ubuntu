@@ -68,6 +68,8 @@ EOF
   b19-assert equals "LAYERS" "absent" "$([ -e "${B19_HOME}/.j2.list" ] && echo present || echo absent)"
   b19-assert equals "LAYERS" "a=build" "$(<"${B19_HOME}/sub/a.conf")"
   b19-assert equals "LAYERS" "b=2" "$(<"${B19_HOME}/b.conf")"
+  b19-assert equals "LAYERS" "-rw-rw-r--" "$(stat --format %A "${B19_RUNTIME_PATH}${B19_HOME}/b.conf.j2")"
+  b19-assert equals "LAYERS" "drwxrwxr-x" "$(stat --format %A "${B19_RUNTIME_PATH}${B19_HOME}/sub")"
 
   # The start renders from env through the same link, as does a call by the original path.
   export LAYER_A=start

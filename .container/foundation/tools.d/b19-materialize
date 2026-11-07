@@ -38,9 +38,9 @@
   if [ -w "${RUNTIME}" ]; then
     BLOCKED=""
     while IFS= read -r -d '' ENTRY; do
-      # Stop at the first runtime entry this uid cannot write.
+      # Stop at the first directory, or file in the sticky top, this uid cannot write.
       if [ ! -w "${ENTRY}" ]; then BLOCKED="${ENTRY}"; break; fi
-    done < <(fd . --hidden --no-ignore --type file --type directory --print0 "${RUNTIME}")
+    done < <(fd . "${RUNTIME}" --hidden --no-ignore --type directory --print0; fd . "${RUNTIME}" --hidden --no-ignore --max-depth 1 --type file --print0)
   fi
 
   if [ -n "${BLOCKED}" ]; then
@@ -78,6 +78,9 @@
   fi
 
   fd . --hidden --extension j2 "${RUNTIME}" | sort --unique > "${RUNTIME}/.j2.list"
+
+  # Group 0 may rewrite what this uid materialized, as in the home.
+  fd . "${RUNTIME}" --hidden --no-ignore --owner "$(id -u)" --exec-batch chmod g+rwX
 
   if [ "$(id -u)" = "0" ]; then
     chown --recursive "${B19_UID}:0" "${RUNTIME}"

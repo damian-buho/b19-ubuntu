@@ -36,8 +36,8 @@
     done
 
     b19-run "SECURITY" "$(_p "Set permissions of %s" "${B19_HOME}")" --  chmod -R g+rwX "${B19_HOME}"
-    # A tmpfs mounted here inherits this mode but not the owner, so any uid must be able to write it.
-    b19-run "SECURITY" "$(_p "Set permissions of %s" "${B19_RUNTIME_PATH}")" --  chmod 1777 "${B19_RUNTIME_PATH}"
+    # World-writable for a tmpfs, setgid so every entry below it joins group 0.
+    b19-run "SECURITY" "$(_p "Set permissions of %s" "${B19_RUNTIME_PATH}")" --  chmod 3777 "${B19_RUNTIME_PATH}"
 
     # ${B19_CACHE_PATH} is the parent of the build-time download cache mount.
     # b19-fetch creates ${B19_DOWNLOAD_PATH} below it, so uid ${B19_UID} needs
