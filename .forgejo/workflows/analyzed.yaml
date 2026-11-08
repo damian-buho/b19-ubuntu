@@ -51,7 +51,7 @@ jobs:
         B19_UBUNTU_SERIES: ["resolute", "noble"]
     env:
       B19_UBUNTU_SERIES: ${{ matrix.B19_UBUNTU_SERIES }}
-      M6E_IMAGE_PUBLISHED: kiota.ch/b19/ubuntu:${{ matrix.B19_UBUNTU_SERIES }}
+      M6E_IMAGE_PUBLISHED: kiota.ch/b19/ubuntu:dev-${{ matrix.B19_UBUNTU_SERIES }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -70,4 +70,4 @@ jobs:
           run: auto-dive
           env: |-
             B19_UBUNTU_SERIES=${{ matrix.B19_UBUNTU_SERIES }}
-            M6E_IMAGE_PUBLISHED=kiota.ch/b19/ubuntu:${{ matrix.B19_UBUNTU_SERIES }}
+            M6E_IMAGE_PUBLISHED=kiota.ch/b19/ubuntu:dev-${{ matrix.B19_UBUNTU_SERIES }}
