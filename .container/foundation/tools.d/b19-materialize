@@ -80,7 +80,7 @@
   fd . --hidden --extension j2 "${RUNTIME}" | sort --unique > "${RUNTIME}/.j2.list"
 
   # Group 0 may rewrite what this uid materialized, as in the home.
-  fd . "${RUNTIME}" --hidden --no-ignore --owner "$(id -u)" --exec-batch chmod g+rwX
+  fd . "${RUNTIME}" --hidden --no-ignore --type file --type directory --owner "$(id -u)" --exec-batch chmod g+rwX
 
   if [ "$(id -u)" = "0" ]; then
     chown --recursive "${B19_UID}:0" "${RUNTIME}"

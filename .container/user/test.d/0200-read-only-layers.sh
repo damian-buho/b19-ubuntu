@@ -104,6 +104,13 @@ EOF
   save-j2 "${B19_HOME}" 2>/dev/null
   b19-assert equals "LAYERS" "image" "$(<"${B19_HOME}/plain.conf")"
 
+  # A link into the runtime leaves its target’s mode alone.
+  printf 'site\n' > "${T}/site.conf"
+  chmod 0644 "${T}/site.conf"
+  ln --symbolic "${T}/site.conf" "${B19_RUNTIME_PATH}/site.conf"
+  b19-assert equals "LAYERS" "0" "$(materialize "${T}/mountinfo.rw")"
+  b19-assert equals "LAYERS" "-rw-r--r--" "$(stat --format %A "${T}/site.conf")"
+
   # An unwritable runtime fails closed on a read-only root and degrades on a writable one.
   chmod 0555 "${B19_RUNTIME_PATH}"
   if [ ! -w "${B19_RUNTIME_PATH}" ]; then
