@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 0.32.0-7-gc930cc4\n"
+"Project-Id-Version: ubuntu 0.32.1-2-gf4e0b8e\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-11-07 14:55+0000\n"
+"POT-Creation-Date: 2026-11-08 14:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2787,10 +2787,18 @@ msgid "Unreadable by a foreign uid: %s"
 msgstr ""
 
 #: .container/user/test.d/0620-foreign-uid-posture.sh:35
+msgid "Strict by declaration, not checked: %s"
+msgstr ""
+
+#: .container/user/test.d/0620-foreign-uid-posture.sh:39
+msgid "Mount point, owned by its source, not checked: %s"
+msgstr ""
+
+#: .container/user/test.d/0620-foreign-uid-posture.sh:43
 msgid "Not writable by group root: %s"
 msgstr ""
 
-#: .container/user/test.d/0620-foreign-uid-posture.sh:41
+#: .container/user/test.d/0620-foreign-uid-posture.sh:49
 msgid "Runtime paths readable and writable under a foreign uid"
 msgstr ""
 

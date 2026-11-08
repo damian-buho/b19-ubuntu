@@ -31,6 +31,14 @@
       b19-log info "POSTURE" "$(_p "Absent, not checked: %s" "${DIR}")"
       continue
     fi
+    if [[ ",${B19_POSTURE_STRICT_PATHS:-}," == *",${DIR},"* ]]; then
+      b19-log note "POSTURE" "$(_p "Strict by declaration, not checked: %s" "${DIR}")"
+      continue
+    fi
+    if mountpoint --quiet "${DIR}"; then
+      b19-log note "POSTURE" "$(_p "Mount point, owned by its source, not checked: %s" "${DIR}")"
+      continue
+    fi
     if [ -z "$(find "${DIR}" -maxdepth 0 -group 0 -perm -g=wx)" ]; then
       b19-log error "POSTURE" "$(_p "Not writable by group root: %s" "$(stat --format '%a %U:%G %n' "${DIR}")")"
       FAILED=$((FAILED + 1))

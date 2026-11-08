@@ -164,13 +164,14 @@ exit 0
 
 ## Configuration
 
-| Variable                | Default       | Description                                             |
-| ----------------------- | ------------- | ------------------------------------------------------- |
-| `B19_TEST_PATH`         | `/test.d`     | Directory containing test scripts                       |
-| `B19_TEST_ENABLED`      | `true`        | Set to `false` to skip all tests                        |
-| `B19_TEST_SKIP_<NAME>`  | (unset)       | `true` mutes one script (`B19_TEST_SKIP_B19_EXEC=true`) |
-| `B19_TEST_TIMEOUT`      | `300`         | Seconds to wait for healthcheck before running tests    |
-| `B19_TEST_RESULTS_PATH` | `/tmp/test.d` | (reserved, not yet used by runner)                      |
+| Variable                    | Default       | Description                                                                                       |
+| --------------------------- | ------------- | ------------------------------------------------------------------------------------------------- |
+| `B19_TEST_PATH`             | `/test.d`     | Directory containing test scripts                                                                 |
+| `B19_TEST_ENABLED`          | `true`        | Set to `false` to skip all tests                                                                  |
+| `B19_TEST_SKIP_<NAME>`      | (unset)       | `true` mutes one script (`B19_TEST_SKIP_B19_EXEC=true`)                                           |
+| `B19_TEST_TIMEOUT`          | `300`         | Seconds to wait for healthcheck before running tests                                              |
+| `B19_TEST_RESULTS_PATH`     | `/tmp/test.d` | (reserved, not yet used by runner)                                                                |
+| `B19_POSTURE_STRICT_PATHS`  | (empty)       | Comma list of runtime directories `0620` leaves private, for a daemon that refuses group write    |
 
 The full variable index lives in [configure-environment](configure-environment.md).
 

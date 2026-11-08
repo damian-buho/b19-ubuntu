@@ -127,6 +127,7 @@ ENV B19_BENCHMARK_ENABLED=true                                                  
     B19_READY_PORT=""                                                             \
     B19_REPORTD_FAT_FILES_AMOUNT=64                                               \
     B19_RUN_BACKOFF_MAX=60                                                        \
+    B19_POSTURE_STRICT_PATHS=""                                                  \
     B19_RUNTIME_MODE=docker-compose                                               \
     B19_RUNTIME_PATH=/run/b19                                                     \
     B19_SECRETS_ENABLED=true                                                      \
