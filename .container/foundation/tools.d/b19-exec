@@ -493,7 +493,11 @@ supervise() {
       _name="${_done##*/}"
       _gone="${_gone:-${_name%.exit}}"
     done
-    [ -z "${_gone}" ] || fail_fast "${_gone}"
+    if [ -n "${_gone}" ] && [ "${STOPPING}" -eq 1 ]; then
+      b19-log debug "b19-exec" "$(_p "%s exited while %s stops" "${_gone}" "${NAME}")"
+    elif [ -n "${_gone}" ]; then
+      fail_fast "${_gone}"
+    fi
   fi
 
   while :; do
