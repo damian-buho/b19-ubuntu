@@ -25,6 +25,7 @@ PASSTHROUGH="${B19_EXEC_PASSTHROUGH:-false}"
 STOP_TIMEOUT="${B19_EXEC_STOP_TIMEOUT:-30}"
 STATE_PATH="${B19_RUNTIME_PATH:-/run/b19}/b19-exec"
 STOP_SIGNALS=" INT QUIT TERM "
+HEARTBEAT_SECONDS=10
 # Holds PID 1's streams, or the inherited ones when a PID 1 of another uid refuses /proc/1/fd
 CONTAINER_STREAMS=/proc/1/fd
 { exec {CONTAINER_STDIN_FD}</proc/1/fd/0; } 2>/dev/null || { CONTAINER_STREAMS=inherited; exec {CONTAINER_STDIN_FD}<&0; }
@@ -425,9 +426,16 @@ stop_others() {
   done
 }
 
+# Starts a child whose exit wakes a wait -n that missed another child's exit
+start_heartbeat() {
+  # shellcheck disable=SC2086 # the signal list splits on purpose
+  ( trap '' ${SIGNALS}; exec sleep "${HEARTBEAT_SECONDS}" ) &
+  HEARTBEAT_PID=$!
+}
+
 # Runs the command until it exits, forwarding signals; the payload also fails fast on a required daemon
 supervise() {
-  local _done _code _name _pid _role _watcher _signal _gone
+  local _done _code _name _pid _role _watcher _signal _gone _beat
   local -A _watchers=()
   STOPPING=0
   PENDING=""
@@ -500,9 +508,19 @@ supervise() {
     fi
   fi
 
+  # Bash wait -n loses an exit that lands between its check and its block, so a heartbeat re-checks
+  start_heartbeat
   while :; do
     _done=""
-    wait -n -p _done "${CMD_PID}" "${!_watchers[@]}" 2>/dev/null && _code=0 || _code=$?
+    if [ -e "/proc/${CMD_PID}" ]; then
+      wait -n -p _done "${CMD_PID}" "${HEARTBEAT_PID}" "${!_watchers[@]}" 2>/dev/null && _code=0 || _code=$?
+    fi
+    _beat=0
+    if [ "${_done:-}" = "${HEARTBEAT_PID}" ]; then
+      _beat=1
+      _done=""
+      start_heartbeat
+    fi
     # Bash 5.2 reaps a child that exits during a trap, so wait -n names no PID: collect it by hand
     if [ -z "${_done:-}" ] && ! [ -e "/proc/${CMD_PID}" ]; then
       _done="${CMD_PID}"
@@ -512,6 +530,10 @@ supervise() {
       [ -z "${_done:-}" ] || break
       [ -e "/proc/${_watcher}" ] || _done="${_watcher}"
     done
+    if [ -z "${_done:-}" ] && [ "${_beat}" -eq 1 ]; then
+      b19-log debug "b19-exec" "$(_p "%s (pid %s) still runs after a %ss heartbeat" "${NAME}" "${CMD_PID}" "${HEARTBEAT_SECONDS}")"
+      continue
+    fi
     if [ -z "${_done:-}" ]; then
       b19-log debug "b19-exec" "$(_p "Wait for %s interrupted with %s" "${NAME}" "${_code}")"
       continue
@@ -529,7 +551,7 @@ supervise() {
     fail_fast "${_name}"
   done
 
-  for _watcher in "${!_watchers[@]}"; do
+  for _watcher in "${HEARTBEAT_PID}" "${!_watchers[@]}"; do
     kill -s KILL "${_watcher}" 2>/dev/null || true
     wait "${_watcher}" 2>/dev/null || true
   done

@@ -29,6 +29,32 @@ wait_until() {
   return 1
 }
 
+# Succeeds once PID is gone or a zombie
+exited() {
+  local _stat
+  { read -r _stat < "/proc/$1/stat"; } 2>/dev/null || return 0
+  read -r _stat _ <<<"${_stat##*) }"
+  [ "${_stat}" = Z ]
+}
+
+# Prints the records, the b19-exec processes and the lock holders when the script fails or is stopped
+dump_state() {
+  local _rc=$? _file _line _fd
+  set +e
+  [ "${_rc}" -ne 0 ] || return 0
+  b19-log error "b19-exec" "$(_p "Exit %s, state under %s" "${_rc}" "${_state}")"
+  for _file in "${_state}"/*.pid "${_state}"/*.exit "${_state}"/*.stop "${_state}"/.seq; do
+    { read -r _line < "${_file}"; } 2>/dev/null && b19-log error "b19-exec" "${_file##*/}: ${_line}"
+  done
+  ps -e --forest -o pid,ppid,pgid,sid,stat,etimes,args | while read -r _line; do b19-log error "b19-exec" "ps: ${_line}"; done
+  for _fd in /proc/[0-9]*/fd/*; do
+    [ "$(readlink "${_fd}" 2>/dev/null)" != "${_state}/.lock" ] || b19-log error "b19-exec" "$(_p "Lock held by %s" "${_fd}")"
+  done
+  exit "${_rc}"
+}
+trap dump_state EXIT
+trap 'exit 143' TERM
+
 # Test 1: Basic execution with successful exit code
 b19-log note "b19-exec" "$(_ "Test 1: Successful command execution")"
 b19-exec -- true
@@ -178,6 +204,7 @@ b19-assert matches "b19-exec" '^[0-9]+$' "${_observed}"
 b19-assert equals "b19-exec" "payload" "${_role}"
 b19-assert equals "b19-exec" "$(<"${_self}")" "${_observed}"
 kill -s TERM "${_exec_pid}"
+wait_until exited "${_exec_pid}"
 wait "${_exec_pid}" || true
 rm -f "${_self}"
 b19-assert equals "b19-exec" "absent" "$([ -e "${_state}/payload.pid" ] && echo present || echo absent)"
@@ -213,14 +240,6 @@ supervisor_of() {
   printf '%s\n' "${_fields[1]}"
 }
 
-# Succeeds once PID is gone or a zombie
-exited() {
-  local _stat
-  { read -r _stat < "/proc/$1/stat"; } 2>/dev/null || return 0
-  read -r _stat _ <<<"${_stat##*) }"
-  [ "${_stat}" = Z ]
-}
-
 # Polls up to 5 min for NAME's record to disappear
 wait_gone() {
   local _try
@@ -236,8 +255,8 @@ wait_gone() {
 # shellcheck disable=SC2016 # expanded by the daemon shell
 _daemon='trap "echo $1 >> $0; exit 0" TERM; : > "$0.$1"; sleep 300 & wait'
 
-# Stop order must never fall back to the timeout on a slow host
-export B19_EXEC_STOP_TIMEOUT=600
+# Long enough for stop order on a slow host, short enough for a stuck stop to fail inside the script timeout
+export B19_EXEC_STOP_TIMEOUT=120
 
 # Test 16: Background daemons stop after the payload, newest first, each on its own SIGTERM
 b19-log note "b19-exec" "$(_ "Test 16: Background daemons stop in reverse start order")"
@@ -249,6 +268,7 @@ b19-exec --name main -- bash -c "${_daemon}" "${_order}" main &
 _exec_pid=$!
 wait_until test -e "${_order}.first" -a -e "${_order}.second" -a -e "${_order}.main"
 kill -s TERM "${_exec_pid}" "$(supervisor_of second)" "$(supervisor_of first)"
+wait_until exited "${_exec_pid}"
 EXIT_CODE=0
 wait "${_exec_pid}" || EXIT_CODE=$?
 wait_gone first
@@ -332,7 +352,7 @@ wait_gone twice
 # Test 21: --stop ends a named daemon and its supervisor at once, beside a newer payload, and exits 3 once the name is free
 b19-log note "b19-exec" "$(_ "Test 21: Stop a named daemon")"
 _stopped="${B19_RUNTIME_PATH}/stopped"
-B19_EXEC_STOP_TIMEOUT=600 b19-exec --background --optional --name stopme -- bash -c "${_daemon}" "${_stopped}" stopme
+b19-exec --background --optional --name stopme -- bash -c "${_daemon}" "${_stopped}" stopme
 b19-exec --name main -- bash -c "${_daemon}" "${_stopped}" main &
 _exec_pid=$!
 wait_until test -e "${_stopped}.stopme" -a -e "${_stopped}.main"
@@ -344,6 +364,7 @@ b19-assert equals "b19-exec" "0" "$(fd --hidden --glob 'stopme.*' "${_state}" | 
 b19-assert equals "b19-exec" "gone" "$(exited "${_supervisor}" && echo gone || echo running)"
 b19-assert equals "b19-exec" "running" "$(exited "${_exec_pid}" && echo gone || echo running)"
 b19-exec --stop main
+wait_until exited "${_exec_pid}"
 wait "${_exec_pid}" || true
 b19-assert equals "b19-exec" "stopme main" "$(paste --serial --delimiters=' ' "${_stopped}")"
 EXIT_CODE=0
@@ -364,6 +385,7 @@ b19-exec --name other -- bash -c 'exit 6' || EXIT_CODE=$?
 b19-assert equals "b19-exec" "6" "${EXIT_CODE}"
 b19-assert equals "b19-exec" "keeper.pid main.pid" "$(fd --hidden --glob '*.pid' --strip-cwd-prefix --base-directory "${_state}" | sort | paste --serial --delimiters=' ')"
 b19-exec --stop main
+wait_until exited "${_exec_pid}"
 EXIT_CODE=0
 wait "${_exec_pid}" || EXIT_CODE=$?
 b19-assert equals "b19-exec" "0" "${EXIT_CODE}"
