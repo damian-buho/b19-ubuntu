@@ -1,0 +1,11 @@
+{#
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+
+SPDX-License-Identifier: MIT
+#}
+{%- set arch = ENV.TARGETARCH | upper %}
+{%- set primary = ENV["B19_UBUNTU_MIRROR_" ~ arch] %}
+{{ primary }}	priority:1
+{% for mirror in (ENV["B19_UBUNTU_FALLBACK_MIRRORS_" ~ arch] or "") | split if mirror | trim("/") != primary | trim("/") -%}
+{{ mirror }}
+{% endfor -%}

@@ -38,13 +38,20 @@ Downstream images do not pin by digest themselves: they `FROM` the published ser
 
 ### Mirrors per architecture
 
-APT mirrors are build args rendered into the sources lists by `foundation/pre/200-setup-sources.sh` (DEB822 `ubuntu.sources` or classic `sources.list`, via `.j2` templates):
+APT mirrors are build args that `foundation/pre/200-setup-sources.sh` renders into the mirror list `/etc/apt/mirrors/ubuntu.list`. The sources (DEB822 `ubuntu.sources` or classic `sources.list`) name that list as `mirror+file:`, so APT’s mirror method ([apt-transport-mirror(1)](https://manpages.ubuntu.com/manpages/resolute/man1/apt-transport-mirror.1.html)) tries the primary mirror first and moves to the next one when a download fails.
 
-| Variable                    | Default                                |
-| --------------------------- | -------------------------------------- |
-| `B19_UBUNTU_MIRROR_AMD64`   | `http://archive.ubuntu.com/ubuntu/`    |
-| `B19_UBUNTU_MIRROR_ARM64`   | `http://ports.ubuntu.com/ubuntu-ports` |
-| `B19_UBUNTU_MIRROR_RISCV64` | `http://ports.ubuntu.com/ubuntu-ports` |
+| Variable                              | Default                                                                |
+| ------------------------------------- | ---------------------------------------------------------------------- |
+| `B19_UBUNTU_MIRROR_AMD64`             | `http://archive.ubuntu.com/ubuntu/`                                    |
+| `B19_UBUNTU_MIRROR_ARM64`             | `http://ports.ubuntu.com/ubuntu-ports`                                 |
+| `B19_UBUNTU_MIRROR_RISCV64`           | `http://ports.ubuntu.com/ubuntu-ports`                                 |
+| `B19_UBUNTU_FALLBACK_MIRRORS_AMD64`   | `http://archive.ubuntu.com/ubuntu/ http://security.ubuntu.com/ubuntu/` |
+| `B19_UBUNTU_FALLBACK_MIRRORS_ARM64`   | `http://ports.ubuntu.com/ubuntu-ports`                                 |
+| `B19_UBUNTU_FALLBACK_MIRRORS_RISCV64` | `http://ports.ubuntu.com/ubuntu-ports`                                 |
+
+The fallback lists are space-separated and tried in random order after the primary mirror, which carries `priority:1`. A fallback that matches the primary mirror is left out. A blank list (a single space, `B19_UBUNTU_FALLBACK_MIRRORS_AMD64=" "`) turns the fallback off; an empty value is not forwarded as a build arg, so the default applies.
+
+A fallback helps when a mirror’s package index is newer than its files: the index names a package version that the mirror’s pool does not have yet, so that download returns 404, and the next mirror serves the same file. Every mirror is checked against the same `Signed-By` keyring, so a fallback cannot change what gets installed.
 
 ## Recipes
 

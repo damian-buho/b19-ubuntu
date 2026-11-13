@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: MIT
 msgid ""
 msgstr ""
-"Project-Id-Version: ubuntu 0.32.3-3-gd5faeba\n"
+"Project-Id-Version: ubuntu development\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-11-11 20:28+0000\n"
+"POT-Creation-Date: 2026-11-13 02:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -263,7 +263,7 @@ msgstr ""
 
 #: .container/foundation/tools.d/b19-exec:370
 #: .container/foundation/tools.d/b19-exec:403
-#: .container/foundation/tools.d/b19-exec:602
+#: .container/foundation/tools.d/b19-exec:604
 msgid "_"
 msgstr ""
 
@@ -316,59 +316,59 @@ msgid "Required %s (pid %s) is already gone"
 msgstr ""
 
 #: .container/foundation/tools.d/b19-exec:505
-#: .container/foundation/tools.d/b19-exec:546
+#: .container/foundation/tools.d/b19-exec:548
 msgid "%s exited while %s stops"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:532
+#: .container/foundation/tools.d/b19-exec:534
 msgid "%s (pid %s) still runs after a %ss heartbeat"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:536
+#: .container/foundation/tools.d/b19-exec:538
 msgid "Wait for %s interrupted with %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:558
+#: .container/foundation/tools.d/b19-exec:560
 msgid "%s (pid %s) exited with %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:565
+#: .container/foundation/tools.d/b19-exec:567
 msgid "%s (pid %s) stopped with %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:567
+#: .container/foundation/tools.d/b19-exec:569
 msgid "Optional %s (pid %s) exited with %s, the container keeps running"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:570
+#: .container/foundation/tools.d/b19-exec:572
 msgid "Required %s (pid %s) exited with %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:580
+#: .container/foundation/tools.d/b19-exec:582
 msgid "%s is not running"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:584
+#: .container/foundation/tools.d/b19-exec:586
 msgid "Cannot write %s, %s stops after the commands started later"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:586
+#: .container/foundation/tools.d/b19-exec:588
 msgid "Stopped %s"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:598
+#: .container/foundation/tools.d/b19-exec:600
 msgid "Started %s untracked (supervisor pid %s)"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:602
+#: .container/foundation/tools.d/b19-exec:604
 msgid "RECORD_SUPERVISOR"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:604
+#: .container/foundation/tools.d/b19-exec:606
 msgid "Started %s (pid %s, %s)"
 msgstr ""
 
-#: .container/foundation/tools.d/b19-exec:610
+#: .container/foundation/tools.d/b19-exec:612
 msgid "%s failed to start, exit code %s"
 msgstr ""
 
@@ -1447,8 +1447,13 @@ msgstr ""
 msgid "Format: %s"
 msgstr ""
 
-#: .container/foundation/build.d/foundation/pre/200-setup-sources.sh:29
+#: .container/foundation/build.d/foundation/pre/200-setup-sources.sh:31
+#: .container/foundation/build.d/foundation/pre/200-setup-sources.sh:35
 msgid "Render %s"
+msgstr ""
+
+#: .container/foundation/build.d/foundation/pre/200-setup-sources.sh:33
+msgid "APT mirrors in order: %s"
 msgstr ""
 
 #: .container/user/entrypoint.d/0000-set-signals.sh:9

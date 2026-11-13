@@ -115,6 +115,9 @@ org:
         B19_LOCALES: ""
         B19_UBUNTU_HASH:
           file: .container/foundation/deps/ubuntu/{B19_UBUNTU_SERIES}.sha256.deps
+        B19_UBUNTU_FALLBACK_MIRRORS_AMD64: ""
+        B19_UBUNTU_FALLBACK_MIRRORS_ARM64: ""
+        B19_UBUNTU_FALLBACK_MIRRORS_RISCV64: ""
         B19_UBUNTU_MIRROR_AMD64: ""
         B19_UBUNTU_MIRROR_ARM64: ""
         B19_UBUNTU_MIRROR_RISCV64: ""

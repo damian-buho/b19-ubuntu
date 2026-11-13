@@ -26,5 +26,11 @@
   . /etc/lsb-release
   set +a
 
+  MIRRORS_FILE="/etc/apt/mirrors/ubuntu.list"
+  mkdir --parents "${MIRRORS_FILE%/*}"
+  b19-run "PACKAGES" "$(_p "Render %s" "${MIRRORS_FILE}")" --     \
+    minijinja-cli --autoescape none --env /etc/apt/templates/ubuntu.mirrors.j2 -o "${MIRRORS_FILE}"
+  b19-log info "PACKAGES" "$(_p "APT mirrors in order: %s" "$(awk '!/^#/ && NF {printf "%s%s", sep, $1; sep=" "}' "${MIRRORS_FILE}")")"
+
   b19-run "PACKAGES" "$(_p "Render %s" "${OUTPUT_FILE}")" --      \
     minijinja-cli --autoescape none --env "${J2_FILE}" -o "${OUTPUT_FILE}"

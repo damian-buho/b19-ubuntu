@@ -188,15 +188,18 @@ See [OFFGRID.md](use-offgrid.md) for the full three-tier model and interaction w
 
 These are `ARG` in the Dockerfile — set via `--build-arg`, not at runtime.
 
-| Variable                    | Default                                         | Controls                                                                                                              |
-| --------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `B19_BUILD_DISABLE_MOLD`    | (unset)                                         | Any non-empty value skips symlinking `mold` as default linker. Used by images where mold is incompatible (e.g. Ruby). |
-| `B19_UBUNTU_SERIES`         | (axis)                                          | Ubuntu series for the FROM image (noble, resolute, etc.)                                                              |
-| `B19_UBUNTU_HASH`           | `sha256:4a92…`                                  | Pinned digest for the `ubuntu` base image                                                                             |
-| `B19_UBUNTU_MIRROR_AMD64`   | `http://archive.ubuntu.com/ubuntu/`             | APT mirror for amd64                                                                                                  |
-| `B19_UBUNTU_MIRROR_ARM64`   | `http://ports.ubuntu.com/ubuntu-ports`          | APT mirror for arm64                                                                                                  |
-| `B19_UBUNTU_MIRROR_RISCV64` | `http://ports.ubuntu.com/ubuntu-ports`          | APT mirror for riscv64                                                                                                |
-| `B19_LOCALES`               | en_US, uk_UA, es_ES + 20 LATAM Spanish variants | Locales to generate at build time via `localedef`                                                                     |
+| Variable                              | Default                                                                | Controls                                                                                                              |
+| ------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `B19_BUILD_DISABLE_MOLD`              | (unset)                                                                | Any non-empty value skips symlinking `mold` as default linker. Used by images where mold is incompatible (e.g. Ruby). |
+| `B19_UBUNTU_SERIES`                   | (axis)                                                                 | Ubuntu series for the FROM image (noble, resolute, etc.)                                                              |
+| `B19_UBUNTU_HASH`                     | `sha256:4a92…`                                                         | Pinned digest for the `ubuntu` base image                                                                             |
+| `B19_UBUNTU_FALLBACK_MIRRORS_AMD64`   | `http://archive.ubuntu.com/ubuntu/ http://security.ubuntu.com/ubuntu/` | APT mirrors amd64 falls back to, space-separated; a single space turns the fallback off                               |
+| `B19_UBUNTU_FALLBACK_MIRRORS_ARM64`   | `http://ports.ubuntu.com/ubuntu-ports`                                 | APT mirrors arm64 falls back to, space-separated; a single space turns the fallback off                               |
+| `B19_UBUNTU_FALLBACK_MIRRORS_RISCV64` | `http://ports.ubuntu.com/ubuntu-ports`                                 | APT mirrors riscv64 falls back to, space-separated; a single space turns the fallback off                             |
+| `B19_UBUNTU_MIRROR_AMD64`             | `http://archive.ubuntu.com/ubuntu/`                                    | APT mirror for amd64                                                                                                  |
+| `B19_UBUNTU_MIRROR_ARM64`             | `http://ports.ubuntu.com/ubuntu-ports`                                 | APT mirror for arm64                                                                                                  |
+| `B19_UBUNTU_MIRROR_RISCV64`           | `http://ports.ubuntu.com/ubuntu-ports`                                 | APT mirror for riscv64                                                                                                |
+| `B19_LOCALES`                         | en_US, uk_UA, es_ES + 20 LATAM Spanish variants                        | Locales to generate at build time via `localedef`                                                                     |
 
 ## Identity and Paths
 
@@ -390,6 +393,9 @@ Alphabetical list of every `B19_*` variable with its scope.
 | `B19_TOOLS_PATH`                | runtime         | Hook Directories |
 | `B19_UBUNTU_HASH`               | build           | Build-time Only  |
 
+| `B19_UBUNTU_FALLBACK_MIRRORS_AMD64` | build | Build-time Only |
+| `B19_UBUNTU_FALLBACK_MIRRORS_ARM64` | build | Build-time Only |
+| `B19_UBUNTU_FALLBACK_MIRRORS_RISCV64` | build | Build-time Only |
 | `B19_UBUNTU_MIRROR_AMD64` | build | Build-time Only |
 | `B19_UBUNTU_MIRROR_ARM64` | build | Build-time Only |
 | `B19_UBUNTU_MIRROR_RISCV64` | build | Build-time Only |
