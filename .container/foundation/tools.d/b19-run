@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-    # shellcheck source=.container/foundation/tools.d/b19-i18n
+    # shellcheck source=/dev/null
     . b19-i18n
     [ "${NO_COLOR:-0}" = "1" ] && B19_COLOR=0
     [ "${M6E_AI:-N}" = "Y" ] && B19_COLOR=0
@@ -126,7 +126,7 @@
     DELAY="${RUN_BACKOFF}"
     while :; do
         if [ "${B19_VERBOSITY:-warn}" = "debug" ] && [ "${_JSON}" = "1" ]; then
-            "${TIMEOUT_ARGS[@]}" "$@" 2>&1 | b19-log debug "${TAG}"
+            "${TIMEOUT_ARGS[@]}" "$@" 2>&1 | b19-log-format debug "${TAG}"
             CODE=${PIPESTATUS[0]}
         elif [ "${B19_VERBOSITY:-warn}" = "debug" ]; then
             "${TIMEOUT_ARGS[@]}" "$@" 2>&1 >&2
@@ -151,13 +151,13 @@
     if [ "${_JSON}" = "1" ] && [ "${CODE}" -eq 0 ]; then
         b19-log info "${TAG}" "${LOG}… $(_p "success [%s]" "$(elapsed_seconds)s")"
         if [ "${_REVEAL}" = "1" ]; then
-            b19-log info "${TAG}" < "${TEMP_FILE}"
+            b19-log-format info "${TAG}" < "${TEMP_FILE}"
         fi
     elif [ "${_JSON}" = "1" ]; then
         b19-log error "${TAG}" "${LOG}… $(_p "failure (exit code %s) [%s]" "${CODE}" "$(elapsed_seconds)s")"
         printf '%s\n' "${COMMAND}" | b19-log error "${TAG}"
         if [ "${B19_VERBOSITY:-warn}" != "debug" ]; then
-            b19-log error "${TAG}" < "${TEMP_FILE}"
+            b19-log-format error "${TAG}" < "${TEMP_FILE}"
         fi
     elif [ "${CODE}" -eq 0 ]; then
         if show_progress; then

@@ -48,7 +48,7 @@ Hiding green output keeps a `make` sheet short, but exit-0 *warnings* (line-leng
 
 ### JSON lines (`B19_LOG_FORMAT=json`)
 
-Every line becomes a `b19-log` record, so a log pipeline never meets the two-part progress line or raw command output. Success is one `info` record (`message… success [0.234s]`), shown at `info` and `debug`. A failure is three `error` records: the result, the command, then the captured output with one record per line. The revealed and streamed output becomes records too, so a tool’s own escape codes arrive escaped.
+Every line becomes a `b19-log` record, so a log pipeline never meets the two-part progress line or raw command output. Success is one `info` record (`message… success [0.234s]`), shown at `info` and `debug`. A failure is three `error` records: the result, the command, then the captured output with one record per line. The revealed, streamed and failure output goes through `b19-log-format` under the run’s tag, as `b19-exec` output does: a plain line becomes a record, a tool’s own JSON object gains `time` and `level` when it lacks them, and a tool’s own escape codes arrive escaped.
 
 ### Wall-clock guard (`--timeout`, `B19_RUN_TIMEOUT`)
 
