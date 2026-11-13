@@ -104,6 +104,15 @@
       exit 1
     fi
 
+    # Bootstrap gate: a temporary server bootstrap.d starts must not pass for the real one
+    BOOTSTRAP_PID=""
+    read -r BOOTSTRAP_PID 2>/dev/null <"${B19_RUNTIME_PATH:-/run/b19}/bootstrap.d.pid" || true
+    if [[ "${BOOTSTRAP_PID}" =~ ^[0-9]+$ ]] && [ -d "/proc/${BOOTSTRAP_PID}" ]; then
+      b19-log info "HEALTH.D" "$(_p "Bootstrap (pid %s) still running: reporting not ready" "${BOOTSTRAP_PID}")"
+      flush_log 0
+      exit 1
+    fi
+
     CHECKS_PATH="${B19_HEALTH_PATH:-/healthcheck.d}"
     FINAL_EXIT_CODE=0  # Tracks the number of failed checks
     FAILED_NAMES=""    # Space-separated basenames of failed checks, for callers

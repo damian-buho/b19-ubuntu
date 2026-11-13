@@ -12,11 +12,11 @@
     # Enable safer bash scripting
     set -euo pipefail
 
-    # shellcheck source=.container/foundation/tools.d/b19-i18n
+    # shellcheck source=/dev/null
     . b19-i18n
 
     # A filtered log line costs no process
-    # shellcheck source=.container/foundation/tools.d/b19-log-filter
+    # shellcheck source=/dev/null
     . b19-log-filter
 
     BOOTSTRAP_PATH="${B19_BOOTSTRAP_PATH:-/bootstrap.d}"
@@ -37,9 +37,14 @@
     b19-run "BOOTSTRAP" "$(_p "Create lock directory %s" "${LOCK_PATH}")" --  mkdir -p "${LOCK_PATH}"
 
     # One bootstrap at a time per lock directory, even across replicas sharing it
-    # shellcheck source=.container/foundation/tools.d/b19-lock
+    # shellcheck source=/dev/null
     . b19-lock
     b19_lock "BOOTSTRAP" "${LOCK_PATH}/.lock" "${B19_BOOTSTRAP_LOCK_TIMEOUT:-}" || exit 1
+
+    # healthcheck.d reports not ready while this pid runs
+    RUNNING_FILE="${B19_RUNTIME_PATH:-/run/b19}/bootstrap.d.pid"
+    printf '%s\n' "$$" 2>/dev/null >"${RUNNING_FILE}" \
+      || b19-log warn "BOOTSTRAP" "$(_p "Cannot write %s, healthcheck.d may pass during bootstrap" "${RUNNING_FILE}")"
 
     while IFS= read -r -d '' SCRIPT; do
       BASENAME=$(basename "${SCRIPT}" .sh)
@@ -64,4 +69,6 @@
       b19-log good "BOOTSTRAP" "$(_p "Completed: %s" "${BASENAME}")"
     done < <(fd --print0 --hidden --type file --extension sh . "${BOOTSTRAP_PATH}" | sort --zero-terminated --numeric-sort)
 
+    rm --force -- "${RUNNING_FILE}"
+    b19-log debug "BOOTSTRAP" "$(_p "Removed %s" "${RUNNING_FILE}")"
     exit 0

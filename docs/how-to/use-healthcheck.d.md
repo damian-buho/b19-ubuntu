@@ -62,6 +62,7 @@ Docker daemon (every --interval)
        ├─ flock (wait for an overlapping run, bounded)
        ├─ load secrets (runs outside entrypoint context)
        ├─ drain gate ($B19_HEALTH_DRAIN_FILE present → not ready)
+       ├─ bootstrap gate (bootstrap.d still running → not ready)
        ├─ run /healthcheck.d/*.sh in parallel, capped at NUMPROCS, under one shared deadline
        ├─ answer /healthcheck.d/<tier>/*.sh from their last verdict
        ├─ count consecutive failed probes (B19_HEALTH_EXIT_AFTER set) → TERM to PID 1 at N
@@ -75,6 +76,7 @@ Runner lifecycle:
 1. Sets `B19_COLOR=auto` — color only on a TTY; `docker inspect` and file redirects get plain text automatically
 1. Sources `b19-i18n` and `b19-load-secrets` — healthchecks run outside entrypoint context, so secrets are loaded explicitly
 1. Checks `B19_HEALTH_DRAIN_FILE` — exits 1 unconditionally if present
+1. Checks `${B19_RUNTIME_PATH}/bootstrap.d.pid` — exits 1 while that pid runs, so a temporary server a [bootstrap.d](use-bootstrap.d.md) script starts never passes for the real one; a stale file from a dead pid is ignored
 1. Finds all `*.sh` directly in `$B19_HEALTH_PATH` (not in subdirectories — those are [tiers](#interval-tiers)) and sorts them ascending
 1. Runs each surviving check **in the background**, each in a fresh `bash` that loads the same helpers, `</dev/null` so a check reading stdin cannot drain the pipe the outer loop still reads paths from. `NUMPROCS` is unset inside a healthcheck (a fresh daemon-spawned process, not the entrypoint tree that exports it), so the runner sources `detect-cpu-count` itself and reaps with `wait -n -p` once concurrency hits that cap. Failures are isolated per check
 1. Bounds the inline checks with one shared deadline — see [Time budget](#time-budget)
@@ -120,7 +122,7 @@ Compose and plain Docker only report `unhealthy`; a restart policy acts on an ex
 - Each probe that fails adds one to a counter stored under `${B19_TEMP_PATH}/healthcheck.d/`; a passing probe resets it.
 - At N, the runner sends `TERM` to PID 1. The container stops cleanly, and `restart: unless-stopped` (or `always`, or `on-failure`) starts a fresh one.
 - Probes during the first `B19_HEALTH_EXIT_GRACE` seconds after start never count, so a slow start is not a crash loop.
-- A draining container never counts: the drain gate exits before the counter.
+- A draining or bootstrapping container never counts: both gates exit before the counter.
 - The readiness wait inside `test.d` never counts either.
 
 Unset (the default) turns it off. It is a runtime choice, so set it where the restart policy lives — the compose file — rather than in the image. It pays off when the checks probe only the container itself and a fresh start cures the failure: a wedged worker, a stuck process pool, a sub-process that died while PID 1 lives on. Leave it off when:

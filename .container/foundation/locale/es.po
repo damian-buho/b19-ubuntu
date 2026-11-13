@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: b19\n"
 "Report-Msgid-Bugs-To: https://github.com/damian-buho/b19-ubuntu/issues\n"
-"POT-Creation-Date: 2026-11-13 02:41+0000\n"
+"POT-Creation-Date: 2026-11-13 16:57+0000\n"
 "PO-Revision-Date: 2026-02-23 06:00-0300\n"
 "Last-Translator: b19 team\n"
 "Language-Team: Spanish\n"
@@ -715,7 +715,7 @@ msgid "failure (exit code %s), [%s]"
 msgstr "fallo (código de salida %s), [%s]"
 
 #: .container/foundation/tools.d/b19-skip:22
-#: .container/user/tools.d/bootstrap.d:49
+#: .container/user/tools.d/bootstrap.d:54
 #: .container/user/tools.d/entrypoint.d:43
 msgid "Skipped: %s (via %s)"
 msgstr "Omitido: %s (mediante %s)"
@@ -1135,29 +1135,37 @@ msgstr "No se encontraron scripts en %s"
 msgid "Create lock directory %s"
 msgstr "Crear directorio de bloqueo %s"
 
-#: .container/user/tools.d/bootstrap.d:56
+#: .container/user/tools.d/bootstrap.d:47
+msgid "Cannot write %s, healthcheck.d may pass during bootstrap"
+msgstr "No se puede escribir %s, healthcheck.d puede aprobar durante la inicialización"
+
+#: .container/user/tools.d/bootstrap.d:61
 msgid "Already done: %s"
 msgstr "Ya completado: %s"
 
-#: .container/user/tools.d/bootstrap.d:60
+#: .container/user/tools.d/bootstrap.d:65
 msgid "Running: %s"
 msgstr "Ejecutando: %s"
 
-#: .container/user/tools.d/bootstrap.d:61
+#: .container/user/tools.d/bootstrap.d:66
 msgid "Timeout for %s: %s s"
 msgstr "Tiempo límite para %s: %s s"
 
-#: .container/user/tools.d/bootstrap.d:62
+#: .container/user/tools.d/bootstrap.d:67
 msgid "Execute: %s"
 msgstr "Ejecutar: %s"
 
-#: .container/user/tools.d/bootstrap.d:63
+#: .container/user/tools.d/bootstrap.d:68
 msgid "Lock: %s"
 msgstr "Bloquear: %s"
 
-#: .container/user/tools.d/bootstrap.d:64
+#: .container/user/tools.d/bootstrap.d:69
 msgid "Completed: %s"
 msgstr "Completado: %s"
+
+#: .container/user/tools.d/bootstrap.d:73
+msgid "Removed %s"
+msgstr "Eliminado %s"
 
 #: .container/user/tools.d/entrypoint.d:30 .container/user/tools.d/report.d:26
 #: .container/user/tools.d/test.d:52
@@ -1197,122 +1205,126 @@ msgstr "Otra sonda tiene el bloqueo, se repite el último veredicto %s"
 msgid "Draining via %s: reporting not ready"
 msgstr "En drenaje mediante %s: notificando no disponible"
 
-#: .container/user/tools.d/healthcheck.d:117
+#: .container/user/tools.d/healthcheck.d:111
+msgid "Bootstrap (pid %s) still running: reporting not ready"
+msgstr "La inicialización (pid %s) sigue en curso: notificando no disponible"
+
+#: .container/user/tools.d/healthcheck.d:126
 msgid "Parallel check cap (NUMPROCS): %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:121
+#: .container/user/tools.d/healthcheck.d:130
 msgid "_e"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:121
+#: .container/user/tools.d/healthcheck.d:130
 msgid "b19-log"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:136
+#: .container/user/tools.d/healthcheck.d:145
 #, fuzzy
 msgid "%s is not writable, not reporting %s"
 msgstr "%s no es un comando"
 
-#: .container/user/tools.d/healthcheck.d:141
+#: .container/user/tools.d/healthcheck.d:150
 msgid "Check recovered: %s"
 msgstr ""
 
-#: .container/user/tools.d/healthcheck.d:143
+#: .container/user/tools.d/healthcheck.d:152
 msgid "Check failed: %s: %s"
 msgstr "Verificación fallida: %s: %s"
 
-#: .container/user/tools.d/healthcheck.d:173
+#: .container/user/tools.d/healthcheck.d:182
 msgid "No verdict yet for %s, running it in the background"
 msgstr "Aún no hay veredicto para %s, se ejecuta en segundo plano"
 
-#: .container/user/tools.d/healthcheck.d:185
+#: .container/user/tools.d/healthcheck.d:194
 msgid "Stale verdict for %s (%s s old, due every %s s), re-running"
 msgstr ""
 "Veredicto caducado para %s (%s s de antigüedad, cada %s s), se vuelve a "
 "ejecutar"
 
-#: .container/user/tools.d/healthcheck.d:189
+#: .container/user/tools.d/healthcheck.d:198
 msgid "Cached verdict for %s (%s s old): %s"
 msgstr "Veredicto en caché para %s (%s s de antigüedad): %s"
 
-#: .container/user/tools.d/healthcheck.d:211
+#: .container/user/tools.d/healthcheck.d:220
 #, fuzzy
 msgid "Listed %s scripts in %s"
 msgstr "Guardados %s archivos en %s"
 
-#: .container/user/tools.d/healthcheck.d:249
-#: .container/user/tools.d/healthcheck.d:321
+#: .container/user/tools.d/healthcheck.d:258
+#: .container/user/tools.d/healthcheck.d:330
 msgid "Check passed:"
 msgstr "Verificación exitosa:"
 
-#: .container/user/tools.d/healthcheck.d:252
+#: .container/user/tools.d/healthcheck.d:261
 msgid "Check timed out: %s (probe deadline %s s)"
 msgstr "Comprobación agotada: %s (plazo del sondeo %s s)"
 
-#: .container/user/tools.d/healthcheck.d:255
+#: .container/user/tools.d/healthcheck.d:264
 #, fuzzy
 msgid "timed out after %s s"
 msgstr "Tiempo agotado tras %ss esperando %s"
 
-#: .container/user/tools.d/healthcheck.d:257
-#: .container/user/tools.d/healthcheck.d:324
+#: .container/user/tools.d/healthcheck.d:266
+#: .container/user/tools.d/healthcheck.d:333
 msgid "Check failed:"
 msgstr "Verificación fallida:"
 
-#: .container/user/tools.d/healthcheck.d:257
+#: .container/user/tools.d/healthcheck.d:266
 msgid "with exit code"
 msgstr "con código de salida"
 
-#: .container/user/tools.d/healthcheck.d:265
+#: .container/user/tools.d/healthcheck.d:274
 msgid "Checks directory found"
 msgstr "Directorio de verificaciones encontrado"
 
-#: .container/user/tools.d/healthcheck.d:280
+#: .container/user/tools.d/healthcheck.d:289
 msgid "Executing check:"
 msgstr "Ejecutando verificación:"
 
-#: .container/user/tools.d/healthcheck.d:287
+#: .container/user/tools.d/healthcheck.d:296
 msgid "Time budget for %s: %s s"
 msgstr "Tiempo disponible para %s: %s s"
 
-#: .container/user/tools.d/healthcheck.d:309
+#: .container/user/tools.d/healthcheck.d:318
 msgid "Ignoring tier %s: %s is not set"
 msgstr "Se ignora el nivel %s: %s no está definida"
 
-#: .container/user/tools.d/healthcheck.d:334
+#: .container/user/tools.d/healthcheck.d:343
 msgid "No health checks found in"
 msgstr "No se encontraron verificaciones de salud en"
 
-#: .container/user/tools.d/healthcheck.d:337
+#: .container/user/tools.d/healthcheck.d:346
 msgid "Checks directory not found at"
 msgstr "Directorio de verificaciones no encontrado en"
 
-#: .container/user/tools.d/healthcheck.d:349
+#: .container/user/tools.d/healthcheck.d:358
 msgid "%d of %d checks failed: %s"
 msgstr "%d de %d verificaciones fallaron: %s"
 
-#: .container/user/tools.d/healthcheck.d:351
+#: .container/user/tools.d/healthcheck.d:360
 msgid "All %d checks passed."
 msgstr "Todas las %d verificaciones pasaron."
 
-#: .container/user/tools.d/healthcheck.d:365
+#: .container/user/tools.d/healthcheck.d:374
 msgid "Ignoring B19_HEALTH_EXIT_AFTER=%s: not a positive integer"
 msgstr "Se ignora B19_HEALTH_EXIT_AFTER=%s: no es un entero positivo"
 
-#: .container/user/tools.d/healthcheck.d:378
+#: .container/user/tools.d/healthcheck.d:387
 msgid "Consecutive failed probes: %s of %s (PID 1 age %s s)"
 msgstr "Sondeos fallidos consecutivos: %s de %s (edad del PID 1: %s s)"
 
-#: .container/user/tools.d/healthcheck.d:380
+#: .container/user/tools.d/healthcheck.d:389
 msgid "%s consecutive failed probes, sending TERM to PID 1"
 msgstr "%s sondeos fallidos consecutivos, enviando TERM al PID 1"
 
-#: .container/user/tools.d/healthcheck.d:381
+#: .container/user/tools.d/healthcheck.d:390
 msgid "Cannot signal PID 1 as UID %s"
 msgstr "No se puede enviar una señal al PID 1 como UID %s"
 
-#: .container/user/tools.d/healthcheck.d:395
+#: .container/user/tools.d/healthcheck.d:404
 msgid "Cannot write %s"
 msgstr "No se puede escribir %s"
 
@@ -1850,6 +1862,7 @@ msgid "All b19-assert cases passed"
 msgstr "Todos los casos de b19-assert pasaron"
 
 #: .container/user/test.d/0200-b19-ca-distrust.sh:20
+#: .container/user/test.d/0350-healthcheck-bootstrap-gate.sh:29
 msgid "Case %s: expected %s, got %s"
 msgstr "Caso %s: se esperaba %s, se obtuvo %s"
 
@@ -2773,6 +2786,10 @@ msgstr "Un script de arranque fallido se bloqueó"
 #: .container/user/test.d/0350-bootstrap-runner.sh:65
 msgid "All bootstrap tests passed"
 msgstr "Todas las pruebas de arranque pasaron"
+
+#: .container/user/test.d/0350-healthcheck-bootstrap-gate.sh:51
+msgid "Bootstrap gate holds while bootstrap runs and only then"
+msgstr ""
 
 #: .container/user/test.d/0360-entrypoint-verbosity.sh:31
 msgid "Test %s: lifecycle quiet, command keeps its level"

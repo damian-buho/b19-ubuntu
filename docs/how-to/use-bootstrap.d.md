@@ -50,6 +50,7 @@ Bootstrap runs on every start, whatever the argv: `docker run myimage some-comma
 1. Enables `set -eo pipefail`, sources `b19-i18n` for `_()` / `_p()`
 1. Resolves `B19_BOOTSTRAP_PATH` (default `/bootstrap.d`) and `B19_BOOTSTRAP_LOCK_PATH` (default `$B19_HOME/.bootstrap`)
 1. Holds `${LOCK_PATH}/.lock` via `b19-lock`, waiting as long as the holder runs (each of its scripts is bounded by `B19_BOOTSTRAP_TIMEOUT`), or `B19_BOOTSTRAP_LOCK_TIMEOUT` seconds when set, so replicas sharing the volume never run the same script twice at once
+1. Writes its pid to `${B19_RUNTIME_PATH}/bootstrap.d.pid` and removes it once every script is done; [healthcheck.d](use-healthcheck.d.md) reports not ready while that pid runs, so a temporary server a script starts on the service port (a database setting itself up, then stopping) never marks the container healthy before the real server starts
 1. Finds all `*.sh`, sorts ascending (`sort -zn`)
 1. For each script: lockfile `${LOCK_PATH}/.${BASENAME}.bootstrap` exists → skip with “Already done”; otherwise execute via `b19-run`, create the lockfile on success
 1. On failure: logs the exit code, **breaks immediately** — no further scripts run, no lockfile is created, so the failed script retries on the next start
