@@ -92,7 +92,7 @@ SPDX-License-Identifier: MIT
 - Adding a check is dropping a script in a directory, not writing Docker plumbing.
 - Heavy or rate-limited checks run hourly in the background, so a slow scan never times out the probe or burns a rate limit.
 
-See [use-healthcheck.d](../how-to/use-healthcheck.d.md) for the check list, slot numbering, and configuration.
+See [use-healthcheck.d](how-to/use-healthcheck.d.md) for the check list, slot numbering, and configuration.
 
 ### Multilingual shell output (b19-i18n)
 
@@ -196,7 +196,7 @@ See [use-healthcheck.d](../how-to/use-healthcheck.d.md) for the check list, slot
 - A flaky call can be retried with backoff in one flag, without a hand-written loop.
 - An opt-in restart turns a service stuck unhealthy into a container the restart policy recovers.
 
-See [use-timeouts](../how-to/use-timeouts.md) for the options, defaults and overrides.
+See [use-timeouts](how-to/use-timeouts.md) for the options, defaults and overrides.
 
 ### Pre-installed utility tools
 
