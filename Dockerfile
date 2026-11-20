@@ -183,7 +183,7 @@ COPY --from=b19-fd          /usr/local/bin/fd.${TARGETARCH}                 /usr
 COPY --from=b19-gojq        /usr/local/bin/gojq.${TARGETARCH}               /usr/local/bin/gojq
 COPY --from=b19-minijinja   /usr/local/bin/minijinja-cli.${TARGETARCH}      /usr/local/bin/minijinja-cli
 
-COPY --chown="${B19_UID}:${B19_GID}"                             .container/foundation/  /
+COPY .container/foundation/  /
 
 RUN --mount=type=bind,from=fetch,source=.,target=/fetch                                                         \
     --mount=type=cache,target=${B19_DOWNLOAD_PATH},sharing=shared,uid=${B19_UID},gid=${B19_GID}                 \
@@ -195,7 +195,15 @@ RUN --mount=type=bind,from=fetch,source=.,target=/fetch                         
 # hadolint ignore=DL3066 # B19_UID comes from the root
 USER ${B19_UID}
 
-COPY --chown="${B19_UID}:${B19_GID}"                             .container/user/        /
+COPY .container/user/app/              /app/
+COPY .container/user/benchmark.d/      /benchmark.d/
+COPY .container/user/build.d/          /build.d/
+COPY .container/user/entrypoint.d/     /entrypoint.d/
+COPY .container/user/healthcheck.d/    /healthcheck.d/
+COPY .container/user/report.d/         /report.d/
+COPY .container/user/shell.d/          /shell.d/
+COPY .container/user/tools.d/          /tools.d/
+COPY --chown="${B19_UID}:${B19_GID}"   .container/user/test.d/         /test.d/
 
 ARG M6E_VERSION
 RUN --mount=type=bind,from=fetch,source=.,target=/fetch                                             \
